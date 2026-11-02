@@ -1,0 +1,29 @@
+UV ?= uv
+export UV_CACHE_DIR ?= $(CURDIR)/.local/uv-cache
+export UV_PYTHON_DOWNLOADS = never
+COMPOSE = docker compose --project-name mgar-v3 --env-file .env -f deploy/compose.yaml -f deploy/compose.local.yaml
+
+.PHONY: setup deps-up deps-stop migrate doctor verify lint typecheck test dev live-preflight
+setup:
+	$(UV) sync --frozen
+	$(UV) run --frozen python scripts/bootstrap.py
+deps-up:
+	$(COMPOSE) up -d --wait
+deps-stop:
+	$(COMPOSE) stop
+migrate:
+	$(UV) run --frozen python -m mgar_v3.store.migrate
+doctor:
+	$(UV) run --frozen mgar doctor
+live-preflight:
+	$(UV) run --frozen mgar live-preflight --profile "$(PROFILE)"
+verify:
+	$(UV) run --frozen python scripts/verify.py --task "$(TASK)"
+lint:
+	$(UV) run --frozen ruff check src tests scripts
+typecheck:
+	$(UV) run --frozen mypy
+test:
+	$(UV) run --frozen pytest
+dev:
+	$(UV) run --frozen uvicorn mgar_v3.api:create_app --factory --host 127.0.0.1 --port 18080

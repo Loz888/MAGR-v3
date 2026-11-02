@@ -1,0 +1,53 @@
+[project]
+name = "mgar-v3"
+version = "0.1.0"
+description = "Event-driven, evidence-backed MGAR coordination runtime"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "uvicorn>=0.34,<1",
+  "pydantic>=2.12,<3",
+  "pydantic-settings>=2.10,<3",
+  "psycopg[binary,pool]>=3.2,<4",
+  "langchain>=1.0,<2",
+  "langgraph>=1.0,<2",
+  "langgraph-checkpoint-postgres>=3,<4",
+  "mcp>=1.20,<2",
+  "redis>=6.4,<8",
+  "httpx>=0.28,<1",
+]
+
+[project.scripts]
+mgar = "mgar_v3.cli:main"
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mgar_v3"]
+
+[dependency-groups]
+dev = ["pytest>=8.4,<10", "ruff>=0.14,<1", "mypy>=1.18,<2"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+xfail_strict = true
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["src"]
+strict = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["langgraph.*", "mcp.*"]
+ignore_missing_imports = true

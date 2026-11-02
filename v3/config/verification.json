@@ -1,0 +1,75 @@
+{
+  "V31-R0-02": {
+    "tests": [
+      "tests/test_environment.py",
+      "tests/test_verification.py",
+      "tests/test_mcp.py",
+      "tests/test_rate_limit.py"
+    ],
+    "timeout_seconds": 90,
+    "components": {
+      "postgres": "real",
+      "redis": "real",
+      "mcp": "real_stdio_controlled_server",
+      "model": "not_used",
+      "github": "controlled_server",
+      "langgraph": "import_checked"
+    }
+  },
+  "V31-R0-03": {
+    "tests": [
+      "tests/test_coordination.py"
+    ],
+    "timeout_seconds": 90,
+    "components": {
+      "postgres": "real",
+      "redis": "not_used",
+      "model": "not_used",
+      "github": "not_used",
+      "langgraph": "not_used"
+    }
+  },
+  "V31-R1-01": {
+    "tests": [
+      "tests/test_pipeline.py",
+      "tests/test_effects.py",
+      "tests/test_recovery.py",
+      "tests/test_api.py",
+      "tests/test_cli.py",
+      "tests/test_models.py"
+    ],
+    "timeout_seconds": 120,
+    "components": {
+      "postgres": "real",
+      "redis": "real",
+      "mcp": "real_stdio_controlled_server",
+      "model": "fixture_http_transport",
+      "github": "controlled_server",
+      "langgraph": "real_postgres_checkpoint"
+    }
+  },
+  "V31-R1-BUDGET-02": {
+    "tests": [
+      "tests/test_environment.py",
+      "tests/test_verification.py",
+      "tests/test_mcp.py",
+      "tests/test_rate_limit.py",
+      "tests/test_coordination.py",
+      "tests/test_pipeline.py",
+      "tests/test_effects.py",
+      "tests/test_recovery.py",
+      "tests/test_api.py",
+      "tests/test_cli.py",
+      "tests/test_models.py"
+    ],
+    "timeout_seconds": 120,
+    "components": {
+      "postgres": "real",
+      "redis": "real",
+      "mcp": "real_stdio_controlled_server",
+      "model": "fixture_http_transport",
+      "github": "controlled_server",
+      "langgraph": "real_postgres_checkpoint"
+    }
+  }
+}

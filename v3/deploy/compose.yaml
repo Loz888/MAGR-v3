@@ -1,0 +1,27 @@
+name: mgar-v3
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.1-pg16-bookworm@sha256:33198da2828a14c30348d2ccb4750833d5ed9a44c88d840a0e523d7417120337
+    environment:
+      POSTGRES_USER: mgar_v3
+      POSTGRES_DB: mgar_v3
+      POSTGRES_PASSWORD: ${MGAR_V3_DB_PASSWORD:?Run make setup first}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mgar_v3 -d mgar_v3"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+  redis:
+    image: redis:7.4.7-bookworm@sha256:976ab0f0939b78c06d802bcd3bea44c5142ea9a756a57b861e08819817f768c8
+    command: ["redis-server", "--maxmemory", "128mb", "--maxmemory-policy", "noeviction"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+volumes:
+  postgres:

@@ -1,0 +1,17 @@
+.env
+**/.env
+.venv/
+**/.venv/
+.local/
+**/.local/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.pyc
+*.egg-info/
+work/
+# Local source material and raw experiment records are not part of public publication.
+v3/evidence/
+v3-upgrade/
+v31-upgrade/source/

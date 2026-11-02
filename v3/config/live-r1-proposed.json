@@ -1,0 +1,22 @@
+{
+  "case_id": "v31-r1-issue-1",
+  "project_id": "orders-demo",
+  "repository": "loz888/magr-v3",
+  "issue_number": 1,
+  "actor": "loz888",
+  "question": "总结本 Issue 中列出的首版范围，逐条引用原文；无法从原文确定的内容列入未解决问题。",
+  "source_kind": "issue",
+  "source_path": "README.md",
+  "source_ref": null,
+  "expected_source_hash": "f025af6ede4dc6dbff19e4e2cf5ee877e73b6fb746ac106a3220923c8011f4d2",
+  "model_id": "deepseek-flash",
+  "price_version": "deepseek-2026-11-01-peak-upper-bound",
+  "input_micros_per_million": 300000,
+  "output_micros_per_million": 1200000,
+  "context_tokens": 1048576,
+  "max_output_tokens": 1024,
+  "max_source_bytes": 16384,
+  "max_cost_micros": 2000000,
+  "max_model_calls": 3,
+  "action_type": "issue_comment"
+}

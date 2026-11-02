@@ -1,0 +1,170 @@
+{
+  "version": "v31-incremental-v1",
+  "tasks": [
+    {
+      "id": "V31-R0-01",
+      "phase": "R0",
+      "title": "独立仓库、V2 基线与架构边界",
+      "status": "DONE",
+      "dependencies": [],
+      "engineering_gate": "PASS",
+      "live_gate": "NOT_APPLICABLE",
+      "maps_to": [
+        "V3-P0-01"
+      ]
+    },
+    {
+      "id": "V31-R0-02",
+      "phase": "R0",
+      "title": "锁定环境、PG/Redis、MCP 适配与验收框架",
+      "status": "DONE",
+      "dependencies": [
+        "V31-R0-01"
+      ],
+      "engineering_gate": "PASS",
+      "live_gate": "NOT_APPLICABLE",
+      "maps_to": [
+        "V3-P0-02"
+      ],
+      "evidence": "v3/evidence/V31-R0-02/acceptance.json"
+    },
+    {
+      "id": "V31-R0-03",
+      "phase": "R0",
+      "title": "事件、授权、工作项、执行与动作持久化契约",
+      "status": "DONE",
+      "dependencies": [
+        "V31-R0-02"
+      ],
+      "engineering_gate": "PASS",
+      "live_gate": "NOT_APPLICABLE",
+      "maps_to": [
+        "V3-P0-03"
+      ],
+      "evidence": "v3/evidence/V31-R0-03/acceptance.json"
+    },
+    {
+      "id": "V31-R1-01",
+      "phase": "R1",
+      "title": "确定性调查、Verifier、审批与统一出口工程闭环",
+      "status": "DONE",
+      "dependencies": [
+        "V31-R0-03"
+      ],
+      "engineering_gate": "PASS",
+      "live_gate": "NOT_RUN",
+      "maps_to": [
+        "V3-P1-01",
+        "V3-P1-02",
+        "V3-P1-04",
+        "V3-P1-05",
+        "V3-P1-07",
+        "V3-P4-01",
+        "V3-P4-02"
+      ],
+      "note": "按 V3.1 纵切面抽取必要行为，不表示原卡整张完成。",
+      "evidence": "v3/evidence/V31-R1-01/acceptance.json"
+    },
+    {
+      "id": "V31-R1-BUDGET-02",
+      "phase": "R1",
+      "title": "候选最多 3 次调用、累计预算 USD 2",
+      "status": "DONE",
+      "dependencies": [
+        "V31-R1-01"
+      ],
+      "engineering_gate": "PASS",
+      "live_gate": "NOT_RUN",
+      "maps_to": [],
+      "requested_limits": {
+        "max_model_calls": 3,
+        "max_cost_micros": 2000000,
+        "currency": "USD"
+      },
+      "execution_requested": false,
+      "evidence": "v3/evidence/V31-R1-BUDGET-02/acceptance.json"
+    },
+    {
+      "id": "V31-R1-LIVE",
+      "phase": "R1",
+      "title": "V3 Issue #1 真实模型、审批与结果评论验收",
+      "status": "BLOCKED",
+      "dependencies": [
+        "V31-R1-01"
+      ],
+      "engineering_gate": "NOT_APPLICABLE",
+      "live_gate": "NOT_RUN",
+      "maps_to": [],
+      "blockers": [
+        "本次仅准备候选，执行前须具备匹配新 profile 哈希的运行授权配置",
+        "独立应用缺少 GitHub 读写凭据"
+      ],
+      "issue_url": "https://github.com/Loz888/MAGR-v3/issues/1",
+      "candidate_limits": {
+        "max_model_calls": 3,
+        "max_cost_micros": 2000000,
+        "currency": "USD"
+      }
+    },
+    {
+      "id": "V31-R2",
+      "phase": "R2",
+      "title": "Mailbox 与显式 intake/replan",
+      "status": "TODO",
+      "dependencies": [
+        "V31-R1-LIVE"
+      ],
+      "engineering_gate": "NOT_RUN",
+      "live_gate": "NOT_RUN",
+      "maps_to": []
+    },
+    {
+      "id": "V31-R3",
+      "phase": "R3",
+      "title": "受限 Router LLM 与多任务",
+      "status": "TODO",
+      "dependencies": [
+        "V31-R2"
+      ],
+      "engineering_gate": "NOT_RUN",
+      "live_gate": "NOT_RUN",
+      "maps_to": []
+    },
+    {
+      "id": "V31-R4",
+      "phase": "R4",
+      "title": "RAG 与多专家",
+      "status": "TODO",
+      "dependencies": [
+        "V31-R3"
+      ],
+      "engineering_gate": "NOT_RUN",
+      "live_gate": "NOT_RUN",
+      "maps_to": []
+    },
+    {
+      "id": "V31-R5",
+      "phase": "R5",
+      "title": "受限修复与 Draft PR",
+      "status": "TODO",
+      "dependencies": [
+        "V31-R4"
+      ],
+      "engineering_gate": "NOT_RUN",
+      "live_gate": "NOT_RUN",
+      "maps_to": []
+    },
+    {
+      "id": "V31-R6",
+      "phase": "R6",
+      "title": "Watchdog、主动性与发布评测",
+      "status": "TODO",
+      "dependencies": [
+        "V31-R5"
+      ],
+      "engineering_gate": "NOT_RUN",
+      "live_gate": "NOT_RUN",
+      "maps_to": []
+    }
+  ]
+}
