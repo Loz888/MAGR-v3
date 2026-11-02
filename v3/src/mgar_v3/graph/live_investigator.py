@@ -1,4 +1,5 @@
 import asyncio
+import hashlib
 from uuid import UUID
 
 import httpx
@@ -40,6 +41,13 @@ class LiveInvestigator(FixtureInvestigator):
             else:
                 assert profile.source_ref is not None
                 result = asyncio.run(reader.read_file(profile.source_path, profile.source_ref))
+                if (
+                    profile.expected_source_hash
+                    and hashlib.sha256(result.content).hexdigest() != profile.expected_source_hash
+                ):
+                    raise DomainError(
+                        "STALE_SOURCE", "GitHub source differs from the frozen content hash"
+                    )
         except DomainError:
             raise
         except Exception:

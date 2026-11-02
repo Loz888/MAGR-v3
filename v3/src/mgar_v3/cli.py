@@ -19,7 +19,7 @@ def doctor(settings: Settings) -> int:
     try:
         with psycopg.connect(settings.database_url.get_secret_value(), connect_timeout=3) as conn:
             row = conn.execute("SELECT count(*) FROM app.schema_migrations").fetchone()
-            result["postgres"] = "PASS" if row and row[0] >= 8 else "FAIL"
+            result["postgres"] = "PASS" if row and row[0] >= 9 else "FAIL"
     except psycopg.Error:
         result["postgres"] = "FAIL"
     try:

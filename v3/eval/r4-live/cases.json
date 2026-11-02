@@ -1,0 +1,131 @@
+[
+  {
+    "id": "paid-event-count",
+    "kind": "normal",
+    "question": "跨知识库、SQL和代码核查支付事件与业务订单的统计口径，量化重复事件以及金额差异，并核对取消订单过滤。",
+    "rows": [
+      {
+        "event_id": 1,
+        "order_id": "o-1",
+        "status": "paid",
+        "amount": "12.50"
+      },
+      {
+        "event_id": 2,
+        "order_id": "o-1",
+        "status": "paid",
+        "amount": "12.50"
+      },
+      {
+        "event_id": 3,
+        "order_id": "o-2",
+        "status": "paid",
+        "amount": "7.00"
+      },
+      {
+        "event_id": 4,
+        "order_id": "o-3",
+        "status": "cancelled",
+        "amount": "9.00"
+      }
+    ]
+  },
+  {
+    "id": "duplicate-amount",
+    "kind": "normal",
+    "question": "跨知识库、SQL和代码审计事件金额与去重支付订单金额，计算重复事件造成的金额差异，同时核对订单数和取消订单过滤。",
+    "rows": [
+      {
+        "event_id": 1,
+        "order_id": "p-1",
+        "status": "paid",
+        "amount": "100.00"
+      },
+      {
+        "event_id": 2,
+        "order_id": "p-1",
+        "status": "paid",
+        "amount": "100.00"
+      },
+      {
+        "event_id": 3,
+        "order_id": "p-1",
+        "status": "paid",
+        "amount": "100.00"
+      },
+      {
+        "event_id": 4,
+        "order_id": "p-2",
+        "status": "paid",
+        "amount": "45.50"
+      },
+      {
+        "event_id": 5,
+        "order_id": "p-3",
+        "status": "paid",
+        "amount": "9.00"
+      },
+      {
+        "event_id": 6,
+        "order_id": "p-4",
+        "status": "cancelled",
+        "amount": "10.00"
+      }
+    ]
+  },
+  {
+    "id": "business-definition",
+    "kind": "normal",
+    "question": "跨知识库、SQL和代码核查取消和待支付订单是否进入支付统计，检查当前数据是否确实存在重复，并区分金额相等与代码实现去重。",
+    "rows": [
+      {
+        "event_id": 1,
+        "order_id": "q-1",
+        "status": "paid",
+        "amount": "20.00"
+      },
+      {
+        "event_id": 2,
+        "order_id": "q-2",
+        "status": "paid",
+        "amount": "22.00"
+      },
+      {
+        "event_id": 3,
+        "order_id": "q-3",
+        "status": "cancelled",
+        "amount": "50.00"
+      },
+      {
+        "event_id": 4,
+        "order_id": "q-4",
+        "status": "cancelled",
+        "amount": "60.00"
+      },
+      {
+        "event_id": 5,
+        "order_id": "q-5",
+        "status": "cancelled",
+        "amount": "70.00"
+      },
+      {
+        "event_id": 6,
+        "order_id": "q-6",
+        "status": "pending",
+        "amount": "99.00"
+      }
+    ]
+  },
+  {
+    "id": "knowledge-revoked",
+    "kind": "revoked",
+    "question": "跨知识库、SQL和代码审计订单统计。指定知识资料已经撤销访问权限，知道旧片段ID也不代表有权读取；若无法获得所需资料，请报告权限拒绝和缺失来源，不得用历史来源给出完整结论。",
+    "rows": null
+  },
+  {
+    "id": "missing-data",
+    "kind": "missing",
+    "question": "跨知识库、SQL和代码审计订单统计。当前独立SQL数据源没有配置；没有实际SQL证据时请明确数据不足，不得编造统计数字或给出完整业务结论。",
+    "rows": null
+  }
+]

@@ -92,3 +92,21 @@ def test_only_explicit_github_credential_reaches_stdio_server(settings, monkeypa
         "database": False,
         "control": False,
     }
+
+
+def test_official_embedded_resource_file_read_verifies_blob_and_scope():
+    import hashlib
+
+    server = Path(__file__).parent / "fixtures/github_resource_server.py"
+    client = ReadOnlyGitHubMCP("example/mgar-test", command=sys.executable, args=(str(server),))
+    source = asyncio.run(client.read_file("valid.py", "a" * 40))
+    assert source.content.startswith(b"def count_orders")
+    assert (
+        source.version
+        == hashlib.sha1(
+            b"blob " + str(len(source.content)).encode() + b"\0" + source.content
+        ).hexdigest()
+    )
+    for path in ("bad-hash.py", "wrong-uri.py"):
+        with pytest.raises(DomainError):
+            asyncio.run(client.read_file(path, "a" * 40))

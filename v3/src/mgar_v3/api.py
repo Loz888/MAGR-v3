@@ -290,7 +290,7 @@ def create_app(
             raise DomainError("SUPERVISOR_UNAVAILABLE", "Execution supervisor is unavailable", 503)
         with service.transaction() as conn:
             migrations = conn.execute("SELECT count(*) AS n FROM app.schema_migrations").fetchone()
-            if migrations is None or migrations["n"] < 8:
+            if migrations is None or migrations["n"] < 9:
                 raise DomainError("MIGRATIONS_PENDING", "Database migrations are incomplete", 503)
         return {"database": "ready", "release_status": "ENGINEERING_INCOMPLETE"}
 

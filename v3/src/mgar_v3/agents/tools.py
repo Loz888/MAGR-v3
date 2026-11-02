@@ -468,6 +468,28 @@ class ToolAuthority:
                 "R4_PUBLICATION_EVIDENCE", "Current evidence no longer authorizes publication", 403
             )
 
+    def denial(self, token: str, tool: str, code: str, arguments: dict[str, Any]) -> None:
+        with self.engine.transaction() as conn:
+            grant = conn.execute(
+                "SELECT * FROM app.tool_grants WHERE token_hash=%s",
+                (hashlib.sha256(token.encode()).hexdigest(),),
+            ).fetchone()
+            if not grant:
+                return
+            run = self.engine._run(conn, grant["run_id"], grant["execution_epoch"])
+            if run["status"] != "running":
+                return
+            self.engine._event(
+                conn,
+                grant["run_id"],
+                "readonly_tool_denied",
+                tool=tool,
+                reason_code=code,
+                role=grant["role"],
+                task_id=grant["task_id"],
+                object_id=arguments.get("chunk_id"),
+            )
+
     def recover(self) -> None:
         with self.engine.transaction() as conn:
             conn.execute("DELETE FROM app.tool_grants")

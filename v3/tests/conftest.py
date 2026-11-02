@@ -1,4 +1,3 @@
-import hashlib
 from collections.abc import Iterator
 from uuid import uuid4
 
@@ -23,9 +22,14 @@ def database() -> Iterator[str]:
     dsn = make_conninfo(base, dbname=name)
     migrate(dsn)
     yield dsn
-    role = "r4_reader_" + hashlib.sha256(name.encode()).hexdigest()[:12]
     with psycopg.connect(dsn, autocommit=True) as conn:
-        if conn.execute("SELECT 1 FROM pg_roles WHERE rolname=%s", (role,)).fetchone():
+        roles = conn.execute(
+            "SELECT DISTINCT r.rolname FROM pg_database d CROSS JOIN LATERAL "
+            "aclexplode(d.datacl) a JOIN pg_roles r ON r.oid=a.grantee WHERE "
+            "d.datname=current_database() AND r.rolname ~ "
+            "'^r4_reader_[a-f0-9]{12}$'"
+        ).fetchall()
+        for (role,) in roles:
             conn.execute(sql.SQL("DROP OWNED BY {}").format(sql.Identifier(role)))
             conn.execute(sql.SQL("DROP ROLE {}").format(sql.Identifier(role)))
     # Only this session's uniquely generated disposable database can be removed.

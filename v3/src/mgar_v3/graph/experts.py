@@ -129,6 +129,8 @@ def execute_experts(
         }
 
     def dispatch(state: ExpertState) -> list[Send]:
+        if getattr(selected, "serial_tools", False):
+            return [Send("single_expert", state)]
         return [Send("expert", {"assignment": task}) for task in state["plan"]["tasks"]]
 
     def expert(state: ExpertState) -> ExpertState:
@@ -183,6 +185,12 @@ def execute_experts(
                 status=finding.status,
             )
         return {"findings": {task.task_id: value}}
+
+    def single_expert(state: ExpertState) -> ExpertState:
+        values: dict[str, Any] = {}
+        for task in state["plan"]["tasks"]:
+            values = merge_findings(values, expert({"assignment": task})["findings"])
+        return {"findings": values}
 
     def collect(state: ExpertState) -> ExpertState:
         if not all(t["task_id"] in state["findings"] for t in state["plan"]["tasks"]):
@@ -259,14 +267,16 @@ def execute_experts(
     ]:
         builder.add_node(name, fn)
     builder.add_node("dispatch", lambda state: {})
+    builder.add_node("single_expert", single_expert)
     builder.add_edge(START, "intake")
     builder.add_edge("intake", "ack")
     builder.add_conditional_edges(
         "ack", route, {"plan": "plan", "dispatch": "dispatch", "verify": "verify", "finish": END}
     )
     builder.add_edge("plan", "dispatch")
-    builder.add_conditional_edges("dispatch", dispatch, ["expert"])
+    builder.add_conditional_edges("dispatch", dispatch, ["expert", "single_expert"])
     builder.add_edge("expert", "collect")
+    builder.add_edge("single_expert", "collect")
     builder.add_edge("collect", "intake")
     builder.add_conditional_edges(
         "verify", repair_route, {"supplement": "supplement", "intake": "intake"}
@@ -300,6 +310,25 @@ def execute_experts(
             "data": "local_readonly_postgresql",
         },
     )
+    analysis = None
+    synthesize = getattr(selected, "synthesize", None)
+    if callable(synthesize):
+        analysis = synthesize(run_id, epoch, state["input_revision"], state["question"], resolution)
+        from mgar_v3.evaluation.domain import Assessment
+
+        if not isinstance(analysis, Assessment):
+            raise DomainError("ANALYSIS_SCHEMA", "Model interpretation schema is invalid")
+        read_ids = {fact.evidence_id for fact in resolution.verified_facts}
+        if any(
+            eid not in read_ids for claim in analysis.interpretations for eid in claim.evidence_ids
+        ):
+            raise DomainError(
+                "ANALYSIS_UNREAD_REFERENCE", "Model interpretation cites an unread source"
+            )
+        if analysis.status != "supported":
+            resolution = resolution.model_copy(update={"complete": False})
+        report += b"\n\n## Model interpretation (independent business adjudication required)\n"
+        report += analysis.model_dump_json(indent=2).encode()
     content_hash = engine.artifacts.put(report)
     try:
         with engine.transaction() as conn:
@@ -332,6 +361,22 @@ def execute_experts(
                     Jsonb(verdict.model_dump(mode="json")),
                 ),
             )
+            if analysis is not None:
+                conn.execute(
+                    (
+                        "INSERT INTO "
+                        "app.r4_analyses(run_id,input_revision,content_hash,result) "
+                        "VALUES (%s,%s,%s,%s) ON CONFLICT(run_id,input_revision) DO "
+                        "UPDATE SET "
+                        "content_hash=excluded.content_hash,result=excluded.result"
+                    ),
+                    (
+                        run_id,
+                        state["input_revision"],
+                        content_hash,
+                        Jsonb(analysis.model_dump(mode="json")),
+                    ),
+                )
             if not verdict.passed or resolution.complete:
                 return engine.commit_report(
                     run_id, epoch, report, verdict, stored_report_hash=content_hash

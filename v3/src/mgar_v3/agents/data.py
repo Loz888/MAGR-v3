@@ -1,6 +1,5 @@
 """V3 adaptation of V2's closed SELECT grammar (fe7e04a, data/policy.py)."""
 
-import hashlib
 import json
 import math
 import re
@@ -293,7 +292,14 @@ def provision(
     schema = "r4_data_" + fixture_hash[:12]
     values = conninfo_to_dict(engine.settings.database_url.get_secret_value())
     dbname = str(values["dbname"])
-    role = "r4_reader_" + hashlib.sha256(dbname.encode()).hexdigest()[:12]
+    role_scope = {
+        "database": dbname,
+        "project_id": engine.settings.project_id,
+        "repository": engine.settings.repository.lower(),
+        "actor": engine.settings.local_actor.lower(),
+        "fixture_hash": fixture_hash,
+    }
+    role = "r4_reader_" + digest(role_scope)[:12]
     password = secrets.token_hex(32)
     with engine.transaction() as conn:
         conn.execute(sql.SQL("CREATE SCHEMA IF NOT EXISTS {}").format(sql.Identifier(schema)))
@@ -357,6 +363,7 @@ def provision(
     )
     profile = {
         "database_url": dsn,
+        "reader_role": role,
         "schema": schema,
         "fixture_version": "orders-demo-v1:" + fixture_hash[:12],
         "fixture_hash": fixture_hash,

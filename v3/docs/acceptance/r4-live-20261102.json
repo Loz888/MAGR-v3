@@ -1,0 +1,249 @@
+{
+  "schema": "r4-live-acceptance-v1",
+  "date": "2026-11-02",
+  "experiment_status": "COMPLETED",
+  "release_status": "ENGINEERING_INCOMPLETE",
+  "engineering_gate": "PASS",
+  "live_gate": "PARTIAL",
+  "primary_frozen_trial_gate": "FAIL",
+  "primary_passed": 8,
+  "primary_total": 10,
+  "multi_expert_after_bounded_recovery": {
+    "status": "PASS",
+    "normal_passed": 3,
+    "normal_total": 3,
+    "negative_passed": 2,
+    "negative_total": 2
+  },
+  "single_agent_first_pass": {
+    "passed": 4,
+    "total": 5,
+    "failed_case": "business-definition"
+  },
+  "manifest_sha256": "53436e66b2c4f82c5815e06034f508e09517b24aefcbcc7d2f54f750e39fbae2",
+  "oracle_sha256": "0614d12b0d863b36ddebb85e9ff1dd70564ac39b94d553678c52bd2871af3b03",
+  "oracle_code_sha256": "f3d5bd30599e3663a9b8aeec7259a5f4ba03d7beb187a8af6a9b7c2df751a3b8",
+  "case_input_sha256": "8e840da1e638c215b5ceed48948f6f219d9a4aeea8fb83a54781284b85be90df",
+  "primary_implementation_sha256": "dd1c6b941a2dd5da40d6539c22a8b351c335ed9889fa028623ae7471310c575f",
+  "recovery_implementation_sha256": "1cb81fe2f0fbc2996219c7fe2341dd88e95764706215d076aa711a186b76b0c1",
+  "requested_model": "deepseek-flash",
+  "provider_returned_models": [
+    "deepseek-flash"
+  ],
+  "repository_source": {
+    "commit": "cf512bd1e5bedd7d562a513caba326588024b88d",
+    "path": "v3/src/mgar_v3/agents/experts.py",
+    "sha256": "657b09d1935e9fd52f3ef02cca2556efa74911477a6a359da66c30187957fa41",
+    "version": "4adc1f8a7c66af2e3b0ac2f6085cae36f67b4814",
+    "uri": "github://loz888/magr-v3/v3/src/mgar_v3/agents/experts.py?ref=cf512bd1e5bedd7d562a513caba326588024b88d",
+    "transport": "official_GitHub_MCP_stdio_read_only"
+  },
+  "components": {
+    "chat_model": "actual_DeepSeek_HTTP_API",
+    "knowledge": "actual_local_pretrained_Chinese_embedding_BM25_pgvector_RRF_learned_reranker",
+    "knowledge_data_mcp": "actual_HTTP_MCP",
+    "repository_mcp": "pinned_official_GitHub_stdio_MCP_read_only",
+    "sql": "actual_PostgreSQL_independent_reader_roles_per_project_actor_dataset",
+    "business_data": "owned_frozen_synthetic_order_events",
+    "code": "actual_application_code_at_immutable_GitHub_commit",
+    "business_judge": "independent_frozen_Python_oracle_and_mechanical_evidence_verifier"
+  },
+  "design": {
+    "cases": 5,
+    "normal_cases": 3,
+    "negative_cases": 2,
+    "arms": 2,
+    "tool_plan": "same fixed readonly tool plan",
+    "multi": "Knowledge and Repo model extraction; deterministic typed SQL tool expert; separate model synthesis",
+    "single": "one model synthesis after serial reads through the same role-scoped tools",
+    "judge_hidden_from_models": true,
+    "oracle_changed_after_responses": false,
+    "scope": "development comparison, not unrestricted autonomous tool planning or production business validation"
+  },
+  "cases": [
+    {
+      "case_id": "paid-event-count",
+      "kind": "normal",
+      "multi_first_pass": "PASS",
+      "single_first_pass": "PASS",
+      "multi_after_recovery": "PASS",
+      "multi_error": null,
+      "single_adjudication_reasons": [],
+      "multi_calls": 3,
+      "single_calls": 1,
+      "multi_cost_micros": 3280,
+      "single_cost_micros": 1750,
+      "multi_duration_seconds": 7.942,
+      "single_duration_seconds": 4.872
+    },
+    {
+      "case_id": "duplicate-amount",
+      "kind": "normal",
+      "multi_first_pass": "FAIL",
+      "single_first_pass": "PASS",
+      "multi_after_recovery": "PASS",
+      "multi_error": "BUDGET_EXHAUSTED",
+      "single_adjudication_reasons": [],
+      "multi_calls": 3,
+      "single_calls": 1,
+      "multi_cost_micros": 2529,
+      "single_cost_micros": 1767,
+      "multi_duration_seconds": 7.351,
+      "single_duration_seconds": 5.067
+    },
+    {
+      "case_id": "business-definition",
+      "kind": "normal",
+      "multi_first_pass": "PASS",
+      "single_first_pass": "FAIL",
+      "multi_after_recovery": "PASS",
+      "multi_error": null,
+      "single_adjudication_reasons": [
+        "wrong_conclusion:amount_is_deduplicated"
+      ],
+      "multi_calls": 3,
+      "single_calls": 1,
+      "multi_cost_micros": 3311,
+      "single_cost_micros": 1645,
+      "multi_duration_seconds": 7.244,
+      "single_duration_seconds": 4.582
+    },
+    {
+      "case_id": "knowledge-revoked",
+      "kind": "revoked",
+      "multi_first_pass": "PASS",
+      "single_first_pass": "PASS",
+      "multi_after_recovery": "PASS",
+      "multi_error": null,
+      "single_adjudication_reasons": [],
+      "multi_calls": 3,
+      "single_calls": 1,
+      "multi_cost_micros": 2489,
+      "single_cost_micros": 1218,
+      "multi_duration_seconds": 8.661,
+      "single_duration_seconds": 3.456
+    },
+    {
+      "case_id": "missing-data",
+      "kind": "missing",
+      "multi_first_pass": "PASS",
+      "single_first_pass": "PASS",
+      "multi_after_recovery": "PASS",
+      "multi_error": null,
+      "single_adjudication_reasons": [],
+      "multi_calls": 3,
+      "single_calls": 1,
+      "multi_cost_micros": 2279,
+      "single_cost_micros": 1130,
+      "multi_duration_seconds": 6.484,
+      "single_duration_seconds": 3.858
+    }
+  ],
+  "first_pass_comparison": {
+    "multi": {
+      "passed": 4,
+      "total": 5,
+      "normal_passed": 2,
+      "normal_total": 3,
+      "negative_passed": 2,
+      "negative_total": 2,
+      "physical_calls": 15,
+      "cost_micros": 13888,
+      "prompt_tokens": 21178,
+      "completion_tokens": 6275,
+      "mean_duration_seconds": 7.5364,
+      "median_duration_seconds": 7.351
+    },
+    "single": {
+      "passed": 4,
+      "total": 5,
+      "normal_passed": 2,
+      "normal_total": 3,
+      "negative_passed": 2,
+      "negative_total": 2,
+      "physical_calls": 5,
+      "cost_micros": 7510,
+      "prompt_tokens": 16634,
+      "completion_tokens": 2098,
+      "mean_duration_seconds": 4.367,
+      "median_duration_seconds": 4.582
+    }
+  },
+  "recovery": {
+    "case_id": "duplicate-amount",
+    "arm": "multi",
+    "status": "PASS",
+    "physical_calls": 3,
+    "cost_micros": 3171,
+    "duration_seconds": 9.634,
+    "fix": "Scope extraction experts to local code/policy observations; leave the business question to synthesis.",
+    "same_question_inputs_oracle_and_GitHub_commit": true,
+    "shared_grant_increased": false,
+    "original_trial_overwritten": false,
+    "excluded_from_primary_A_B_scores": true
+  },
+  "interpretation": {
+    "first_pass_success_rate_equal": true,
+    "multi_win_demonstrated": false,
+    "observed_multi_cost_ratio_to_single": 1.8493,
+    "limitations": [
+      "Only five owned synthetic cases and one sampled run per arm.",
+      "Multi used more calls and conservative fees, with longer mean latency, on this sample.",
+      "Recovery is a post-failure workflow fix, not an unbiased advantage over the frozen single-agent baseline.",
+      "The single-agent failed field was null despite prose recognizing that the SUM does not deduplicate.",
+      "The oracle checks frozen metrics, structured conclusions and source references; it does not prove arbitrary prose or causal correctness.",
+      "One learned reranker and static Chinese vector baseline do not establish production retrieval quality.",
+      "Arms ran in a fixed multi-then-single order; cache state and network variation were not separately controlled. Latency is descriptive only."
+    ]
+  },
+  "boundary_evidence": {
+    "actual_sql_reads": 27,
+    "actual_knowledge_reads": 9,
+    "actual_GitHub_code_reads": 13,
+    "actual_server_side_denials": 12,
+    "revoked_canary_seen_in_model_inputs_or_outputs": false,
+    "model_response_count": 23,
+    "model_input_audit_count": 24,
+    "unfunded_prepared_inputs": 1,
+    "unresolved_model_calls": 0,
+    "new_GitHub_business_comments": 0,
+    "all_proposed_trial_actions_cancelled": true
+  },
+  "budget": {
+    "user_approved_additional_call_limit": 24,
+    "new_paid_calls": 23,
+    "remaining_additional_calls": 1,
+    "previous_calls": 3,
+    "cumulative_calls": 26,
+    "cumulative_call_limit": 27,
+    "cumulative_USD_limit": 2,
+    "new_conservative_cost_micros": 24569,
+    "previous_conservative_cost_micros": 2456,
+    "cumulative_conservative_cost_micros": 27025,
+    "reserved_micros": 0,
+    "original_ledger_reset": false,
+    "price_version": "deepseek-2026-11-01-peak-upper-bound",
+    "input_micros_per_million": 300000,
+    "output_micros_per_million": 1200000
+  },
+  "engineering": {
+    "full_regression_passed": 196,
+    "full_regression_failed": 0,
+    "full_regression_skipped": 0,
+    "registered_R4_counts": {
+      "tests": 119,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "registered_R4_source_sha256": "652b475b9684b71146c080ffd29725c6bf3bfacd3cf190b11f8e33d87318846d",
+    "lint": "PASS",
+    "mypy": "PASS",
+    "postgres_and_redis_doctor": "PASS"
+  },
+  "raw_evidence": "Ignored .local/r4-live-20261102/trial/ contains frozen manifest/oracle, inputs, original failures, complete responses, role/tool metadata, reports, recovery and final ledger; no credentials or raw responses are published.",
+  "next_phases": {
+    "R5": "TODO",
+    "R6": "TODO"
+  }
+}

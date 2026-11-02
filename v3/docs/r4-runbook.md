@@ -58,6 +58,8 @@ Web/CLI 共用 API。新增入口包括 `/api/v3/knowledge/documents`、`knowled
 
 ## 真实付费验收状态
 
-此前三次物理调用已用满，累计保守费用 USD 0.002456；本次新增付费调用为零。完整 R4 付费跨源实验、业务 Oracle 和单 Agent 对照均为 **NOT_RUN**，见 [待执行清单](../config/r4-live-manifest.json)。本地检索语义验收与真实 MCP/SQL 不等同完整业务 live 门禁。
+首批 R4 工程交付时三次额度耗尽，完整付费实验尚未运行。随后用户明确追加最多 24 次、累计 USD 2 的授权，现已完成真实模型/GitHub/知识/SQL 的五案例及单 Agent 对照。
 
-已提供 DeepSeek 专家适配路径，但 R1 授权不能复用于 R4。未来执行需要明确增加调用额度、独立 R4 profile/授权、固定知识快照/模型配置/数据哈希及真实 GitHub commit，并继续由预算账本、只读工具能力与审批控制。本次没有生成可生效的新付费授权，也没有新增 GitHub 结果评论。
+首轮多专家和单 Agent 各 4/5；一次有界恢复后，多专家的三个正常及两个负例均有通过记录。原始失败与首轮比较成绩保留，live 标为 PARTIAL。详见 [真实实验报告](r4-live-report.md)。本轮 23 次、保守 USD 0.024569；累计 26 次、USD 0.027025。
+
+本次实际实验的原始记录、私有 Oracle、账本与授权保留在当前云端工作区，不会随 git pull 出现在用户 WSL。代码提供 scripts/r4_live.py 的 prepare/execute/report 和 scripts/r4_recover.py，但本次 runner 绑定已存在的前序费用账本；干净环境不会伪造旧计数或自动增加额度。新的真实实验仍需匹配的具体授权和固定输入。默认 Web/CLI 继续使用未收费的协议演示。

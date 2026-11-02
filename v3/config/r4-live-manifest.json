@@ -1,6 +1,6 @@
 {
   "schema": "r4-live-investigation-manifest-v1",
-  "status": "NOT_RUN",
+  "status": "ARCHIVED_PRE_AUTHORIZATION_PLAN",
   "reason": "cumulative_paid_call_limit_exhausted",
   "root_authorization_limits": {
     "physical_calls": 3,
@@ -50,5 +50,7 @@
   ],
   "single_agent_comparison": "NOT_RUN",
   "business_oracle": "NOT_RUN",
-  "next_step": "Finish R4 engineering without spending; a future paid experiment needs a new explicit call grant and frozen profiles."
+  "next_step": "Finish R4 engineering without spending; a future paid experiment needs a new explicit call grant and frozen profiles.",
+  "superseded_by": "docs/acceptance/r4-live-20261102.json",
+  "note": "Historical plan at the exhausted three-call limit. A later explicit 24-call grant funded the separate frozen trial; original limits and statuses are retained here as history."
 }

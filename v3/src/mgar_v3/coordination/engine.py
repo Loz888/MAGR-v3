@@ -2,7 +2,7 @@ import threading
 from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import timedelta
-from typing import Any
+from typing import Any, TypeVar
 from uuid import UUID, uuid4
 
 import psycopg
@@ -16,16 +16,19 @@ from mgar_v3.domain import (
     EventReceipt,
     Evidence,
     Investigation,
+    Model,
     TriggerInput,
     Verification,
     digest,
 )
+from mgar_v3.evaluation.store import Trials
 from mgar_v3.evidence.artifacts import ArtifactStore
 from mgar_v3.knowledge.store import Knowledge
 from mgar_v3.live import LivePermit
 from mgar_v3.routing.store import Routing
 from mgar_v3.settings import Settings
 
+TModel = TypeVar("TModel", bound=Model)
 Row = dict[str, Any]
 Connection = psycopg.Connection[Row]
 ENGINE_LOCK = 31010002
@@ -57,6 +60,7 @@ class Engine:
         self.knowledge = Knowledge(self)
         self.context = ContextStore(self)
         self.tools = ToolAuthority(self)
+        self.trials = Trials(self)
 
     def close(self) -> None:
         with self._mutex:
@@ -1422,6 +1426,7 @@ class Engine:
                 "SELECT 1 FROM app.usage_calls WHERE run_id=%s AND step_key=%s", (run_id, step_key)
             ).fetchone():
                 raise DomainError("MODEL_CALL_ALREADY_RECORDED", "Model step cannot be resent")
+            trial_budget_hash = self.trials.reserve(conn, profile.profile_hash, amount)
             reserved = conn.execute(
                 "UPDATE app.authorization_budgets SET reserved_micros=reserved_micros+%s,"
                 "used_calls=used_calls+1 WHERE profile_hash=%s AND used_calls<call_limit "
@@ -1441,8 +1446,8 @@ class Engine:
             call_id = uuid4()
             conn.execute(
                 "INSERT INTO app.usage_calls(call_id,run_id,step_key,status,reserved_micros,"
-                "profile_hash) VALUES (%s,%s,%s,'reserved',%s,%s)",
-                (call_id, run_id, step_key, amount, profile.profile_hash),
+                "profile_hash,trial_budget_hash) VALUES (%s,%s,%s,'reserved',%s,%s,%s)",
+                (call_id, run_id, step_key, amount, profile.profile_hash, trial_budget_hash),
             )
             self._event(
                 conn, run_id, "model_reserved", call_id=str(call_id), reserved_micros=amount
@@ -1452,6 +1457,11 @@ class Engine:
     def model_result(
         self, run_id: UUID, epoch: int, step_key: str, permit: LivePermit
     ) -> Investigation | None:
+        return self.typed_model_result(run_id, epoch, step_key, permit, Investigation)
+
+    def typed_model_result(
+        self, run_id: UUID, epoch: int, step_key: str, permit: LivePermit, result_type: type[TModel]
+    ) -> TModel | None:
         with self.transaction() as conn:
             run = self._run(conn, run_id, epoch)
             if run["status"] != "running":
@@ -1470,7 +1480,27 @@ class Engine:
                 raise DomainError(
                     "MODEL_RESULT_UNAVAILABLE", "Known failed model step cannot be resent"
                 )
-            return Investigation.model_validate(call["result"])
+            return result_type.model_validate(call["result"])
+
+    def record_model_input(self, run_id: UUID, epoch: int, step: str, body: Row) -> None:
+        import json
+
+        encoded = json.dumps(body, ensure_ascii=False, separators=(",", ":")).encode()
+        content_hash = self.artifacts.put(encoded)
+        with self.transaction() as conn:
+            run = self._run(conn, run_id, epoch)
+            if run["status"] != "running":
+                raise DomainError("FENCED", "Model input belongs to a stopped execution")
+            conn.execute(
+                (
+                    "INSERT INTO app.artifacts(content_hash,byte_count) VALUES "
+                    "(%s,%s) ON CONFLICT DO NOTHING"
+                ),
+                (content_hash, len(encoded)),
+            )
+            self._event(
+                conn, run_id, "model_input_recorded", content_hash=content_hash, step_key=step
+            )
 
     def record_model_response(self, call_id: UUID, status: int, body: bytes) -> None:
         if len(body) > 262144:
@@ -1502,7 +1532,7 @@ class Engine:
         call_id: UUID,
         cost_micros: int | None,
         usage: Row | None = None,
-        result: Investigation | None = None,
+        result: Model | None = None,
     ) -> None:
         if cost_micros is not None and (type(cost_micros) is not int or cost_micros < 0):
             raise ValueError("Known cost must be a nonnegative integer")
@@ -1529,10 +1559,13 @@ class Engine:
                 )
                 self._event(conn, run["run_id"], "model_usage_unknown", call_id=str(call_id))
                 return
-            for table, key, value in [
+            ledgers = [
                 ("authorization_budgets", "profile_hash", call["profile_hash"]),
                 ("budgets", "mandate_id", run["mandate_id"]),
-            ]:
+            ]
+            if call["trial_budget_hash"] is not None:
+                ledgers.append(("authorization_budgets", "profile_hash", call["trial_budget_hash"]))
+            for table, key, value in ledgers:
                 conn.execute(
                     f"UPDATE app.{table} SET reserved_micros=reserved_micros-%s,"
                     f"settled_micros=settled_micros+%s WHERE {key}=%s",

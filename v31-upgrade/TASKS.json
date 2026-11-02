@@ -141,7 +141,7 @@
         "V31-R3"
       ],
       "engineering_gate": "PASS",
-      "live_gate": "NOT_RUN",
+      "live_gate": "PARTIAL",
       "maps_to": [
         "V3-P2-01",
         "V3-P2-02",
@@ -155,7 +155,24 @@
       "evidence": "v3/docs/acceptance/r4-20261102.json",
       "local_retrieval_gate": "PASS",
       "local_combination_gate": "PASS",
-      "note": "Engineering completion only; full paid P3-05 live and single-agent comparison remain NOT_RUN because the cumulative 3-call grant is exhausted."
+      "note": "Engineering PASS. Five real-model multi/single cases executed; primary comparison 4/5 per arm, one bounded multi recovery PASS. Raw failures retained; no production-ready claim.",
+      "live_evidence": "v3/docs/acceptance/r4-live-20261102.json"
+    },
+    {
+      "id": "V31-R4-LIVE",
+      "phase": "R4",
+      "title": "真实跨源调查、独立判定与单 Agent 对照",
+      "status": "DONE",
+      "dependencies": [
+        "V31-R4"
+      ],
+      "engineering_gate": "PASS",
+      "live_gate": "PARTIAL",
+      "maps_to": [
+        "V3-P3-05"
+      ],
+      "evidence": "v3/docs/acceptance/r4-live-20261102.json",
+      "scope": "Five owned synthetic cases with actual DeepSeek, GitHub code, RAG, SQL and MCP; original 8/10 retained; multi final 5/5 after bounded recovery; single first-pass 4/5."
     },
     {
       "id": "V31-R5",

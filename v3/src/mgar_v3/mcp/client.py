@@ -2,6 +2,7 @@ import base64
 import hashlib
 import json
 import os
+import re
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -127,15 +128,38 @@ class ReadOnlyGitHubMCP:
         if sum(len(text.encode()) for text in texts) > self.max_bytes:
             raise DomainError("MCP_RESULT_TOO_LARGE", "Tool response exceeds its byte budget")
         try:
-            payload: dict[str, Any] = json.loads("\n".join(texts))
-            content = payload["content"]
-            version = payload["sha"]
-            if not isinstance(content, str) or not isinstance(version, str):
-                raise ValueError("unsupported read response")
-            if payload.get("encoding") == "base64":
-                data = base64.b64decode("".join(content.split()), validate=True)
+            resources = [block.resource for block in result.content if block.type == "resource"]
+            if resources:
+                if len(resources) != 1 or len(texts) != 1 or not hasattr(resources[0], "text"):
+                    raise ValueError("Ambiguous embedded source")
+                source = resources[0]
+                uri = str(source.uri)
+                prefix, rest = uri.split("/sha/", 1)
+                if (
+                    prefix.lower() != "repo://" + self.repository
+                    or rest != ref + "/contents/" + path
+                ):
+                    raise ValueError("Embedded resource scope mismatch")
+                data = source.text.encode()
+                match = re.fullmatch(
+                    r"successfully downloaded text file \(SHA: ([a-f0-9]{40})\)", texts[0]
+                )
+                if match is None:
+                    raise ValueError("Missing Git blob digest")
+                version = match.group(1)
+                actual = hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
+                if version != actual:
+                    raise ValueError("Git blob bytes mismatch")
             else:
-                data = content.encode()
+                payload: dict[str, Any] = json.loads("\n".join(texts))
+                content = payload["content"]
+                version = payload["sha"]
+                if not isinstance(content, str) or not isinstance(version, str):
+                    raise ValueError("unsupported read response")
+                if payload.get("encoding") == "base64":
+                    data = base64.b64decode("".join(content.split()), validate=True)
+                else:
+                    data = content.encode()
         except (ValueError, KeyError, TypeError) as exc:
             raise DomainError(
                 "MCP_RESPONSE_UNSUPPORTED", "Tool response format is unsupported"

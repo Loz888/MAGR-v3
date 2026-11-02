@@ -47,6 +47,7 @@ def main() -> None:
             "router_mode": "disabled",
         }
     )
+    reader_role = None
     engine = None
     server = None
     thread = None
@@ -55,7 +56,7 @@ def main() -> None:
         migrate(dsn)
         engine = Engine(config, ArtifactStore(config.artifact_root))
         seed(engine)
-        provision(engine, config.data_profile_path)
+        reader_role = provision(engine, config.data_profile_path)["reader_role"]
         sock = socket.socket()
         sock.bind(("127.0.0.1", 0))
         sock.listen(16)
@@ -175,7 +176,7 @@ def main() -> None:
             sock.close()
         if engine:
             engine.close()
-        role = "r4_reader_" + hashlib.sha256(name.encode()).hexdigest()[:12]
+        role = reader_role or "r4_reader_" + hashlib.sha256(name.encode()).hexdigest()[:12]
         with psycopg.connect(dsn, autocommit=True) as conn:
             if conn.execute("SELECT 1 FROM pg_roles WHERE rolname=%s", (role,)).fetchone():
                 conn.execute(sql.SQL("DROP OWNED BY {}").format(sql.Identifier(role)))

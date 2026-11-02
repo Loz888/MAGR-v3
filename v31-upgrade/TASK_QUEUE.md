@@ -12,7 +12,8 @@
 | V31-R1-LIVE | V3 Issue #1 真实模型、审批与结果评论验收 | DONE | NOT_APPLICABLE | PASS |
 | V31-R2 | Mailbox 与显式 intake/replan | DONE | PASS | NOT_RUN |
 | V31-R3 | 受限 Router LLM 与多任务 | DONE | PASS | PASS |
-| V31-R4 | RAG 与多专家 | DONE | PASS | NOT_RUN |
+| V31-R4 | RAG 与多专家 | DONE | PASS | PARTIAL |
+| V31-R4-LIVE | 真实跨源调查与单 Agent 对照 | DONE | PASS | PARTIAL |
 | V31-R5 | 受限修复与 Draft PR | TODO | NOT_RUN | NOT_RUN |
 | V31-R6 | Watchdog、主动性与发布评测 | TODO | NOT_RUN | NOT_RUN |
 
@@ -26,3 +27,6 @@ R3 工程与限定真实 Router 验收通过：完整回归 150 项、任务验�
 
 
 R4 工程门禁已通过：完整回归 187 项、注册验收 103 项，0 失败、0 跳过，新增四个真实 SIGKILL 恢复点通过。真实本地中文向量/学习重排与 PG 混合检索在十二个冻结改写问题上 Recall@5 为 11/12，漏召回样本保留；同一 Run 的真实本地检索、HTTP MCP、只读 SQL 组合也通过。专家与 Repo 的组合实验使用明确标记的合成资料协议实现，完整付费跨源业务 live、业务 Oracle 和单 Agent 对照仍为 NOT_RUN。本轮新增付费调用与 GitHub 评论均为零，账本仍为 3/3、保守 USD 0.002456。摘要见 v3/docs/acceptance/r4-20261102.json，使用说明见 v3/docs/r4-runbook.md。R5/R6 保持 TODO。
+
+
+R4 真实实验已执行：三个正常和两个不足/越权案例各运行多专家/单 Agent。首轮双方各 4/5（总计 8/10），原始失败保留；修复专家问题范围后，失败的多专家案例在相同输入与 Oracle 下恢复通过，多专家有 3/3 正常及 2/2 负例通过记录。恢复不混入首轮对照成绩，不能宣称多专家胜出。用户追加授权新增最多 24 次、累计 USD 2；本轮实用 23 次、保守 USD 0.024569，累计 26 次、USD 0.027025，无未知调用、无新增业务评论。完整回归 196 项、R4 专项 119 项通过。live 仍标 PARTIAL，项目为 ENGINEERING_INCOMPLETE。详见 v3/docs/r4-live-report.md 和 v3/docs/acceptance/r4-live-20261102.json。R5/R6 保持 TODO。

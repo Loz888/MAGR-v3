@@ -21,7 +21,12 @@ def server(role: str, authority: Callable[[], Engine]) -> FastMCP:
         header = request.headers.get("authorization", "") if request is not None else ""
         if not header.startswith("Bearer "):
             raise DomainError("TOOL_AUTH_REQUIRED", "Engine task capability is required", 401)
-        return authority().tools.call(header[7:], tool, arguments, role)
+        try:
+            return authority().tools.call(header[7:], tool, arguments, role)
+        except DomainError as exc:
+            if exc.code != "FENCED":
+                authority().tools.denial(header[7:], tool, exc.code, arguments)
+            raise
 
     if role == "knowledge":
 

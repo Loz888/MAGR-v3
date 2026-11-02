@@ -1,0 +1,43 @@
+{
+  "schema": "r4-live-candidate-v1",
+  "status": "ARCHIVED_PRE_AUTHORIZATION_PROPOSAL",
+  "repository_source": {
+    "repository": "loz888/magr-v3",
+    "commit": "cf512bd1e5bedd7d562a513caba326588024b88d",
+    "path": "v3/src/mgar_v3/agents/experts.py",
+    "uri": "github://loz888/magr-v3/v3/src/mgar_v3/agents/experts.py?ref=cf512bd1e5bedd7d562a513caba326588024b88d",
+    "version": "4adc1f8a7c66af2e3b0ac2f6085cae36f67b4814",
+    "sha256": "657b09d1935e9fd52f3ef02cca2556efa74911477a6a359da66c30187957fa41",
+    "bytes": 6002,
+    "transport": "official_GitHub_MCP_stdio_read_only"
+  },
+  "cases": [
+    "paid-event-count",
+    "duplicate-amount",
+    "business-definition",
+    "knowledge-revoked",
+    "missing-data"
+  ],
+  "arms": [
+    "fixed_multi_expert_with_model_synthesis",
+    "single_agent_same_tool_plan"
+  ],
+  "model": "deepseek-flash",
+  "planned_physical_calls": 19,
+  "proposed_additional_call_limit": 24,
+  "prior_calls": 3,
+  "proposed_total_call_limit": 27,
+  "cumulative_cost_limit_micros": 2000000,
+  "prior_cost_micros": 2456,
+  "context_tokens": 16384,
+  "max_output_tokens": 2048,
+  "input_micros_per_million": 300000,
+  "output_micros_per_million": 1200000,
+  "per_call_upper_bound_micros": 7373,
+  "additional_cost_upper_bound_micros": 176952,
+  "external_publication": false,
+  "unknown_write_policy": "no writes",
+  "unknown_model_policy": "stop without retry",
+  "approval_basis": "Existing 3-call authorization is exhausted; this candidate does not amend it.",
+  "execution_summary": "../../docs/acceptance/r4-live-20261102.json"
+}

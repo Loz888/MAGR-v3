@@ -73,6 +73,7 @@ class DeepSeekInvestigator:
                 {"role": "user", "content": content},
             ],
         }
+        self.engine.record_model_input(run_id, execution_epoch, step_key, body)
         owns_client = self.client is None
         client = self.client or httpx.Client(timeout=45)
         try:
