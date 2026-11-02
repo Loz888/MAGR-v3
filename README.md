@@ -18,13 +18,28 @@ R3 实现与验收见 `v3/docs/adr/0003-r3-router.md` 和 `v3/docs/acceptance/r3
 
 ## 本地运行
 
+先把仓库克隆到自己的机器。`/workspace/MAGR-v3` 是开发云环境路径，不是 Windows/WSL 上的安装位置。
+需要 Git、Make、uv、Python 3.12 和可用的 Docker Compose V2；Windows/WSL2 的依赖安装步骤见 [应用 README](v3/README.md)。
+
 ```bash
+(
+set -e
+mkdir -p "$HOME/projects"
+if [ ! -d "$HOME/projects/MAGR-v3/.git" ]; then
+    git clone https://github.com/Loz888/MAGR-v3.git "$HOME/projects/MAGR-v3"
+fi
+cd "$HOME/projects/MAGR-v3"
+git pull --ff-only
 cd v3
+uv python install 3.12
+docker info >/dev/null
+docker compose version
 make setup
 make deps-up
 make migrate
 make doctor
 make dev
+)
 ```
 
 默认仅监听 `127.0.0.1:18080`，执行 fixture 模式。详细用法与实际验证范围见 `v3/README.md`。

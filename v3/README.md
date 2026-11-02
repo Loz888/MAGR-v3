@@ -1,6 +1,7 @@
 # V3.1 本地执行
 
-当前源码存放于 `/workspace/MAGR-v3/v3`，仓库 origin 为 `https://github.com/Loz888/MAGR-v3.git`。
+仓库地址为 `https://github.com/Loz888/MAGR-v3.git`。运行命令需要在你本机克隆后的 `MAGR-v3/v3/` 目录执行。
+`/workspace/MAGR-v3/v3` 是开发云环境中的路径，在你的 Windows/WSL 上不会自动存在。
 本地 `.env`、`.local`、依赖环境与凭据不进入 Git；提交与推送状态以 Git 历史和最新验收记录为准。
 
 R0/R1 验收时 88 个 V3 测试通过；R2 改造后 112 项通过，R3 改造后当前完整回归 150 项通过，0 失败、0 跳过。V2 原有 682 个 Go 和 453 个 Python 测试复验通过，V2 源码保持不变。
@@ -11,6 +12,52 @@ R1 真实模型与 GitHub 结果评论验收 PASS：2 次真实调用，保守�
 该地址现在提供本地任务工作台，Web、CLI、GitHub 共用工单视图；访问令牌取自本机 `.env` 的 `MGAR_V3_LOCAL_TOKEN`，页面只在内存中使用令牌。
 `make setup` 只生成缺失的本地 `.env`（权限 0600）；不会覆盖已有配置或显示凭据。
 数据库调试端口 55433，Redis 调试端口 56379，均仅绑定回环。停止依赖用 `make deps-stop`，保留数据卷。
+
+## WSL2 首次启动
+
+在 Windows 上安装并启动 Docker Desktop，在 Settings → Resources → WSL Integration 中启用当前 WSL 发行版；已有可用的 WSL Docker Engine + Compose V2 也可以使用。
+
+在 Ubuntu/WSL 终端安装本机工具和 Python 3.12：
+
+```bash
+(
+set -e
+sudo apt-get update
+sudo apt-get install -y git make curl ca-certificates
+export PATH="$HOME/.local/bin:$PATH"
+if ! command -v uv >/dev/null 2>&1; then
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+fi
+uv python install 3.12
+)
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+项目的 Makefile 禁止自动下载 Python，因此首次 `make setup` 之前需要完成上面的 Python 安装。然后克隆、安装依赖并启动；下面的子 shell 在任一步失败时停止，避免 `cd` 失败后在其他目录继续执行：
+
+```bash
+(
+set -e
+mkdir -p "$HOME/projects"
+if [ ! -d "$HOME/projects/MAGR-v3/.git" ]; then
+    git clone https://github.com/Loz888/MAGR-v3.git "$HOME/projects/MAGR-v3"
+fi
+cd "$HOME/projects/MAGR-v3"
+git pull --ff-only
+cd v3
+docker info >/dev/null
+docker compose version
+make setup
+make deps-up
+make migrate
+make doctor
+make dev
+)
+```
+
+已在其他目录克隆的用户可进入自己的仓库根目录更新后执行同样的 `v3/` 启动步骤；无需重新克隆或覆盖已有 `.env`。如果 `docker info` 或 `docker compose version` 失败，先恢复 Docker Desktop/WSL 集成，再继续。
+
+服务启动后保持该终端运行，在 Windows 浏览器打开 `http://127.0.0.1:18080`。工作台访问令牌位于本机 `v3/.env` 的 `MGAR_V3_LOCAL_TOKEN`，不要把令牌发到聊天中。默认演示模式不调用付费模型或向 GitHub 发布。
 
 ## fixture 示例
 
