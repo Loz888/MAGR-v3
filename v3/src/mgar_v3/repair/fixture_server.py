@@ -9,6 +9,8 @@ from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
+from mgar_v3.repair.domain import GitEntry
+from mgar_v3.repair.source import git_tree
 from mgar_v3.repair.workspace import blob, tree
 
 server = FastMCP("r5-controlled-draft-remote")
@@ -51,7 +53,14 @@ def get_commit(
     if page != 1 or perPage != 100:
         raise ValueError("Unsupported page")
     key = state["branches"].get(sha, sha)
-    return dict(state["commits"][key])
+    value = dict(state["commits"][key])
+    if state.get("minimal_commit"):
+        return {
+            "sha": value["sha"],
+            "commit": {"message": "Native MCP minimal shape"},
+            "files": [{"filename": v["filename"], "status": "modified"} for v in value["files"]],
+        }
+    return value
 
 
 @server.tool()
@@ -76,7 +85,14 @@ def push_files(
         **state["commits"][parent]["source_files"],
         **{f["path"]: f["content"] for f in files},
     }
-    tree_sha = tree(all_files)
+    entries = {
+        p: GitEntry.model_validate(v)
+        for p, v in state["commits"][parent].get("tree_entries", {}).items()
+    }
+    if entries:
+        for f in files:
+            entries[f["path"]] = GitEntry(mode="100644", sha=blob(f["content"].encode()))
+    tree_sha = git_tree(entries) if entries else tree(all_files)
     raw = (
         f"tree {tree_sha}\nparent {parent}\n"
         "author Fixture <fixture@example.invalid> 1761955200 +0000\n"
@@ -90,6 +106,7 @@ def push_files(
         "commit": {"tree": {"sha": tree_sha}},
         "files": [{"filename": f["path"], "sha": blob(f["content"].encode())} for f in files],
         "source_files": all_files,
+        "tree_entries": {p: v.model_dump() for p, v in entries.items()},
     }
     state["branches"][branch] = sha
     save(state, "commit")

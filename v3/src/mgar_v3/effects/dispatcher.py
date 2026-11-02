@@ -26,7 +26,9 @@ class Dispatcher:
 
     def tick(self) -> UUID | None:
         action = self.engine.claim_effect(
-            self.transport.mode, getattr(self.transport, "action_types", ("issue_comment",))
+            self.transport.mode,
+            getattr(self.transport, "action_types", ("issue_comment",)),
+            getattr(self.transport, "profile_hash", None),
         )
         if action is None:
             return None

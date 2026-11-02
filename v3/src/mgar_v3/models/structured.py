@@ -74,6 +74,13 @@ class StructuredModel:
                     "USAGE_UNKNOWN", "Structured model request outcome is unknown"
                 ) from None
             usage = value.get("usage") if isinstance(value, dict) else None
+            if p.investigation_version == "r5-repair-v1" and (
+                not isinstance(value, dict) or value.get("model") != p.model_id
+            ):
+                self.engine.settle_call(call_id, None)
+                raise DomainError(
+                    "USAGE_UNKNOWN", "Provider model differs from the frozen R5 price scope"
+                )
             if not isinstance(usage, dict) or any(
                 type(usage.get(k)) is not int or usage[k] < 0
                 for k in ("prompt_tokens", "completion_tokens")

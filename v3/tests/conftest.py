@@ -1,6 +1,7 @@
 from collections.abc import Iterator
 from uuid import uuid4
 
+import httpx
 import psycopg
 import pytest
 from psycopg import sql
@@ -11,6 +12,26 @@ from mgar_v3.domain import TriggerInput
 from mgar_v3.evidence.artifacts import ArtifactStore
 from mgar_v3.settings import Settings
 from mgar_v3.store.migrate import migrate
+
+
+@pytest.fixture(autouse=True)
+def controlled_model_network_only(monkeypatch):
+    """A mistaken default client must never turn registered tests into paid calls."""
+    send = httpx.HTTPTransport.handle_request
+    async_send = httpx.AsyncHTTPTransport.handle_async_request
+
+    def guarded(self, request):
+        if request.url.host == "api.deepseek.com":
+            raise AssertionError("Registered tests require a controlled model transport")
+        return send(self, request)
+
+    async def async_guarded(self, request):
+        if request.url.host == "api.deepseek.com":
+            raise AssertionError("Registered tests require a controlled model transport")
+        return await async_send(self, request)
+
+    monkeypatch.setattr(httpx.HTTPTransport, "handle_request", guarded)
+    monkeypatch.setattr(httpx.AsyncHTTPTransport, "handle_async_request", async_guarded)
 
 
 @pytest.fixture(scope="session")

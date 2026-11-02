@@ -19,7 +19,7 @@ def doctor(settings: Settings) -> int:
     try:
         with psycopg.connect(settings.database_url.get_secret_value(), connect_timeout=3) as conn:
             row = conn.execute("SELECT count(*) FROM app.schema_migrations").fetchone()
-            result["postgres"] = "PASS" if row and row[0] >= 10 else "FAIL"
+            result["postgres"] = "PASS" if row and row[0] >= 11 else "FAIL"
     except psycopg.Error:
         result["postgres"] = "FAIL"
     try:
@@ -64,6 +64,7 @@ def main(argv: list[str] | None = None) -> int:
         default="Fix paid revenue: count the first paid order per ID, ignoring other statuses.",
     )
     repair.add_argument("--client-request-id")
+    repair.add_argument("--execution-mode", choices=["fixture", "live"], default="fixture")
     for name in [
         "status",
         "report",
@@ -78,6 +79,7 @@ def main(argv: list[str] | None = None) -> int:
         "reject",
         "revise",
         "reconcile",
+        "continue-draft",
     ]:
         command = commands.add_parser(name)
         command.add_argument("run_id")
@@ -87,9 +89,9 @@ def main(argv: list[str] | None = None) -> int:
         if name == "approve":
             command.add_argument("--action", required=True)
             command.add_argument("--payload-hash", required=True)
-        if name in {"reject", "revise", "reconcile"}:
+        if name in {"reject", "revise", "reconcile", "continue-draft"}:
             command.add_argument("--action", required=True)
-        if name in {"reject", "revise"}:
+        if name in {"reject", "revise", "continue-draft"}:
             command.add_argument("--payload-hash", required=True)
             command.add_argument("--reason", default="")
         if name == "revise":
@@ -141,16 +143,14 @@ def main(argv: list[str] | None = None) -> int:
                         "question": args.question,
                         "issue_number": args.issue,
                         "client_request_id": args.client_request_id or str(uuid4()),
-                        "execution_mode": "fixture"
-                        if args.command == "repair"
-                        else args.execution_mode,
+                        "execution_mode": args.execution_mode,
                     },
                 )
             else:
                 base = f"/api/v3/runs/{args.run_id}"
                 if args.command == "repair-detail":
                     response = client.get(base + "/repair")
-                elif args.command in {"reject", "revise", "reconcile"}:
+                elif args.command in {"reject", "revise", "reconcile", "continue-draft"}:
                     decision = (
                         {}
                         if args.command == "reconcile"
@@ -159,7 +159,12 @@ def main(argv: list[str] | None = None) -> int:
                     if args.command == "revise":
                         decision["diff"] = args.diff_file.read_text()
                     response = client.post(
-                        base + "/actions/" + args.action + "/" + args.command, json=decision
+                        base
+                        + "/actions/"
+                        + args.action
+                        + "/"
+                        + ("continue" if args.command == "continue-draft" else args.command),
+                        json=decision,
                     )
                 elif args.command == "approve":
                     response = client.post(

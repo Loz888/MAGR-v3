@@ -1,6 +1,6 @@
 # R5 受限修复工程
 
-当前可复现自有 Go 示例的真实隔离测试、完整补丁审批及本地 MCP Draft PR 协议闭环。补丁提供者和发布远端均为 fixture；真实付费模型、真实 GitHub 源与 Draft PR 的组合尚未接入验收，R5 整体仍在进行。
+R5 现包含真实 GitHub 固定提交、DeepSeek 补丁和官方 MCP Draft PR 适配，同时保留本地演示。真实/工程验收分别记录；是否通过以最新公开摘要为准，不能用演示结果代替。
 
 ## WSL 更新和准备
 
@@ -50,7 +50,7 @@ uv run --frozen mgar revise RUN_ID --action ACTION_ID --payload-hash PAYLOAD_HAS
 
 浏览器打开 `http://127.0.0.1:18080`，用 `.env` 中的本机令牌连接。选择“受限修复演示”，可审阅完整补丁、基础提交、到期时间和测试记录。修改编辑框会禁用旧提案的批准按钮，必须先提交重测。默认服务仅生成、审批 Action；没有配置 Draft Transport 时，批准后保持 ready，不会借用评论发布器写 PR。本地演示程序可在服务停止后领取此 ready 动作。
 
-API 包括 `POST /api/v3/repairs`、`GET /api/v3/runs/{id}/repair`、作用域内的测试 Artifact，以及 Action 的 reject/revise。沿用统一 approvals 与只读 reconcile API。fixture 与 live 显式区分：当前 live 入口返回 R5_PROFILE_REQUIRED；R4 剩余额度不用于 R5。
+API 包括 `POST /api/v3/repairs`、`GET /api/v3/runs/{id}/repair`、作用域内的测试 Artifact，以及 Action 的 reject/revise。沿用统一 approvals 与只读 reconcile API。fixture 与 live 显式区分：没有专用配置和授权时，live 返回 R5_PROFILE_REQUIRED。R4 剩余额度不转用于 R5。
 
 ## 验证
 
@@ -62,3 +62,56 @@ make test
 ```
 
 验收使用真实 PostgreSQL、Go、Docker、LangGraph checkpoint 和 stdio MCP；不允许 SQLite 或跳过测试。包括原始缺陷、正常补丁、公开测试过拟合、路径/AST 攻击、权限、编辑、取消、超时/输出上限、三类响应丢失，以及四个真实 SIGKILL 点。原始构建失败与测试日志保存在本机 `.local/` 和 `evidence/`；公开摘要单独发布。
+
+
+## 真实 GitHub / DeepSeek 验收
+
+先停止开发服务，以免与操作员程序争夺 Engine 锁。真实目标是本仓库 `v3/examples/repair-target` 的三个 Go 文件；它与内部的固定缺陷 fixture 分开。只修复一个纯函数，不代表任意仓库的自动 Coding Agent。
+
+```bash
+make install-github-mcp
+uv run --frozen python scripts/r5_live.py prepare --directory .local/r5-live-CASE --issue 1
+```
+
+prepare 不调用模型、不创建分支或 PR，只生成冻结 source/profile、计划及全部关闭的授权草案。当前验收工具默认继承本次云端已有的 R1/R3 与 R4 根账本；这些私有账本不会随 git pull 出现在 WSL。缺失时禁止实验，不能伪造旧次数或把累计费用清零。其他部署可使用通用 R5 profile 配置自己的真实前序账本，仍需匹配授权。
+
+操作员获得针对准确 profile hash 的新调用授权后，才保存私有 `authorization.json` 并开启 allow_paid。保留原累计 US$2。不要复制或公开实际模型、GitHub、数据库凭据。
+
+```bash
+uv run --frozen python scripts/r5_live.py model --directory .local/r5-live-CASE --execute-paid
+```
+
+输出为同目录的 model-result.json、proposal.json、proposal.md 和 proposal.diff，包含完整提案、测试证明及 hash。如果所有候选失败，不会创建可发布提案。费用和次数以 PG 账本为准；未知用量不自动重发。
+
+审阅并批准完整提案后，授权文件才可开启 allow_external_write，并执行：
+
+```bash
+uv run --frozen python scripts/r5_live.py publish --directory .local/r5-live-CASE --approved-payload-hash HASH
+uv run --frozen python scripts/r5_live.py reconcile --directory .local/r5-live-CASE
+```
+
+真实成功将得到 GitHub Draft PR；不合并。所有业务写仍经 Engine Action/Outbox/Dispatcher，源码普通 git push 与业务发布是不同的出口。profile 固定提交之后，不要在发布前推进它的基础分支；变化会阻断发布，需要重新冻结、测试和审批。
+
+模型结算后恢复实验可在首次 model 命令加 `--crash-after-settlement`，预期进程被强制结束，再执行不带该参数的 model 命令。PR 回执恢复实验可在首次 publish 加 `--crash-after-pr-accepted`，再执行 reconcile。它们分别复用已结算结果和只读寻找已创建 PR，不重复付费或写入。
+
+只有分支/提交的部分成功时，只读对账后仍保持未知动作，等待人工检查；确认所有已发步骤成功后，可显式授权剩余未发步骤：
+
+```bash
+uv run --frozen python scripts/r5_live.py continue --directory .local/r5-live-CASE --approved-payload-hash HASH
+```
+
+若仍有任何已发步骤未知，这个命令会拒绝；不会重试该步骤。Web 对应“只读核对远端结果”和“授权继续未发送步骤”，CLI 对应 `reconcile` 和 `continue-draft`。
+
+## 服务中的真实模式
+
+设置以下路径后再启动服务；同一 profile 的问题、Issue、源码与调用额度由服务端固定。Web 显示当前配置，真实模式默认关闭。
+
+```bash
+MGAR_V3_REPAIR_PROFILE_PATH=.local/r5-live-CASE/profile.json \
+MGAR_V3_REPAIR_AUTHORIZATION_PATH=.local/r5-live-CASE/authorization.json \
+MGAR_V3_REPAIR_SNAPSHOT_PATH=.local/r5-live-CASE/snapshot.json \
+MGAR_V3_GITHUB_MCP_BINARY=.local/tools/github-mcp-server/v2.0.3/github-mcp-server \
+MGAR_V3_GITHUB_USE_GH_TOKEN=true make dev
+```
+
+部署仍需显式启用 `MGAR_V3_ALLOW_PAID=1`；允许业务发布时还需 `MGAR_V3_ALLOW_EXTERNAL_WRITE=1`。它们不能代替私有授权或提案审批。CLI 可用 `mgar repair --execution-mode live --issue NUMBER --question '冻结配置中的准确问题'`；演示仍为默认模式。

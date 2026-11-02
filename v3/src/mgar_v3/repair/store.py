@@ -11,15 +11,104 @@ from mgar_v3.domain import DomainError, TriggerInput, digest
 from mgar_v3.repair.domain import RepairInput, Snapshot, publication_requests
 from mgar_v3.repair.hidden import suite
 from mgar_v3.repair.sandbox import local_lock
-from mgar_v3.repair.workspace import fixture_snapshot, tree, workspace_hash
+from mgar_v3.repair.workspace import fixture_snapshot, workspace_hash
 
 if TYPE_CHECKING:
-    from mgar_v3.coordination.engine import Engine, Row
+    from mgar_v3.coordination.engine import Connection, Engine, Row
+    from mgar_v3.live import LivePermit
 
 
 class Repairs:
     def __init__(self, engine: "Engine"):
         self.engine = engine
+
+    def register_live(self, conn: "Connection", permit: "LivePermit", snapshot_hash: str) -> None:
+        scope = permit.profile.repair
+        assert scope is not None
+        roots = sorted(scope.predecessor_budget_hashes)
+        found = conn.execute(
+            "SELECT profile_hash FROM app.authorization_budgets "
+            "WHERE profile_hash=ANY(%s) FOR UPDATE",
+            (roots,),
+        ).fetchall()
+        if len(found) != len(roots):
+            raise DomainError(
+                "R5_BUDGET_PREDECESSOR_MISSING", "Cumulative budget predecessors are unavailable"
+            )
+        budget_hash = digest(
+            {
+                "project": self.engine.settings.project_id,
+                "repository": self.engine.settings.repository.lower(),
+                "purpose": "r5-cumulative-v1",
+            }
+        )
+        conn.execute(
+            "INSERT INTO app.repair_budget_groups(budget_hash,predecessor_hashes,"
+            "cumulative_limit_micros) VALUES (%s,%s,%s) ON CONFLICT DO NOTHING",
+            (budget_hash, Jsonb(roots), scope.cumulative_limit_micros),
+        )
+        group = conn.execute(
+            "SELECT * FROM app.repair_budget_groups WHERE budget_hash=%s FOR UPDATE", (budget_hash,)
+        ).fetchone()
+        if (
+            not group
+            or group["predecessor_hashes"] != roots
+            or group["cumulative_limit_micros"] != scope.cumulative_limit_micros
+        ):
+            raise DomainError(
+                "R5_BUDGET_SCOPE_CHANGED", "R5 cannot reset its cumulative predecessors or limit"
+            )
+        conn.execute(
+            "INSERT INTO app.repair_live_profiles(profile_hash,budget_hash,snapshot_hash,"
+            "authorization_payload) VALUES (%s,%s,%s,%s) ON CONFLICT DO NOTHING",
+            (
+                permit.profile.profile_hash,
+                budget_hash,
+                snapshot_hash,
+                Jsonb(permit.authorization.model_dump(mode="json")),
+            ),
+        )
+
+    def reserve_budget(self, conn: "Connection", profile_hash: str, amount: int) -> None:
+        # R4 child profiles consume their trial root. Check that root against every R5
+        # cumulative group too, so an older grant cannot overspend after R5 starts.
+        alias = conn.execute(
+            "SELECT t.budget_hash FROM app.r4_trial_profiles p "
+            "JOIN app.r4_trials t USING(trial_id) WHERE p.profile_hash=%s",
+            (profile_hash,),
+        ).fetchone()
+        effective = alias["budget_hash"] if alias else profile_hash
+        groups = conn.execute(
+            "SELECT g.* FROM app.repair_budget_groups g "
+            "WHERE g.predecessor_hashes @> %s OR EXISTS "
+            "(SELECT 1 FROM app.repair_live_profiles p WHERE p.budget_hash=g.budget_hash "
+            "AND p.profile_hash=%s) FOR UPDATE OF g",
+            (Jsonb([effective]), profile_hash),
+        ).fetchall()
+        for group in groups:
+            unknown = conn.execute(
+                "SELECT 1 FROM app.usage_calls WHERE status='unknown' AND "
+                "(profile_hash=ANY(%s) OR trial_budget_hash=ANY(%s) OR profile_hash IN "
+                "(SELECT profile_hash FROM app.repair_live_profiles WHERE budget_hash=%s)) LIMIT 1",
+                (group["predecessor_hashes"], group["predecessor_hashes"], group["budget_hash"]),
+            ).fetchone()
+            if unknown:
+                raise DomainError(
+                    "USAGE_UNKNOWN", "Cumulative R5 usage requires reconciliation before a new call"
+                )
+            total = conn.execute(
+                "SELECT coalesce(sum(settled_micros+reserved_micros),0) AS used "
+                "FROM app.authorization_budgets WHERE profile_hash=ANY(%s) OR profile_hash IN "
+                "(SELECT profile_hash FROM app.repair_live_profiles WHERE budget_hash=%s)",
+                (group["predecessor_hashes"], group["budget_hash"]),
+            ).fetchone()
+            assert total is not None
+            if total["used"] + amount > group["cumulative_limit_micros"]:
+                raise DomainError(
+                    "BUDGET_EXHAUSTED",
+                    "R5 cumulative budget including earlier stages is exhausted",
+                    403,
+                )
 
     def artifact(self, content: bytes) -> str:
         value = self.engine.artifacts.put(content)
@@ -31,17 +120,21 @@ class Repairs:
             )
         return value
 
-    def create(self, request: RepairInput) -> "Row":
-        if request.execution_mode != "fixture":
-            raise DomainError(
-                "R5_PROFILE_REQUIRED",
-                "Real repair requires a separate reviewed model/source/write profile",
-                403,
-            )
-        snapshot = fixture_snapshot(self.engine.settings.repository.lower())
+    def create(self, request: RepairInput, permit: "LivePermit | None" = None) -> "Row":
+        from mgar_v3.repair.live import load_snapshot
+        from mgar_v3.repair.source import scope_hash as snapshot_scope
+
+        if request.execution_mode == "live":
+            if permit is None or permit.profile.investigation_version != "r5-repair-v1":
+                raise DomainError(
+                    "R5_PROFILE_REQUIRED", "R5 needs its separate reviewed live profile", 403
+                )
+            snapshot = load_snapshot(permit)
+        else:
+            snapshot = fixture_snapshot(self.engine.settings.repository.lower())
         source = snapshot.model_dump_json().encode()
         snapshot_hash = self.engine.artifacts.put(source)
-        scope_hash = digest(snapshot.model_dump(mode="json"))
+        scope_hash = snapshot_scope(snapshot)
         event = TriggerInput(
             source="cli",
             external_event_id=request.client_request_id,
@@ -50,10 +143,12 @@ class Repairs:
             issue_number=request.issue_number,
             actor=self.engine.settings.local_actor,
             body="/mgar investigate " + request.question,
-            execution_mode="fixture",
+            execution_mode=request.execution_mode,
         )
         with self.engine.transaction() as conn:
-            receipt = self.engine.ingest(event)
+            receipt = self.engine.ingest(
+                event, permit if request.execution_mode == "live" else None
+            )
             assert receipt.run_id is not None
             if receipt.duplicate:
                 old = conn.execute(
@@ -63,6 +158,19 @@ class Repairs:
                     raise DomainError(
                         "EVENT_ID_REUSED", "Repair scope differs from the old request"
                     )
+                if permit is not None and request.execution_mode == "live":
+                    original = self.engine._run(conn, receipt.run_id)
+                    mandate = conn.execute(
+                        "SELECT scope FROM app.mandates WHERE mandate_id=%s",
+                        (original["mandate_id"],),
+                    ).fetchone()
+                    if (
+                        not mandate
+                        or mandate["scope"].get("profile_hash") != permit.profile.profile_hash
+                    ):
+                        raise DomainError(
+                            "EVENT_ID_REUSED", "Repair request belongs to another model profile"
+                        )
             else:
                 run = self.engine._run(conn, receipt.run_id)
                 if receipt.route != "created":
@@ -77,6 +185,13 @@ class Repairs:
                     "VALUES (%s,%s,%s)",
                     (receipt.run_id, snapshot_hash, scope_hash),
                 )
+                if request.execution_mode == "live":
+                    assert permit is not None and permit.profile.repair is not None
+                    self.register_live(conn, permit, snapshot_hash)
+                    conn.execute(
+                        "UPDATE app.repair_requests SET deadline=now()+%s WHERE run_id=%s",
+                        (timedelta(seconds=permit.profile.repair.deadline_seconds), receipt.run_id),
+                    )
                 conn.execute(
                     "UPDATE app.runs SET graph_version='r5-repair-v1' WHERE run_id=%s",
                     (receipt.run_id,),
@@ -101,6 +216,8 @@ class Repairs:
             return receipt.model_dump(mode="json")
 
     def snapshot(self, run_id: UUID) -> Snapshot:
+        from mgar_v3.repair.source import scope_hash, verify_snapshot
+
         with self.engine.transaction() as conn:
             run = self.engine._run(conn, run_id)
             self.engine.routing.owned_ticket(run["ticket_id"])
@@ -110,11 +227,9 @@ class Repairs:
             if not row:
                 raise DomainError("NOT_FOUND", "Repair request was not found", 404)
         source = Snapshot.model_validate_json(self.engine.artifacts.read(row["snapshot_hash"]))
-        if (
-            digest(source.model_dump(mode="json")) != row["scope_hash"]
-            or tree(source.files) != source.base_tree
-        ):
+        if scope_hash(source) != row["scope_hash"]:
             raise DomainError("REPAIR_SOURCE_CHANGED", "Frozen repair snapshot changed")
+        verify_snapshot(source)
         return source
 
     def step(self, run_id: UUID, epoch: int, revision: int, key: str) -> dict[str, Any] | None:
@@ -193,9 +308,13 @@ class Repairs:
         public: dict[str, Any],
         hidden: dict[str, Any],
     ) -> "Row":
-        if public["workspace_hash"] != workspace_hash(files) or hidden[
+        from mgar_v3.repair.source import candidate_tree, working_files
+
+        snapshot = self.snapshot(run_id)
+        work = working_files(snapshot, files)
+        if public["workspace_hash"] != workspace_hash(work) or hidden[
             "workspace_hash"
-        ] != workspace_hash({**files, "zz_mgar_hidden_test.go": suite()}):
+        ] != workspace_hash({**work, "zz_mgar_hidden_test.go": suite()}):
             raise DomainError(
                 "TEST_PROOF_CHANGED", "Receipts belong to a different tested workspace"
             )
@@ -220,7 +339,7 @@ class Repairs:
                     diff_hash,
                     files_hash,
                     workspace_hash(files),
-                    tree(files),
+                    candidate_tree(snapshot, files),
                     Jsonb(public),
                     Jsonb(hidden),
                     verified,
@@ -232,13 +351,15 @@ class Repairs:
             return row
 
     def propose(self, run_id: UUID, epoch: int, revision: int, candidate: "Row") -> UUID:
+        from mgar_v3.repair.source import candidate_tree
+
         snapshot = self.snapshot(run_id)
         diff = self.engine.artifacts.read(candidate["diff_hash"]).decode()
         files = json.loads(self.engine.artifacts.read(candidate["files_hash"]))
         if (
             not candidate["verified"]
             or workspace_hash(files) != candidate["workspace_hash"]
-            or tree(files) != candidate["tree_sha"]
+            or candidate_tree(snapshot, files) != candidate["tree_sha"]
         ):
             raise DomainError(
                 "UNVERIFIED_PATCH", "Candidate lacks matching protected test evidence"
@@ -295,6 +416,31 @@ class Repairs:
                     {"public": candidate["public_receipt"], "hidden": candidate["hidden_receipt"]}
                 ),
             }
+            if run["execution_mode"] == "live":
+                calls = conn.execute(
+                    "SELECT call_id,step_key,profile_hash FROM app.usage_calls "
+                    "WHERE run_id=%s AND status='known' AND result->>'diff'=%s",
+                    (run_id, diff),
+                ).fetchall()
+                manual = conn.execute(
+                    "SELECT diff_hash FROM app.repair_manual_inputs "
+                    "WHERE run_id=%s AND input_revision=%s",
+                    (run_id, revision),
+                ).fetchone()
+                if not calls and (not manual or manual["diff_hash"] != candidate["diff_hash"]):
+                    raise DomainError(
+                        "PATCH_PROVENANCE_REQUIRED",
+                        "Live patch needs a recorded model result or user edit",
+                    )
+                payload["model_receipts"] = [
+                    {
+                        "call_id": str(c["call_id"]),
+                        "step_key": c["step_key"],
+                        "profile_hash": c["profile_hash"],
+                    }
+                    for c in calls
+                ]
+                payload["manual_input_hash"] = manual["diff_hash"] if manual else None
             payload_hash = digest(
                 {
                     "type": "draft_pr",
@@ -332,6 +478,8 @@ class Repairs:
             return action_id
 
     def validate_action(self, action: "Row", run: "Row") -> None:
+        from mgar_v3.repair.source import candidate_tree, working_files
+
         payload = action["payload"]
         snapshot = self.snapshot(run["run_id"])
         if (
@@ -354,17 +502,21 @@ class Repairs:
         ):
             raise DomainError("TEST_PROOF_CHANGED", "Draft lacks matching protected test evidence")
         files = json.loads(self.engine.artifacts.read(row["files_hash"]))
+        work = working_files(snapshot, files)
         if (
             payload["public_receipt"] != row["public_receipt"]
             or payload["hidden_receipt"] != row["hidden_receipt"]
-            or row["public_receipt"]["workspace_hash"] != workspace_hash(files)
+            or row["public_receipt"]["workspace_hash"] != workspace_hash(work)
             or row["hidden_receipt"]["workspace_hash"]
-            != workspace_hash({**files, "zz_mgar_hidden_test.go": suite()})
+            != workspace_hash({**work, "zz_mgar_hidden_test.go": suite()})
         ):
             raise DomainError(
                 "TEST_PROOF_CHANGED", "Receipt content or independent test suite changed"
             )
-        if tree(files) != payload["tree_sha"] or workspace_hash(files) != payload["workspace_hash"]:
+        if (
+            candidate_tree(snapshot, files) != payload["tree_sha"]
+            or workspace_hash(files) != payload["workspace_hash"]
+        ):
             raise DomainError("TEST_PROOF_CHANGED", "Tested tree changed")
         expected = [
             {"path": p, "content": files[p]}
@@ -415,6 +567,13 @@ class Repairs:
             return {**action, "status": "cancelled"}
 
     def revise(self, action_id: UUID, payload_hash: str, diff: str, actor: str) -> None:
+        with self.engine.transaction() as conn:
+            _, existing = self.engine._action(conn, action_id)
+        permit = None
+        if existing["execution_mode"] == "live":
+            from mgar_v3.repair.live import repair_permit
+
+            permit = repair_permit(self.engine.settings)
         content_hash = self.artifact(diff.encode())
         with self.engine.transaction() as conn:
             _, run = self.engine._action(conn, action_id)
@@ -423,6 +582,7 @@ class Repairs:
                 run["run_id"],
                 "edit:" + str(uuid4()),
                 "Retest the edited patch before a new approval.",
+                permit,
             )
             current = self.engine._run(conn, run["run_id"])
             conn.execute(
@@ -474,6 +634,61 @@ class Repairs:
             )
             return None
 
+    def completed_step(self, action_id: UUID, ordinal: int, request: dict[str, Any]) -> bool:
+        with self.engine.transaction() as conn:
+            row = conn.execute(
+                "SELECT status,request_hash FROM app.repair_publication_steps "
+                "WHERE action_id=%s AND ordinal=%s",
+                (action_id, ordinal),
+            ).fetchone()
+            if row and row["request_hash"] != digest(request):
+                raise DomainError("STEP_CHANGED", "A completed publication request cannot change")
+            return bool(row and row["status"] == "succeeded")
+
+    def continue_publication(self, action_id: UUID, payload_hash: str, actor: str) -> "Row":
+        if actor.lower() != self.engine.settings.local_actor.lower():
+            raise DomainError("ACTOR_DENIED", "Actor cannot continue publication", 403)
+        with self.engine.transaction() as conn:
+            action, run = self.engine._action(conn, action_id)
+            if action["action_type"] != "draft_pr" or action["payload_hash"] != payload_hash:
+                raise DomainError(
+                    "STALE_ACTION", "Continue requires the unchanged Draft PR payload"
+                )
+            self.engine._validate_action(conn, action, run)
+            if action["status"] == "ready":
+                return action
+            if action["status"] != "outcome_unknown":
+                raise DomainError("NOT_UNKNOWN", "Only reconciled partial actions can continue")
+            steps = conn.execute(
+                "SELECT * FROM app.repair_publication_steps WHERE action_id=%s ORDER BY ordinal",
+                (action_id,),
+            ).fetchall()
+            if (
+                any(s["status"] != "succeeded" for s in steps)
+                or len(steps) >= 3
+                or [s["ordinal"] for s in steps] != list(range(len(steps)))
+            ):
+                raise DomainError(
+                    "OUTCOME_UNKNOWN", "Every previously issued step must be positively reconciled"
+                )
+            conn.execute(
+                "UPDATE app.actions SET status='ready',reason_code=NULL WHERE action_id=%s",
+                (action_id,),
+            )
+            conn.execute(
+                "UPDATE app.outbox SET status='ready',next_retry_at=now() WHERE action_id=%s",
+                (action_id,),
+            )
+            self.engine._event(
+                conn,
+                run["run_id"],
+                "draft_unissued_steps_authorized",
+                actor=actor,
+                payload_hash=payload_hash,
+                next_ordinal=len(steps),
+            )
+            return {**action, "status": "ready"}
+
     def publication_receipt(
         self, action_id: UUID, lease: UUID, ordinal: int, receipt: dict[str, Any]
     ) -> None:
@@ -492,6 +707,14 @@ class Repairs:
         self.snapshot(run_id)
         with self.engine.transaction() as conn:
             return {
+                "publication_steps": conn.execute(
+                    (
+                        "SELECT s.* FROM app.repair_publication_steps s JOIN app.actions a "
+                        "USING(action_id) WHERE a.run_id=%s ORDER BY action_id,"
+                        "ordinal"
+                    ),
+                    (run_id,),
+                ).fetchall(),
                 "candidates": conn.execute(
                     "SELECT * FROM app.repair_candidates "
                     "WHERE run_id=%s ORDER BY input_revision,attempt",
@@ -504,11 +727,15 @@ class Repairs:
                 ).fetchall(),
             }
 
-    def reconciled(self, action_id: UUID, receipts: list[dict[str, Any]]) -> None:
+    def reconciled(
+        self, action_id: UUID, receipts: list[dict[str, Any]] | dict[int, dict[str, Any]]
+    ) -> None:
         """Record exact read-only findings; this method never schedules a remote write."""
         with self.engine.transaction() as conn:
             action, _ = self.engine._action(conn, action_id)
-            for ordinal, receipt in enumerate(receipts):
+            for ordinal, receipt in (
+                receipts.items() if isinstance(receipts, dict) else enumerate(receipts)
+            ):
                 row = conn.execute(
                     "UPDATE app.repair_publication_steps SET status='succeeded',receipt=%s "
                     "WHERE action_id=%s AND ordinal=%s "

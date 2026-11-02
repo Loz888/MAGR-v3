@@ -5,11 +5,13 @@ from typing import Annotated, Literal, Self
 from pydantic import Field, model_validator
 
 from mgar_v3.domain import DomainError, Model, TriggerInput, digest
+from mgar_v3.repair.domain import RepairScope
 from mgar_v3.settings import Settings
 
 
 class LiveProfile(Model):
-    investigation_version: Literal["r1-quotes-v1", "r4-experts-v1"] = "r1-quotes-v1"
+    investigation_version: Literal["r1-quotes-v1", "r4-experts-v1", "r5-repair-v1"] = "r1-quotes-v1"
+    repair: RepairScope | None = Field(default=None, exclude_if=lambda value: value is None)
     knowledge_snapshot_ids: list[str] = Field(default_factory=list, max_length=2)
     rag_config_hash: str | None = None
     data_fixture_hash: str | None = None
@@ -33,10 +35,31 @@ class LiveProfile(Model):
     max_cost_micros: Annotated[int, Field(strict=True, gt=0, le=10000000)]
     max_model_calls: Annotated[int, Field(strict=True, ge=1, le=3)] = 1
     max_result_comments: Annotated[int, Field(strict=True, ge=1, le=3)] = 1
-    action_type: Literal["issue_comment"] = "issue_comment"
+    action_type: Literal["issue_comment", "draft_pr"] = "issue_comment"
 
     @model_validator(mode="after")
     def fixed_source_required(self) -> Self:
+        if self.investigation_version == "r5-repair-v1":
+            from mgar_v3.repair.workspace import validate_path
+
+            if (
+                self.action_type != "draft_pr"
+                or self.repair is None
+                or self.source_kind != "file"
+                or self.max_result_comments != 1
+                or not self.expected_source_hash
+            ):
+                raise ValueError("R5 requires its explicit immutable source and Draft PR scope")
+            validate_path(self.repair.workspace_prefix)
+            if self.source_path != self.repair.workspace_prefix + "/orders.go":
+                raise ValueError("R5 supports the bounded Go order function only")
+            roots = self.repair.predecessor_budget_hashes
+            if len(set(roots)) != len(roots) or any(
+                len(h) != 64 or any(c not in "0123456789abcdef" for c in h) for h in roots
+            ):
+                raise ValueError("R5 cumulative predecessors must be distinct SHA256 values")
+        elif self.action_type != "issue_comment" or self.repair is not None:
+            raise ValueError("Repair scopes cannot be enabled under an R1/R4 profile")
         if self.investigation_version == "r4-experts-v1":
             from uuid import UUID
 
@@ -64,6 +87,8 @@ class LiveProfile(Model):
     @property
     def profile_hash(self) -> str:
         payload = self.model_dump(mode="json")
+        if self.investigation_version != "r5-repair-v1":
+            payload.pop("repair", None)  # Preserve every previously authorized profile hash.
         if self.investigation_version == "r1-quotes-v1":
             for key in (
                 "investigation_version",

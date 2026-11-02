@@ -14,7 +14,7 @@
 | V31-R3 | 受限 Router LLM 与多任务 | DONE | PASS | PASS |
 | V31-R4 | RAG 与多专家 | DONE | PASS | PARTIAL |
 | V31-R4-LIVE | 真实跨源调查与单 Agent 对照 | DONE | PASS | PARTIAL |
-| V31-R5 | 受限修复与 Draft PR | IN_PROGRESS | PASS（受控范围） | NOT_RUN |
+| V31-R5 | 受限修复与 Draft PR | IN_PROGRESS | PASS（含真实适配工程） | NOT_RUN |
 | V31-R6 | Watchdog、主动性与发布评测 | TODO | NOT_RUN | NOT_RUN |
 
 2026-11-02 用户授权真实调用与 GitHub 推送；沿用最多 3 次物理调用、累计 USD 2 的限制。R0 与 R1 工程复验通过，R1 真实闭环 PASS 后才启动 R2。实际调用 2 次，保守计费 USD 0.001745，结果评论一条；模型落库与远程写回执两个 SIGKILL 恢复点通过。
@@ -33,3 +33,6 @@ R4 真实实验已执行：三个正常和两个不足/越权案例各运行多�
 
 
 R5 首轮受控工程通过：注册验收覆盖完整回归 229 项，0 失败、0 跳过，四个真实 SIGKILL 点与三类响应丢失验证通过。新增真实 Docker/Go 隔离测试、独立隐藏 Oracle、完整 diff 审批及编辑重测、Draft PR 三步 MCP 持久协议。本地完整演示已通过。补丁提供者和发布远端均为 fixture；真实 GitHub source/model/write profile 与适配器尚未完成，R5 整体为 IN_PROGRESS，live 为 NOT_RUN。未新增付费调用、真实业务评论或 PR，累计仍 26 次、保守 USD 0.027025。R6 保持 TODO。摘要：v3/docs/acceptance/r5-engineering-20261102.json；运行方式：v3/docs/r5-runbook.md。
+
+
+R5 真实适配工程补齐：完整回归 245 项全部通过，新增官方 MCP/Git 元数据核对、真实模型适配及累计预算组、生产 Draft PR 适配和显式继续未发送子步骤。六个 SIGKILL 案例通过，历史 profile 哈希和旧快照兼容。真实源码只读探测通过；工程中的模型/发布协议仍为受控服务，未新增付费调用或业务 PR。真实模型与 PR 最终验收待冻结独立许可；R5 为 IN_PROGRESS，R6 不提前启动。摘要 v3/docs/acceptance/r5-native-engineering-20261102.json。

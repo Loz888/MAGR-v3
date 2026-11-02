@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     graph_version: Literal["r1-quotes-v1", "r2-mailbox-v1", "r4-experts-v1", "r5-repair-v1"] = (
         "r4-experts-v1"
     )
+    repair_profile_path: Path | None = None
+    repair_authorization_path: Path | None = None
+    repair_snapshot_path: Path | None = None
     max_body_bytes: int = Field(default=65536, ge=1024, le=1048576)
     approval_ttl_seconds: int = Field(default=3600, ge=60, le=86400)
     allow_paid: bool = False

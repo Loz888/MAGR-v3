@@ -28,6 +28,8 @@ from mgar_v3.live import load_permit
 from mgar_v3.mcp.r4 import server
 from mgar_v3.repair.domain import ApprovalDecision, EditDecision, RepairInput
 from mgar_v3.repair.graph import acknowledge_approval
+from mgar_v3.repair.live import repair_permit
+from mgar_v3.repair.publication import LiveDraftMCPTransport
 from mgar_v3.routing.domain import CorrectionInput, EventInput
 from mgar_v3.routing.live import load_router_permit
 from mgar_v3.routing.model import DeepSeekRouter
@@ -73,6 +75,7 @@ def create_app(
     engine: Engine | None = None,
     run_background: bool = True,
     transport: Transport | None = None,
+    draft_transport: Transport | None = None,
 ) -> FastAPI:
     configuration = settings or Settings()
     provided = engine
@@ -82,6 +85,8 @@ def create_app(
             configuration.live_profile_path, configuration.live_authorization_path, configuration
         )
     selected_transport = transport
+    selected_draft = draft_transport
+    live_repair_permit = repair_permit(configuration) if configuration.repair_profile_path else None
     router_provider: RouterProvider | None = None
     if (
         selected_transport is None
@@ -93,6 +98,7 @@ def create_app(
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+        nonlocal selected_draft
         authority = provided or Engine(configuration, ArtifactStore(configuration.artifact_root))
         if provided is None:
             authority.recover()
@@ -107,6 +113,13 @@ def create_app(
                     with authority.transaction() as conn:
                         authority._event(conn, run["run_id"], "sandbox_cleanup_unavailable")
         app.state.engine = authority
+        if (
+            selected_draft is None
+            and live_repair_permit is not None
+            and live_repair_permit.authorization.allow_external_write
+            and configuration.allow_external_write
+        ):
+            selected_draft = LiveDraftMCPTransport(authority, live_repair_permit)
         stopped = asyncio.Event()
         workers: dict[UUID, asyncio.Task[None]] = {}
         effect: asyncio.Task[Any] | None = None
@@ -132,7 +145,7 @@ def create_app(
         async def execute_run(run: dict[str, Any]) -> None:
             runner = Runner(authority)
             try:
-                if run["execution_mode"] == "live":
+                if run["execution_mode"] == "live" and run["graph_version"] != "r5-repair-v1":
                     if live_permit is None:
                         raise DomainError("LIVE_PROFILE_REQUIRED", "Live profile is missing")
                     runner = Runner(
@@ -196,10 +209,19 @@ def create_app(
                             RouterWorker(authority, router_provider, live_permit).tick
                         )
                     )
-                if selected_transport is not None and effect is None:
-                    effect = asyncio.create_task(
-                        asyncio.to_thread(Dispatcher(authority, selected_transport).tick)
-                    )
+                if (
+                    selected_transport is not None or selected_draft is not None
+                ) and effect is None:
+
+                    def dispatch_one() -> None:
+                        for outgoing in (selected_transport, selected_draft):
+                            if (
+                                outgoing is not None
+                                and Dispatcher(authority, outgoing).tick() is not None
+                            ):
+                                return
+
+                    effect = asyncio.create_task(asyncio.to_thread(dispatch_one))
                 try:
                     await asyncio.wait_for(stopped.wait(), timeout=0.25)
                 except TimeoutError:
@@ -302,7 +324,7 @@ def create_app(
             raise DomainError("SUPERVISOR_UNAVAILABLE", "Execution supervisor is unavailable", 503)
         with service.transaction() as conn:
             migrations = conn.execute("SELECT count(*) AS n FROM app.schema_migrations").fetchone()
-            if migrations is None or migrations["n"] < 10:
+            if migrations is None or migrations["n"] < 11:
                 raise DomainError("MIGRATIONS_PENDING", "Database migrations are incomplete", 503)
         return {"database": "ready", "release_status": "ENGINEERING_INCOMPLETE"}
 
@@ -381,7 +403,39 @@ def create_app(
 
     @app.post("/api/v3/repairs", status_code=202, dependencies=[Depends(authenticated)])
     def create_repair(body: RepairInput, service: Annotated[Engine, Depends(authority)]) -> Any:
-        return jsonable_encoder(service.repairs.create(body))
+        return jsonable_encoder(service.repairs.create(body, live_repair_permit))
+
+    @app.get("/api/v3/repairs/profile", dependencies=[Depends(authenticated)])
+    def repair_configuration(service: Annotated[Engine, Depends(authority)]) -> Any:
+        if live_repair_permit is None:
+            return {"available": False, "reason_code": "R5_PROFILE_REQUIRED"}
+        p = live_repair_permit.profile
+        code = None
+        try:
+            live_repair_permit.validate()
+        except DomainError as exc:
+            code = exc.code
+        with service.transaction() as conn:
+            budget = conn.execute(
+                "SELECT used_calls,settled_micros,reserved_micros "
+                "FROM app.authorization_budgets WHERE profile_hash=%s",
+                (p.profile_hash,),
+            ).fetchone()
+        return {
+            "available": code is None,
+            "reason_code": code,
+            "profile_hash": p.profile_hash,
+            "repository": p.repository,
+            "project_id": p.project_id,
+            "issue_number": p.issue_number,
+            "question": p.question,
+            "base_sha": p.source_ref,
+            "source_path": p.source_path,
+            "model_id": p.model_id,
+            "max_model_calls": p.max_model_calls,
+            "max_cost_micros": p.max_cost_micros,
+            "used_calls": budget["used_calls"] if budget else 0,
+        }
 
     @app.get("/api/v3/runs/{run_id}/repair", dependencies=[Depends(authenticated)])
     def repair_detail(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:
@@ -432,6 +486,23 @@ def create_app(
         service.repairs.revise(action_id, body.payload_hash, body.diff, configuration.local_actor)
         return {"status": "queued_for_retesting"}
 
+    @app.post(
+        "/api/v3/runs/{run_id}/actions/{action_id}/continue", dependencies=[Depends(authenticated)]
+    )
+    def continue_draft(
+        run_id: UUID,
+        action_id: UUID,
+        body: ApprovalDecision,
+        service: Annotated[Engine, Depends(authority)],
+    ) -> Any:
+        if not any(a["action_id"] == action_id for a in service.actions(run_id)):
+            raise DomainError("ACTION_RUN_MISMATCH", "Action does not belong to this Run", 404)
+        return jsonable_encoder(
+            service.repairs.continue_publication(
+                action_id, body.payload_hash, configuration.local_actor
+            )
+        )
+
     @app.get("/api/v3/runs/{run_id}", dependencies=[Depends(authenticated)])
     def get_run(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:
         return jsonable_encoder(service.get_run(run_id))
@@ -442,7 +513,12 @@ def create_app(
     def message(
         run_id: UUID, body: MessageInput, service: Annotated[Engine, Depends(authority)]
     ) -> Any:
-        return service.follow_up(run_id, body.client_request_id, body.body, live_permit)
+        selected = (
+            live_repair_permit
+            if service.get_run(run_id)["graph_version"] == "r5-repair-v1"
+            else live_permit
+        )
+        return service.follow_up(run_id, body.client_request_id, body.body, selected)
 
     @app.get("/api/v3/runs/{run_id}/report", dependencies=[Depends(authenticated)])
     def report(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Response:
@@ -491,13 +567,17 @@ def create_app(
     def reconcile(
         run_id: UUID, action_id: UUID, service: Annotated[Engine, Depends(authority)]
     ) -> dict[str, bool]:
-        if selected_transport is None:
+        action = next(
+            (item for item in service.actions(run_id) if item["action_id"] == action_id), None
+        )
+        if action is None:
+            raise DomainError("ACTION_RUN_MISMATCH", "Action does not belong to this Run", 404)
+        outgoing = selected_draft if action["action_type"] == "draft_pr" else selected_transport
+        if outgoing is None:
             raise DomainError(
                 "TRANSPORT_NOT_CONFIGURED", "Reconciliation transport is unavailable", 503
             )
-        if not any(item["action_id"] == action_id for item in service.actions(run_id)):
-            raise DomainError("ACTION_RUN_MISMATCH", "Action does not belong to this Run", 404)
-        return {"reconciled": Dispatcher(service, selected_transport).reconcile(action_id)}
+        return {"reconciled": Dispatcher(service, outgoing).reconcile(action_id)}
 
     @app.get("/api/v3/runs/{run_id}/events", dependencies=[Depends(authenticated)])
     async def events(

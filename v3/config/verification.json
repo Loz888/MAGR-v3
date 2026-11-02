@@ -165,6 +165,8 @@
       "tests/test_r4_mcp.py",
       "tests/test_r4_recovery.py",
       "tests/test_r4_trials.py",
+      "tests/test_r5_live.py",
+      "tests/test_r5_model_recovery.py",
       "tests/test_r5_recovery.py",
       "tests/test_r5_repair.py",
       "tests/test_rate_limit.py",
@@ -174,16 +176,17 @@
       "tests/test_routing.py",
       "tests/test_verification.py"
     ],
-    "timeout_seconds": 900,
+    "timeout_seconds": 1200,
     "components": {
       "postgres": "real",
       "docker": "real_nonroot_network_none_readonly_no_credentials",
       "go": "real_compiler_public_and_independent_hidden_tests",
       "langgraph": "real_postgres_checkpoint_and_approval_interrupt",
-      "model": "controlled_patch_provider_no_paid_calls",
-      "github": "real_stdio_MCP_controlled_persistent_remote",
-      "recovery": "real_SIGKILL_four_boundaries",
-      "web": "shared_authenticated_API"
+      "model": "controlled_HTTP_of_production_R5_adapter",
+      "github": "real_stdio_MCP_controlled_remote_and_Git_tree_proof",
+      "recovery": "real_SIGKILL_sandbox_candidate_branch_PR_and_costed_model_cache",
+      "web": "shared_authenticated_API",
+      "budget": "real_cumulative_PG_group_including_R1_R4_predecessors"
     }
   }
 }

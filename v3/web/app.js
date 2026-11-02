@@ -1,4 +1,4 @@
-let token = "", selected = null, timer = null;
+let token = "", selected = null, timer = null, repairProfile=null;
 const $ = id => document.getElementById(id);
 const labels = {queued:"等待执行",running:"调查中",waiting_approval:"等待审批",waiting_input:"等待补充",paused:"已暂停",succeeded:"已完成",failed:"执行失败",cancelled:"已取消"};
 async function api(path, body, method) {
@@ -62,7 +62,10 @@ async function show(id) {
         wrap.append(button("提交编辑并重新测试",async()=>{await api(`/runs/${ticket.run_id}/actions/${action.action_id}/revise`,{payload_hash:action.payload_hash,diff:edit.value});await show(id);}));
       }
     }
-    if (action.status === "outcome_unknown") wrap.append(button("只读核对远端结果",async()=>{const result=await api(`/runs/${ticket.run_id}/actions/${action.action_id}/reconcile`,{});notice(result.reconciled ? "已核对完成的远端对象。" : "结果仍未确认，保留现场等待检查。");await show(id);}));
+    if (action.status === "outcome_unknown") {
+      wrap.append(button("只读核对远端结果",async()=>{const result=await api(`/runs/${ticket.run_id}/actions/${action.action_id}/reconcile`,{});notice(result.reconciled ? "已核对完成的远端对象。" : "尚未完整发布，保留现场。已发送步骤须先确认成功，才能继续未发送步骤。");await show(id);}));
+      if (action.action_type === "draft_pr") wrap.append(button("授权继续未发送步骤",async()=>{await api(`/runs/${ticket.run_id}/actions/${action.action_id}/continue`,{payload_hash:action.payload_hash});await show(id);}));
+    }
     if (action.status === "proposed") {
       const approve=button(action.action_type === "draft_pr" ? "批准已测试的完整补丁" : "批准这条完整内容",async()=>{await api(`/runs/${ticket.run_id}/approvals`,{action_id:action.action_id,payload_hash:action.payload_hash}); await show(id);});
       if (edited) edited.addEventListener("input",()=>{approve.disabled=edited.value!==action.payload.diff;if(approve.disabled)notice("补丁已编辑，请先提交重新测试。");});
@@ -73,7 +76,7 @@ async function show(id) {
 }
 $("login-form").addEventListener("submit",async event=>{
   event.preventDefault(); token=$("token").value;
-  try { await refresh(); await refreshKnowledge(); $("token").value=""; $("login").hidden=true; $("workspace").hidden=false; $("connection").textContent="本地工作台已连接"; notice(""); timer=setInterval(()=>Promise.all([refresh(),refreshKnowledge()]).catch(error=>notice(error.message)),2500); } catch(error) { token=""; notice(error.message); }
+  try { await refresh(); await refreshKnowledge(); await refreshRepairProfile(); $("token").value=""; $("login").hidden=true; $("workspace").hidden=false; $("connection").textContent="本地工作台已连接"; notice(""); timer=setInterval(()=>Promise.all([refresh(),refreshKnowledge()]).catch(error=>notice(error.message)),2500); } catch(error) { token=""; notice(error.message); }
 });
 $("event-form").addEventListener("submit",async event=>{
   event.preventDefault(); try { const result=await api("/events",{source:"web",intent:"investigate",issue_number:Number($("issue").value),body:$("body").value,client_request_id:crypto.randomUUID()}); $("submitted").textContent=result.route === "direct" ? "补充消息已交给当前任务。" : "请求已接收，工单会在路由后显示。"; $("body").value=""; await refresh(); notice(""); } catch(error) {notice(error.message);}
@@ -111,5 +114,16 @@ $("search-form").addEventListener("submit",async event=>{
 });
 
 $("repair-form").addEventListener("submit",async event=>{
-  event.preventDefault();try {const result=await api("/repairs",{project_id:"orders-demo",issue_number:Number($("repair-issue").value),question:"Fix paid revenue: count the first paid order per ID, ignoring other statuses.",client_request_id:crypto.randomUUID(),execution_mode:"fixture"});await refresh();await show(result.ticket_id);notice("修复已接收，测试完成后可审阅完整补丁。");} catch(error){notice(error.message);}
+  event.preventDefault();try {const result=await api("/repairs",{project_id:$("repair-mode").value === "live" ? repairProfile.project_id : "orders-demo",issue_number:Number($("repair-issue").value),question:$("repair-mode").value === "live" ? repairProfile.question : "Fix paid revenue: count the first paid order per ID, ignoring other statuses.",client_request_id:crypto.randomUUID(),execution_mode:$("repair-mode").value});await refresh();await show(result.ticket_id);notice("修复已接收，测试完成后可审阅完整补丁。");} catch(error){notice(error.message);}
+});
+
+async function refreshRepairProfile() {
+  repairProfile=await api("/repairs/profile");
+  $("repair-live-option").disabled=!repairProfile.available;
+  $("repair-live-option").textContent=repairProfile.available ? "真实模型与 GitHub 固定提交" : "真实模式（需配置授权）";
+  $("repair-profile").textContent=repairProfile.available ? `${repairProfile.repository} · 基础提交 ${repairProfile.base_sha.slice(0,12)} · ${repairProfile.model_id} · 最多 ${repairProfile.max_model_calls} 次（已用 ${repairProfile.used_calls}）` : "当前使用本地协议演示。";
+}
+$("repair-mode").addEventListener("change",()=>{
+  const live=$("repair-mode").value === "live";
+  $("repair-issue").readOnly=live;$("repair-issue").value=live ? repairProfile.issue_number : 5001;
 });

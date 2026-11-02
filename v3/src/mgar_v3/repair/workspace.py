@@ -203,7 +203,11 @@ def apply_diff(snapshot: Snapshot, diff: str) -> dict[str, str]:
                     new_seen += 1
                 index += 1
             if (old_seen, new_seen) != (old_count, new_count):
-                raise DomainError("PATCH_FORMAT", "Hunk line counts differ")
+                raise DomainError(
+                    "PATCH_FORMAT",
+                    f"Hunk counts declare {old_count}/{new_count}; "
+                    f"actual removed/context and added/context counts are {old_seen}/{new_seen}",
+                )
             hunks += 1
         if not hunks:
             raise DomainError("PATCH_FORMAT", "Patch has no hunks")
@@ -214,7 +218,8 @@ def apply_diff(snapshot: Snapshot, diff: str) -> dict[str, str]:
             raise DomainError("PATCH_LIMIT", "Candidate source exceeds its bound")
     if not changed or files == snapshot.files:
         raise DomainError("PATCH_EMPTY", "Patch makes no source change")
-    ast_check(snapshot.files["orders.go"], files["orders.go"])
+    editable = snapshot.editable_paths[0]
+    ast_check(snapshot.files[editable], files[editable])
     return files
 
 

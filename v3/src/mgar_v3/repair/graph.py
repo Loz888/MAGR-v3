@@ -13,6 +13,7 @@ from mgar_v3.graph.checkpoints import checkpoint_saver
 from mgar_v3.repair.domain import PatchReply, Snapshot
 from mgar_v3.repair.hidden import suite
 from mgar_v3.repair.sandbox import Sandbox
+from mgar_v3.repair.source import working_files
 from mgar_v3.repair.workspace import apply_diff, fixture_diff
 
 if TYPE_CHECKING:
@@ -76,7 +77,9 @@ def builder(
             proof["log_hash"] = store.artifact(raw)
             return store.finish(run_id, epoch, revision, key, proof)
 
-        baseline = test("baseline", snapshot.files, snapshot.expected_tests)
+        baseline = test(
+            "baseline", working_files(snapshot, snapshot.files), snapshot.expected_tests
+        )
         if (
             baseline["passed"]
             or baseline["stop_reason"] is not None
@@ -101,27 +104,38 @@ def builder(
             proposal = store.step(run_id, epoch, revision, key)
             if proposal is None:
                 # The provider receives public source and feedback only.
-                reply = (
-                    PatchReply(
-                        diff=engine.artifacts.read(manual["diff_hash"]).decode(),
-                        explanation="User edit",
+                try:
+                    reply = (
+                        PatchReply(
+                            diff=engine.artifacts.read(manual["diff_hash"]).decode(),
+                            explanation="User edit",
+                        )
+                        if manual
+                        else selected.propose(snapshot, state["question"], attempt, feedback)
                     )
-                    if manual
-                    else selected.propose(snapshot, state["question"], attempt, feedback)
-                )
+                except DomainError as exc:
+                    if exc.code not in {"MODEL_INVALID_RESPONSE", "MODEL_RESULT_UNAVAILABLE"}:
+                        raise
+                    proposal = store.finish(run_id, epoch, revision, key, {"error": exc.code})
+                    feedback = "Previous model response failed the required JSON/diff schema."
+                    continue
                 proposal = store.finish(run_id, epoch, revision, key, reply.model_dump(mode="json"))
+            if proposal.get("error"):
+                feedback = "Previous model response failed the required JSON/diff schema."
+                continue
             try:
                 files = apply_diff(snapshot, proposal["diff"])
             except DomainError as exc:
-                feedback = "Patch rejected by the source policy: " + exc.code
+                feedback = "Patch rejected by the source policy: " + exc.code + ": " + str(exc)
                 store.finish(
                     run_id, epoch, revision, f"validation:{attempt}", {"reason": exc.code}
                 ) if store.step(run_id, epoch, revision, f"validation:{attempt}") is None else None
                 continue
-            public = test(f"public:{attempt}", files, snapshot.expected_tests)
+            work = working_files(snapshot, files)
+            public = test(f"public:{attempt}", work, snapshot.expected_tests)
             hidden = test(
                 f"hidden:{attempt}",
-                {**files, "zz_mgar_hidden_test.go": suite()},
+                {**work, "zz_mgar_hidden_test.go": suite()},
                 [*snapshot.expected_tests, "TestR5Hidden"],
             )
             candidate = store.candidate(
@@ -189,7 +203,20 @@ def execute_repair(
     epoch = run["execution_epoch"]
     owner.execution_epoch = epoch
     selected = provider or FixturePatcher()
-    if run["execution_mode"] != selected.mode or run["execution_mode"] != "fixture":
+    if run["execution_mode"] == "live" and provider is None:
+        from mgar_v3.repair.live import DeepSeekPatcher, repair_permit
+
+        permit = repair_permit(engine.settings)
+        with engine.transaction() as conn:
+            mandate = conn.execute(
+                "SELECT scope FROM app.mandates WHERE mandate_id=%s", (run["mandate_id"],)
+            ).fetchone()
+        if not mandate or mandate["scope"].get("profile_hash") != permit.profile.profile_hash:
+            raise DomainError(
+                "R5_SCOPE_CHANGED", "Run belongs to another reviewed repair profile", 403
+            )
+        selected = DeepSeekPatcher(engine, run_id, epoch, permit)
+    if run["execution_mode"] != selected.mode:
         raise DomainError(
             "R5_PROFILE_REQUIRED",
             "R5 live needs its own reviewed source, budget and write authorization",

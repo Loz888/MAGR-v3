@@ -164,3 +164,10 @@ R4 完整回归 187 项、专项验收 103 项通过，0 失败、0 跳过。新
 准备 `make sandbox-build` 后，可用 `make r5-demo` 或 Web/CLI 的 repair 入口。命令、前提和本地输出位置见 [R5 使用说明](docs/r5-runbook.md)，边界见 [ADR 0007](docs/adr/0007-r5-repair-boundaries.md)。
 
 受控工程验收覆盖完整回归 229 项，0 失败、0 跳过；四个真实 SIGKILL 点通过。[公开验收摘要](docs/acceptance/r5-engineering-20261102.json) 单列了工程范围、未完成适配和费用。
+
+
+## R5 真实适配补全
+
+现已补上 GitHub 固定提交及完整 tree/blob 证明、真实 DeepSeek 补丁适配、跨阶段累计费用约束、官方 MCP Draft PR、部分成功只读对账与显式继续。Web/CLI/API 也支持专用真实配置、完整提案审批及编辑重测。完整回归 245 项，0 失败、0 跳过；包含六个强制终止恢复案例。
+
+本轮工程验收中的模型和写入远端使用受控服务，另有实际 GitHub/MCP 只读源码探测。未新增付费调用或业务 PR；真实验收需要新冻结配置及许可，R5 整体暂为 IN_PROGRESS，R6 保持 TODO。详见 [适配验收](docs/acceptance/r5-native-engineering-20261102.json)、[ADR 0008](docs/adr/0008-r5-native-adapters.md) 和 [运行说明](docs/r5-runbook.md)。

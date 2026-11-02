@@ -290,7 +290,7 @@ class Engine:
         scope = {
             "repository": event.repository,
             "issue_number": event.issue_number,
-            "actions": ["issue_comment"],
+            "actions": [permit.profile.action_type] if permit is not None else ["issue_comment"],
             "basis": basis,
         }
         if permit is not None:
@@ -1030,8 +1030,8 @@ class Engine:
                 "SELECT count(*) AS n FROM app.actions a JOIN app.runs r USING(run_id) "
                 "JOIN app.tickets t USING(ticket_id) JOIN app.mandates m USING(mandate_id) "
                 "WHERE m.scope->>'profile_hash'=%s "
-                "AND a.status IN ('dispatching','outcome_unknown','succeeded')",
-                (scope.get("profile_hash"),),
+                "AND a.status IN ('dispatching','outcome_unknown','succeeded') AND a.action_id!=%s",
+                (scope.get("profile_hash"), action["action_id"]),
             ).fetchone()
             assert used is not None
             if used["n"] >= scope.get("model_config", {}).get("max_result_comments", 1):
@@ -1067,15 +1067,21 @@ class Engine:
             return {**action, "status": "ready"}
 
     def claim_effect(
-        self, execution_mode: str, action_types: tuple[str, ...] = ("issue_comment",)
+        self,
+        execution_mode: str,
+        action_types: tuple[str, ...] = ("issue_comment",),
+        profile_hash: str | None = None,
     ) -> Row | None:
         with self.transaction() as conn:
             reference = conn.execute(
                 "SELECT o.action_id FROM app.outbox o JOIN app.actions a USING(action_id) "
                 "JOIN app.runs r USING(run_id) WHERE o.status='ready' AND a.status='ready' "
                 "AND r.execution_mode=%s AND a.action_type=ANY(%s) AND o.next_retry_at<=now() "
+                "AND (%s::text IS NULL OR EXISTS (SELECT 1 FROM app.tickets t "
+                "JOIN app.mandates m USING(mandate_id) WHERE t.ticket_id=r.ticket_id "
+                "AND m.scope->>'profile_hash'=%s)) "
                 "ORDER BY o.created_at FOR UPDATE OF o SKIP LOCKED LIMIT 1",
-                (execution_mode, list(action_types)),
+                (execution_mode, list(action_types), profile_hash, profile_hash),
             ).fetchone()
             if reference is None:
                 return None
@@ -1134,6 +1140,12 @@ class Engine:
                 "WHERE action_id=%s",
                 (status, action_id),
             )
+            if unknown and action["action_type"] == "draft_pr":
+                conn.execute(
+                    "UPDATE app.repair_publication_steps SET status='outcome_unknown' "
+                    "WHERE action_id=%s AND status='dispatching'",
+                    (action_id,),
+                )
             self._apply_effect_outcome(conn, run, status)
             self._event(conn, run["run_id"], "action_" + status, action_id=str(action_id))
 
@@ -1303,8 +1315,8 @@ class Engine:
                     "SELECT 1 FROM app.actions WHERE run_id=%s "
                     "AND status IN ('dispatching','outcome_unknown') UNION ALL "
                     "SELECT 1 FROM app.usage_calls WHERE run_id=%s "
-                    "AND (status IN ('reserved','unknown') OR result IS NULL)",
-                    (run_id, run_id),
+                    "AND (status IN ('reserved','unknown') OR (result IS NULL AND %s))",
+                    (run_id, run_id, run["graph_version"] != "r5-repair-v1"),
                 ).fetchone()
                 if unresolved:
                     raise DomainError("RECOVERY_BLOCKED", "Unresolved calls or effects need review")
@@ -1428,6 +1440,10 @@ class Engine:
                 run["execution_mode"] != "live"
                 or run["status"] != "running"
                 or scope["scope"].get("profile_hash") != profile.profile_hash
+                or (
+                    profile.investigation_version == "r5-repair-v1"
+                    and run["graph_version"] != "r5-repair-v1"
+                )
             ):
                 raise DomainError(
                     "MODEL_SCOPE_DENIED", "Model call differs from the run mandate", 403
@@ -1436,6 +1452,7 @@ class Engine:
                 "SELECT 1 FROM app.usage_calls WHERE run_id=%s AND step_key=%s", (run_id, step_key)
             ).fetchone():
                 raise DomainError("MODEL_CALL_ALREADY_RECORDED", "Model step cannot be resent")
+            self.repairs.reserve_budget(conn, profile.profile_hash, amount)
             trial_budget_hash = self.trials.reserve(conn, profile.profile_hash, amount)
             reserved = conn.execute(
                 "UPDATE app.authorization_budgets SET reserved_micros=reserved_micros+%s,"

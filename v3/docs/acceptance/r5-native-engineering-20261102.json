@@ -1,0 +1,93 @@
+{
+  "schema": "r5-native-engineering-acceptance-v1",
+  "date_utc": "2026-11-02T17:42:10.466291+00:00",
+  "release_status": "ENGINEERING_INCOMPLETE",
+  "r5_status": "IN_PROGRESS",
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "production_source_model_write_adapters": "IMPLEMENTED",
+  "counts": {
+    "tests": 245,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "source_sha256": "1eb97598454bca0e6c3bffcacfa803b7261a988f52e959d304e937b12c397a27",
+  "verification_attempt": "evidence/V31-R5/20261102T172556Z-6c89614e",
+  "duration_seconds": 919.348,
+  "components": {
+    "postgres": "real",
+    "docker": "real_nonroot_network_none_readonly_no_credentials",
+    "go": "real_compiler_public_and_independent_hidden_tests",
+    "langgraph": "real_postgres_checkpoint_and_approval_interrupt",
+    "model": "controlled_HTTP_of_production_R5_adapter",
+    "github": "real_stdio_MCP_controlled_remote_and_Git_tree_proof",
+    "recovery": "real_SIGKILL_sandbox_candidate_branch_PR_and_costed_model_cache",
+    "web": "shared_authenticated_API",
+    "budget": "real_cumulative_PG_group_including_R1_R4_predecessors"
+  },
+  "checks": {
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "javascript_syntax": "PASS",
+    "v2_tracked_files_unchanged": true
+  },
+  "native_readonly_probe": {
+    "status": "PASS",
+    "mode": "real_GitHub_MCP_and_Git_no_model_no_publication",
+    "base_sha": "5b79ee8439edecb0c359fcf314c8119298c70b34",
+    "base_tree": "7fee9e691b0d72b00a4b606299dbab5f0f6ea0e4",
+    "source_prefix": "v3/fixtures/repair-demo",
+    "verified_files": 3,
+    "tree_entries": 215,
+    "official_mcp_version": "v2.0.3",
+    "get_commit_parent_tree_blob_fields": "absent_verified_using_Git_objects",
+    "pull_request_read_shape": "real_readonly_probe_verified"
+  },
+  "coverage": [
+    "two_generated_development_variants",
+    "bounded_model_JSON_and_diff_repair",
+    "typed_costed_result_reuse",
+    "unknown_usage_no_resend",
+    "cumulative_predecessor_and_cross_profile_budget",
+    "source_blob_tree_and_path_scope",
+    "cancelled_epoch_fencing",
+    "full_Draft_PR_MCP_protocol",
+    "partial_response_loss_and_explicit_unissued_step_continuation",
+    "model_results_and_user_edits_bound_to_proposal"
+  ],
+  "sigkill": {
+    "original_points": [
+      "sandbox_created",
+      "candidate_committed",
+      "branch_receipt",
+      "pr_accepted"
+    ],
+    "new_costed_model_cases": [
+      "valid_result",
+      "known_schema_failure_then_valid_result"
+    ],
+    "total_cases_passed": 6
+  },
+  "billing": {
+    "new_paid_calls": 0,
+    "new_cost_micros": 0,
+    "cumulative_paid_calls": 26,
+    "cumulative_conservative_cost_micros": 27025,
+    "reserved_micros": 0,
+    "cumulative_limit_micros": 2000000
+  },
+  "pending": [
+    "separate_frozen_R5_paid_authorization",
+    "real_model_generated_patch_and_independent_Go_tests",
+    "complete_payload_approval",
+    "one_real_Draft_PR_and_readonly_reconciliation"
+  ],
+  "failed_attempts_preserved": ".local/r5-live-*-attempt*.log and evidence/V31-R5 prior attempts",
+  "notes": [
+    "Controlled HTTP models in registered tests are not billed DeepSeek completions.",
+    "Registered tests prohibit accidental real DeepSeek HTTP transport.",
+    "The final live source must be frozen after this implementation is pushed.",
+    "R6 remains TODO until R5 acceptance is complete."
+  ]
+}
