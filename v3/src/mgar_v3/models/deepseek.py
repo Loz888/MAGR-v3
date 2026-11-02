@@ -16,11 +16,18 @@ class DeepSeekInvestigator:
         self.engine, self.permit, self.client = engine, permit, client
 
     def investigate(
-        self, run_id: UUID, question: str, source: str, evidence_id: UUID, *, execution_epoch: int
+        self,
+        run_id: UUID,
+        question: str,
+        source: str,
+        evidence_id: UUID,
+        *,
+        execution_epoch: int,
+        step_key: str = "investigate:v1",
     ) -> Investigation:
         profile = self.permit.profile
         self.permit.validate()
-        existing = self.engine.model_result(run_id, execution_epoch, "investigate:v1", self.permit)
+        existing = self.engine.model_result(run_id, execution_epoch, step_key, self.permit)
         if existing is not None:
             return existing
         key = self.engine.settings.deepseek_api_key
@@ -40,7 +47,7 @@ class DeepSeekInvestigator:
             self.engine.settings.redis_url.get_secret_value(),
             "model:" + profile.profile_hash + ":" + str(run_id),
         )
-        call_id = self.engine.reserve_call(run_id, execution_epoch, "investigate:v1", self.permit)
+        call_id = self.engine.reserve_call(run_id, execution_epoch, step_key, self.permit)
         body = {
             "model": profile.model_id,
             "max_tokens": profile.max_output_tokens,

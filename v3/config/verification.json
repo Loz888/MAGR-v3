@@ -71,5 +71,24 @@
       "github": "controlled_server",
       "langgraph": "real_postgres_checkpoint"
     }
+  },
+  "V31-R2": {
+    "tests": [
+      "tests/test_duplex.py",
+      "tests/test_models.py",
+      "tests/test_api.py",
+      "tests/test_cli.py",
+      "tests/test_environment.py"
+    ],
+    "timeout_seconds": 120,
+    "components": {
+      "postgres": "real",
+      "redis": "real",
+      "langgraph": "real_postgres_checkpoint",
+      "mcp": "real_stdio_controlled_server",
+      "model": "fixture_http_transport",
+      "github": "controlled_server",
+      "router_llm": "not_used"
+    }
   }
 }

@@ -19,7 +19,7 @@ def doctor(settings: Settings) -> int:
     try:
         with psycopg.connect(settings.database_url.get_secret_value(), connect_timeout=3) as conn:
             row = conn.execute("SELECT count(*) FROM app.schema_migrations").fetchone()
-            result["postgres"] = "PASS" if row and row[0] >= 5 else "FAIL"
+            result["postgres"] = "PASS" if row and row[0] >= 6 else "FAIL"
     except psycopg.Error:
         result["postgres"] = "FAIL"
     try:
@@ -47,9 +47,22 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument("--issue", required=True, type=int)
     run.add_argument("--client-request-id", default=None)
     run.add_argument("--execution-mode", choices=["fixture", "live"], default="fixture")
-    for name in ["status", "report", "watch", "actions", "cancel", "resume", "approve"]:
+    for name in [
+        "status",
+        "report",
+        "watch",
+        "actions",
+        "pause",
+        "cancel",
+        "resume",
+        "approve",
+        "message",
+    ]:
         command = commands.add_parser(name)
         command.add_argument("run_id")
+        if name == "message":
+            command.add_argument("--body", required=True)
+            command.add_argument("--client-request-id", default=None)
         if name == "approve":
             command.add_argument("--action", required=True)
             command.add_argument("--payload-hash", required=True)
@@ -96,7 +109,15 @@ def main(argv: list[str] | None = None) -> int:
                             "payload_hash": args.payload_hash,
                         },
                     )
-                elif args.command in {"cancel", "resume"}:
+                elif args.command == "message":
+                    response = client.post(
+                        base + "/messages",
+                        json={
+                            "client_request_id": args.client_request_id or str(uuid4()),
+                            "body": args.body,
+                        },
+                    )
+                elif args.command in {"pause", "cancel", "resume"}:
                     response = client.post(base + "/" + args.command)
                 else:
                     suffix = {

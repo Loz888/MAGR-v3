@@ -108,14 +108,15 @@
       "id": "V31-R2",
       "phase": "R2",
       "title": "Mailbox 与显式 intake/replan",
-      "status": "IN_PROGRESS",
+      "status": "DONE",
       "dependencies": [
         "V31-R1-LIVE"
       ],
-      "engineering_gate": "NOT_RUN",
+      "engineering_gate": "PASS",
       "live_gate": "NOT_RUN",
       "maps_to": [],
-      "started_after_gate": "2026-11-02T03:43:08.968350+00:00"
+      "started_after_gate": "2026-11-02T03:43:08.968350+00:00",
+      "evidence": "v3/docs/acceptance/r2-engineering-20261102.json"
     },
     {
       "id": "V31-R3",

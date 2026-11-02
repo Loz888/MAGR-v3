@@ -41,7 +41,8 @@ def preflight(
         "per_call_reservation_micros": profile.reservation_micros,
         "maximum_reservation_micros": profile.max_model_calls * profile.reservation_micros,
         "external_action": (
-            f"one approved issue_comment on {profile.repository}#{profile.issue_number}"
+            f"at most {profile.max_result_comments} approved issue_comment(s) on "
+            f"{profile.repository}#{profile.issue_number}"
         ),
         "missing": missing,
         "network_calls": 0,

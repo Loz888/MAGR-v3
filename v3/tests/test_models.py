@@ -21,6 +21,7 @@ def live_case(settings, trigger, request):
             "allow_paid": True,
             "allow_external_write": True,
             "deepseek_api_key": SecretStr("fixture-key-not-a-real-secret"),
+            "graph_version": limits.get("graph_version", settings.graph_version),
         }
     )
     profile = LiveProfile(
@@ -39,6 +40,7 @@ def live_case(settings, trigger, request):
         context_tokens=32768,
         max_cost_micros=limits.get("max_cost_micros", 100000),
         max_model_calls=limits.get("max_model_calls", 1),
+        max_result_comments=limits.get("max_result_comments", 1),
     )
     authorization = Authorization(
         profile_hash=profile.profile_hash,
@@ -122,6 +124,7 @@ def test_unchanged_single_call_profile_retains_legacy_authorization_hash(live_ca
     _, permit, _ = live_case
     original = permit.profile.model_dump(mode="json")
     original.pop("max_model_calls")
+    original.pop("max_result_comments")
     assert permit.profile.max_model_calls == 1
     assert permit.profile.profile_hash == digest(original)
     permit.validate()
@@ -432,3 +435,140 @@ def test_stale_model_execution_cannot_borrow_new_epoch(live_case):
                 execution_epoch=run["execution_epoch"],
             )
         assert error.value.code == "FENCED"
+
+
+@pytest.mark.parametrize(
+    "live_case", [{"graph_version": "r2-mailbox-v1", "max_model_calls": 3}], indirect=True
+)
+def test_r2_followup_uses_revision_step_keys_and_checkpoint_resume_does_not_repay(
+    live_case, trigger, monkeypatch
+):
+    import json
+    import sys
+    from pathlib import Path
+
+    from mgar_v3.graph.live_investigator import LiveInvestigator
+    from mgar_v3.graph.runner import Runner
+    from mgar_v3.mcp.client import ReadOnlyGitHubMCP
+
+    engine, permit, initial = live_case
+    engine.cancel(initial["run_id"])
+    event = trigger.model_copy(
+        update={
+            "external_event_id": "r2-live-policy",
+            "execution_mode": "live",
+            "body": COMMAND + permit.profile.question,
+        }
+    )
+    receipt = engine.ingest(event, permit)
+    reader = ReadOnlyGitHubMCP(
+        "example/mgar-test",
+        command=sys.executable,
+        args=(str(Path(__file__).parent / "fixtures/mcp_server.py"),),
+    )
+    prompts = []
+
+    def respond(request):
+        prompt = json.loads(json.loads(request.content)["messages"][1]["content"])
+        prompts.append(prompt)
+        if len(prompts) == 1:
+            engine.follow_up(
+                receipt.run_id, "live-followup", "Include the remaining limitations", permit
+            )
+        quote = prompt["source"].strip()
+        finding = {
+            "claims": [{"statement": quote, "quote": quote, "evidence_id": prompt["evidence_id"]}],
+            "open_questions": [],
+        }
+        return httpx.Response(
+            200,
+            json={
+                "usage": {"prompt_tokens": 100, "completion_tokens": 20},
+                "choices": [{"finish_reason": "stop", "message": {"content": json.dumps(finding)}}],
+            },
+        )
+
+    with httpx.Client(transport=httpx.MockTransport(respond)) as client:
+        investigator = LiveInvestigator(engine, receipt.run_id, permit, reader, client)
+        commit = engine.commit_report
+
+        def crash(*args):
+            raise RuntimeError("crash after graph checkpoint")
+
+        monkeypatch.setattr(engine, "commit_report", crash)
+        with pytest.raises(RuntimeError, match="checkpoint"):
+            Runner(engine, investigator).execute(receipt.run_id)
+        assert len(prompts) == 2 and "remaining limitations" in prompts[1]["question"]
+        engine.recover()
+        assert engine.resume(receipt.run_id) == receipt.run_id
+        monkeypatch.setattr(engine, "commit_report", commit)
+        assert Runner(engine, investigator).execute(receipt.run_id) is not None
+        assert len(prompts) == 2
+    with engine.transaction() as conn:
+        calls = conn.execute(
+            "SELECT step_key,status FROM app.usage_calls ORDER BY step_key"
+        ).fetchall()
+        assert [(c["step_key"], c["status"]) for c in calls] == [
+            ("investigate:r2", "known"),
+            ("investigate:r3", "known"),
+        ]
+        budget = conn.execute("SELECT * FROM app.authorization_budgets").fetchone()
+        assert budget["used_calls"] == 2 and budget["settled_micros"] == 240
+    with pytest.raises(DomainError):
+        engine.ingest(
+            event.model_copy(update={"external_event_id": "bad-mode", "execution_mode": "fixture"})
+        )
+    with pytest.raises(DomainError):
+        engine.ingest(
+            event.model_copy(update={"external_event_id": "bad-actor", "actor": "untrusted"}),
+            permit,
+        )
+
+
+@pytest.mark.parametrize(
+    "live_case", [{"max_result_comments": 1}, {"max_result_comments": 2}], indirect=True
+)
+def test_publication_limit_is_shared_across_runs_and_requires_new_authorization(live_case, trigger):
+    from mgar_v3.graph.runner import FixtureInvestigator, Runner
+
+    engine, permit, initial = live_case
+    engine.cancel(initial["run_id"])
+
+    class ControlledLiveReader(FixtureInvestigator):
+        mode = "live"
+
+    for index in range(2):
+        event = trigger.model_copy(
+            update={
+                "external_event_id": f"publication-{index}",
+                "execution_mode": "live",
+                "body": COMMAND + permit.profile.question,
+            }
+        )
+        receipt = engine.ingest(event, permit)
+        action_id = Runner(engine, ControlledLiveReader()).execute(receipt.run_id)
+        action = engine.actions(receipt.run_id)[0]
+        if index == 1 and permit.profile.max_result_comments == 1:
+            with pytest.raises(DomainError) as error:
+                engine.approve(action_id, action["payload_hash"], "owner")
+            assert error.value.code == "LIVE_EFFECT_LIMIT"
+            assert engine.claim_effect("live") is None
+        else:
+            engine.approve(action_id, action["payload_hash"], "owner")
+            claimed = engine.claim_effect("live")
+            engine.effect_result(
+                action_id, claimed["lease_token"], external_id=f"controlled-{index}"
+            )
+    changed = permit.profile.model_copy(update={"max_result_comments": 3})
+    with pytest.raises(DomainError, match="stale or mismatched"):
+        LivePermit(changed, permit.authorization, engine.settings).validate()
+
+
+def test_frozen_r1_profile_hash_is_unchanged_by_r2_publication_limit_default():
+    from mgar_v3.settings import ROOT
+
+    profile = LiveProfile.model_validate_json((ROOT / "config/live-r1-proposed.json").read_bytes())
+    assert (
+        profile.profile_hash == "5502fc0230f61f8658fef64adb891729cf668da83c1fcdc2ef440c9b31a740e1"
+    )
+    assert profile.max_result_comments == 1

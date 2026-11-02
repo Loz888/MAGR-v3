@@ -16,7 +16,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from mgar_v3.coordination.engine import COMMAND, Engine
-from mgar_v3.domain import ApprovalInput, DomainError, RunInput, TriggerInput
+from mgar_v3.domain import ApprovalInput, DomainError, MessageInput, RunInput, TriggerInput
 from mgar_v3.effects.dispatcher import Dispatcher, Transport
 from mgar_v3.effects.github import GitHubMCPTransport
 from mgar_v3.evidence.artifacts import ArtifactStore
@@ -88,46 +88,77 @@ def create_app(
             authority.recover()
         app.state.engine = authority
         stopped = asyncio.Event()
+        workers: dict[UUID, asyncio.Task[None]] = {}
+        effect: asyncio.Task[Any] | None = None
+
+        async def execute_run(run: dict[str, Any]) -> None:
+            runner = Runner(authority)
+            try:
+                if run["execution_mode"] == "live":
+                    if live_permit is None:
+                        raise DomainError("LIVE_PROFILE_REQUIRED", "Live profile is missing")
+                    runner = Runner(
+                        authority, LiveInvestigator(authority, run["run_id"], live_permit)
+                    )
+                await asyncio.to_thread(runner.execute, run["run_id"])
+            except DomainError as exc:
+                if exc.code not in {"FENCED", "RUN_NOT_QUEUED"}:
+                    authority.fail_run(
+                        run["run_id"], exc.code, getattr(runner, "execution_epoch", None)
+                    )
+            except (OSError, ValueError):
+                authority.fail_run(
+                    run["run_id"], "EXECUTION_FAILED", getattr(runner, "execution_epoch", None)
+                )
+            except psycopg.Error:
+                raise
+            except Exception:
+                authority.fail_run(
+                    run["run_id"], "EXECUTION_FAILED", getattr(runner, "execution_epoch", None)
+                )
 
         async def supervise() -> None:
+            nonlocal effect
             while not stopped.is_set():
+                for run_id, worker in list(workers.items()):
+                    if worker.done():
+                        worker.result()
+                        del workers[run_id]
+                if effect is not None and effect.done():
+                    effect.result()
+                    effect = None
                 for run in authority.list_runs():
-                    if run["status"] != "queued":
+                    if run["status"] != "queued" or run["run_id"] in workers or len(workers) >= 2:
                         continue
-                    try:
-                        investigator = None
-                        if run["execution_mode"] == "live":
-                            if live_permit is None:
-                                raise DomainError(
-                                    "LIVE_PROFILE_REQUIRED", "Live profile is missing"
-                                )
-                            investigator = LiveInvestigator(authority, run["run_id"], live_permit)
-                        await asyncio.to_thread(
-                            Runner(authority, investigator).execute, run["run_id"]
-                        )
-                    except DomainError as exc:
-                        if exc.code != "FENCED":
-                            authority.fail_run(run["run_id"], exc.code)
-                    except (OSError, ValueError):
-                        authority.fail_run(run["run_id"], "EXECUTION_FAILED")
-                if selected_transport is not None:
-                    await asyncio.to_thread(Dispatcher(authority, selected_transport).tick)
+                    workers[run["run_id"]] = asyncio.create_task(execute_run(run))
+                if selected_transport is not None and effect is None:
+                    effect = asyncio.create_task(
+                        asyncio.to_thread(Dispatcher(authority, selected_transport).tick)
+                    )
                 try:
                     await asyncio.wait_for(stopped.wait(), timeout=0.25)
                 except TimeoutError:
                     pass
 
         task = asyncio.create_task(supervise()) if run_background else None
+        app.state.supervisor = task
         try:
             yield
         finally:
             stopped.set()
             if task is not None:
                 await task
+                for run_id in workers:
+                    run = authority.get_run(run_id)
+                    if run["graph_version"] == "r2-mailbox-v1" and run["status"] == "running":
+                        authority.pause(run_id)
+                await asyncio.gather(*workers.values())
+                if effect is not None:
+                    await effect
             if provided is None:
                 authority.close()
 
-    app = FastAPI(title="MGAR V3.1 R1", lifespan=lifespan)
+    app = FastAPI(title="MGAR V3.1 R2", lifespan=lifespan)
     app.add_middleware(BodyLimitMiddleware, max_bytes=configuration.max_body_bytes)
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "[::1]"])
 
@@ -175,12 +206,15 @@ def create_app(
         return {"status": "alive", "release_status": "ENGINEERING_INCOMPLETE"}
 
     @app.get("/api/v3/readyz", dependencies=[Depends(authenticated)])
-    def readyz(service: Annotated[Engine, Depends(authority)]) -> dict[str, str]:
+    def readyz(request: Request, service: Annotated[Engine, Depends(authority)]) -> dict[str, str]:
+        supervisor = request.app.state.supervisor
+        if supervisor is not None and supervisor.done():
+            raise DomainError("SUPERVISOR_UNAVAILABLE", "Execution supervisor is unavailable", 503)
         with service.transaction() as conn:
             migrations = conn.execute("SELECT count(*) AS n FROM app.schema_migrations").fetchone()
-            if migrations is None or migrations["n"] < 5:
+            if migrations is None or migrations["n"] < 6:
                 raise DomainError("MIGRATIONS_PENDING", "Database migrations are incomplete", 503)
-        return {"database": "ready", "live_gate": "NOT_RUN"}
+        return {"database": "ready", "release_status": "ENGINEERING_INCOMPLETE"}
 
     @app.post("/api/v3/runs", status_code=202, dependencies=[Depends(authenticated)])
     def create_run(body: RunInput, service: Annotated[Engine, Depends(authority)]) -> Any:
@@ -203,6 +237,14 @@ def create_app(
     @app.get("/api/v3/runs/{run_id}", dependencies=[Depends(authenticated)])
     def get_run(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:
         return jsonable_encoder(service.get_run(run_id))
+
+    @app.post(
+        "/api/v3/runs/{run_id}/messages", status_code=202, dependencies=[Depends(authenticated)]
+    )
+    def message(
+        run_id: UUID, body: MessageInput, service: Annotated[Engine, Depends(authority)]
+    ) -> Any:
+        return service.follow_up(run_id, body.client_request_id, body.body, live_permit)
 
     @app.get("/api/v3/runs/{run_id}/report", dependencies=[Depends(authenticated)])
     def report(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Response:
@@ -236,6 +278,10 @@ def create_app(
     @app.post("/api/v3/runs/{run_id}/cancel", dependencies=[Depends(authenticated)])
     def cancel(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:
         return jsonable_encoder(service.cancel(run_id))
+
+    @app.post("/api/v3/runs/{run_id}/pause", dependencies=[Depends(authenticated)])
+    def pause(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:
+        return jsonable_encoder(service.pause(run_id))
 
     @app.post("/api/v3/runs/{run_id}/resume", dependencies=[Depends(authenticated)])
     def resume(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> dict[str, str]:
@@ -330,6 +376,8 @@ def create_app(
             )
         except (ValueError, KeyError, TypeError, AttributeError) as exc:
             raise DomainError("INVALID_WEBHOOK", "Webhook payload is invalid", 422) from exc
+        if service.is_own_result(event.repository, event.issue_number, event.body):
+            return {"status": "ignored", "reason": "published_result"}
         return service.ingest(event, live_permit)
 
     @app.exception_handler(psycopg.Error)

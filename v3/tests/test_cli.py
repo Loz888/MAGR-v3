@@ -20,6 +20,7 @@ def test_real_cli_and_api_process_share_persistent_run_and_approval(settings, tm
         "MGAR_V3_REPOSITORY": settings.repository,
         "MGAR_V3_LOCAL_ACTOR": settings.local_actor,
         "MGAR_V3_ALLOWED_ACTORS": json.dumps(settings.allowed_actors),
+        "MGAR_V3_GRAPH_VERSION": "r2-mailbox-v1",
     }
     with (tmp_path / "api.log").open("wb") as log:
         api = subprocess.Popen(
@@ -102,6 +103,39 @@ def test_real_cli_and_api_process_share_persistent_run_and_approval(settings, tm
                 )
                 assert approved.returncode == 0
                 assert json.loads(approved.stdout)["status"] == "ready"
+
+                def cli(*arguments):
+                    result = subprocess.run(
+                        [*command, *arguments],
+                        env=environment,
+                        capture_output=True,
+                        text=True,
+                        timeout=10,
+                    )
+                    assert result.returncode == 0, result.stderr + result.stdout
+                    return result.stdout
+
+                assert json.loads(cli("pause", run_id))["status"] == "paused"
+                message = (
+                    "message",
+                    run_id,
+                    "--body",
+                    "Include the limitations",
+                    "--client-request-id",
+                    "process-followup",
+                )
+                assert not json.loads(cli(*message))["duplicate"]
+                assert json.loads(cli(*message))["duplicate"]
+                assert json.loads(cli("resume", run_id))["run_id"] == run_id
+                deadline = time.monotonic() + 10
+                while client.get(f"/api/v3/runs/{run_id}").json()["status"] != "waiting_approval":
+                    assert time.monotonic() < deadline
+                    time.sleep(0.05)
+                actions = client.get(f"/api/v3/runs/{run_id}/actions").json()
+                assert [a["status"] for a in actions] == ["expired", "proposed"]
+                assert "input_consumed" in cli("watch", run_id)
+                assert json.loads(cli("cancel", run_id))["status"] == "cancelled"
+                assert json.loads(cli(*message))["duplicate"]
         finally:
             api.terminate()
             api.wait(timeout=10)

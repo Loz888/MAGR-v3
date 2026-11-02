@@ -95,7 +95,7 @@ class Engine:
                 raise DomainError(
                     "LIVE_PROFILE_REQUIRED", "Live ingress requires a reviewed profile", 403
                 )
-            permit.validate_event(event)
+            permit.validate()
         payload = event.model_dump(mode="json")
         payload_hash = digest(payload)
         with self.transaction() as conn:
@@ -122,21 +122,43 @@ class Engine:
             ).fetchone()
             assert thread is not None
             subscriptions = conn.execute(
-                "SELECT s.run_id,s.role,r.ticket_id FROM app.subscriptions s "
+                "SELECT s.run_id,s.role,r.ticket_id,r.graph_version,r.execution_mode "
+                "FROM app.subscriptions s "
                 "JOIN app.runs r USING(run_id) WHERE s.thread_id=%s AND s.active "
                 "ORDER BY s.role,s.run_id",
                 (thread["thread_id"],),
             ).fetchall()
             primary = next((s for s in subscriptions if s["role"] == "primary"), None)
+            if permit is not None:
+                permit.validate_event(
+                    event, follow_up=bool(primary and primary["graph_version"] == "r2-mailbox-v1")
+                )
             route = "unrouted"
             ticket_id, run_id = None, None
             if primary:
+                if primary["execution_mode"] != event.execution_mode:
+                    raise DomainError("EXECUTION_MODE_MISMATCH", "Follow-up mode differs from Run")
                 pending = conn.execute(
-                    "SELECT count(*) AS n FROM app.mailbox WHERE run_id=%s AND consumed_at IS NULL",
+                    "SELECT count(*) AS n,coalesce(sum(octet_length(e.payload::text)),0) AS bytes "
+                    "FROM app.mailbox m JOIN app.trigger_events e USING(event_id) "
+                    "WHERE m.run_id=%s AND m.consumed_at IS NULL",
                     (primary["run_id"],),
                 ).fetchone()
                 assert pending is not None
-                if pending["n"] >= 64:
+                jobs = conn.execute(
+                    "SELECT count(*) AS n FROM app.read_jobs WHERE run_id=%s "
+                    "AND status IN ('queued','running')",
+                    (primary["run_id"],),
+                ).fetchone()
+                assert jobs is not None
+                incoming_bytes = conn.execute(
+                    "SELECT octet_length(%s::jsonb::text) AS n", (Jsonb(payload),)
+                ).fetchone()
+                assert incoming_bytes is not None
+                if (
+                    pending["n"] + jobs["n"] >= 64
+                    or pending["bytes"] + incoming_bytes["n"] + jobs["n"] * 1024 > 65536
+                ):
                     raise DomainError("MAILBOX_FULL", "Run mailbox reached its input limit", 429)
                 route = "direct"
                 ticket_id, run_id = primary["ticket_id"], primary["run_id"]
@@ -179,6 +201,20 @@ class Engine:
                 conn.execute("INSERT INTO app.router_inbox(event_id) VALUES (%s)", (event_id,))
             elif run_id:
                 self._event(conn, run_id, "input_accepted", event_id=str(event_id), route=route)
+                if primary and primary["graph_version"] == "r2-mailbox-v1":
+                    run = self._run(conn, run_id)
+                    in_flight = conn.execute(
+                        "SELECT 1 FROM app.actions WHERE run_id=%s "
+                        "AND status IN ('dispatching','outcome_unknown')",
+                        (run_id,),
+                    ).fetchone()
+                    if run["status"] == "waiting_approval" and not in_flight:
+                        self._invalidate_proposals(conn, run_id)
+                        conn.execute(
+                            "UPDATE app.runs SET status='queued',execution_epoch=execution_epoch+1,"
+                            "reason_code='REPLAN_REQUIRED' WHERE run_id=%s",
+                            (run_id,),
+                        )
             assert row is not None
             return self._receipt(row)
 
@@ -228,10 +264,11 @@ class Engine:
         )
         conn.execute(
             "INSERT INTO app.runs(run_id,ticket_id,attempt_no,graph_version,execution_mode,"
-            "status,question,input_revision) VALUES (%s,%s,1,'r1-quotes-v1',%s,'queued',%s,%s)",
+            "status,question,input_revision) VALUES (%s,%s,1,%s,%s,'queued',%s,%s)",
             (
                 run_id,
                 ticket_id,
+                self.settings.graph_version,
                 event.execution_mode,
                 event.body[len(COMMAND) :].strip(),
                 thread["revision"],
@@ -242,6 +279,60 @@ class Engine:
             (thread["thread_id"], run_id),
         )
         return ticket_id, run_id
+
+    def follow_up(
+        self, run_id: UUID, client_id: str, body: str, permit: LivePermit | None = None
+    ) -> EventReceipt:
+        with self.transaction() as conn:
+            run = self._run(conn, run_id)
+            existing = conn.execute(
+                "SELECT * FROM app.trigger_events WHERE source='cli' AND external_event_id=%s",
+                (client_id,),
+            ).fetchone()
+            if existing:
+                if existing["run_id"] != run_id or existing["payload"].get("body") != body:
+                    raise DomainError(
+                        "EVENT_ID_REUSED", "Delivery identifier has different content"
+                    )
+                return self._receipt(existing, duplicate=True)
+            if run["graph_version"] != "r2-mailbox-v1" or run["status"] in TERMINAL:
+                raise DomainError("RUN_INPUT_CLOSED", "This Run cannot receive follow-up input")
+            primary = conn.execute(
+                "SELECT 1 FROM app.subscriptions WHERE run_id=%s AND active AND role='primary'",
+                (run_id,),
+            ).fetchone()
+            if not primary:
+                raise DomainError("RUN_INPUT_CLOSED", "Run no longer owns this conversation")
+            return self.ingest(
+                TriggerInput(
+                    source="cli",
+                    external_event_id=client_id,
+                    project_id=run["project_id"],
+                    repository=run["repository"],
+                    issue_number=int(run["external_key"].rsplit(":", 1)[1]),
+                    actor=self.settings.local_actor,
+                    body=body,
+                    execution_mode=run["execution_mode"],
+                ),
+                permit,
+            )
+
+    def is_own_result(self, repository: str, issue_number: int, body: str) -> bool:
+        with self.transaction() as conn:
+            row = conn.execute(
+                "SELECT 1 FROM app.actions a JOIN app.runs r USING(run_id) "
+                "JOIN app.tickets t USING(ticket_id) JOIN app.threads h USING(thread_id) "
+                "WHERE h.project_id=%s AND h.repository=%s AND h.external_key=%s "
+                "AND a.payload->>'body'=%s "
+                "AND a.status IN ('dispatching','outcome_unknown','succeeded')",
+                (
+                    self.settings.project_id,
+                    repository.lower(),
+                    f"{repository.lower()}#issue:{issue_number}",
+                    body,
+                ),
+            ).fetchone()
+            return row is not None
 
     @staticmethod
     def _receipt(row: Row, duplicate: bool = False) -> EventReceipt:
@@ -260,7 +351,10 @@ class Engine:
             row = self._run(conn, run_id)
             if row["status"] != "queued":
                 raise DomainError("RUN_NOT_QUEUED", "Run cannot start in its current state")
-            if row["thread_revision"] != row["input_revision"]:
+            if (
+                row["graph_version"] != "r2-mailbox-v1"
+                and row["thread_revision"] != row["input_revision"]
+            ):
                 raise DomainError("STALE_INPUT", "New input requires explicit intake/replanning")
             updated = conn.execute(
                 "UPDATE app.runs SET status='running',execution_epoch=execution_epoch+1 "
@@ -276,6 +370,277 @@ class Engine:
             )
             self._event(conn, run_id, "run_started", execution_epoch=updated["execution_epoch"])
             return {**row, **updated, "status": "running"}
+
+    def prepare_intake(self, run_id: UUID, epoch: int) -> Row:
+        """Prepare immutable graph input; consumption belongs to the next graph node."""
+        with self.transaction() as conn:
+            run = self._run(conn, run_id, epoch)
+            if run["status"] != "running":
+                raise DomainError("FENCED", "Intake requires the running execution")
+            messages = conn.execute(
+                "SELECT m.*,e.kind,e.payload FROM app.mailbox m "
+                "JOIN app.trigger_events e USING(event_id) WHERE m.run_id=%s ORDER BY m.seq",
+                (run_id,),
+            ).fetchall()
+            if not messages:
+                raise DomainError("INPUT_MISSING", "Run has no durable initial input")
+            if conn.execute(
+                "SELECT 1 FROM app.mailbox WHERE run_id=%s AND consumed_at IS NULL "
+                "AND expires_at<=now()",
+                (run_id,),
+            ).fetchone():
+                raise DomainError("MAILBOX_EXPIRED", "Unconsumed input expired and needs review")
+            cursor = messages[-1]["seq"]
+            existing = conn.execute(
+                "SELECT * FROM app.run_inputs WHERE run_id=%s AND cursor=%s", (run_id, cursor)
+            ).fetchone()
+            if existing is not None:
+                return existing
+            versions = conn.execute(
+                "SELECT count(DISTINCT input_revision) AS n FROM app.run_inputs WHERE run_id=%s",
+                (run_id,),
+            ).fetchone()
+            current = conn.execute(
+                "SELECT 1 FROM app.run_inputs WHERE run_id=%s AND input_revision=%s",
+                (run_id, run["thread_revision"]),
+            ).fetchone()
+            assert versions is not None
+            if versions["n"] >= 3 and not current:
+                raise DomainError("REPLAN_LIMIT", "Run reached its bounded input-version limit")
+            users = [m for m in messages if m["kind"] == "user"]
+            question = run["question"] + "".join(
+                f"\n\nFollow-up [{m['seq']}]: {m['payload']['body']}" for m in users[1:]
+            )
+            if len(question.encode()) > 65536:
+                raise DomainError("CONTEXT_LIMIT", "Input snapshot exceeds its context bound")
+            event_ids = [str(m["event_id"]) for m in messages]
+            snapshot_hash = digest(
+                {
+                    "cursor": cursor,
+                    "revision": run["thread_revision"],
+                    "question": question,
+                    "event_ids": event_ids,
+                }
+            )
+            snapshot = conn.execute(
+                "INSERT INTO app.run_inputs(snapshot_id,run_id,cursor,input_revision,question,"
+                "event_ids,snapshot_hash) VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING *",
+                (
+                    uuid4(),
+                    run_id,
+                    cursor,
+                    run["thread_revision"],
+                    question,
+                    Jsonb(event_ids),
+                    snapshot_hash,
+                ),
+            ).fetchone()
+            conn.execute(
+                "UPDATE app.mailbox SET delivered_at=coalesce(delivered_at,now()),"
+                "read_at=coalesce(read_at,now()) WHERE run_id=%s AND seq<=%s",
+                (run_id, cursor),
+            )
+            assert snapshot is not None
+            self._event(
+                conn,
+                run_id,
+                "intake_prepared",
+                snapshot_id=str(snapshot["snapshot_id"]),
+                cursor=cursor,
+                input_revision=run["thread_revision"],
+            )
+            return snapshot
+
+    def acknowledge_intake(self, run_id: UUID, epoch: int, snapshot_id: UUID) -> Row:
+        with self.transaction() as conn:
+            run = self._run(conn, run_id, epoch)
+            if run["status"] != "running":
+                raise DomainError("FENCED", "Input consumption requires a running execution")
+            snapshot = conn.execute(
+                "SELECT * FROM app.run_inputs WHERE run_id=%s AND snapshot_id=%s",
+                (run_id, snapshot_id),
+            ).fetchone()
+            if snapshot is None:
+                raise DomainError("INPUT_SNAPSHOT_MISSING", "Graph input is not in the ledger")
+            if snapshot["cursor"] <= run["mailbox_cursor"]:
+                if snapshot["cursor"] < run["mailbox_cursor"]:
+                    current = conn.execute(
+                        "SELECT * FROM app.run_inputs WHERE run_id=%s AND cursor=%s",
+                        (run_id, run["mailbox_cursor"]),
+                    ).fetchone()
+                    if current is None:
+                        raise DomainError(
+                            "INPUT_SNAPSHOT_MISSING", "Consumption snapshot is missing"
+                        )
+                    return current
+                return snapshot
+            conn.execute(
+                "UPDATE app.mailbox SET consumed_at=coalesce(consumed_at,now()) "
+                "WHERE run_id=%s AND seq<=%s",
+                (run_id, snapshot["cursor"]),
+            )
+            conn.execute(
+                "UPDATE app.runs SET mailbox_cursor=%s,input_revision=%s WHERE run_id=%s",
+                (snapshot["cursor"], snapshot["input_revision"], run_id),
+            )
+            self._event(
+                conn,
+                run_id,
+                "input_consumed",
+                snapshot_id=str(snapshot_id),
+                cursor=snapshot["cursor"],
+                input_revision=snapshot["input_revision"],
+            )
+            return snapshot
+
+    def _invalidate_proposals(self, conn: Connection, run_id: UUID) -> int:
+        rows = conn.execute(
+            "UPDATE app.actions SET status='expired' WHERE run_id=%s "
+            "AND status IN ('proposed','approved','ready') RETURNING action_id",
+            (run_id,),
+        ).fetchall()
+        conn.execute(
+            "UPDATE app.outbox SET status='cancelled' WHERE action_id IN "
+            "(SELECT action_id FROM app.actions WHERE run_id=%s AND status='expired')",
+            (run_id,),
+        )
+        return len(rows)
+
+    def pause(self, run_id: UUID) -> Row:
+        with self.transaction() as conn:
+            run = self._run(conn, run_id)
+            if run["graph_version"] != "r2-mailbox-v1":
+                raise DomainError("CONTROL_UNSUPPORTED", "Pause requires the R2 graph")
+            if run["status"] in TERMINAL or run["status"] == "paused":
+                return run
+            invalidated = self._invalidate_proposals(conn, run_id)
+            conn.execute(
+                "UPDATE app.runs SET status='paused',execution_epoch=execution_epoch+1,"
+                "proposal_generation=proposal_generation+%s,reason_code='USER_PAUSED' "
+                "WHERE run_id=%s",
+                (int(invalidated > 0), run_id),
+            )
+            conn.execute(
+                "UPDATE app.read_jobs SET status='queued',lease_token=NULL "
+                "WHERE run_id=%s AND status='running'",
+                (run_id,),
+            )
+            self._event(conn, run_id, "run_paused")
+            return {**run, "status": "paused", "execution_epoch": run["execution_epoch"] + 1}
+
+    def requeue_input(self, run_id: UUID, epoch: int) -> None:
+        with self.transaction() as conn:
+            run = self._run(conn, run_id, epoch)
+            if run["status"] != "running":
+                raise DomainError("FENCED", "Only a running execution can replan")
+            conn.execute(
+                "UPDATE app.runs SET status='queued',reason_code='REPLAN_REQUIRED' WHERE run_id=%s",
+                (run_id,),
+            )
+            self._event(conn, run_id, "replan_queued")
+
+    def submit_read_job(self, run_id: UUID, epoch: int, step_key: str) -> Row:
+        with self.transaction() as conn:
+            run = self._run(conn, run_id, epoch)
+            if run["status"] != "running":
+                raise DomainError("FENCED", "Read job requires a running execution")
+            conn.execute(
+                "INSERT INTO app.read_jobs(job_id,run_id,step_key,execution_epoch,status) "
+                "VALUES (%s,%s,%s,%s,'queued') ON CONFLICT(run_id,step_key) DO NOTHING",
+                (uuid4(), run_id, step_key, epoch),
+            )
+            job = conn.execute(
+                "SELECT * FROM app.read_jobs WHERE run_id=%s AND step_key=%s", (run_id, step_key)
+            ).fetchone()
+            assert job is not None
+            return job
+
+    def claim_read_job(self, job_id: UUID, epoch: int) -> Row:
+        with self.transaction() as conn:
+            job = conn.execute(
+                "SELECT * FROM app.read_jobs WHERE job_id=%s FOR UPDATE", (job_id,)
+            ).fetchone()
+            if job is None:
+                raise DomainError("NOT_FOUND", "Read job was not found", 404)
+            run = self._run(conn, job["run_id"], epoch)
+            if run["status"] != "running" or job["status"] != "queued":
+                raise DomainError("FENCED", "Read job is not available for this execution")
+            claimed = conn.execute(
+                "UPDATE app.read_jobs SET status='running',execution_epoch=%s,lease_token=%s "
+                "WHERE job_id=%s RETURNING *",
+                (epoch, uuid4(), job_id),
+            ).fetchone()
+            assert claimed is not None
+            self._event(conn, job["run_id"], "tool_started", job_id=str(job_id))
+            return claimed
+
+    def finish_read_job(
+        self, job_id: UUID, lease: UUID, content: bytes, uri: str, version: str
+    ) -> Row:
+        if len(content) > 65536:
+            raise DomainError("TOOL_OUTPUT_LIMIT", "Read result exceeds its byte bound")
+        content_hash = self.artifacts.put(content)
+        with self.transaction() as conn:
+            job = conn.execute(
+                "SELECT * FROM app.read_jobs WHERE job_id=%s FOR UPDATE", (job_id,)
+            ).fetchone()
+            if job is None or job["status"] != "running" or job["lease_token"] != lease:
+                raise DomainError("FENCED", "Read result lease is no longer current")
+            run = self._run(conn, job["run_id"], job["execution_epoch"])
+            if run["status"] != "running":
+                raise DomainError("FENCED", "Read result no longer owns a running execution")
+            conn.execute(
+                "INSERT INTO app.artifacts(content_hash,byte_count) VALUES (%s,%s) "
+                "ON CONFLICT DO NOTHING",
+                (content_hash, len(content)),
+            )
+            result = conn.execute(
+                "UPDATE app.read_jobs SET status='succeeded',lease_token=NULL,content_hash=%s,"
+                "source_uri=%s,source_version=%s WHERE job_id=%s RETURNING *",
+                (content_hash, uri, version, job_id),
+            ).fetchone()
+            thread = conn.execute(
+                "UPDATE app.threads SET latest_seq=latest_seq+1 "
+                "WHERE thread_id=%s RETURNING latest_seq",
+                (run["thread_id"],),
+            ).fetchone()
+            assert thread is not None and result is not None
+            payload = {"job_id": str(job_id), "content_hash": content_hash}
+            event_id = uuid4()
+            conn.execute(
+                "INSERT INTO app.trigger_events(event_id,source,external_event_id,thread_id,"
+                "thread_seq,payload_hash,payload,ticket_id,run_id,route,route_snapshot,kind) "
+                "VALUES (%s,'tool',%s,%s,%s,%s,%s,%s,%s,'direct',%s,'tool_result')",
+                (
+                    event_id,
+                    str(job_id),
+                    run["thread_id"],
+                    thread["latest_seq"],
+                    digest(payload),
+                    Jsonb(payload),
+                    run["ticket_id"],
+                    run["run_id"],
+                    Jsonb([{"run_id": str(run["run_id"]), "role": "primary"}]),
+                ),
+            )
+            conn.execute(
+                "INSERT INTO app.mailbox(run_id,event_id,seq) VALUES (%s,%s,%s)",
+                (run["run_id"], event_id, thread["latest_seq"]),
+            )
+            self._event(
+                conn, run["run_id"], "tool_completed", job_id=str(job_id), event_id=str(event_id)
+            )
+            return result
+
+    def fail_read_job(self, job_id: UUID, lease: UUID) -> None:
+        with self.transaction() as conn:
+            job = conn.execute(
+                "UPDATE app.read_jobs SET status='failed',lease_token=NULL "
+                "WHERE job_id=%s AND lease_token=%s AND status='running' RETURNING run_id",
+                (job_id, lease),
+            ).fetchone()
+            if job is not None:
+                self._event(conn, job["run_id"], "tool_failed", job_id=str(job_id))
 
     def record_read(self, evidence: Evidence, epoch: int, content: bytes) -> None:
         if self.artifacts.put(content) != evidence.content_hash:
@@ -313,9 +678,14 @@ class Engine:
         content_hash = self.artifacts.put(report)
         with self.transaction() as conn:
             run = self._run(conn, run_id, epoch)
+            dedupe_key = (
+                f"{run['ticket_id']}:result:r{run['input_revision']}:g{run['proposal_generation']}"
+                if run["graph_version"] == "r2-mailbox-v1"
+                else f"{run['ticket_id']}:result:v1"
+            )
             existing = conn.execute(
                 "SELECT action_id FROM app.actions WHERE dedupe_key=%s",
-                (f"{run['ticket_id']}:result:v1",),
+                (dedupe_key,),
             ).fetchone()
             if existing:
                 return UUID(str(existing["action_id"]))
@@ -330,7 +700,7 @@ class Engine:
             )
             conn.execute(
                 "INSERT INTO app.verdicts(verdict_id,run_id,report_hash,passed,details) "
-                "VALUES (%s,%s,%s,%s,%s)",
+                "VALUES (%s,%s,%s,%s,%s) ON CONFLICT(run_id,report_hash) DO NOTHING",
                 (uuid4(), run_id, content_hash, verdict.passed, Jsonb(verdict.model_dump())),
             )
             if not verdict.passed:
@@ -383,7 +753,7 @@ class Engine:
                     run["thread_revision"],
                     epoch,
                     token,
-                    f"{run['ticket_id']}:result:v1",
+                    dedupe_key,
                     timedelta(seconds=self.settings.approval_ttl_seconds),
                 ),
             )
@@ -525,6 +895,19 @@ class Engine:
             or action["payload"]["issue_number"] != scope["issue_number"]
         ):
             raise DomainError("MANDATE_DENIED", "Action exceeds the current mandate", 403)
+        if run["execution_mode"] == "live":
+            used = conn.execute(
+                "SELECT count(*) AS n FROM app.actions a JOIN app.runs r USING(run_id) "
+                "JOIN app.tickets t USING(ticket_id) JOIN app.mandates m USING(mandate_id) "
+                "WHERE m.scope->>'profile_hash'=%s "
+                "AND a.status IN ('dispatching','outcome_unknown','succeeded')",
+                (scope.get("profile_hash"),),
+            ).fetchone()
+            assert used is not None
+            if used["n"] >= scope.get("model_config", {}).get("max_result_comments", 1):
+                raise DomainError(
+                    "LIVE_EFFECT_LIMIT", "Profile result-comment limit is exhausted", 403
+                )
 
     def approve(self, action_id: UUID, payload_hash: str, actor: str) -> Row:
         if actor.lower() not in {a.lower() for a in self.settings.allowed_actors}:
@@ -629,6 +1012,19 @@ class Engine:
                 (run["run_id"],),
             )
             return
+        if run["graph_version"] == "r2-mailbox-v1" and run["status"] not in TERMINAL:
+            if run["status"] == "paused":
+                self._event(conn, run["run_id"], "paused_effect_resolved", status=status)
+                return
+            if run["thread_revision"] > run["input_revision"]:
+                conn.execute(
+                    "UPDATE app.runs SET status='queued',reason_code='REPLAN_REQUIRED',"
+                    "execution_epoch=execution_epoch+1,proposal_generation=proposal_generation+1 "
+                    "WHERE run_id=%s",
+                    (run["run_id"],),
+                )
+                self._event(conn, run["run_id"], "follow_up_after_effect", status=status)
+                return
         if run["status"] not in TERMINAL:
             conn.execute(
                 "UPDATE app.runs SET status=%s,outcome=%s,reason_code=NULL WHERE run_id=%s",
@@ -689,10 +1085,22 @@ class Engine:
             ).fetchall()
             for row in paused:
                 self._event(conn, row["run_id"], "run_recovery_required")
+            jobs = conn.execute(
+                "UPDATE app.read_jobs j SET status='queued',lease_token=NULL "
+                "FROM app.runs r WHERE j.run_id=r.run_id AND j.status='running' "
+                "AND r.status NOT IN ('cancelled','failed','succeeded') RETURNING j.job_id"
+            ).fetchall()
+            conn.execute(
+                "UPDATE app.read_jobs j SET status='cancelled',lease_token=NULL "
+                "FROM app.runs r WHERE j.run_id=r.run_id "
+                "AND r.status IN ('cancelled','failed','succeeded') "
+                "AND j.status IN ('queued','running')"
+            )
             return {
                 "unknown_actions": len(unknown),
                 "paused_runs": len(paused),
                 "unknown_usage": len(usage),
+                "requeued_read_jobs": len(jobs),
             }
 
     def cancel(self, run_id: UUID) -> Row:
@@ -715,6 +1123,11 @@ class Engine:
                 "(SELECT action_id FROM app.actions WHERE run_id=%s AND status='cancelled')",
                 (run_id,),
             )
+            conn.execute(
+                "UPDATE app.read_jobs SET status='cancelled',lease_token=NULL "
+                "WHERE run_id=%s AND status IN ('queued','running')",
+                (run_id,),
+            )
             self._end_ticket(conn, run, "cancelled")
             self._event(conn, run_id, "run_cancelled")
             return {**run, "status": "cancelled", "outcome": "cancelled"}
@@ -724,6 +1137,36 @@ class Engine:
             run = self._run(conn, run_id)
             if run["status"] != "paused" or run["ticket_status"] != "open":
                 raise DomainError("NOT_RESUMABLE", "Run is not safely resumable")
+            if run["graph_version"] == "r2-mailbox-v1":
+                unresolved = conn.execute(
+                    "SELECT 1 FROM app.actions WHERE run_id=%s "
+                    "AND status IN ('dispatching','outcome_unknown') UNION ALL "
+                    "SELECT 1 FROM app.usage_calls WHERE run_id=%s "
+                    "AND (status IN ('reserved','unknown') OR result IS NULL)",
+                    (run_id, run_id),
+                ).fetchone()
+                if unresolved:
+                    raise DomainError("RECOVERY_BLOCKED", "Unresolved calls or effects need review")
+                completed = conn.execute(
+                    "SELECT 1 FROM app.actions WHERE run_id=%s AND status='succeeded' "
+                    "AND base_revision=%s",
+                    (run_id, run["thread_revision"]),
+                ).fetchone()
+                if completed:
+                    conn.execute(
+                        "UPDATE app.runs SET status='succeeded',outcome='published',"
+                        "reason_code=NULL WHERE run_id=%s",
+                        (run_id,),
+                    )
+                    self._end_ticket(conn, run, "published")
+                else:
+                    conn.execute(
+                        "UPDATE app.runs SET status='queued',"
+                        "reason_code='RESUME_FROM_CHECKPOINT' WHERE run_id=%s",
+                        (run_id,),
+                    )
+                    self._event(conn, run_id, "run_checkpoint_resume")
+                return run_id
             pending = conn.execute(
                 "SELECT 1 FROM app.actions WHERE run_id=%s UNION ALL "
                 "SELECT 1 FROM app.usage_calls WHERE run_id=%s "
@@ -779,12 +1222,19 @@ class Engine:
             self._event(conn, replacement, "run_replacement_created", previous_run_id=str(run_id))
             return replacement
 
-    def fail_run(self, run_id: UUID, reason_code: str) -> None:
+    def fail_run(self, run_id: UUID, reason_code: str, epoch: int | None = None) -> None:
         with self.transaction() as conn:
             run = self._run(conn, run_id)
-            if run["status"] in TERMINAL or run["status"] == "waiting_approval":
+            if run["status"] in TERMINAL | {"waiting_approval", "paused"} or (
+                epoch is not None and run["execution_epoch"] != epoch
+            ):
                 return
-            state = "waiting_input" if reason_code == "STALE_INPUT" else "failed"
+            state = (
+                "waiting_input"
+                if reason_code
+                in {"STALE_INPUT", "REPLAN_LIMIT", "CONTEXT_LIMIT", "MAILBOX_EXPIRED"}
+                else "failed"
+            )
             conn.execute(
                 "UPDATE app.runs SET status=%s,reason_code=%s,execution_epoch=execution_epoch+1 "
                 "WHERE run_id=%s",

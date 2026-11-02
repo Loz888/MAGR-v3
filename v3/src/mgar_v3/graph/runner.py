@@ -3,15 +3,13 @@ from pathlib import Path
 from typing import Any, TypedDict, cast
 from uuid import UUID, uuid4
 
-import psycopg
 from langchain_core.runnables import RunnableConfig
-from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.graph import END, START, StateGraph
-from psycopg.rows import dict_row
 
 from mgar_v3.coordination.engine import Engine
 from mgar_v3.domain import Claim, DomainError, Evidence, Investigation, Verification
 from mgar_v3.evidence.verifier import verify
+from mgar_v3.graph.checkpoints import checkpoint_saver
 from mgar_v3.settings import ROOT
 
 
@@ -27,6 +25,7 @@ class GraphState(TypedDict, total=False):
 class FixtureInvestigator:
     mode = "fixture"
     execution_epoch: int = 0
+    model_step_key: str = "investigate:v1"
 
     def __init__(self, path: Path = ROOT / "fixtures/order-service.md"):
         self.path = path
@@ -54,8 +53,13 @@ class Runner:
         self.investigator = investigator or FixtureInvestigator()
 
     def execute(self, run_id: UUID) -> UUID | None:
+        if self.engine.get_run(run_id)["graph_version"] == "r2-mailbox-v1":
+            from mgar_v3.graph.duplex import execute_duplex
+
+            return execute_duplex(self, run_id)
         run = self.engine.begin_run(run_id)
         epoch = run["execution_epoch"]
+        self.execution_epoch = epoch
         self.investigator.execution_epoch = epoch
         if run["execution_mode"] != self.investigator.mode:
             raise DomainError("EXECUTION_MODE_MISMATCH", "Investigator and Run modes differ")
@@ -117,15 +121,7 @@ class Runner:
         builder.add_edge("investigate", "verify")
         builder.add_edge("verify", END)
         # This connection cannot own or change global business state.
-        with psycopg.connect(
-            self.engine.settings.database_url.get_secret_value(),
-            autocommit=True,
-            row_factory=dict_row,
-            prepare_threshold=0,
-            options="-c search_path=checkpoints,public",
-        ) as connection:
-            saver = PostgresSaver(connection)
-            saver.setup()
+        with checkpoint_saver(self.engine.settings.database_url.get_secret_value()) as saver:
             graph = builder.compile(checkpointer=saver)
             config: RunnableConfig = {"configurable": {"thread_id": str(run_id)}}
             checkpoint = saver.get_tuple(config)

@@ -28,6 +28,7 @@ class LiveProfile(Model):
     max_source_bytes: Annotated[int, Field(strict=True, ge=1024, le=65536)] = 16384
     max_cost_micros: Annotated[int, Field(strict=True, gt=0, le=10000000)]
     max_model_calls: Annotated[int, Field(strict=True, ge=1, le=3)] = 1
+    max_result_comments: Annotated[int, Field(strict=True, ge=1, le=3)] = 1
     action_type: Literal["issue_comment"] = "issue_comment"
 
     @model_validator(mode="after")
@@ -44,6 +45,8 @@ class LiveProfile(Model):
         if self.max_model_calls == 1:
             # Single-call profiles retain the hash used before configurable call limits.
             payload.pop("max_model_calls")
+        if self.max_result_comments == 1:
+            payload.pop("max_result_comments")
         return digest(payload)
 
     @property
@@ -99,7 +102,7 @@ class LivePermit:
                 "WRITE_NOT_AUTHORIZED", "External publication has not been authorized", 403
             )
 
-    def validate_event(self, event: TriggerInput) -> None:
+    def validate_event(self, event: TriggerInput, *, follow_up: bool = False) -> None:
         self.validate()
         profile = self.profile
         if (
@@ -107,7 +110,7 @@ class LivePermit:
             or event.repository != profile.repository.lower()
             or event.issue_number != profile.issue_number
             or event.actor != profile.actor.lower()
-            or event.body != "/mgar investigate " + profile.question
+            or (not follow_up and event.body != "/mgar investigate " + profile.question)
         ):
             raise DomainError("LIVE_SCOPE_DENIED", "Event differs from the reviewed live case", 403)
 

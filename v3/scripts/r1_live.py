@@ -41,6 +41,7 @@ def main() -> None:
         allow_external_write=True,
         github_use_gh_token=True,
         github_mcp_binary=args.binary,
+        graph_version="r1-quotes-v1",
     )
     permit = load_permit(args.profile, args.authorization, settings)
     permit.validate()

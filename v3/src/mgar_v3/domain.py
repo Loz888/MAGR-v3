@@ -85,7 +85,12 @@ class RunInput(Model):
 
 
 class ControlInput(Model):
-    action: Literal["cancel", "resume"]
+    action: Literal["pause", "cancel", "resume"]
+
+
+class MessageInput(Model):
+    client_request_id: Annotated[str, Field(min_length=1, max_length=200)]
+    body: Annotated[str, Field(min_length=1, max_length=16000)]
 
 
 class DomainError(Exception):

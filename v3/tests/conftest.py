@@ -46,6 +46,7 @@ def settings(database: str, tmp_path) -> Settings:
         repository="example/mgar-test",
         local_actor="owner",
         allowed_actors=["owner"],
+        graph_version="r1-quotes-v1",
     )
 
 

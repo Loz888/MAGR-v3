@@ -50,5 +50,10 @@ class LiveInvestigator(FixtureInvestigator):
 
     def investigate(self, question: str, content: str, evidence_id: UUID) -> Investigation:
         return DeepSeekInvestigator(self.engine, self.permit, self.model_client).investigate(
-            self.run_id, question, content, evidence_id, execution_epoch=self.execution_epoch
+            self.run_id,
+            question,
+            content,
+            evidence_id,
+            execution_epoch=self.execution_epoch,
+            step_key=self.model_step_key,
         )

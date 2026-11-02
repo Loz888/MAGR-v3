@@ -1,0 +1,84 @@
+{
+  "task": "V31-R2",
+  "status": "DONE",
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "accepted_at": "2026-11-02T04:05:26.755661+00:00",
+  "prerequisite": {
+    "task": "V31-R1-LIVE",
+    "gate": "PASS",
+    "published_commit": "d3769b4",
+    "summary": "r1-live-20261102.json"
+  },
+  "full_regression": {
+    "tests": 112,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "card_verification": {
+    "counts": {
+      "tests": 57,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "command_exit_code": 0,
+    "source_sha256": "f3dd26890a6da842d04e9c2e9fbac61d3bc386b7ca8d73d6d92570233eb3b521",
+    "started_at": "2026-11-02T04:03:29.309118+00:00",
+    "finished_at": "2026-11-02T04:03:47.751800+00:00"
+  },
+  "lint": "PASS",
+  "typecheck": "PASS",
+  "components": {
+    "postgres": "real",
+    "redis": "real",
+    "langgraph": "real_postgres_checkpoint",
+    "mcp": "real_stdio_controlled_server",
+    "model": "fixture_http_transport",
+    "github": "controlled_server",
+    "router_llm": "not_used"
+  },
+  "sigkill_cases": [
+    "test_sigkill_mailbox_and_read_job_recovery[checkpoint_before_cursor]",
+    "test_sigkill_mailbox_and_read_job_recovery[cursor_before_checkpoint]",
+    "test_sigkill_mailbox_and_read_job_recovery[tool_running]",
+    "test_sigkill_mailbox_and_read_job_recovery[tool_completion_before_checkpoint]"
+  ],
+  "delivered": [
+    "Immutable intake snapshots with separate delivered/read/consumed state and durable cursor",
+    "Explicit intake/replan at node boundaries; original question retained",
+    "Follow-up input without duplicate Ticket/Run or Router LLM calls",
+    "Pause/resume/cancel with execution epochs; late read results rejected",
+    "Durable asynchronous readonly jobs with completion events in Mailbox",
+    "New input invalidates unsent approvals; in-flight/unknown writes reconcile before continuation",
+    "SSE progress and results remain in run_events and Action/Outbox/Dispatcher",
+    "Bounded mailbox/context/replans and profile-wide publication quota"
+  ],
+  "r1_ledger_after_r2": {
+    "used_calls": 2,
+    "reserved_micros": 0,
+    "settled_micros": 1745
+  },
+  "r1_run_after_r2": {
+    "status": "succeeded",
+    "graph_version": "r1-quotes-v1"
+  },
+  "additional_real_model_calls_for_r2": 0,
+  "v2_tracked_files_unchanged": true,
+  "limits": {
+    "pending_mailbox_messages": 64,
+    "pending_mailbox_bytes": 65536,
+    "snapshot_bytes": 65536,
+    "unconsumed_message_ttl_days": 7,
+    "max_distinct_input_versions_per_run": 3,
+    "default_result_comments_per_live_profile": 1
+  },
+  "release_status": "ENGINEERING_INCOMPLETE",
+  "coordination_ready": "NOT_EVALUATED",
+  "remaining": [
+    "R2 real paid business evaluation not performed",
+    "R3-R6 not implemented"
+  ],
+  "raw_logs": "Local v3/evidence/V31-R2/; excluded from public source publication"
+}
