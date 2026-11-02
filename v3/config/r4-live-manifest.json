@@ -1,0 +1,54 @@
+{
+  "schema": "r4-live-investigation-manifest-v1",
+  "status": "NOT_RUN",
+  "reason": "cumulative_paid_call_limit_exhausted",
+  "root_authorization_limits": {
+    "physical_calls": 3,
+    "usd": 2,
+    "used_physical_calls": 3,
+    "conservative_cost_micros": 2456,
+    "remaining_physical_calls": 0
+  },
+  "new_paid_calls": 0,
+  "new_github_comments": 0,
+  "sources": {
+    "knowledge": "12 owned synthetic documents; exact snapshot IDs and model hash required in a future reviewed profile",
+    "data": "local independent readonly role; frozen paid-event dataset hash",
+    "repository": "Loz888/MAGR-v3 at reviewed immutable commit; separate from fixture source"
+  },
+  "cases": [
+    {
+      "id": "paid-event-count",
+      "question": "Compare paid events with distinct paid orders using knowledge, SQL and repository observations.",
+      "kind": "normal",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "duplicate-amount",
+      "question": "Determine whether repeated paid events inflate the sum and identify available code evidence.",
+      "kind": "normal",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "business-definition",
+      "question": "Check whether documented order-count definitions match data and implementation.",
+      "kind": "normal",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "knowledge-revoked",
+      "question": "Attempt citation after source access revocation.",
+      "kind": "denied",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "missing-data",
+      "question": "Investigate with no independent data profile configured.",
+      "kind": "insufficient",
+      "status": "NOT_RUN"
+    }
+  ],
+  "single_agent_comparison": "NOT_RUN",
+  "business_oracle": "NOT_RUN",
+  "next_step": "Finish R4 engineering without spending; a future paid experiment needs a new explicit call grant and frozen profiles."
+}

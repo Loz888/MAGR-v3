@@ -1,0 +1,14 @@
+{
+  "provider": "spacy-local",
+  "model": "zh_core_web_md",
+  "revision": "3.8.0",
+  "dimension": 300,
+  "pooling": "mean_known_word_vectors",
+  "normalization": "l2",
+  "distance": "cosine",
+  "vectors_license": "CC0",
+  "package_license": "MIT",
+  "url": "https://github.com/explosion/spacy-models/releases/download/zh_core_web_md-3.8.0/zh_core_web_md-3.8.0-py3-none-any.whl",
+  "sha256": "bcf300540fbd15b1b0aac358f327f2a31de8992b346162d5600f843514da0e98",
+  "archive_prefix": "zh_core_web_md/zh_core_web_md-3.8.0/"
+}

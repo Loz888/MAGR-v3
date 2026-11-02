@@ -113,5 +113,33 @@
       "web": "real_fastapi_static_and_authenticated_api",
       "router": "real_engine_with_bounded_proposals"
     }
+  },
+  "V31-R4": {
+    "tests": [
+      "tests/test_r4_knowledge.py",
+      "tests/test_r4_experts.py",
+      "tests/test_r4_context.py",
+      "tests/test_r4_mcp.py",
+      "tests/test_r4_recovery.py",
+      "tests/test_r4_api.py",
+      "tests/test_environment.py",
+      "tests/test_models.py",
+      "tests/test_api.py",
+      "tests/test_effects.py",
+      "tests/test_duplex.py"
+    ],
+    "timeout_seconds": 180,
+    "components": {
+      "postgres": "real_pgvector_exact_filtered_search",
+      "redis": "real_cache_with_acl_recheck_and_signed_values",
+      "langgraph": "real_postgres_checkpoint_parallel_Send",
+      "mcp": "real_http_knowledge_and_data",
+      "data": "independent_postgresql_readonly_role_and_typed_cells",
+      "expert_model": "fixture_deterministic_protocol_provider",
+      "embedding": "fixture_protocol_only_in_this_target; real model gate is make rag-eval",
+      "reranker": "fixture_protocol_only_in_this_target; real model gate is make rag-eval",
+      "github": "controlled_transport_no_new_publication",
+      "web": "real_fastapi_static_and_authenticated_api"
+    }
   }
 }

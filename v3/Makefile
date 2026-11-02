@@ -29,3 +29,20 @@ test:
 	$(UV) run --frozen pytest
 dev:
 	$(UV) run --frozen uvicorn mgar_v3.api:create_app --factory --host 127.0.0.1 --port 18080
+
+.PHONY: rag-models rag-train rag-demo rag-eval data-demo
+rag-models:
+	$(UV) sync --frozen --extra rag-models
+	$(UV) run --frozen --extra rag-models python scripts/install_rag_models.py
+rag-train:
+	$(UV) run --frozen --extra rag-models python scripts/r4.py train
+rag-demo:
+	$(UV) run --frozen --extra rag-models python scripts/r4.py seed
+rag-eval:
+	$(UV) run --frozen --extra rag-models python scripts/r4.py eval
+data-demo:
+	$(UV) run --frozen python scripts/r4.py data
+
+.PHONY: r4-local
+r4-local:
+	$(UV) run --frozen --extra rag-models python scripts/r4_local.py

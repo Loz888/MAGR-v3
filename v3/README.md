@@ -4,7 +4,7 @@
 `/workspace/MAGR-v3/v3` 是开发云环境中的路径，在你的 Windows/WSL 上不会自动存在。
 本地 `.env`、`.local`、依赖环境与凭据不进入 Git；提交与推送状态以 Git 历史和最新验收记录为准。
 
-R0/R1 验收时 88 个 V3 测试通过；R2 改造后 112 项通过，R3 改造后当前完整回归 150 项通过，0 失败、0 跳过。V2 原有 682 个 Go 和 453 个 Python 测试复验通过，V2 源码保持不变。
+R0/R1 验收时 88 个 V3 测试通过；R2 改造后 112 项通过，R3 改造后完整回归 150 项通过，0 失败、0 跳过。V2 原有 682 个 Go 和 453 个 Python 测试复验通过，V2 源码保持不变。
 R1 真实模型与 GitHub 结果评论验收 PASS：2 次真实调用，保守计费 USD 0.001745，一条结果评论。首个结构错误响应未发布；第二次成功，并通过模型落库及远程回执两个 SIGKILL 恢复实验。详情见 `docs/acceptance/r1-live-20261102.json`。完整 V3.1 仍为 ENGINEERING_INCOMPLETE。
 
 在本目录执行 `make setup`、`make deps-up`、`make migrate`、`make doctor`，再运行 `make dev`。
@@ -118,7 +118,7 @@ make verify TASK=V31-R2
 
 verify 在本地 v3/evidence/ 保存原始输出、真实退出码、JUnit 与源代码摘要；这些原始文件不纳入公开推送，公开验收摘要见 docs/。未知任务、缺失测试、零收集、跳过和超时均不会通过。
 工程测试使用真实 PostgreSQL、Redis、LangGraph checkpoint 和跨进程 MCP；聊天模型和外部 GitHub 业务使用明确标记的替身。
-R1 真实闭环通过后依次实施并验证 R2、R3 工程，R2 摘要见 `docs/acceptance/r2-engineering-20261102.json`。R2 未额外做真实付费业务评测，R3 仅限定真实 Router 验收；R4–R6 保持 TODO，不声明生产就绪。
+R1 真实闭环通过后依次实施并验证 R2、R3 工程，R2 摘要见 `docs/acceptance/r2-engineering-20261102.json`。R2 未额外做真实付费业务评测，R3 仅限定真实 Router 验收；R4 工程已继续实施，范围与门禁见下方；R5/R6 保持 TODO，不声明生产就绪。
 
 ## R3 Router 与统一工单
 
@@ -143,3 +143,10 @@ R3 真实 Router 验收使用冻结的合成事件，详情见 `docs/acceptance/
 官方 GitHub MCP 可通过 `make install-github-mcp` 安装锁定的 Linux x86_64 二进制；安装和每次运行都会校验 SHA256。设置 `MGAR_V3_GITHUB_MCP_BINARY` 指向该文件。只读进程仅暴露 `issue_read,get_file_contents`，写入进程仅暴露 `add_issue_comment`。显式设置 `MGAR_V3_GITHUB_USE_GH_TOKEN=true` 可引用宿主机已有 GitHub 凭据；分别配置的读写 token 优先，不把模型或数据库凭据交给 MCP 子进程。
 
 `scripts/r1_live.py` 是操作员分阶段实验工具，要求已批准的授权文件；`model-crash` 需要显式 `--execute-paid`，`send-crash` 需要操作员检查完整 `proposal.md` 后提供准确的 `--approved-payload-hash`。两个阶段故意 SIGKILL，分别用 `resume` 和 `reconcile` 恢复。每次实际调用都记入 profile 共享账本；不要重复执行已完成的真实实验或修改授权来清零预算。
+
+
+## R4 知识、专家与摘要
+
+R4 完整回归 187 项、专项验收 103 项通过，0 失败、0 跳过。新增混合检索、不可变知识快照、Knowledge/Repo/Data 并行专家、独立证据核验、真实 HTTP MCP、独立只读 SQL 角色、ContextEdge/Spill 与显式确认摘要。旧图和授权哈希兼容保留。
+
+更新、安装本地中文模型、准备合成资料与启动命令统一见 [R4 使用说明](docs/r4-runbook.md)。默认仍为协议演示；本地模型真实检索、工程测试和完整付费业务 live 分开记录，详见 [R4 验收摘要](docs/acceptance/r4-20261102.json)。三次付费调用额度已用满，本轮没有新增付费调用。

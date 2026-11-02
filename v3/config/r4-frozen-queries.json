@@ -1,0 +1,65 @@
+{
+  "version": "r4-frozen-paraphrases-v1",
+  "queries": [
+    {
+      "id": "refund",
+      "query": "取消购买后款项要等多久才回到银行卡？",
+      "expected_source_uri": "kb://demo/refund"
+    },
+    {
+      "id": "order-count",
+      "query": "支付成功的记录比实际订单多，统计该按什么口径？",
+      "expected_source_uri": "kb://demo/order-count"
+    },
+    {
+      "id": "idempotency",
+      "query": "网络重发支付请求会不会把用户的钱再扣一遍？",
+      "expected_source_uri": "kb://demo/idempotency"
+    },
+    {
+      "id": "inventory",
+      "query": "两人同时抢最后一件商品怎样防止卖超？",
+      "expected_source_uri": "kb://demo/inventory"
+    },
+    {
+      "id": "latency",
+      "query": "结账偶尔特别慢，应该看哪个延迟指标？",
+      "expected_source_uri": "kb://demo/latency"
+    },
+    {
+      "id": "backfill",
+      "query": "把旧记录导入新表时如何避免覆盖期间新增的数据？",
+      "expected_source_uri": "kb://demo/backfill"
+    },
+    {
+      "id": "replica",
+      "query": "刚付款马上查订单却找不到，刷新后又出现是什么原因？",
+      "expected_source_uri": "kb://demo/replica"
+    },
+    {
+      "id": "jwt",
+      "query": "接口返回四零一和四零三分别说明什么？",
+      "expected_source_uri": "kb://demo/jwt"
+    },
+    {
+      "id": "queue",
+      "query": "消费者总是失败且消息反复出现时最终应送到哪里？",
+      "expected_source_uri": "kb://demo/queue"
+    },
+    {
+      "id": "sms",
+      "query": "验证码发得太频繁被拒绝，一小时允许发送几回？",
+      "expected_source_uri": "kb://demo/sms"
+    },
+    {
+      "id": "clock",
+      "query": "签名明明正确却被说过期，客户端时间应校准到什么范围？",
+      "expected_source_uri": "kb://demo/clock"
+    },
+    {
+      "id": "schema",
+      "query": "线上应用滚动发布时怎样安全地给表增加必填字段？",
+      "expected_source_uri": "kb://demo/schema"
+    }
+  ]
+}

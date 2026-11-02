@@ -9,6 +9,10 @@ from mgar_v3.settings import Settings
 
 
 class LiveProfile(Model):
+    investigation_version: Literal["r1-quotes-v1", "r4-experts-v1"] = "r1-quotes-v1"
+    knowledge_snapshot_ids: list[str] = Field(default_factory=list, max_length=2)
+    rag_config_hash: str | None = None
+    data_fixture_hash: str | None = None
     case_id: str
     project_id: str
     repository: str
@@ -33,6 +37,24 @@ class LiveProfile(Model):
 
     @model_validator(mode="after")
     def fixed_source_required(self) -> Self:
+        if self.investigation_version == "r4-experts-v1":
+            from uuid import UUID
+
+            if (
+                not self.knowledge_snapshot_ids
+                or not self.rag_config_hash
+                or not self.data_fixture_hash
+            ):
+                raise ValueError(
+                    "R4 live requires frozen knowledge, model configuration and data hashes"
+                )
+            for value in self.knowledge_snapshot_ids:
+                UUID(value)
+            for value in (self.rag_config_hash, self.data_fixture_hash):
+                if len(value) != 64 or any(c not in "0123456789abcdef" for c in value):
+                    raise ValueError("R4 source hashes must be SHA256 values")
+        elif self.knowledge_snapshot_ids or self.rag_config_hash or self.data_fixture_hash:
+            raise ValueError("R4 source configuration requires its explicit profile version")
         if self.source_kind == "file" and not self.source_ref:
             raise ValueError("File reads require an immutable commit")
         if self.source_kind == "issue" and not self.expected_source_hash:
@@ -42,6 +64,14 @@ class LiveProfile(Model):
     @property
     def profile_hash(self) -> str:
         payload = self.model_dump(mode="json")
+        if self.investigation_version == "r1-quotes-v1":
+            for key in (
+                "investigation_version",
+                "knowledge_snapshot_ids",
+                "rag_config_hash",
+                "data_fixture_hash",
+            ):
+                payload.pop(key)
         if self.max_model_calls == 1:
             # Single-call profiles retain the hash used before configurable call limits.
             payload.pop("max_model_calls")

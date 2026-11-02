@@ -1,0 +1,170 @@
+{
+  "schema": "mgar-r4-acceptance-v1",
+  "date": "2026-11-02",
+  "base_commit": "93a33982100566e3b9898f90de84b79fe07ee5dc",
+  "release_status": "ENGINEERING_INCOMPLETE",
+  "engineering_gate": "PASS",
+  "full_paid_business_live_gate": "NOT_RUN",
+  "checks": {
+    "lint": "PASS",
+    "strict_mypy": "PASS",
+    "javascript_syntax": "PASS",
+    "migrate": "PASS",
+    "postgres_doctor": "PASS",
+    "redis_doctor": "PASS",
+    "full_regression": {
+      "passed": 187,
+      "failed": 0,
+      "skipped": 0,
+      "duration_seconds": 63.48
+    },
+    "r4_registered_acceptance": {
+      "counts": {
+        "tests": 103,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration_seconds": 35.205,
+      "source_sha256": "09476c6f9759694be848fd4c97542049282b0fc09e744889c2e4337da00039cd"
+    },
+    "r4_sigkill_handoffs": {
+      "passed": 4,
+      "phases": [
+        "evidence_read",
+        "expert_completed",
+        "expert_joined",
+        "approval_requested"
+      ],
+      "recovery": "same Run; durable results reused; one proposed Action; old task grants removed"
+    },
+    "covered_boundaries": [
+      "immutable versioned snapshots",
+      "index publication CAS and failure rollback",
+      "Chinese identifier tokenization",
+      "cache ACL recheck and signed payload",
+      "role-scoped MCP capabilities",
+      "closed SQL AST and actual DB privilege denial",
+      "SQL lock timeout and typed-cell mismatch",
+      "all expert branches run in parallel and join after failure",
+      "maximum two supplemental rounds and shared tool budget",
+      "concurrent user input replans latest revision",
+      "cancellation fences late tool results",
+      "current source guards evidence, report, action and approval access",
+      "cross-actor and cross-Run rejection",
+      "ended Ticket summary exact-hash confirmation and revocation",
+      "bounded ContextEdge traversal and signed pagination",
+      "actual PDF text/page locators and scanned PDF rejection"
+    ]
+  },
+  "real_local_retrieval": {
+    "status": "PASS",
+    "documents": 12,
+    "frozen_queries": 12,
+    "training_pairs": 16,
+    "training_and_frozen_queries_disjoint": true,
+    "metrics": {
+      "recall_at_1": 0.75,
+      "recall_at_5": 0.9166666666666666,
+      "recall_at_8": 0.9166666666666666
+    },
+    "config": {
+      "embedding_model": "zh_core_web_md@3.8.0:mean300:l2:bcf300540fbd15b1b0aac358f327f2a31de8992b346162d5600f843514da0e98",
+      "embedding_mode": "local_pretrained",
+      "dimension": 300,
+      "normalization": "l2",
+      "distance": "cosine",
+      "tokenizer": "jieba-0.42.1:hmm-off:identifiers-v1",
+      "reranker": "pairwise-linear:3aa28294883c5b45ab8618eddb82ec16ed8762b0a7625196d15ec6f1f3781023",
+      "reranker_mode": "local_trained_pairwise",
+      "rrf_k": 60,
+      "parser": "r4-text-v1"
+    },
+    "training_hash": "08e6820d496d80fd9ca619e14e729ffc2c9997b785173ad2576dfbdba08809a8",
+    "frozen_queries_hash": "4e2be29295d86702ad6239dfee97b86b91f7090755578a5cc0b10943ec059283",
+    "corpus_manifest_hash": "84199eed5d09a9d21ac31c954de0ff0cea96a7fae29c033d7a78b1354e51772d",
+    "misses": [
+      {
+        "case_id": "jwt",
+        "top_8_rank": null,
+        "vector_rank": 10,
+        "bm25_rank": 7,
+        "classification": "retrieval/reranking",
+        "observation": "Chinese spoken digits for HTTP status codes were not normalized."
+      }
+    ],
+    "limitations": [
+      "Small owned synthetic Chinese corpus, not a production benchmark.",
+      "Learned linear reranking is not a Transformer cross-encoder.",
+      "No measured Recall@5 improvement over BM25 alone on this frozen sample."
+    ]
+  },
+  "combined_local_run": {
+    "schema": "r4-local-combined-v1",
+    "status": "PASS",
+    "observed_at": "2026-11-02T07:11:08.870446+00:00",
+    "action_count": 1,
+    "action_status": "proposed_not_approved",
+    "report_sha256": "70de51d8dfe515bc2e5006fec6458bc9bdb2c7c0968e4c82a9ab605fe89ac989",
+    "resolution_sha256": "feb2c4d7731f2734e7e75c81c5d6927d4309dc1c48be476f87c7d262878339fd",
+    "roles": [
+      "data",
+      "knowledge",
+      "repo"
+    ],
+    "actual_reads": 4,
+    "sql_values": [
+      3,
+      2,
+      "32.00"
+    ],
+    "mechanical_verification": "PASS",
+    "duration_seconds": 0.719,
+    "components": {
+      "embedding": "real_local_pretrained_zh_core_web_md_3.8.0",
+      "retrieval": "real_pgvector_chinese_BM25_RRF",
+      "reranker": "real_local_trained_pairwise_linear",
+      "mcp": "actual_HTTP_SDK_knowledge_and_data",
+      "sql": "actual_independent_readonly_PostgreSQL_role",
+      "experts": "fixture_deterministic",
+      "repository": "owned_synthetic_fixture",
+      "langgraph": "official_PostgresSaver_parallel_Send"
+    },
+    "new_paid_calls": 0,
+    "new_github_comments": 0,
+    "full_paid_business_live": "NOT_RUN"
+  },
+  "authorization": {
+    "max_physical_paid_calls": 3,
+    "max_usd": 2,
+    "cumulative_used_calls": 3,
+    "remaining_calls": 0,
+    "cumulative_conservative_cost_micros": 2456,
+    "reserved_micros": 0,
+    "r4_new_paid_calls": 0,
+    "r4_new_github_comments": 0,
+    "new_paid_authorization_created": false
+  },
+  "full_live_not_run": [
+    "Paid expert inference with real GitHub repository evidence",
+    "Three normal and two denied/insufficient frozen business cases",
+    "Independent business oracle and same-tool single-agent comparison"
+  ],
+  "reproduce": [
+    "make lint",
+    "make typecheck",
+    "make verify TASK=V31-R4",
+    "make test",
+    "make rag-eval",
+    "make r4-local"
+  ],
+  "evidence_retention": "Raw logs, failed attempts, execution metadata, source artifacts and reports remain local in ignored evidence/ and .local/.",
+  "v2": {
+    "tracked_files_changed": 0,
+    "baseline_rerun_in_r4": false
+  },
+  "next_phases": {
+    "R5": "TODO",
+    "R6": "TODO"
+  }
+}

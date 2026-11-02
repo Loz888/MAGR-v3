@@ -3,7 +3,7 @@ import hashlib
 import hmac
 import json
 from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from contextlib import AsyncExitStack, asynccontextmanager
 from typing import Annotated, Any, cast
 from uuid import UUID, uuid4
 
@@ -16,14 +16,16 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
-from mgar_v3.coordination.engine import COMMAND, Engine
+from mgar_v3.coordination.engine import COMMAND, DUPLEX_VERSIONS, Engine
 from mgar_v3.domain import ApprovalInput, DomainError, MessageInput, RunInput, TriggerInput
 from mgar_v3.effects.dispatcher import Dispatcher, Transport
 from mgar_v3.effects.github import GitHubMCPTransport
 from mgar_v3.evidence.artifacts import ArtifactStore
 from mgar_v3.graph.live_investigator import LiveInvestigator
 from mgar_v3.graph.runner import Runner
+from mgar_v3.knowledge.api import register
 from mgar_v3.live import load_permit
+from mgar_v3.mcp.r4 import server
 from mgar_v3.routing.domain import CorrectionInput, EventInput
 from mgar_v3.routing.live import load_router_permit
 from mgar_v3.routing.model import DeepSeekRouter
@@ -97,6 +99,7 @@ def create_app(
         workers: dict[UUID, asyncio.Task[None]] = {}
         effect: asyncio.Task[Any] | None = None
         router_task: asyncio.Task[Any] | None = None
+        index_task: asyncio.Task[Any] | None = None
         nonlocal router_provider
         if configuration.router_mode == "fixture":
             router_provider = FixtureRouter()
@@ -141,7 +144,7 @@ def create_app(
                 )
 
         async def supervise() -> None:
-            nonlocal effect, router_task
+            nonlocal effect, router_task, index_task
             while not stopped.is_set():
                 for run_id, worker in list(workers.items()):
                     if worker.done():
@@ -153,6 +156,20 @@ def create_app(
                 if router_task is not None and router_task.done():
                     router_task.result()
                     router_task = None
+                if index_task is not None and index_task.done():
+                    index_task.result()
+                    index_task = None
+                if index_task is None:
+                    pending = [j for j in authority.knowledge.jobs() if j["status"] == "queued"]
+                    if pending:
+
+                        async def index_one(job_id: UUID) -> None:
+                            try:
+                                await asyncio.to_thread(authority.knowledge.index, job_id)
+                            except DomainError:
+                                pass  # Durable failed job retains its reason.
+
+                        index_task = asyncio.create_task(index_one(pending[-1]["job_id"]))
                 for run in authority.list_runs():
                     if (
                         run["status"] != "queued"
@@ -179,24 +196,32 @@ def create_app(
         task = asyncio.create_task(supervise()) if run_background else None
         app.state.supervisor = task
         try:
-            yield
+            async with AsyncExitStack() as stack:
+                for mcp_server in mcp_servers:
+                    await stack.enter_async_context(mcp_server.session_manager.run())
+                yield
         finally:
             stopped.set()
             if task is not None:
                 await task
                 for run_id in workers:
                     run = authority.get_run(run_id)
-                    if run["graph_version"] == "r2-mailbox-v1" and run["status"] == "running":
+                    if run["graph_version"] in DUPLEX_VERSIONS and run["status"] == "running":
                         authority.pause(run_id)
                 await asyncio.gather(*workers.values())
                 if effect is not None:
                     await effect
                 if router_task is not None:
                     await router_task
+                if index_task is not None:
+                    await index_task
             if provided is None:
                 authority.close()
 
-    app = FastAPI(title="MGAR V3.1 R3", lifespan=lifespan)
+    app = FastAPI(title="MGAR V3.1 R4", lifespan=lifespan)
+    mcp_servers = [server(role, lambda: app.state.engine) for role in ("knowledge", "data")]
+    for role, mcp_server in zip(("knowledge", "data"), mcp_servers, strict=True):
+        app.mount("/mcp/" + role, mcp_server.streamable_http_app())
     app.mount("/static", StaticFiles(directory=ROOT / "web"), name="static")
     app.add_middleware(BodyLimitMiddleware, max_bytes=configuration.max_body_bytes)
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "[::1]"])
@@ -265,7 +290,7 @@ def create_app(
             raise DomainError("SUPERVISOR_UNAVAILABLE", "Execution supervisor is unavailable", 503)
         with service.transaction() as conn:
             migrations = conn.execute("SELECT count(*) AS n FROM app.schema_migrations").fetchone()
-            if migrations is None or migrations["n"] < 7:
+            if migrations is None or migrations["n"] < 8:
                 raise DomainError("MIGRATIONS_PENDING", "Database migrations are incomplete", 503)
         return {"database": "ready", "release_status": "ENGINEERING_INCOMPLETE"}
 
@@ -330,7 +355,13 @@ def create_app(
             body=COMMAND + body.question,
             execution_mode=body.execution_mode,
         )
-        return service.ingest(event, live_permit if body.execution_mode == "live" else None)
+        with service.transaction():
+            receipt = service.ingest(event, live_permit if body.execution_mode == "live" else None)
+            if receipt.run_id is not None:
+                service.tools.requested_snapshots(
+                    receipt.run_id, body.knowledge_snapshot_ids, receipt.duplicate
+                )
+            return receipt
 
     @app.get("/api/v3/runs", dependencies=[Depends(authenticated)])
     def list_runs(service: Annotated[Engine, Depends(authority)]) -> Any:
@@ -353,7 +384,7 @@ def create_app(
         run = service.get_run(run_id)
         if not run["report_hash"]:
             raise DomainError("REPORT_NOT_READY", "Report is not available", 404)
-        return Response(service.artifacts.read(run["report_hash"]), media_type="text/markdown")
+        return Response(service.artifact_bytes(run["report_hash"]), media_type="text/markdown")
 
     @app.get("/api/v3/runs/{run_id}/actions", dependencies=[Depends(authenticated)])
     def actions(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:
@@ -495,4 +526,5 @@ def create_app(
             status_code=503,
         )
 
+    register(app, authority, authenticated)
     return app

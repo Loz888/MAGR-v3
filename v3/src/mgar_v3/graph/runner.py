@@ -57,6 +57,14 @@ class Runner:
             from mgar_v3.graph.duplex import execute_duplex
 
             return execute_duplex(self, run_id)
+        if self.engine.get_run(run_id)["graph_version"] == "r4-experts-v1":
+            from mgar_v3.graph.experts import execute_experts
+
+            return execute_experts(self, run_id)
+        if self.engine.get_run(run_id)["graph_version"] != "r1-quotes-v1":
+            raise DomainError(
+                "GRAPH_VERSION_UNSUPPORTED", "Graph version requires its original implementation"
+            )
         run = self.engine.begin_run(run_id)
         epoch = run["execution_epoch"]
         self.execution_epoch = epoch

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "refund",
+    "title": "退款到账规则",
+    "path": "fixtures/knowledge/refund.md",
+    "source_uri": "kb://demo/refund",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "order-count",
+    "title": "订单统计与重复事件",
+    "path": "fixtures/knowledge/order-count.md",
+    "source_uri": "kb://demo/order-count",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "idempotency",
+    "title": "幂等键与重复扣款",
+    "path": "fixtures/knowledge/idempotency.md",
+    "source_uri": "kb://demo/idempotency",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "inventory",
+    "title": "库存扣减与超卖",
+    "path": "fixtures/knowledge/inventory.md",
+    "source_uri": "kb://demo/inventory",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "latency",
+    "title": "接口响应时间告警",
+    "path": "fixtures/knowledge/latency.md",
+    "source_uri": "kb://demo/latency",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "backfill",
+    "title": "补数与双写切换",
+    "path": "fixtures/knowledge/backfill.md",
+    "source_uri": "kb://demo/backfill",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "replica",
+    "title": "数据库主从延迟",
+    "path": "fixtures/knowledge/replica.md",
+    "source_uri": "kb://demo/replica",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "jwt",
+    "title": "登录令牌失效",
+    "path": "fixtures/knowledge/jwt.md",
+    "source_uri": "kb://demo/jwt",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "queue",
+    "title": "消息消费重试",
+    "path": "fixtures/knowledge/queue.md",
+    "source_uri": "kb://demo/queue",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "sms",
+    "title": "短信发送频率限制",
+    "path": "fixtures/knowledge/sms.md",
+    "source_uri": "kb://demo/sms",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "clock",
+    "title": "跨机器时钟与签名",
+    "path": "fixtures/knowledge/clock.md",
+    "source_uri": "kb://demo/clock",
+    "source_version": "demo-v1"
+  },
+  {
+    "id": "schema",
+    "title": "兼容数据库字段迁移",
+    "path": "fixtures/knowledge/schema.md",
+    "source_uri": "kb://demo/schema",
+    "source_version": "demo-v1"
+  }
+]

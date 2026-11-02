@@ -1,3 +1,4 @@
+import hashlib
 from collections.abc import Iterator
 from uuid import uuid4
 
@@ -22,6 +23,11 @@ def database() -> Iterator[str]:
     dsn = make_conninfo(base, dbname=name)
     migrate(dsn)
     yield dsn
+    role = "r4_reader_" + hashlib.sha256(name.encode()).hexdigest()[:12]
+    with psycopg.connect(dsn, autocommit=True) as conn:
+        if conn.execute("SELECT 1 FROM pg_roles WHERE rolname=%s", (role,)).fetchone():
+            conn.execute(sql.SQL("DROP OWNED BY {}").format(sql.Identifier(role)))
+            conn.execute(sql.SQL("DROP ROLE {}").format(sql.Identifier(role)))
     # Only this session's uniquely generated disposable database can be removed.
     assert name.startswith("mgar_v3_test_") and len(name) == 45
     with psycopg.connect(base, autocommit=True) as conn:
@@ -31,13 +37,17 @@ def database() -> Iterator[str]:
 @pytest.fixture
 def settings(database: str, tmp_path) -> Settings:
     with psycopg.connect(database, autocommit=True) as conn:
+        for (schema,) in conn.execute(
+            "SELECT nspname FROM pg_namespace WHERE nspname ~ '^r4_data_[a-f0-9]{12}$'"
+        ).fetchall():
+            conn.execute(sql.SQL("DROP SCHEMA {} CASCADE").format(sql.Identifier(schema)))
         tables = conn.execute(
-            "SELECT tablename FROM pg_tables WHERE schemaname='app' "
+            "SELECT schemaname,tablename FROM pg_tables WHERE schemaname IN ('app','knowledge') "
             "AND tablename!='schema_migrations'"
         ).fetchall()
         conn.execute(
             sql.SQL("TRUNCATE {} RESTART IDENTITY CASCADE").format(
-                sql.SQL(",").join(sql.Identifier("app", row[0]) for row in tables)
+                sql.SQL(",").join(sql.Identifier(row[0], row[1]) for row in tables)
             )
         )
     return Settings(

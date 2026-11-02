@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from typing import Any, Literal
+from urllib.parse import urlsplit
 
 from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -21,7 +22,7 @@ class Settings(BaseSettings):
     local_actor: str = "loz888"
     allowed_actors: list[str] = ["loz888"]
     policy_version: str = "r1-explicit-command-v1"
-    graph_version: Literal["r1-quotes-v1", "r2-mailbox-v1"] = "r2-mailbox-v1"
+    graph_version: Literal["r1-quotes-v1", "r2-mailbox-v1", "r4-experts-v1"] = "r4-experts-v1"
     max_body_bytes: int = Field(default=65536, ge=1024, le=1048576)
     approval_ttl_seconds: int = Field(default=3600, ge=60, le=86400)
     allow_paid: bool = False
@@ -40,6 +41,27 @@ class Settings(BaseSettings):
     router_profile_path: Path | None = None
     router_authorization_path: Path | None = None
     max_concurrent_runs: int = Field(default=2, ge=1, le=4)
+    rag_mode: Literal["fixture", "local"] = "fixture"
+    data_profile_path: Path = ROOT / ".local/data-reader.json"
+    r4_tool_base_url: str | None = None
+    r4_sql_ttl_seconds: int = Field(default=300, ge=1, le=3600)
+
+    @field_validator("r4_tool_base_url")
+    @classmethod
+    def local_tool_server(cls, value: str | None) -> str | None:
+        if value is not None:
+            parsed = urlsplit(value)
+            if (
+                parsed.scheme != "http"
+                or parsed.hostname not in {"localhost", "127.0.0.1"}
+                or parsed.username
+                or parsed.password
+                or parsed.query
+                or parsed.fragment
+                or parsed.path not in {"", "/"}
+            ):
+                raise ValueError("R4 task tokens may only be sent to the local MCP authority")
+        return value
 
     @field_validator("allow_paid", "allow_external_write", mode="before")
     @classmethod

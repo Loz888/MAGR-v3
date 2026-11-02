@@ -79,6 +79,7 @@ class ApprovalInput(Model):
 
 
 class RunInput(Model):
+    knowledge_snapshot_ids: Annotated[list[UUID], Field(max_length=2)] = Field(default_factory=list)
     project_id: str
     question: Annotated[str, Field(min_length=1, max_length=8000)]
     issue_number: Annotated[int, Field(strict=True, gt=0)]

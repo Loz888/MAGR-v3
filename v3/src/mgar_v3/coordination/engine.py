@@ -9,6 +9,8 @@ import psycopg
 from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
+from mgar_v3.agents.tools import ToolAuthority
+from mgar_v3.context.store import ContextStore
 from mgar_v3.domain import (
     DomainError,
     EventReceipt,
@@ -19,6 +21,7 @@ from mgar_v3.domain import (
     digest,
 )
 from mgar_v3.evidence.artifacts import ArtifactStore
+from mgar_v3.knowledge.store import Knowledge
 from mgar_v3.live import LivePermit
 from mgar_v3.routing.store import Routing
 from mgar_v3.settings import Settings
@@ -28,6 +31,7 @@ Connection = psycopg.Connection[Row]
 ENGINE_LOCK = 31010002
 COMMAND = "/mgar investigate "
 TERMINAL = {"succeeded", "failed", "cancelled"}
+DUPLEX_VERSIONS = {"r2-mailbox-v1", "r4-experts-v1"}
 
 
 class Engine:
@@ -50,6 +54,9 @@ class Engine:
                 "ENGINE_ALREADY_RUNNING", "Another control instance owns this database"
             )
         self.routing = Routing(self)
+        self.knowledge = Knowledge(self)
+        self.context = ContextStore(self)
+        self.tools = ToolAuthority(self)
 
     def close(self) -> None:
         with self._mutex:
@@ -135,7 +142,8 @@ class Engine:
                 permit.validate_event(
                     event,
                     follow_up=bool(
-                        primary and primary["graph_version"] in {"r2-mailbox-v1", "system-reply-v1"}
+                        primary
+                        and primary["graph_version"] in DUPLEX_VERSIONS | {"system-reply-v1"}
                     ),
                 )
             route = "unrouted"
@@ -229,7 +237,7 @@ class Engine:
                 conn.execute("INSERT INTO app.router_inbox(event_id) VALUES (%s)", (event_id,))
             elif run_id:
                 self._event(conn, run_id, "input_accepted", event_id=str(event_id), route=route)
-                if primary and primary["graph_version"] in {"r2-mailbox-v1", "system-reply-v1"}:
+                if primary and primary["graph_version"] in DUPLEX_VERSIONS | {"system-reply-v1"}:
                     run = self._run(conn, run_id)
                     in_flight = conn.execute(
                         "SELECT 1 FROM app.actions WHERE run_id=%s "
@@ -239,10 +247,18 @@ class Engine:
                     if run["graph_version"] == "system-reply-v1" and not in_flight:
                         self._invalidate_proposals(conn, run_id)
                         conn.execute(
-                            "UPDATE app.runs SET graph_version='r2-mailbox-v1',status='queued',"
-                            "execution_epoch=execution_epoch+1,proposal_generation=proposal_generation+1,"
-                            "reason_code='CLARIFICATION_RECEIVED' WHERE run_id=%s",
-                            (run_id,),
+                            (
+                                "UPDATE app.runs SET "
+                                "graph_version=%s,status='queued',execution_epoch=execution_epoch+"
+                                "1,proposal_generation=proposal_generation+1,reason_code='CLARIFIC"
+                                "ATION_RECEIVED' WHERE run_id=%s"
+                            ),
+                            (
+                                "r4-experts-v1"
+                                if self.settings.graph_version == "r4-experts-v1"
+                                else "r2-mailbox-v1",
+                                run_id,
+                            ),
                         )
                     elif run["status"] == "waiting_approval" and not in_flight:
                         self._invalidate_proposals(conn, run_id)
@@ -339,7 +355,7 @@ class Engine:
                     )
                 return self._receipt(existing, duplicate=True)
             if (
-                run["graph_version"] not in {"r2-mailbox-v1", "system-reply-v1"}
+                run["graph_version"] not in DUPLEX_VERSIONS | {"system-reply-v1"}
                 or run["status"] in TERMINAL
             ):
                 raise DomainError("RUN_INPUT_CLOSED", "This Run cannot receive follow-up input")
@@ -398,7 +414,7 @@ class Engine:
             if row["status"] != "queued":
                 raise DomainError("RUN_NOT_QUEUED", "Run cannot start in its current state")
             if (
-                row["graph_version"] != "r2-mailbox-v1"
+                row["graph_version"] not in DUPLEX_VERSIONS
                 and row["thread_revision"] != row["input_revision"]
             ):
                 raise DomainError("STALE_INPUT", "New input requires explicit intake/replanning")
@@ -561,7 +577,7 @@ class Engine:
     def pause(self, run_id: UUID) -> Row:
         with self.transaction() as conn:
             run = self._run(conn, run_id)
-            if run["graph_version"] != "r2-mailbox-v1":
+            if run["graph_version"] not in DUPLEX_VERSIONS:
                 raise DomainError("CONTROL_UNSUPPORTED", "Pause requires the R2 graph")
             if run["status"] in TERMINAL or run["status"] == "paused":
                 return run
@@ -694,7 +710,14 @@ class Engine:
             if job is not None:
                 self._event(conn, job["run_id"], "tool_failed", job_id=str(job_id))
 
-    def record_read(self, evidence: Evidence, epoch: int, content: bytes) -> None:
+    def record_read(
+        self,
+        evidence: Evidence,
+        epoch: int,
+        content: bytes,
+        *,
+        r4_origin: dict[str, Any] | None = None,
+    ) -> None:
         if self.artifacts.put(content) != evidence.content_hash:
             raise DomainError("EVIDENCE_REJECTED", "Evidence does not match source bytes")
         with self.transaction() as conn:
@@ -712,6 +735,19 @@ class Engine:
                 "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)",
                 tuple(evidence.model_dump().values()),
             )
+            if r4_origin is not None:
+                conn.execute(
+                    (
+                        "INSERT INTO app.r4_reads(evidence_id,role,task_id,origin) VALUES "
+                        "(%s,%s,%s,%s)"
+                    ),
+                    (
+                        evidence.evidence_id,
+                        r4_origin["role"],
+                        r4_origin["task_id"],
+                        Jsonb(r4_origin["origin"]),
+                    ),
+                )
             self._event(
                 conn, evidence.run_id, "evidence_read", evidence_id=str(evidence.evidence_id)
             )
@@ -745,7 +781,7 @@ class Engine:
             run = self._run(conn, run_id, epoch)
             dedupe_key = (
                 f"{run['ticket_id']}:result:r{run['input_revision']}:g{run['proposal_generation']}"
-                if run["graph_version"] == "r2-mailbox-v1"
+                if run["graph_version"] in DUPLEX_VERSIONS
                 else f"{run['ticket_id']}:result:v1"
             )
             existing = conn.execute(
@@ -879,6 +915,7 @@ class Engine:
             ).fetchone()
             if row is None:
                 raise DomainError("NOT_FOUND", "Evidence was not found", 404)
+            self.tools.check_evidence(evidence_id)
             return row
 
     def artifact_bytes(self, content_hash: str) -> bytes:
@@ -891,6 +928,18 @@ class Engine:
             ).fetchone()
             if authorized is None:
                 raise DomainError("NOT_FOUND", "Artifact was not found in this project", 404)
+            refs = conn.execute(
+                "SELECT evidence_id FROM app.evidence WHERE project_id=%s AND content_hash=%s",
+                (self.settings.project_id, content_hash),
+            ).fetchall()
+            reports = conn.execute(
+                "SELECT run_id FROM app.runs WHERE report_hash=%s", (content_hash,)
+            ).fetchall()
+        # A hash is a locator, never a permission grant.
+        for ref in refs:
+            self.tools.check_evidence(ref["evidence_id"])
+        for report in reports:
+            self.tools.resolution(report["run_id"])
         return self.artifacts.read(content_hash)
 
     def events(self, run_id: UUID, after: int = 0) -> list[Row]:
@@ -904,6 +953,7 @@ class Engine:
     def actions(self, run_id: UUID) -> list[Row]:
         with self.transaction() as conn:
             self._run(conn, run_id)
+            self.tools.resolution(run_id)
             return conn.execute(
                 "SELECT * FROM app.actions WHERE run_id=%s ORDER BY created_at", (run_id,)
             ).fetchall()
@@ -923,6 +973,8 @@ class Engine:
         return action, run
 
     def _validate_action(self, conn: Connection, action: Row, run: Row) -> None:
+        if run["graph_version"] == "r4-experts-v1":
+            self.tools.validate_publication(run["run_id"])
         if (
             run["status"] != "waiting_approval"
             or run["execution_epoch"] != action["execution_epoch"]
@@ -1085,10 +1137,15 @@ class Engine:
         if run["graph_version"] == "system-reply-v1" and run["status"] not in TERMINAL:
             if run["thread_revision"] > run["input_revision"]:
                 conn.execute(
-                    "UPDATE app.runs SET status='queued',graph_version='r2-mailbox-v1',"
+                    "UPDATE app.runs SET status='queued',graph_version=%s,"
                     "reason_code='CLARIFICATION_RECEIVED',execution_epoch=execution_epoch+1,"
                     "proposal_generation=proposal_generation+1 WHERE run_id=%s",
-                    (run["run_id"],),
+                    (
+                        "r4-experts-v1"
+                        if self.settings.graph_version == "r4-experts-v1"
+                        else "r2-mailbox-v1",
+                        run["run_id"],
+                    ),
                 )
             else:
                 conn.execute(
@@ -1099,7 +1156,7 @@ class Engine:
                 )
             self._event(conn, run["run_id"], "system_reply_resolved", status=status)
             return
-        if run["graph_version"] == "r2-mailbox-v1" and run["status"] not in TERMINAL:
+        if run["graph_version"] in DUPLEX_VERSIONS and run["status"] not in TERMINAL:
             if run["status"] == "paused":
                 self._event(conn, run["run_id"], "paused_effect_resolved", status=status)
                 return
@@ -1184,6 +1241,8 @@ class Engine:
                 "AND j.status IN ('queued','running')"
             )
             self.routing.recover()
+            self.knowledge.recover()
+            self.tools.recover()
             return {
                 "unknown_actions": len(unknown),
                 "paused_runs": len(paused),
@@ -1225,7 +1284,7 @@ class Engine:
             run = self._run(conn, run_id)
             if run["status"] != "paused" or run["ticket_status"] != "open":
                 raise DomainError("NOT_RESUMABLE", "Run is not safely resumable")
-            if run["graph_version"] == "r2-mailbox-v1":
+            if run["graph_version"] in DUPLEX_VERSIONS:
                 unresolved = conn.execute(
                     "SELECT 1 FROM app.actions WHERE run_id=%s "
                     "AND status IN ('dispatching','outcome_unknown') UNION ALL "
@@ -1318,7 +1377,14 @@ class Engine:
             ):
                 return
             state = (
-                "waiting_input"
+                "paused"
+                if reason_code
+                in {
+                    "GRAPH_VERSION_UNSUPPORTED",
+                    "R4_LIVE_PROFILE_REQUIRED",
+                    "R4_SOURCE_PROFILE_CHANGED",
+                }
+                else "waiting_input"
                 if reason_code
                 in {"STALE_INPUT", "REPLAN_LIMIT", "CONTEXT_LIMIT", "MAILBOX_EXPIRED"}
                 else "failed"

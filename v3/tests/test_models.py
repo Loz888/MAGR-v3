@@ -125,6 +125,14 @@ def test_unchanged_single_call_profile_retains_legacy_authorization_hash(live_ca
     original = permit.profile.model_dump(mode="json")
     original.pop("max_model_calls")
     original.pop("max_result_comments")
+    # New R4-only fields do not alter historical R1 authorization identities.
+    for key in (
+        "investigation_version",
+        "knowledge_snapshot_ids",
+        "rag_config_hash",
+        "data_fixture_hash",
+    ):
+        original.pop(key)
     assert permit.profile.max_model_calls == 1
     assert permit.profile.profile_hash == digest(original)
     permit.validate()
