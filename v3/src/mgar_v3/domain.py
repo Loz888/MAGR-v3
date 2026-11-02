@@ -16,7 +16,7 @@ class Model(BaseModel):
 
 
 class TriggerInput(Model):
-    source: Literal["github", "cli"]
+    source: Literal["github", "cli", "web"]
     external_event_id: Annotated[str, Field(min_length=1, max_length=200)]
     project_id: Annotated[str, Field(min_length=1, max_length=100)]
     repository: Annotated[str, Field(pattern=r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")]
@@ -68,7 +68,9 @@ class Verification(Model):
     passed: bool
     checks: list[str]
     reasons: list[str]
-    scope: Literal["mechanical_evidence_only"] = "mechanical_evidence_only"
+    scope: Literal["mechanical_evidence_only", "deterministic_system_template"] = (
+        "mechanical_evidence_only"
+    )
 
 
 class ApprovalInput(Model):

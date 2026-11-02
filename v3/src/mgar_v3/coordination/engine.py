@@ -20,6 +20,7 @@ from mgar_v3.domain import (
 )
 from mgar_v3.evidence.artifacts import ArtifactStore
 from mgar_v3.live import LivePermit
+from mgar_v3.routing.store import Routing
 from mgar_v3.settings import Settings
 
 Row = dict[str, Any]
@@ -48,6 +49,7 @@ class Engine:
             raise DomainError(
                 "ENGINE_ALREADY_RUNNING", "Another control instance owns this database"
             )
+        self.routing = Routing(self)
 
     def close(self) -> None:
         with self._mutex:
@@ -131,7 +133,10 @@ class Engine:
             primary = next((s for s in subscriptions if s["role"] == "primary"), None)
             if permit is not None:
                 permit.validate_event(
-                    event, follow_up=bool(primary and primary["graph_version"] == "r2-mailbox-v1")
+                    event,
+                    follow_up=bool(
+                        primary and primary["graph_version"] in {"r2-mailbox-v1", "system-reply-v1"}
+                    ),
                 )
             route = "unrouted"
             ticket_id, run_id = None, None
@@ -162,10 +167,21 @@ class Engine:
                     raise DomainError("MAILBOX_FULL", "Run mailbox reached its input limit", 429)
                 route = "direct"
                 ticket_id, run_id = primary["ticket_id"], primary["run_id"]
-            elif event.body.startswith(COMMAND) and event.body[len(COMMAND) :].strip():
+            elif (
+                event.body.startswith(COMMAND)
+                and event.body[len(COMMAND) :].strip()
+                and not conn.execute(
+                    "SELECT 1 FROM app.router_inbox i JOIN app.trigger_events e "
+                    "USING(event_id) WHERE e.thread_id=%s",
+                    (thread["thread_id"],),
+                ).fetchone()
+            ):
                 ticket_id, run_id = self._create_ticket(conn, event, thread, permit)
                 route = "created"
-                subscriptions = [{"run_id": run_id, "role": "primary", "ticket_id": ticket_id}]
+                subscriptions = [
+                    *subscriptions,
+                    {"run_id": run_id, "role": "primary", "ticket_id": ticket_id},
+                ]
             event_id = uuid4()
             snapshot = [{"run_id": str(s["run_id"]), "role": s["role"]} for s in subscriptions]
             row = conn.execute(
@@ -187,10 +203,22 @@ class Engine:
                 ),
             ).fetchone()
             for subscription in subscriptions:
-                conn.execute(
-                    "INSERT INTO app.mailbox(run_id,event_id,seq) VALUES (%s,%s,%s)",
-                    (subscription["run_id"], event_id, thread["latest_seq"]),
-                )
+                if subscription["role"] == "primary":
+                    conn.execute(
+                        "INSERT INTO app.mailbox(run_id,event_id,seq) VALUES (%s,%s,%s)",
+                        (subscription["run_id"], event_id, thread["latest_seq"]),
+                    )
+                else:
+                    conn.execute(
+                        "INSERT INTO app.observer_deliveries(run_id,event_id,source_thread_id,seq) "
+                        "VALUES (%s,%s,%s,%s)",
+                        (
+                            subscription["run_id"],
+                            event_id,
+                            thread["thread_id"],
+                            thread["latest_seq"],
+                        ),
+                    )
             if route == "unrouted":
                 pending_router = conn.execute(
                     "SELECT count(*) AS n FROM app.router_inbox"
@@ -201,14 +229,22 @@ class Engine:
                 conn.execute("INSERT INTO app.router_inbox(event_id) VALUES (%s)", (event_id,))
             elif run_id:
                 self._event(conn, run_id, "input_accepted", event_id=str(event_id), route=route)
-                if primary and primary["graph_version"] == "r2-mailbox-v1":
+                if primary and primary["graph_version"] in {"r2-mailbox-v1", "system-reply-v1"}:
                     run = self._run(conn, run_id)
                     in_flight = conn.execute(
                         "SELECT 1 FROM app.actions WHERE run_id=%s "
                         "AND status IN ('dispatching','outcome_unknown')",
                         (run_id,),
                     ).fetchone()
-                    if run["status"] == "waiting_approval" and not in_flight:
+                    if run["graph_version"] == "system-reply-v1" and not in_flight:
+                        self._invalidate_proposals(conn, run_id)
+                        conn.execute(
+                            "UPDATE app.runs SET graph_version='r2-mailbox-v1',status='queued',"
+                            "execution_epoch=execution_epoch+1,proposal_generation=proposal_generation+1,"
+                            "reason_code='CLARIFICATION_RECEIVED' WHERE run_id=%s",
+                            (run_id,),
+                        )
+                    elif run["status"] == "waiting_approval" and not in_flight:
                         self._invalidate_proposals(conn, run_id)
                         conn.execute(
                             "UPDATE app.runs SET status='queued',execution_epoch=execution_epoch+1,"
@@ -219,14 +255,21 @@ class Engine:
             return self._receipt(row)
 
     def _create_ticket(
-        self, conn: Connection, event: TriggerInput, thread: Row, permit: LivePermit | None = None
+        self,
+        conn: Connection,
+        event: TriggerInput,
+        thread: Row,
+        permit: LivePermit | None = None,
+        *,
+        question: str | None = None,
+        basis: str = "explicit_command",
     ) -> tuple[UUID, UUID]:
         mandate_id, ticket_id, run_id = uuid4(), uuid4(), uuid4()
         scope = {
             "repository": event.repository,
             "issue_number": event.issue_number,
             "actions": ["issue_comment"],
-            "basis": "explicit_command",
+            "basis": basis,
         }
         if permit is not None:
             scope["profile_hash"] = permit.profile.profile_hash
@@ -270,7 +313,7 @@ class Engine:
                 ticket_id,
                 self.settings.graph_version,
                 event.execution_mode,
-                event.body[len(COMMAND) :].strip(),
+                question if question is not None else event.body[len(COMMAND) :].strip(),
                 thread["revision"],
             ),
         )
@@ -295,7 +338,10 @@ class Engine:
                         "EVENT_ID_REUSED", "Delivery identifier has different content"
                     )
                 return self._receipt(existing, duplicate=True)
-            if run["graph_version"] != "r2-mailbox-v1" or run["status"] in TERMINAL:
+            if (
+                run["graph_version"] not in {"r2-mailbox-v1", "system-reply-v1"}
+                or run["status"] in TERMINAL
+            ):
                 raise DomainError("RUN_INPUT_CLOSED", "This Run cannot receive follow-up input")
             primary = conn.execute(
                 "SELECT 1 FROM app.subscriptions WHERE run_id=%s AND active AND role='primary'",
@@ -408,8 +454,14 @@ class Engine:
             if versions["n"] >= 3 and not current:
                 raise DomainError("REPLAN_LIMIT", "Run reached its bounded input-version limit")
             users = [m for m in messages if m["kind"] == "user"]
+            initial_ids = set(run["initial_event_ids"])
+            followups = (
+                [m for m in users if str(m["event_id"]) not in initial_ids]
+                if initial_ids
+                else users[1:]
+            )
             question = run["question"] + "".join(
-                f"\n\nFollow-up [{m['seq']}]: {m['payload']['body']}" for m in users[1:]
+                f"\n\nFollow-up [{m['seq']}]: {m['payload']['body']}" for m in followups
             )
             if len(question.encode()) > 65536:
                 raise DomainError("CONTEXT_LIMIT", "Input snapshot exceeds its context bound")
@@ -673,9 +725,22 @@ class Engine:
             ).fetchone()
 
     def commit_report(
-        self, run_id: UUID, epoch: int, report: bytes, verdict: Verification
+        self,
+        run_id: UUID,
+        epoch: int,
+        report: bytes,
+        verdict: Verification,
+        *,
+        reply_kind: str = "result",
+        in_reply_to_event_id: UUID | None = None,
+        stored_report_hash: str | None = None,
     ) -> UUID | None:
-        content_hash = self.artifacts.put(report)
+        if stored_report_hash is None:
+            content_hash = self.artifacts.put(report)
+        else:
+            if self.artifacts.read(stored_report_hash) != report:
+                raise DomainError("ARTIFACT_MISMATCH", "Pre-stored report does not match its bytes")
+            content_hash = stored_report_hash
         with self.transaction() as conn:
             run = self._run(conn, run_id, epoch)
             dedupe_key = (
@@ -712,6 +777,7 @@ class Engine:
                 self._end_ticket(conn, run, "failed")
                 self._event(conn, run_id, "verification_failed", reasons=verdict.reasons)
                 return None
+            self.routing.require_primary(run_id, run["thread_id"])
             target = f"github:{run['external_key']}"
             grant = conn.execute(
                 "SELECT * FROM app.target_write_grants WHERE target=%s FOR UPDATE", (target,)
@@ -742,8 +808,9 @@ class Engine:
             )
             conn.execute(
                 "INSERT INTO app.actions(action_id,run_id,action_type,target,payload,payload_hash,"
-                "base_revision,execution_epoch,fencing_token,dedupe_key,status,expires_at) "
-                "VALUES (%s,%s,'issue_comment',%s,%s,%s,%s,%s,%s,%s,'proposed',now()+%s)",
+                "base_revision,execution_epoch,fencing_token,dedupe_key,status,expires_at,"
+                "reply_kind,in_reply_to_event_id) "
+                "VALUES (%s,%s,'issue_comment',%s,%s,%s,%s,%s,%s,%s,'proposed',now()+%s,%s,%s)",
                 (
                     action_id,
                     run_id,
@@ -755,6 +822,8 @@ class Engine:
                     token,
                     dedupe_key,
                     timedelta(seconds=self.settings.approval_ttl_seconds),
+                    reply_kind,
+                    in_reply_to_event_id,
                 ),
             )
             conn.execute(
@@ -877,8 +946,9 @@ class Engine:
             (action["target"], run["run_id"], action["execution_epoch"], action["fencing_token"]),
         ).fetchone()
         primary = conn.execute(
-            "SELECT 1 FROM app.subscriptions WHERE run_id=%s AND active AND role='primary'",
-            (run["run_id"],),
+            "SELECT 1 FROM app.subscriptions WHERE run_id=%s AND thread_id=%s "
+            "AND active AND role='primary'",
+            (run["run_id"], run["thread_id"]),
         ).fetchone()
         if not grant or not primary:
             raise DomainError("WRITE_GRANT_DENIED", "Current primary write grant is required", 403)
@@ -1012,6 +1082,23 @@ class Engine:
                 (run["run_id"],),
             )
             return
+        if run["graph_version"] == "system-reply-v1" and run["status"] not in TERMINAL:
+            if run["thread_revision"] > run["input_revision"]:
+                conn.execute(
+                    "UPDATE app.runs SET status='queued',graph_version='r2-mailbox-v1',"
+                    "reason_code='CLARIFICATION_RECEIVED',execution_epoch=execution_epoch+1,"
+                    "proposal_generation=proposal_generation+1 WHERE run_id=%s",
+                    (run["run_id"],),
+                )
+            else:
+                conn.execute(
+                    "UPDATE app.runs SET status='waiting_input',"
+                    "reason_code='CLARIFICATION_REQUIRED' "
+                    "WHERE run_id=%s",
+                    (run["run_id"],),
+                )
+            self._event(conn, run["run_id"], "system_reply_resolved", status=status)
+            return
         if run["graph_version"] == "r2-mailbox-v1" and run["status"] not in TERMINAL:
             if run["status"] == "paused":
                 self._event(conn, run["run_id"], "paused_effect_resolved", status=status)
@@ -1096,6 +1183,7 @@ class Engine:
                 "AND r.status IN ('cancelled','failed','succeeded') "
                 "AND j.status IN ('queued','running')"
             )
+            self.routing.recover()
             return {
                 "unknown_actions": len(unknown),
                 "paused_runs": len(paused),

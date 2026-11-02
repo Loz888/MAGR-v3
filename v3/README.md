@@ -3,11 +3,12 @@
 当前源码存放于 `/workspace/MAGR-v3/v3`，仓库 origin 为 `https://github.com/Loz888/MAGR-v3.git`。
 本地 `.env`、`.local`、依赖环境与凭据不进入 Git；提交与推送状态以 Git 历史和最新验收记录为准。
 
-R0/R1 验收时 88 个 V3 测试通过；R2 改造后完整回归 112 个测试通过，0 失败、0 跳过。V2 原有 682 个 Go 和 453 个 Python 测试复验通过。
+R0/R1 验收时 88 个 V3 测试通过；R2 改造后 112 项通过，R3 改造后当前完整回归 150 项通过，0 失败、0 跳过。V2 原有 682 个 Go 和 453 个 Python 测试复验通过，V2 源码保持不变。
 R1 真实模型与 GitHub 结果评论验收 PASS：2 次真实调用，保守计费 USD 0.001745，一条结果评论。首个结构错误响应未发布；第二次成功，并通过模型落库及远程回执两个 SIGKILL 恢复实验。详情见 `docs/acceptance/r1-live-20261102.json`。完整 V3.1 仍为 ENGINEERING_INCOMPLETE。
 
 在本目录执行 `make setup`、`make deps-up`、`make migrate`、`make doctor`，再运行 `make dev`。
 应用监听 `http://127.0.0.1:18080`；开发 API 文档位于 `/docs`。
+该地址现在提供本地任务工作台，Web、CLI、GitHub 共用工单视图；访问令牌取自本机 `.env` 的 `MGAR_V3_LOCAL_TOKEN`，页面只在内存中使用令牌。
 `make setup` 只生成缺失的本地 `.env`（权限 0600）；不会覆盖已有配置或显示凭据。
 数据库调试端口 55433，Redis 调试端口 56379，均仅绑定回环。停止依赖用 `make deps-stop`，保留数据卷。
 
@@ -70,7 +71,27 @@ make verify TASK=V31-R2
 
 verify 在本地 v3/evidence/ 保存原始输出、真实退出码、JUnit 与源代码摘要；这些原始文件不纳入公开推送，公开验收摘要见 docs/。未知任务、缺失测试、零收集、跳过和超时均不会通过。
 工程测试使用真实 PostgreSQL、Redis、LangGraph checkpoint 和跨进程 MCP；聊天模型和外部 GitHub 业务使用明确标记的替身。
-R1 真实闭环通过后实施并验证 R2 工程，摘要见 `docs/acceptance/r2-engineering-20261102.json`。R2 未额外做真实付费业务评测；R3–R6 保持 TODO，不声明 COORDINATION_READY 或生产就绪。
+R1 真实闭环通过后依次实施并验证 R2、R3 工程，R2 摘要见 `docs/acceptance/r2-engineering-20261102.json`。R2 未额外做真实付费业务评测，R3 仅限定真实 Router 验收；R4–R6 保持 TODO，不声明生产就绪。
+
+## R3 Router 与统一工单
+
+```bash
+uv run --frozen mgar event --issue 2 --body '@mgar 调查来源中记录的重复计数症状'
+uv run --frozen mgar tickets
+uv run --frozen mgar ticket <ticket_id>
+uv run --frozen mgar routing
+make verify TASK=V31-R3
+```
+
+显式 `/mgar investigate` 命令继续直建任务；已有 primary 的后续输入直达 Mailbox，Router 调用为零。冷启动的明确提及进入持久队列，有界批处理生成 RouterDecision，由 Engine 校验整批版本、目标 epoch、Mandate、权限和上下文哈希后提交。多任务默认两个并发执行槽；跨任务最多召回三个同项目、仓库、actor 和模式的近期工单上下文，链接只提供背景，不更改其他任务的计划或写权。observer 仅内部测试开放。
+
+默认 Router 是确定性的演示实现，Worker 仍读取合成资料。真实 Router 配置在 `config/router-live-proposed.json`，必须单独配置 `MGAR_V3_ROUTER_MODE=live`、Router profile 和授权文件；授权不会从网页或普通 API 请求取得。Router 只输出动作枚举与候选 ID，不持有 Bash、MCP 或发布工具。
+
+系统澄清使用程序模板，生成同样需要 hash 审批的 Action，经现有 Outbox/Dispatcher 出口；回复后等待用户输入，补充事实可在同一 Ticket 内继续。Router 故障或调用额度用尽时，既有 Run 与订阅直通继续，未路由输入保留。unknown 用量不重发，已知失败的同版本输入不自动消耗新调用；已知结果在恢复时复用，相同业务上下文下可重建过期的决策信封。
+
+路由纠正接口为 `POST /api/v3/router/corrections`，需本机认证、完整原决策事件 ID、准确的 `expected_thread_revision` 和原因。只重开尚未产生工具/模型结果或远程动作的任务；原始事件、订阅快照和旧 Ticket 保留，旧待发送动作撤销，再记录纠正和新 revision。
+
+R3 真实 Router 验收使用冻结的合成事件，详情见 `docs/acceptance/r3-20261102.json`。只增加一次真实调用，共享原 R1 预算后累计三次、保守计费 USD 0.002456；没有新增 GitHub 评论。合成测试 Run 在校验后取消，原始实验、固定 Oracle 和授权依据保存在 `.local/r3-live-20261102/`，运行日志在本地 `evidence/V31-R3/`。`scripts/r3_live.py` 的 prepare/model-crash/recover 分阶段保留恢复边界，model-crash 故意 SIGKILL。该实验不能清零既有调用额度，也不代表真实业务全流程或生产评测完成。
 
 官方 GitHub MCP 可通过 `make install-github-mcp` 安装锁定的 Linux x86_64 二进制；安装和每次运行都会校验 SHA256。设置 `MGAR_V3_GITHUB_MCP_BINARY` 指向该文件。只读进程仅暴露 `issue_read,get_file_contents`，写入进程仅暴露 `add_issue_comment`。显式设置 `MGAR_V3_GITHUB_USE_GH_TOKEN=true` 可引用宿主机已有 GitHub 凭据；分别配置的读写 token 优先，不把模型或数据库凭据交给 MCP 子进程。
 

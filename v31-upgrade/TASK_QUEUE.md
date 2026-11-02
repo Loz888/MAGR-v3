@@ -11,7 +11,7 @@
 | V31-R1-BUDGET-02 | 候选最多 3 次调用、累计预算 USD 2 | DONE | PASS | PASS |
 | V31-R1-LIVE | V3 Issue #1 真实模型、审批与结果评论验收 | DONE | NOT_APPLICABLE | PASS |
 | V31-R2 | Mailbox 与显式 intake/replan | DONE | PASS | NOT_RUN |
-| V31-R3 | 受限 Router LLM 与多任务 | TODO | NOT_RUN | NOT_RUN |
+| V31-R3 | 受限 Router LLM 与多任务 | DONE | PASS | PASS |
 | V31-R4 | RAG 与多专家 | TODO | NOT_RUN | NOT_RUN |
 | V31-R5 | 受限修复与 Draft PR | TODO | NOT_RUN | NOT_RUN |
 | V31-R6 | Watchdog、主动性与发布评测 | TODO | NOT_RUN | NOT_RUN |
@@ -20,4 +20,6 @@
 
 公开验收摘要：v3/docs/acceptance/r1-live-20261102.json。原始失败与运行日志保留在本地 evidence/，不随公开源码发布。全项目仍为 ENGINEERING_INCOMPLETE。
 
-R2 工程改造已通过：完整回归 112 项，任务验收 57 项，均无失败或跳过；四个真实 SIGKILL 故障点通过。R2 使用受控模型和远端，未新增真实付费调用；R1 账本仍为 2 次、保守 USD 0.001745。R2 摘要见 v3/docs/acceptance/r2-engineering-20261102.json。R3–R6 保持 TODO。
+R2 工程改造已通过：完整回归 112 项，任务验收 57 项，均无失败或跳过；四个真实 SIGKILL 故障点通过。R2 使用受控模型和远端，未新增真实付费调用；R1 账本仍为 2 次、保守 USD 0.001745。R2 摘要见 v3/docs/acceptance/r2-engineering-20261102.json。R3 后续状态见下；R4–R6 保持 TODO。
+
+R3 工程与限定真实 Router 验收通过：完整回归 150 项、任务验收 89 项，均无失败或跳过；四个 Router SIGKILL 提交点恢复通过。两个事先冻结的合成场景只调用一次真实 Router，重启复用结果；累计三次调用、保守 USD 0.002456，未新增 GitHub 评论。公开摘要：v3/docs/acceptance/r3-20261102.json。该 live 门禁仅覆盖合成事件上的 Router，不等同生产业务评测。R4–R6 保持 TODO。

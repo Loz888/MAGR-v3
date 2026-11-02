@@ -11,7 +11,8 @@ import psycopg
 from fastapi import Depends, FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse, Response, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
@@ -23,7 +24,11 @@ from mgar_v3.evidence.artifacts import ArtifactStore
 from mgar_v3.graph.live_investigator import LiveInvestigator
 from mgar_v3.graph.runner import Runner
 from mgar_v3.live import load_permit
-from mgar_v3.settings import Settings
+from mgar_v3.routing.domain import CorrectionInput, EventInput
+from mgar_v3.routing.live import load_router_permit
+from mgar_v3.routing.model import DeepSeekRouter
+from mgar_v3.routing.worker import FixtureRouter, RouterProvider, RouterWorker
+from mgar_v3.settings import ROOT, Settings
 
 
 class BodyLimitMiddleware:
@@ -73,6 +78,7 @@ def create_app(
             configuration.live_profile_path, configuration.live_authorization_path, configuration
         )
     selected_transport = transport
+    router_provider: RouterProvider | None = None
     if (
         selected_transport is None
         and live_permit is not None
@@ -90,6 +96,23 @@ def create_app(
         stopped = asyncio.Event()
         workers: dict[UUID, asyncio.Task[None]] = {}
         effect: asyncio.Task[Any] | None = None
+        router_task: asyncio.Task[Any] | None = None
+        nonlocal router_provider
+        if configuration.router_mode == "fixture":
+            router_provider = FixtureRouter()
+        elif (
+            configuration.router_mode == "live"
+            and configuration.router_profile_path
+            and configuration.router_authorization_path
+        ):
+            router_provider = DeepSeekRouter(
+                authority,
+                load_router_permit(
+                    configuration.router_profile_path,
+                    configuration.router_authorization_path,
+                    configuration,
+                ),
+            )
 
         async def execute_run(run: dict[str, Any]) -> None:
             runner = Runner(authority)
@@ -118,7 +141,7 @@ def create_app(
                 )
 
         async def supervise() -> None:
-            nonlocal effect
+            nonlocal effect, router_task
             while not stopped.is_set():
                 for run_id, worker in list(workers.items()):
                     if worker.done():
@@ -127,10 +150,23 @@ def create_app(
                 if effect is not None and effect.done():
                     effect.result()
                     effect = None
+                if router_task is not None and router_task.done():
+                    router_task.result()
+                    router_task = None
                 for run in authority.list_runs():
-                    if run["status"] != "queued" or run["run_id"] in workers or len(workers) >= 2:
+                    if (
+                        run["status"] != "queued"
+                        or run["run_id"] in workers
+                        or len(workers) >= configuration.max_concurrent_runs
+                    ):
                         continue
                     workers[run["run_id"]] = asyncio.create_task(execute_run(run))
+                if router_provider is not None and router_task is None:
+                    router_task = asyncio.create_task(
+                        asyncio.to_thread(
+                            RouterWorker(authority, router_provider, live_permit).tick
+                        )
+                    )
                 if selected_transport is not None and effect is None:
                     effect = asyncio.create_task(
                         asyncio.to_thread(Dispatcher(authority, selected_transport).tick)
@@ -155,10 +191,13 @@ def create_app(
                 await asyncio.gather(*workers.values())
                 if effect is not None:
                     await effect
+                if router_task is not None:
+                    await router_task
             if provided is None:
                 authority.close()
 
-    app = FastAPI(title="MGAR V3.1 R2", lifespan=lifespan)
+    app = FastAPI(title="MGAR V3.1 R3", lifespan=lifespan)
+    app.mount("/static", StaticFiles(directory=ROOT / "web"), name="static")
     app.add_middleware(BodyLimitMiddleware, max_bytes=configuration.max_body_bytes)
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "[::1]"])
 
@@ -205,6 +244,20 @@ def create_app(
     def healthz() -> dict[str, str]:
         return {"status": "alive", "release_status": "ENGINEERING_INCOMPLETE"}
 
+    @app.get("/", include_in_schema=False)
+    def index() -> FileResponse:
+        return FileResponse(
+            ROOT / "web/index.html",
+            headers={
+                "Content-Security-Policy": (
+                    "default-src 'self'; script-src 'self'; style-src 'self'; "
+                    "connect-src 'self'; frame-ancestors 'none'"
+                ),
+                "Cache-Control": "no-store",
+                "X-Content-Type-Options": "nosniff",
+            },
+        )
+
     @app.get("/api/v3/readyz", dependencies=[Depends(authenticated)])
     def readyz(request: Request, service: Annotated[Engine, Depends(authority)]) -> dict[str, str]:
         supervisor = request.app.state.supervisor
@@ -212,9 +265,58 @@ def create_app(
             raise DomainError("SUPERVISOR_UNAVAILABLE", "Execution supervisor is unavailable", 503)
         with service.transaction() as conn:
             migrations = conn.execute("SELECT count(*) AS n FROM app.schema_migrations").fetchone()
-            if migrations is None or migrations["n"] < 6:
+            if migrations is None or migrations["n"] < 7:
                 raise DomainError("MIGRATIONS_PENDING", "Database migrations are incomplete", 503)
         return {"database": "ready", "release_status": "ENGINEERING_INCOMPLETE"}
+
+    @app.post("/api/v3/events", status_code=202, dependencies=[Depends(authenticated)])
+    def accept_event(body: EventInput, service: Annotated[Engine, Depends(authority)]) -> Any:
+        text = body.body
+        if body.intent == "investigate" and not text.startswith(("@mgar ", COMMAND)):
+            text = "@mgar " + text
+        event = TriggerInput(
+            source=body.source,
+            external_event_id=body.client_request_id,
+            project_id=configuration.project_id,
+            repository=configuration.repository,
+            issue_number=body.issue_number,
+            actor=configuration.local_actor,
+            body=text,
+            execution_mode=body.execution_mode,
+        )
+        return service.ingest(event, live_permit if body.execution_mode == "live" else None)
+
+    @app.get("/api/v3/tickets", dependencies=[Depends(authenticated)])
+    def tickets(service: Annotated[Engine, Depends(authority)], limit: int = 50) -> Any:
+        return jsonable_encoder(service.routing.tickets(limit))
+
+    @app.get("/api/v3/tickets/{ticket_id}", dependencies=[Depends(authenticated)])
+    def ticket(ticket_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:
+        return jsonable_encoder(service.routing.ticket(ticket_id))
+
+    @app.post("/api/v3/tickets/{ticket_id}/{control}", dependencies=[Depends(authenticated)])
+    def ticket_control(
+        ticket_id: UUID, control: str, service: Annotated[Engine, Depends(authority)]
+    ) -> Any:
+        if control not in {"pause", "resume", "cancel"}:
+            raise DomainError("CONTROL_UNSUPPORTED", "Ticket control is unsupported", 400)
+        current = service.routing.owned_ticket(ticket_id)
+        result = getattr(service, control)(current["run_id"])
+        return jsonable_encoder(
+            {"ticket_id": ticket_id, "run_id": result} if control == "resume" else result
+        )
+
+    @app.get("/api/v3/router/status", dependencies=[Depends(authenticated)])
+    def router_status(service: Annotated[Engine, Depends(authority)]) -> Any:
+        return service.routing.metrics()
+
+    @app.post("/api/v3/router/corrections", dependencies=[Depends(authenticated)])
+    def correct_route(body: CorrectionInput, service: Annotated[Engine, Depends(authority)]) -> Any:
+        return {
+            "correction_id": str(
+                service.routing.correct(body.event_ids, body.expected_thread_revision, body.reason)
+            )
+        }
 
     @app.post("/api/v3/runs", status_code=202, dependencies=[Depends(authenticated)])
     def create_run(body: RunInput, service: Annotated[Engine, Depends(authority)]) -> Any:

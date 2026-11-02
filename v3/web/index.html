@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MGAR · 工作台</title><link rel="stylesheet" href="/static/style.css"><script src="/static/app.js" defer></script></head>
+<body>
+<header><a class="brand" href="/">MGAR <span>研发工作台</span></a><span id="connection">尚未连接</span></header>
+<main>
+<section id="login" class="card"><p class="eyebrow">本地访问</p><h1>连接你的任务工作台</h1><p class="muted">输入本机访问令牌，查看任务和继续对话。令牌仅在当前页面内存中使用。</p><form id="login-form"><label>访问令牌<input id="token" type="password" autocomplete="off" required></label><button>连接工作台</button></form></section>
+<div id="workspace" hidden>
+<section class="heading"><div><p class="eyebrow">持续研发</p><h1>任务与进展</h1><p class="muted">一个工单保留完整执行历史；后续消息会进入当前任务。</p></div><button id="refresh" class="secondary">刷新</button></section>
+<div class="layout"><aside><section class="card"><h2>提交调查</h2><form id="event-form"><label>Issue 编号<input id="issue" type="number" min="1" value="1" required></label><label>问题或补充事实<textarea id="body" rows="5" placeholder="描述需要核对的问题、期望结果与来源" required></textarea></label><button>提交</button></form><p id="submitted" class="muted"></p></section><section class="card"><h2>协调状态</h2><p id="router-status" class="muted"></p></section></aside>
+<section><div id="tickets" class="ticket-list"></div><section id="detail" class="card" hidden><h2 id="detail-title"></h2><div id="detail-controls" class="controls"></div><p id="detail-meta" class="muted"></p><h3>关联上下文</h3><div id="related"></div><h3>执行记录</h3><pre id="events"></pre><h3>结果与待审批动作</h3><div id="actions"></div></section></section></div>
+</div><p id="notice" role="status"></p>
+</main><footer>MGAR V3.1 · 当前默认执行合成资料演示；真实调用与发布需单独配置授权。</footer>
+</body></html>

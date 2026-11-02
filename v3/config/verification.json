@@ -90,5 +90,28 @@
       "github": "controlled_server",
       "router_llm": "not_used"
     }
+  },
+  "V31-R3": {
+    "tests": [
+      "tests/test_routing.py",
+      "tests/test_router_model.py",
+      "tests/test_router_api.py",
+      "tests/test_coordination.py",
+      "tests/test_duplex.py",
+      "tests/test_effects.py",
+      "tests/test_cli.py",
+      "tests/test_environment.py"
+    ],
+    "timeout_seconds": 150,
+    "components": {
+      "postgres": "real",
+      "redis": "real",
+      "langgraph": "real_postgres_checkpoint",
+      "mcp": "not_used_by_router",
+      "model": "fixture_http_transport",
+      "github": "signed_fixture_webhook_and_controlled_transport",
+      "web": "real_fastapi_static_and_authenticated_api",
+      "router": "real_engine_with_bounded_proposals"
+    }
   }
 }

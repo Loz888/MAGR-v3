@@ -21,6 +21,7 @@ def test_real_cli_and_api_process_share_persistent_run_and_approval(settings, tm
         "MGAR_V3_LOCAL_ACTOR": settings.local_actor,
         "MGAR_V3_ALLOWED_ACTORS": json.dumps(settings.allowed_actors),
         "MGAR_V3_GRAPH_VERSION": "r2-mailbox-v1",
+        "MGAR_V3_ROUTER_MODE": "fixture",
     }
     with (tmp_path / "api.log").open("wb") as log:
         api = subprocess.Popen(
@@ -126,6 +127,31 @@ def test_real_cli_and_api_process_share_persistent_run_and_approval(settings, tm
                 )
                 assert not json.loads(cli(*message))["duplicate"]
                 assert json.loads(cli(*message))["duplicate"]
+                event = json.loads(
+                    cli(
+                        "event",
+                        "--issue",
+                        "2",
+                        "--body",
+                        "@mgar Investigate documented symptoms",
+                        "--client-request-id",
+                        "cli-router-cold",
+                    )
+                )
+                assert event["route"] == "unrouted"
+                deadline = time.monotonic() + 10
+                while True:
+                    tickets = json.loads(cli("tickets"))
+                    routed_ticket = next(
+                        (t for t in tickets if t["external_key"].endswith(":2")), None
+                    )
+                    if routed_ticket and routed_ticket["stage"] == "waiting_approval":
+                        break
+                    assert time.monotonic() < deadline
+                    time.sleep(0.05)
+                detail = json.loads(cli("ticket", routed_ticket["ticket_id"]))
+                assert detail["channels"] == ["cli"]
+                assert json.loads(cli("routing"))["physical_router_calls"] == 0
                 assert json.loads(cli("resume", run_id))["run_id"] == run_id
                 deadline = time.monotonic() + 10
                 while client.get(f"/api/v3/runs/{run_id}").json()["status"] != "waiting_approval":

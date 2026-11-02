@@ -1,0 +1,124 @@
+{
+  "task": "V31-R3",
+  "status": "DONE",
+  "engineering_gate": "PASS",
+  "live_gate": "PASS",
+  "live_gate_scope": "Real Router decisions on two frozen synthetic events; no additional external business publication",
+  "accepted_at": "2026-11-02T13:24:37.665086+08:00",
+  "base_commit": "e3b976d",
+  "full_regression": {
+    "tests": 150,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "card_verification": {
+    "counts": {
+      "tests": 89,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "command_exit_code": 0,
+    "source_sha256": "677a9716d501dbfa74b7865cd036292f8ecfb6281f7a50347cb3d495cce0712b",
+    "started_at": "2026-11-02T05:22:05.526263+00:00",
+    "finished_at": "2026-11-02T05:22:31.298446+00:00"
+  },
+  "lint": "PASS",
+  "typecheck": "PASS",
+  "javascript_syntax": "PASS",
+  "components": {
+    "postgres": "real",
+    "redis": "real",
+    "langgraph": "real_postgres_checkpoint",
+    "mcp": "not_used_by_router",
+    "model": "fixture_http_transport",
+    "github": "signed_fixture_webhook_and_controlled_transport",
+    "web": "real_fastapi_static_and_authenticated_api",
+    "router": "real_engine_with_bounded_proposals"
+  },
+  "web_asset_sha256": {
+    "web/app.js": "b6fa4b66605be33be8cf13ca3f2e91a7ffcb720fae741573e09e61e07b7a6e94",
+    "web/index.html": "493eec71465e2b2e9c21e5dff9d06c8fa771e869290b40ba9c19265bd5455258",
+    "web/style.css": "d1f43deeafc4e7d5116351259d5910ec61090e1ba3d0a3be3867aac063dd1a5e"
+  },
+  "router_sigkill_cases": [
+    "test_sigkill_router_handoffs_preserve_input_and_do_not_pay_again[batch_prepared]",
+    "test_sigkill_router_handoffs_preserve_input_and_do_not_pay_again[model_result_settled]",
+    "test_sigkill_router_handoffs_preserve_input_and_do_not_pay_again[decision_saved]",
+    "test_sigkill_router_handoffs_preserve_input_and_do_not_pay_again[decision_applied]"
+  ],
+  "real_router": {
+    "profile_hash": "805e0092db07acd66573e01a91f4f24a35327665c1a3ba0d5192f2b073316a15",
+    "budget_profile_hash": "5502fc0230f61f8658fef64adb891729cf668da83c1fcdc2ef440c9b31a740e1",
+    "batch_id": "9e7f2da2-9f09-457f-aa7a-60cdd1131fa2",
+    "context_hash": "1a1f7febe6a163bce1b8e949152ef6a32d4addde5ece470e2747bd2a670cbfac",
+    "oracle_sha256": "b650f8a0be95689d205687307f53b7560ce8091675325ba003319b0be968b942",
+    "live_source_sha256": "e46a351c81abb174ce88c93c993fb8f0fa77b6bc1e83cc954d08d6c5143aaaec",
+    "oracle_cases_passed": 2,
+    "router_physical_calls": 1,
+    "router_conservative_cost_micros": 711,
+    "usage": {
+      "total_tokens": 1990,
+      "prompt_tokens": 1864,
+      "completion_tokens": 126,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 1864
+    },
+    "provider_receipt": {
+      "id": "00c042cb-dac8-4594-9dd2-3e50e83917b5",
+      "model": "deepseek-flash"
+    },
+    "response_hash": "951bdf3079898d4acc1789704a6d6d1667db265d58ff109333d99056be375a34",
+    "recovery_without_additional_call": true,
+    "duplicate_delivery_passed": true,
+    "external_writes": 0,
+    "fixture_test_runs_cancelled_after_verification": true,
+    "components": {
+      "postgres": "real",
+      "router_model": "real_deepseek",
+      "worker_events": "synthetic",
+      "workers": "fixture_not_executed",
+      "external_writes": "none"
+    }
+  },
+  "post_live_changes_verified_by_full_regression": [
+    "System template CAS writes precede business transactions",
+    "Current Mandate scope and actor revocation are checked before reading ticket context",
+    "Current accepted event payload is compared with its frozen snapshot"
+  ],
+  "shared_budget": {
+    "used_calls": 3,
+    "call_limit": 3,
+    "limit_micros": 2000000,
+    "settled_micros": 2456,
+    "reserved_micros": 0
+  },
+  "cost_basis": "Actual provider token usage priced at frozen peak upper bounds; conservative budget accounting, not an invoice.",
+  "authorization_basis": "Prior user authorization for necessary real calls, at most three calls and USD 2 cumulatively, followed by explicit request to continue R3. Operator authorization bound the exact frozen Router context; no manual user approval click is claimed.",
+  "delivered": [
+    "Bounded RouterDecision batches with Thread revision, Run epoch, Mandate, policy and context-hash validation",
+    "Atomic all-or-nothing application with rejection audit and durable unresolved input",
+    "Existing subscriptions and explicit investigation commands bypass Router LLM",
+    "Web, CLI and signed GitHub ingress converge on authenticated Ticket views",
+    "Parallel Tickets and at most three same-scope related context references",
+    "Program-template system replies require Action hash approval and use the existing gateway",
+    "Observer restricted to internal tests with separate readonly delivery and write denial",
+    "Audited correction of unstarted routing without rewriting original events",
+    "Known results survive crash/expired decision envelopes; unknown usage is never resent"
+  ],
+  "v2_tracked_files_unchanged": true,
+  "release_status": "ENGINEERING_INCOMPLETE",
+  "coordination_gate": "ENGINEERING_PASS",
+  "remaining": [
+    "R4-R6 not implemented",
+    "Synthetic Router evaluation does not establish general reasoning quality or production readiness"
+  ],
+  "local_evidence": {
+    "oracle_and_authorization": ".local/r3-live-20261102/",
+    "logs": "evidence/V31-R3/"
+  }
+}

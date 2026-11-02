@@ -1,0 +1,13 @@
+{
+  "project_id": "orders-demo",
+  "repository": "loz888/magr-v3",
+  "actor": "loz888",
+  "budget_profile_hash": "5502fc0230f61f8658fef64adb891729cf668da83c1fcdc2ef440c9b31a740e1",
+  "model_id": "deepseek-flash",
+  "price_version": "deepseek-2026-11-01-peak-upper-bound",
+  "input_micros_per_million": 300000,
+  "output_micros_per_million": 1200000,
+  "context_tokens": 1048576,
+  "max_output_tokens": 2048,
+  "max_input_bytes": 65536
+}

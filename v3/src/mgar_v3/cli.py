@@ -19,7 +19,7 @@ def doctor(settings: Settings) -> int:
     try:
         with psycopg.connect(settings.database_url.get_secret_value(), connect_timeout=3) as conn:
             row = conn.execute("SELECT count(*) FROM app.schema_migrations").fetchone()
-            result["postgres"] = "PASS" if row and row[0] >= 6 else "FAIL"
+            result["postgres"] = "PASS" if row and row[0] >= 7 else "FAIL"
     except psycopg.Error:
         result["postgres"] = "FAIL"
     try:
@@ -38,6 +38,15 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--api", default="http://127.0.0.1:18080")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("doctor")
+    commands.add_parser("tickets")
+    commands.add_parser("routing")
+    ticket = commands.add_parser("ticket")
+    ticket.add_argument("ticket_id")
+    event = commands.add_parser("event")
+    event.add_argument("--issue", type=int, required=True)
+    event.add_argument("--body", required=True)
+    event.add_argument("--client-request-id")
+    event.add_argument("--execution-mode", choices=["fixture", "live"], default="fixture")
     live = commands.add_parser("live-preflight")
     live.add_argument("--profile", type=Path, required=True)
     live.add_argument("--authorization", type=Path)
@@ -88,7 +97,24 @@ def main(argv: list[str] | None = None) -> int:
         timeout=15,
     ) as client:
         try:
-            if args.command == "run":
+            if args.command in {"tickets", "routing"}:
+                response = client.get(
+                    "/api/v3/tickets" if args.command == "tickets" else "/api/v3/router/status"
+                )
+            elif args.command == "ticket":
+                response = client.get("/api/v3/tickets/" + args.ticket_id)
+            elif args.command == "event":
+                response = client.post(
+                    "/api/v3/events",
+                    json={
+                        "source": "cli",
+                        "issue_number": args.issue,
+                        "body": args.body,
+                        "client_request_id": args.client_request_id or str(uuid4()),
+                        "execution_mode": args.execution_mode,
+                    },
+                )
+            elif args.command == "run":
                 response = client.post(
                     "/api/v3/runs",
                     json={

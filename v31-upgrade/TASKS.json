@@ -122,13 +122,15 @@
       "id": "V31-R3",
       "phase": "R3",
       "title": "受限 Router LLM 与多任务",
-      "status": "TODO",
+      "status": "DONE",
       "dependencies": [
         "V31-R2"
       ],
-      "engineering_gate": "NOT_RUN",
-      "live_gate": "NOT_RUN",
-      "maps_to": []
+      "engineering_gate": "PASS",
+      "live_gate": "PASS",
+      "maps_to": [],
+      "live_scope": "Real Router decisions on two frozen synthetic events; no additional external business publication",
+      "evidence": "v3/docs/acceptance/r3-20261102.json"
     },
     {
       "id": "V31-R4",
