@@ -1,0 +1,10 @@
+# Offline build from an explicitly selected local Go toolchain; no base pull.
+FROM scratch
+COPY go /usr/local/go
+COPY --chmod=755 entrypoint /mgar-v3-sandbox
+COPY tmp /tmp
+ENV PATH=/usr/local/go/bin GOROOT=/usr/local/go GOCACHE=/opt/gocache GOTOOLCHAIN=local GOPROXY=off GOSUMDB=off CGO_ENABLED=0 GOMAXPROCS=2
+RUN ["/mgar-v3-sandbox", "prepare"]
+USER 65532:65532
+WORKDIR /tmp
+ENTRYPOINT ["/mgar-v3-sandbox"]

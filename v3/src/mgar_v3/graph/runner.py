@@ -53,6 +53,10 @@ class Runner:
         self.investigator = investigator or FixtureInvestigator()
 
     def execute(self, run_id: UUID) -> UUID | None:
+        if self.engine.get_run(run_id)["graph_version"] == "r5-repair-v1":
+            from mgar_v3.repair.graph import execute_repair
+
+            return execute_repair(self, run_id)
         if self.engine.get_run(run_id)["graph_version"] == "r2-mailbox-v1":
             from mgar_v3.graph.duplex import execute_duplex
 

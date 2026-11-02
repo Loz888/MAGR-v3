@@ -25,6 +25,7 @@ from mgar_v3.evaluation.store import Trials
 from mgar_v3.evidence.artifacts import ArtifactStore
 from mgar_v3.knowledge.store import Knowledge
 from mgar_v3.live import LivePermit
+from mgar_v3.repair.store import Repairs
 from mgar_v3.routing.store import Routing
 from mgar_v3.settings import Settings
 
@@ -34,7 +35,7 @@ Connection = psycopg.Connection[Row]
 ENGINE_LOCK = 31010002
 COMMAND = "/mgar investigate "
 TERMINAL = {"succeeded", "failed", "cancelled"}
-DUPLEX_VERSIONS = {"r2-mailbox-v1", "r4-experts-v1"}
+DUPLEX_VERSIONS = {"r2-mailbox-v1", "r4-experts-v1", "r5-repair-v1"}
 
 
 class Engine:
@@ -61,6 +62,7 @@ class Engine:
         self.context = ContextStore(self)
         self.tools = ToolAuthority(self)
         self.trials = Trials(self)
+        self.repairs = Repairs(self)
 
     def close(self) -> None:
         with self._mutex:
@@ -977,6 +979,8 @@ class Engine:
         return action, run
 
     def _validate_action(self, conn: Connection, action: Row, run: Row) -> None:
+        if action["action_type"] == "draft_pr":
+            self.repairs.validate_action(action, run)
         if run["graph_version"] == "r4-experts-v1":
             self.tools.validate_publication(run["run_id"])
         if (
@@ -1062,14 +1066,16 @@ class Engine:
             )
             return {**action, "status": "ready"}
 
-    def claim_effect(self, execution_mode: str) -> Row | None:
+    def claim_effect(
+        self, execution_mode: str, action_types: tuple[str, ...] = ("issue_comment",)
+    ) -> Row | None:
         with self.transaction() as conn:
             reference = conn.execute(
                 "SELECT o.action_id FROM app.outbox o JOIN app.actions a USING(action_id) "
                 "JOIN app.runs r USING(run_id) WHERE o.status='ready' AND a.status='ready' "
-                "AND r.execution_mode=%s AND o.next_retry_at<=now() "
+                "AND r.execution_mode=%s AND a.action_type=ANY(%s) AND o.next_retry_at<=now() "
                 "ORDER BY o.created_at FOR UPDATE OF o SKIP LOCKED LIMIT 1",
-                (execution_mode,),
+                (execution_mode, list(action_types)),
             ).fetchone()
             if reference is None:
                 return None
@@ -1216,6 +1222,10 @@ class Engine:
             ).fetchall()
             conn.execute(
                 "UPDATE app.outbox SET status='outcome_unknown',lease_token=NULL,lease_until=NULL "
+                "WHERE status='dispatching'"
+            )
+            conn.execute(
+                "UPDATE app.repair_publication_steps SET status='outcome_unknown' "
                 "WHERE status='dispatching'"
             )
             for row in unknown:

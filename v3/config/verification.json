@@ -145,5 +145,45 @@
       "trial_budget": "real_shared_postgres_ledger_with_fixture_HTTP_models",
       "business_oracle": "independent_frozen_synthetic_case_grader"
     }
+  },
+  "V31-R5": {
+    "tests": [
+      "tests/test_acceptance.py",
+      "tests/test_api.py",
+      "tests/test_cli.py",
+      "tests/test_coordination.py",
+      "tests/test_duplex.py",
+      "tests/test_effects.py",
+      "tests/test_environment.py",
+      "tests/test_mcp.py",
+      "tests/test_models.py",
+      "tests/test_pipeline.py",
+      "tests/test_r4_api.py",
+      "tests/test_r4_context.py",
+      "tests/test_r4_experts.py",
+      "tests/test_r4_knowledge.py",
+      "tests/test_r4_mcp.py",
+      "tests/test_r4_recovery.py",
+      "tests/test_r4_trials.py",
+      "tests/test_r5_recovery.py",
+      "tests/test_r5_repair.py",
+      "tests/test_rate_limit.py",
+      "tests/test_recovery.py",
+      "tests/test_router_api.py",
+      "tests/test_router_model.py",
+      "tests/test_routing.py",
+      "tests/test_verification.py"
+    ],
+    "timeout_seconds": 900,
+    "components": {
+      "postgres": "real",
+      "docker": "real_nonroot_network_none_readonly_no_credentials",
+      "go": "real_compiler_public_and_independent_hidden_tests",
+      "langgraph": "real_postgres_checkpoint_and_approval_interrupt",
+      "model": "controlled_patch_provider_no_paid_calls",
+      "github": "real_stdio_MCP_controlled_persistent_remote",
+      "recovery": "real_SIGKILL_four_boundaries",
+      "web": "shared_authenticated_API"
+    }
   }
 }

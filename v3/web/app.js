@@ -27,7 +27,7 @@ async function show(id) {
   $("detail-meta").textContent=`${labels[ticket.stage] || ticket.stage} · 来源：${ticket.channels.join(" / ")} · ${ticket.ticket_id}`;
   $("detail-controls").replaceChildren();
   if (!["succeeded","failed","cancelled"].includes(ticket.stage)) {
-    const controls=["r2-mailbox-v1","r4-experts-v1"].includes(ticket.graph_version) ? [ticket.stage === "paused" ? ["恢复","resume"] : ["暂停","pause"],["取消","cancel"]] : [["取消","cancel"]];
+    const controls=["r2-mailbox-v1","r4-experts-v1","r5-repair-v1"].includes(ticket.graph_version) ? [ticket.stage === "paused" ? ["恢复","resume"] : ["暂停","pause"],["取消","cancel"]] : [["取消","cancel"]];
     for (const [label,action] of controls) $("detail-controls").append(button(label,async()=>{await api(`/tickets/${id}/${action}`,{}); await refresh(); await show(id);}));
   }
   $("related").replaceChildren();
@@ -49,10 +49,25 @@ async function show(id) {
   }
   const actions=await api(`/runs/${ticket.run_id}/actions`); $("actions").replaceChildren();
   for (const action of actions) {
-    const wrap=document.createElement("div"); wrap.className="action";
+    const wrap=document.createElement("div"); wrap.className="action"; let edited=null;
     const state=document.createElement("p"); state.textContent=`${action.reply_kind === "system" ? "系统回复" : "调查结果"} · ${action.status}`;
     const preview=document.createElement("pre"); preview.textContent=action.payload.body; wrap.append(state,preview);
-    if (action.status === "proposed") wrap.append(button("批准这条完整内容",async()=>{await api(`/runs/${ticket.run_id}/approvals`,{action_id:action.action_id,payload_hash:action.payload_hash}); await show(id);}));
+    if (action.action_type === "draft_pr") {
+      state.textContent=`Draft PR · ${action.status} · ${action.payload.source_origin === "fixture_git" ? "本地协议演示" : "GitHub"}`;
+      const proof=document.createElement("pre"); proof.textContent=JSON.stringify({repository:action.payload.repository,base:action.payload.base_sha,branch:action.payload.branch,expires_at:action.expires_at,public_tests:action.payload.public_receipt,independent_tests:action.payload.hidden_receipt},null,2); wrap.append(proof);
+      for (const receipt of [action.payload.public_receipt,action.payload.hidden_receipt]) wrap.append(button("读取测试记录",async()=>{const text=document.createElement("pre");text.textContent=await api(`/runs/${ticket.run_id}/repair/artifacts/${receipt.log_hash}`);wrap.append(text);}));
+      if (action.status === "proposed") {
+        const edit=document.createElement("textarea");edit.value=action.payload.diff;edit.rows=12;edit.setAttribute("aria-label","编辑完整补丁，提交后重新测试");wrap.append(edit);edited=edit;
+        wrap.append(button("拒绝这份补丁",async()=>{await api(`/runs/${ticket.run_id}/actions/${action.action_id}/reject`,{payload_hash:action.payload_hash,reason:"用户拒绝"});await show(id);}));
+        wrap.append(button("提交编辑并重新测试",async()=>{await api(`/runs/${ticket.run_id}/actions/${action.action_id}/revise`,{payload_hash:action.payload_hash,diff:edit.value});await show(id);}));
+      }
+    }
+    if (action.status === "outcome_unknown") wrap.append(button("只读核对远端结果",async()=>{const result=await api(`/runs/${ticket.run_id}/actions/${action.action_id}/reconcile`,{});notice(result.reconciled ? "已核对完成的远端对象。" : "结果仍未确认，保留现场等待检查。");await show(id);}));
+    if (action.status === "proposed") {
+      const approve=button(action.action_type === "draft_pr" ? "批准已测试的完整补丁" : "批准这条完整内容",async()=>{await api(`/runs/${ticket.run_id}/approvals`,{action_id:action.action_id,payload_hash:action.payload_hash}); await show(id);});
+      if (edited) edited.addEventListener("input",()=>{approve.disabled=edited.value!==action.payload.diff;if(approve.disabled)notice("补丁已编辑，请先提交重新测试。");});
+      wrap.append(approve);
+    }
     $("actions").append(wrap);
   }
 }
@@ -93,4 +108,8 @@ $("search-form").addEventListener("submit",async event=>{
     const result=await api("/knowledge/search",{query:$("search-query").value}); $("search-results").replaceChildren();
     for (const hit of result.hits) { const row=document.createElement("div"), text=document.createElement("pre");text.textContent=`${hit.title} · ${hit.source_version}\n${hit.snippet}`; row.append(text,button("读取原文片段",async()=>{const source=await api(`/knowledge/chunks/${hit.chunk_id}?snapshot_id=${result.snapshot_id}`);text.textContent=`${source.source_uri} · ${source.source_version}\n${source.text}`;}));$("search-results").append(row); }
   } catch(error) {notice(error.message);}
+});
+
+$("repair-form").addEventListener("submit",async event=>{
+  event.preventDefault();try {const result=await api("/repairs",{project_id:"orders-demo",issue_number:Number($("repair-issue").value),question:"Fix paid revenue: count the first paid order per ID, ignoring other statuses.",client_request_id:crypto.randomUUID(),execution_mode:"fixture"});await refresh();await show(result.ticket_id);notice("修复已接收，测试完成后可审阅完整补丁。");} catch(error){notice(error.message);}
 });

@@ -19,7 +19,7 @@ def doctor(settings: Settings) -> int:
     try:
         with psycopg.connect(settings.database_url.get_secret_value(), connect_timeout=3) as conn:
             row = conn.execute("SELECT count(*) FROM app.schema_migrations").fetchone()
-            result["postgres"] = "PASS" if row and row[0] >= 9 else "FAIL"
+            result["postgres"] = "PASS" if row and row[0] >= 10 else "FAIL"
     except psycopg.Error:
         result["postgres"] = "FAIL"
     try:
@@ -56,6 +56,14 @@ def main(argv: list[str] | None = None) -> int:
     run.add_argument("--issue", required=True, type=int)
     run.add_argument("--client-request-id", default=None)
     run.add_argument("--execution-mode", choices=["fixture", "live"], default="fixture")
+    repair = commands.add_parser("repair")
+    repair.add_argument("--project", default="orders-demo")
+    repair.add_argument("--issue", type=int, required=True)
+    repair.add_argument(
+        "--question",
+        default="Fix paid revenue: count the first paid order per ID, ignoring other statuses.",
+    )
+    repair.add_argument("--client-request-id")
     for name in [
         "status",
         "report",
@@ -66,6 +74,10 @@ def main(argv: list[str] | None = None) -> int:
         "resume",
         "approve",
         "message",
+        "repair-detail",
+        "reject",
+        "revise",
+        "reconcile",
     ]:
         command = commands.add_parser(name)
         command.add_argument("run_id")
@@ -75,6 +87,13 @@ def main(argv: list[str] | None = None) -> int:
         if name == "approve":
             command.add_argument("--action", required=True)
             command.add_argument("--payload-hash", required=True)
+        if name in {"reject", "revise", "reconcile"}:
+            command.add_argument("--action", required=True)
+        if name in {"reject", "revise"}:
+            command.add_argument("--payload-hash", required=True)
+            command.add_argument("--reason", default="")
+        if name == "revise":
+            command.add_argument("--diff-file", type=Path, required=True)
     args = parser.parse_args(argv)
     settings = Settings()
     if args.command == "doctor":
@@ -94,7 +113,7 @@ def main(argv: list[str] | None = None) -> int:
     with httpx.Client(
         base_url=args.api,
         headers={"X-MGAR-Token": settings.local_token.get_secret_value()},
-        timeout=15,
+        timeout=60,
     ) as client:
         try:
             if args.command in {"tickets", "routing"}:
@@ -114,20 +133,35 @@ def main(argv: list[str] | None = None) -> int:
                         "execution_mode": args.execution_mode,
                     },
                 )
-            elif args.command == "run":
+            elif args.command in {"run", "repair"}:
                 response = client.post(
-                    "/api/v3/runs",
+                    "/api/v3/repairs" if args.command == "repair" else "/api/v3/runs",
                     json={
                         "project_id": args.project,
                         "question": args.question,
                         "issue_number": args.issue,
                         "client_request_id": args.client_request_id or str(uuid4()),
-                        "execution_mode": args.execution_mode,
+                        "execution_mode": "fixture"
+                        if args.command == "repair"
+                        else args.execution_mode,
                     },
                 )
             else:
                 base = f"/api/v3/runs/{args.run_id}"
-                if args.command == "approve":
+                if args.command == "repair-detail":
+                    response = client.get(base + "/repair")
+                elif args.command in {"reject", "revise", "reconcile"}:
+                    decision = (
+                        {}
+                        if args.command == "reconcile"
+                        else {"payload_hash": args.payload_hash, "reason": args.reason}
+                    )
+                    if args.command == "revise":
+                        decision["diff"] = args.diff_file.read_text()
+                    response = client.post(
+                        base + "/actions/" + args.action + "/" + args.command, json=decision
+                    )
+                elif args.command == "approve":
                     response = client.post(
                         base + "/approvals",
                         json={

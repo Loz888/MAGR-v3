@@ -154,4 +154,13 @@ R4 完整回归 187 项、专项验收 103 项通过，0 失败、0 跳过。新
 
 ## R4 真实跨源验收
 
-已执行三正常、两负例及单 Agent 对照，实际使用 DeepSeek、GitHub 代码、知识检索和 SQL。首轮双方各 4/5；一次有界恢复后，多专家五例均有通过记录，首轮失败保留。本轮新增 23 次调用、保守 USD 0.024569，累计 USD 0.027025。完整回归 196 项、R4 专项 119 项通过。详细结果及限制见 [真实验收报告](docs/r4-live-report.md)；live 标记 PARTIAL，R5/R6 尚未开始。
+已执行三正常、两负例及单 Agent 对照，实际使用 DeepSeek、GitHub 代码、知识检索和 SQL。首轮双方各 4/5；一次有界恢复后，多专家五例均有通过记录，首轮失败保留。本轮新增 23 次调用、保守 USD 0.024569，累计 USD 0.027025。完整回归 196 项、R4 专项 119 项通过。详细结果及限制见 [真实验收报告](docs/r4-live-report.md)；live 标记 PARTIAL，R5 受控工程进展见下方；R6 尚未开始。
+
+
+## R5 受限修复工程
+
+新增真实隔离 Go 测试、精确 diff/AST 约束、独立隐藏测试、完整补丁审批、编辑后重测，以及分支/提交/Draft PR 三步的持久回执和只读恢复。当前源码、补丁提供者及 MCP 发布远端明确为 fixture；真实模型和 GitHub Draft PR 仍未验收，R5 整体在进行中，R6 保持 TODO。
+
+准备 `make sandbox-build` 后，可用 `make r5-demo` 或 Web/CLI 的 repair 入口。命令、前提和本地输出位置见 [R5 使用说明](docs/r5-runbook.md)，边界见 [ADR 0007](docs/adr/0007-r5-repair-boundaries.md)。
+
+受控工程验收覆盖完整回归 229 项，0 失败、0 跳过；四个真实 SIGKILL 点通过。[公开验收摘要](docs/acceptance/r5-engineering-20261102.json) 单列了工程范围、未完成适配和费用。

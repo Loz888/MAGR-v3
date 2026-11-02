@@ -22,7 +22,9 @@ class Settings(BaseSettings):
     local_actor: str = "loz888"
     allowed_actors: list[str] = ["loz888"]
     policy_version: str = "r1-explicit-command-v1"
-    graph_version: Literal["r1-quotes-v1", "r2-mailbox-v1", "r4-experts-v1"] = "r4-experts-v1"
+    graph_version: Literal["r1-quotes-v1", "r2-mailbox-v1", "r4-experts-v1", "r5-repair-v1"] = (
+        "r4-experts-v1"
+    )
     max_body_bytes: int = Field(default=65536, ge=1024, le=1048576)
     approval_ttl_seconds: int = Field(default=3600, ge=60, le=86400)
     allow_paid: bool = False

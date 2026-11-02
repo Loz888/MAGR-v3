@@ -25,7 +25,9 @@ class Dispatcher:
         self.transport = transport
 
     def tick(self) -> UUID | None:
-        action = self.engine.claim_effect(self.transport.mode)
+        action = self.engine.claim_effect(
+            self.transport.mode, getattr(self.transport, "action_types", ("issue_comment",))
+        )
         if action is None:
             return None
         action_id = UUID(str(action["action_id"]))
@@ -49,6 +51,12 @@ class Dispatcher:
             if run["execution_mode"] != self.transport.mode:
                 raise DomainError(
                     "EXECUTION_MODE_MISMATCH", "Reconciliation transport mode differs"
+                )
+            if action["action_type"] not in getattr(
+                self.transport, "action_types", ("issue_comment",)
+            ):
+                raise DomainError(
+                    "TRANSPORT_TYPE_MISMATCH", "Transport cannot reconcile this action"
                 )
         # No business transaction remains open during a remote lookup.
         external_id = self.transport.find(action)

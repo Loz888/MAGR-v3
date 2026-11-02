@@ -26,6 +26,8 @@ from mgar_v3.graph.runner import Runner
 from mgar_v3.knowledge.api import register
 from mgar_v3.live import load_permit
 from mgar_v3.mcp.r4 import server
+from mgar_v3.repair.domain import ApprovalDecision, EditDecision, RepairInput
+from mgar_v3.repair.graph import acknowledge_approval
 from mgar_v3.routing.domain import CorrectionInput, EventInput
 from mgar_v3.routing.live import load_router_permit
 from mgar_v3.routing.model import DeepSeekRouter
@@ -94,6 +96,16 @@ def create_app(
         authority = provided or Engine(configuration, ArtifactStore(configuration.artifact_root))
         if provided is None:
             authority.recover()
+        from mgar_v3.repair.sandbox import Sandbox
+
+        # Startup owns the Engine lock; no Run worker is active during orphan cleanup.
+        for run in authority.list_runs():
+            if run["graph_version"] == "r5-repair-v1":
+                try:
+                    Sandbox(str(run["run_id"])).cleanup()
+                except DomainError:
+                    with authority.transaction() as conn:
+                        authority._event(conn, run["run_id"], "sandbox_cleanup_unavailable")
         app.state.engine = authority
         stopped = asyncio.Event()
         workers: dict[UUID, asyncio.Task[None]] = {}
@@ -290,7 +302,7 @@ def create_app(
             raise DomainError("SUPERVISOR_UNAVAILABLE", "Execution supervisor is unavailable", 503)
         with service.transaction() as conn:
             migrations = conn.execute("SELECT count(*) AS n FROM app.schema_migrations").fetchone()
-            if migrations is None or migrations["n"] < 9:
+            if migrations is None or migrations["n"] < 10:
                 raise DomainError("MIGRATIONS_PENDING", "Database migrations are incomplete", 503)
         return {"database": "ready", "release_status": "ENGINEERING_INCOMPLETE"}
 
@@ -367,6 +379,59 @@ def create_app(
     def list_runs(service: Annotated[Engine, Depends(authority)]) -> Any:
         return jsonable_encoder(service.list_runs())
 
+    @app.post("/api/v3/repairs", status_code=202, dependencies=[Depends(authenticated)])
+    def create_repair(body: RepairInput, service: Annotated[Engine, Depends(authority)]) -> Any:
+        return jsonable_encoder(service.repairs.create(body))
+
+    @app.get("/api/v3/runs/{run_id}/repair", dependencies=[Depends(authenticated)])
+    def repair_detail(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:
+        return jsonable_encoder(service.repairs.detail(run_id))
+
+    @app.get(
+        "/api/v3/runs/{run_id}/repair/artifacts/{content_hash}",
+        dependencies=[Depends(authenticated)],
+    )
+    def repair_artifact(
+        run_id: UUID, content_hash: str, service: Annotated[Engine, Depends(authority)]
+    ) -> Response:
+        return Response(
+            service.repairs.artifact_bytes(run_id, content_hash),
+            media_type="application/octet-stream",
+        )
+
+    @app.post(
+        "/api/v3/runs/{run_id}/actions/{action_id}/reject", dependencies=[Depends(authenticated)]
+    )
+    def reject_repair(
+        run_id: UUID,
+        action_id: UUID,
+        body: ApprovalDecision,
+        service: Annotated[Engine, Depends(authority)],
+    ) -> Any:
+        if not any(a["action_id"] == action_id for a in service.actions(run_id)):
+            raise DomainError("ACTION_RUN_MISMATCH", "Action does not belong to this Run", 404)
+        return jsonable_encoder(
+            service.repairs.decision(
+                action_id, body.payload_hash, configuration.local_actor, "reject", body.reason
+            )
+        )
+
+    @app.post(
+        "/api/v3/runs/{run_id}/actions/{action_id}/revise",
+        status_code=202,
+        dependencies=[Depends(authenticated)],
+    )
+    def revise_repair(
+        run_id: UUID,
+        action_id: UUID,
+        body: EditDecision,
+        service: Annotated[Engine, Depends(authority)],
+    ) -> Any:
+        if not any(a["action_id"] == action_id for a in service.actions(run_id)):
+            raise DomainError("ACTION_RUN_MISMATCH", "Action does not belong to this Run", 404)
+        service.repairs.revise(action_id, body.payload_hash, body.diff, configuration.local_actor)
+        return {"status": "queued_for_retesting"}
+
     @app.get("/api/v3/runs/{run_id}", dependencies=[Depends(authenticated)])
     def get_run(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:
         return jsonable_encoder(service.get_run(run_id))
@@ -404,9 +469,9 @@ def create_app(
     ) -> Any:
         if not any(action["action_id"] == body.action_id for action in service.actions(run_id)):
             raise DomainError("ACTION_RUN_MISMATCH", "Action does not belong to this Run", 404)
-        return jsonable_encoder(
-            service.approve(body.action_id, body.payload_hash, configuration.local_actor)
-        )
+        result = service.approve(body.action_id, body.payload_hash, configuration.local_actor)
+        acknowledge_approval(service, run_id, body.payload_hash)
+        return jsonable_encoder(result)
 
     @app.post("/api/v3/runs/{run_id}/cancel", dependencies=[Depends(authenticated)])
     def cancel(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:

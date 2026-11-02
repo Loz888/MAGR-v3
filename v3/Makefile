@@ -46,3 +46,9 @@ data-demo:
 .PHONY: r4-local
 r4-local:
 	$(UV) run --frozen --extra rag-models python scripts/r4_local.py
+
+.PHONY: sandbox-build r5-demo
+sandbox-build:
+	$(UV) run --frozen python scripts/build_r5_sandbox.py
+r5-demo:
+	$(UV) run --frozen python scripts/r5_demo.py

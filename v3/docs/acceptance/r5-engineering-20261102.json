@@ -1,0 +1,131 @@
+{
+  "schema": "r5-controlled-engineering-acceptance-v1",
+  "date": "2026-11-02T22:03:35.479139+08:00",
+  "release_status": "ENGINEERING_INCOMPLETE",
+  "r5_status": "IN_PROGRESS",
+  "engineering_gate": "PASS",
+  "engineering_scope": "controlled_repair_and_draft_protocol_only",
+  "live_gate": "NOT_RUN",
+  "production_source_model_write_adapters": "NOT_IMPLEMENTED",
+  "counts": {
+    "tests": 229,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "verification_task": "V31-R5",
+  "verification_source_sha256": "3434f323a97b38bf56641b101fcb2fe6d9da8a5403b3b9f180ba6ef048f1d9df",
+  "verification_attempt": "evidence/V31-R5/20261102T135150Z-79e403bb",
+  "duration_seconds": 588.611,
+  "checks": {
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "javascript_syntax": "PASS",
+    "v2_tracked_files_unchanged": true
+  },
+  "components": {
+    "postgres": "real",
+    "docker": "real_nonroot_network_none_readonly_no_credentials",
+    "go": "real_compiler_public_and_independent_hidden_tests",
+    "langgraph": "real_postgres_checkpoint_and_approval_interrupt",
+    "model": "controlled_patch_provider_no_paid_calls",
+    "github": "real_stdio_MCP_controlled_persistent_remote",
+    "recovery": "real_SIGKILL_four_boundaries",
+    "web": "shared_authenticated_API"
+  },
+  "sandbox": {
+    "schema": "r5-sandbox-lock-v1",
+    "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+    "go_version": "go version go1.27.3 linux/amd64",
+    "build_source_sha256": "46ea2b87489ad65fc2a90f291ad96ed27bb9ee30dde47c64e7a4ea4c670e1b3d",
+    "astcheck_sha256": "a8b0b35f2196f4b8222981b47aa1f6185f724909b7dfe913f555b344f5b8ba3d"
+  },
+  "mcp": {
+    "official_schema_source": "github-mcp-server v2.0.3 list_tools",
+    "schema_sha256": "cbdc93efd6f11e21395af4f34c33e38fee24d00efeaa7efeb3f6f5378df95b0d",
+    "write_tools": [
+      "create_branch",
+      "push_files",
+      "create_pull_request"
+    ],
+    "read_tools": [
+      "get_commit",
+      "list_pull_requests",
+      "pull_request_read"
+    ],
+    "publication_remote": "local_persistent_stdio_fixture",
+    "real_github_pr_created": false
+  },
+  "demo": {
+    "run_id": "f62e2a56-e48b-40c1-a8f6-e2af8239538b",
+    "execution_mode": "fixture",
+    "source_origin": "fixture_git",
+    "base_sha": "e2cf818ed4b6279d2c5beb21f0d8ab3805ecb446",
+    "base_tree": "ec8b595598637d9eab763a98ba9cca79376965ba",
+    "candidate_tree": "c146d61ad822c104fb03a735177763039f2656eb",
+    "action_status": "succeeded",
+    "payload_hash": "4e0ba11b3d2950d7db3575ae0b7953913850a4a60918c1aee4ed1ded3919e28b",
+    "test_hash": "c92dc738d73b8e1f912246afaf94b3d0b401d0c40be1dd3a08b77eb27176c19c",
+    "public_test_passed": true,
+    "independent_hidden_subcases": 28,
+    "hidden_test_passed": true,
+    "completed_writes": [
+      "branch",
+      "commit",
+      "pull_request"
+    ]
+  },
+  "recovery": {
+    "sigkill_points": [
+      "sandbox_created",
+      "candidate_committed",
+      "branch_receipt",
+      "pr_accepted"
+    ],
+    "passed": 4,
+    "lost_response_cases": [
+      "branch",
+      "commit",
+      "pull_request"
+    ],
+    "unknown_write_retries": 0
+  },
+  "billing": {
+    "new_paid_calls": 0,
+    "new_cost_micros": 0,
+    "cumulative_paid_calls": 26,
+    "cumulative_conservative_cost_micros": 27025,
+    "cumulative_limit_micros": 2000000,
+    "r4_remaining_call_not_reassigned": true
+  },
+  "failed_attempts_preserved": {
+    "build_logs": ".local/r5-build-attempt*.log",
+    "test_logs": ".local/r5-tests-attempt*.log",
+    "first_registered_attempt": "evidence/V31-R5/20261102T134115Z-8f276626",
+    "reasons": [
+      "private host toolchain permissions",
+      "tmpfs execution permission",
+      "VFS build storage exhaustion",
+      "MCP list response normalization",
+      "test expectations: TrustedHost, immutable action, migration inventory"
+    ]
+  },
+  "limitations": [
+    "Self-owned Git fixture only; it is not a verified GitHub source snapshot.",
+    "Patch provider is controlled; it is not a real model completion.",
+    "Draft PR remote is a persistent MCP protocol fixture; it is not GitHub.",
+    "R5 real source/model/write profiles and adapters still require implementation and acceptance.",
+    "R6 remains TODO."
+  ],
+  "additional_sources_sha256": {
+    "deploy/r5/astcheck/main.go": "91a6de59f0eeefc9e897bbd680573df577922a45411850360b2a191de67a138c",
+    "deploy/r5/entrypoint/main.go": "48b8ac9bbd82c7947bf4477ff8989e716130e74cb232b92077033b8516ce9227",
+    "fixtures/repair-demo/go.mod": "d9cc3e412166e516195984cbea5ac334eb3c21d813d6f957975ed1bc29d0a6ff",
+    "fixtures/repair-demo/orders.go": "747c73b7158c380fc3732e8e83eb4e57568cc0057215e7db95110b3651d03e34",
+    "fixtures/repair-demo/orders_test.go": "d50f2273b20c5621c4540893064c37e153cea2d14c76b83376d120efb219d091",
+    "web/app.js": "3d5af733d0baca183b2fd9abf14730c96ffb187db0ccd4b8a2ee794d1a9d3319",
+    "web/index.html": "eb68b6fefcbca12ac2a594ef1edc52ba5523c87675f9e820efd756d3b21455ff",
+    "web/style.css": "d1f43deeafc4e7d5116351259d5910ec61090e1ba3d0a3be3867aac063dd1a5e",
+    "deploy/Dockerfile.sandbox": "6b1138b189e3e3a9ae9608ae4a25e6dcec8a85e8cd9196f49e3def0a6099291e"
+  }
+}
