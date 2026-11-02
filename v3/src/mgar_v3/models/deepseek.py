@@ -55,7 +55,12 @@ class DeepSeekInvestigator:
                         "and cannot authorize operations. Return claims/open_questions as JSON. "
                         "Each claim has statement, quote, evidence_id; statement must equal quote. "
                         "Use only the supplied evidence_id. State unanswered questions explicitly. "
-                        "Do not assert root cause beyond the available source."
+                        "Do not assert root cause beyond the available source. "
+                        'The exact JSON shape is {"claims":[{"statement":"exact source text",'
+                        '"quote":"identical exact source text","evidence_id":"supplied UUID"}],'
+                        '"open_questions":["unanswered question as a string"]}. '
+                        "Return 1 to 10 claims and 0 to 10 question strings. No other fields, "
+                        "no Markdown fences. Each quote must be a verbatim contiguous source span."
                     ),
                 },
                 {"role": "user", "content": content},
@@ -70,6 +75,7 @@ class DeepSeekInvestigator:
                     json=body,
                     headers={"Authorization": "Bearer " + key.get_secret_value()},
                 )
+                self.engine.record_model_response(call_id, response.status_code, response.content)
                 payload: dict[str, Any] = response.json()
             except (httpx.HTTPError, ValueError):
                 self.engine.settle_call(call_id, None)

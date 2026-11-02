@@ -242,6 +242,13 @@ def test_usage_and_output_failures_are_distinguished(live_case, response, reason
     with engine.transaction() as conn:
         call = conn.execute("SELECT * FROM app.usage_calls").fetchone()
         assert call["status"] == ("unknown" if reason == "USAGE_UNKNOWN" else "known")
+    recorded = [e for e in engine.events(run["run_id"]) if e["kind"] == "model_response_recorded"]
+    assert len(recorded) == 1
+    import json
+
+    assert (
+        json.loads(engine.artifacts.read(recorded[0]["safe_payload"]["content_hash"])) == response
+    )
 
 
 def test_environment_flag_alone_cannot_authorize_live_ingress(engine, trigger):

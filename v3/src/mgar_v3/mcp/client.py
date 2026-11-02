@@ -54,9 +54,28 @@ class ReadOnlyGitHubMCP:
     @asynccontextmanager
     async def session(self) -> AsyncIterator[ClientSession]:
         if self.command:
-            # Do not pass model keys, DB credentials, or the local API token to a tool process.
+            if self.redis_url is not None:
+                acquire(self.redis_url.get_secret_value(), "github-mcp:" + self.repository)
+            elif self.token is not None:
+                raise DomainError("RATE_LIMIT_UNAVAILABLE", "MCP rate limit is not configured", 503)
+            # Only the explicitly configured GitHub credential reaches this trusted server.
+            environment = {"PATH": os.environ.get("PATH", "")}
+            for name in [
+                "HTTP_PROXY",
+                "HTTPS_PROXY",
+                "NO_PROXY",
+                "http_proxy",
+                "https_proxy",
+                "no_proxy",
+                "SSL_CERT_FILE",
+                "SSL_CERT_DIR",
+            ]:
+                if name in os.environ:
+                    environment[name] = os.environ[name]
+            if self.token is not None:
+                environment["GITHUB_PERSONAL_ACCESS_TOKEN"] = self.token.get_secret_value()
             params = StdioServerParameters(
-                command=self.command, args=list(self.args), env={"PATH": os.environ.get("PATH", "")}
+                command=self.command, args=list(self.args), env=environment
             )
             async with stdio_client(params) as (read, write), ClientSession(read, write) as session:
                 await session.initialize()

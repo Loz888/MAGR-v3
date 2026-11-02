@@ -74,49 +74,48 @@
         "V31-R1-01"
       ],
       "engineering_gate": "PASS",
-      "live_gate": "NOT_RUN",
+      "live_gate": "PASS",
       "maps_to": [],
       "requested_limits": {
         "max_model_calls": 3,
         "max_cost_micros": 2000000,
         "currency": "USD"
       },
-      "execution_requested": false,
+      "execution_requested": true,
       "evidence": "v3/evidence/V31-R1-BUDGET-02/acceptance.json"
     },
     {
       "id": "V31-R1-LIVE",
       "phase": "R1",
       "title": "V3 Issue #1 真实模型、审批与结果评论验收",
-      "status": "BLOCKED",
+      "status": "DONE",
       "dependencies": [
         "V31-R1-01"
       ],
       "engineering_gate": "NOT_APPLICABLE",
-      "live_gate": "NOT_RUN",
+      "live_gate": "PASS",
       "maps_to": [],
-      "blockers": [
-        "本次仅准备候选，执行前须具备匹配新 profile 哈希的运行授权配置",
-        "独立应用缺少 GitHub 读写凭据"
-      ],
+      "blockers": [],
       "issue_url": "https://github.com/Loz888/MAGR-v3/issues/1",
       "candidate_limits": {
         "max_model_calls": 3,
         "max_cost_micros": 2000000,
         "currency": "USD"
-      }
+      },
+      "evidence": "v3/docs/acceptance/r1-live-20261102.json"
     },
     {
       "id": "V31-R2",
       "phase": "R2",
       "title": "Mailbox 与显式 intake/replan",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "dependencies": [
         "V31-R1-LIVE"
       ],
       "engineering_gate": "NOT_RUN",
       "live_gate": "NOT_RUN",
-      "maps_to": []
+      "maps_to": [],
+      "started_after_gate": "2026-11-02T03:43:08.968350+00:00"
     },
     {
       "id": "V31-R3",

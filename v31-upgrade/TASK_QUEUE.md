@@ -8,15 +8,14 @@
 | V31-R0-02 | 锁定环境、PG/Redis、MCP 适配与验收框架 | DONE | PASS | NOT_APPLICABLE |
 | V31-R0-03 | 事件、授权、工作项、执行与动作持久化契约 | DONE | PASS | NOT_APPLICABLE |
 | V31-R1-01 | 确定性调查、Verifier、审批与统一出口工程闭环 | DONE | PASS | NOT_RUN |
-| V31-R1-BUDGET-02 | 候选最多 3 次调用、累计预算 USD 2 | DONE | PASS | NOT_RUN |
-| V31-R1-LIVE | V3 Issue #1 真实模型、审批与结果评论验收 | BLOCKED | NOT_APPLICABLE | NOT_RUN |
-| V31-R2 | Mailbox 与显式 intake/replan | TODO | NOT_RUN | NOT_RUN |
+| V31-R1-BUDGET-02 | 候选最多 3 次调用、累计预算 USD 2 | DONE | PASS | PASS |
+| V31-R1-LIVE | V3 Issue #1 真实模型、审批与结果评论验收 | DONE | NOT_APPLICABLE | PASS |
+| V31-R2 | Mailbox 与显式 intake/replan | IN_PROGRESS | NOT_RUN | NOT_RUN |
 | V31-R3 | 受限 Router LLM 与多任务 | TODO | NOT_RUN | NOT_RUN |
 | V31-R4 | RAG 与多专家 | TODO | NOT_RUN | NOT_RUN |
 | V31-R5 | 受限修复与 Draft PR | TODO | NOT_RUN | NOT_RUN |
 | V31-R6 | Watchdog、主动性与发布评测 | TODO | NOT_RUN | NOT_RUN |
 
-原实施授权与验收记录保留。2026-11-02 用户将候选上限调整为最多 3 次调用、累计 USD 2；本次仅准备配置，不发起真实模型调用或外部发布。
+2026-11-02 用户授权真实调用与 GitHub 推送；沿用最多 3 次物理调用、累计 USD 2 的限制。R0 与 R1 工程复验通过，R1 真实闭环 PASS 后才启动 R2。实际调用 2 次，保守计费 USD 0.001745，结果评论一条；模型落库与远程写回执两个 SIGKILL 恢复点通过。
 
-R1-LIVE 的 Issue #1 已创建，真实模型与结果评论仍为 NOT_RUN。执行时复用已有覆盖授权，检查匹配新 profile 哈希的运行配置和凭据；R1-LIVE 未通过之前，R2–R6 保持 TODO。
-全项目状态 ENGINEERING_INCOMPLETE；首批 R0/R1 工程验收 PASS。
+公开验收摘要：v3/docs/acceptance/r1-live-20261102.json。原始失败与运行日志保留在本地 evidence/，不随公开源码发布。全项目仍为 ENGINEERING_INCOMPLETE。

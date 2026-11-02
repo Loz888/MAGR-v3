@@ -7,6 +7,7 @@ from mgar_v3.domain import DomainError
 from mgar_v3.effects.dispatcher import DefinitiveFailure
 from mgar_v3.live import LivePermit
 from mgar_v3.mcp.client import ReadOnlyGitHubMCP
+from mgar_v3.mcp.factory import github_client
 from mgar_v3.settings import Settings
 
 
@@ -22,13 +23,9 @@ class GitHubMCPTransport:
     ):
         self.permit = permit
         repository = permit.profile.repository
-        self.writer = writer or ReadOnlyGitHubMCP(
-            repository, token=settings.github_write_token, redis_url=settings.redis_url
-        )
+        self.writer = writer or github_client(settings, repository, readonly=False)
         self.writer.readonly = False
-        self.reader = reader or ReadOnlyGitHubMCP(
-            repository, token=settings.github_read_token, redis_url=settings.redis_url
-        )
+        self.reader = reader or github_client(settings, repository)
 
     async def _call(self, client: ReadOnlyGitHubMCP, tool: str, arguments: Row) -> Any:
         async with client.session() as session:

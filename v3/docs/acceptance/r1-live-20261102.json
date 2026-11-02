@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "profile_hash": "5502fc0230f61f8658fef64adb891729cf668da83c1fcdc2ef440c9b31a740e1",
+  "run_id": "50379b1a-1516-44ca-9670-157014a28b3c",
+  "oracle_sha256": "e45693684a17e7ad15b82378a07bc57879a95fb2be4d0e813cf90635bb62b5c7",
+  "coverage": {
+    "passed": true,
+    "oracle_version": "r1-issue-1-coverage-v1",
+    "distinct_quotes": 7,
+    "required_facts": 5,
+    "matched_facts": 5,
+    "source_hash_matches": true
+  },
+  "actual_model_calls": 2,
+  "conservative_cost_micros": 1745,
+  "reserved_micros": 0,
+  "payload_hash": "0e3c99065b23fd5d34bf1091635a4616b17d39f26dbb7b5b3455783f0eb91d68",
+  "report_hash": "e242fd699140ea98eadb12e35ed55f9c4e7c700028f5e271760e16975c585870",
+  "comment_url": "https://github.com/loz888/magr-v3/issues/1#issuecomment-6568469661",
+  "model_recovery": {
+    "unknown_actions": 0,
+    "paused_runs": 1,
+    "unknown_usage": 0
+  },
+  "write_recovery": {
+    "unknown_actions": 1,
+    "paused_runs": 0,
+    "unknown_usage": 0
+  },
+  "duplicate_delivery": true,
+  "no_unknown_write_retry": true,
+  "components": {
+    "postgres": "real",
+    "checkpoint": "real",
+    "github_mcp": "real",
+    "deepseek": "real"
+  },
+  "accepted_at": "2026-11-02T03:43:08.968350+00:00",
+  "engineering_tests": 88,
+  "failed_attempts": [
+    {
+      "attempt": 1,
+      "reason": "MODEL_INVALID_RESPONSE",
+      "known_cost_micros": 873,
+      "external_writes": 0,
+      "raw_response_available": false
+    }
+  ],
+  "successful_attempt_cost_micros": 872,
+  "cost_basis": "Actual provider token usage priced at frozen peak upper bounds, not an invoice.",
+  "approval_basis": "Explicit delegated user instruction; operator inspected the exact rendered proposal and approved its payload hash. No manual user click is claimed.",
+  "credential_separation": "Separate read-only and comment-only MCP processes; both reference the existing GH_TOKEN. Separate PAT identities are supported but were not used.",
+  "limitations": [
+    "This bounded Issue-summary task does not establish general reasoning quality or production readiness.",
+    "Initial invalid response body was not retained; response artifacts are now captured before schema validation."
+  ]
+}

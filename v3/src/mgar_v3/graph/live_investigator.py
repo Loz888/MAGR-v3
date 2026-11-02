@@ -8,6 +8,7 @@ from mgar_v3.domain import DomainError, Investigation
 from mgar_v3.graph.runner import FixtureInvestigator
 from mgar_v3.live import LivePermit
 from mgar_v3.mcp.client import ReadOnlyGitHubMCP
+from mgar_v3.mcp.factory import github_client
 from mgar_v3.models.deepseek import DeepSeekInvestigator
 
 
@@ -28,11 +29,8 @@ class LiveInvestigator(FixtureInvestigator):
     def read(self) -> tuple[bytes, str, str]:
         self.permit.validate()
         profile = self.permit.profile
-        reader = self.reader or ReadOnlyGitHubMCP(
-            profile.repository,
-            token=self.engine.settings.github_read_token,
-            max_bytes=profile.max_source_bytes,
-            redis_url=self.engine.settings.redis_url,
+        reader = self.reader or github_client(
+            self.engine.settings, profile.repository, max_bytes=profile.max_source_bytes
         )
         try:
             if profile.source_kind == "issue":

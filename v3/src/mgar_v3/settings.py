@@ -1,7 +1,8 @@
+import os
 from pathlib import Path
 from typing import Any
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -27,6 +28,8 @@ class Settings(BaseSettings):
     deepseek_api_key: SecretStr | None = None
     github_read_token: SecretStr | None = None
     github_write_token: SecretStr | None = None
+    github_mcp_binary: Path | None = None
+    github_use_gh_token: bool = False
     live_profile_path: Path | None = None
     live_authorization_path: Path | None = None
 
@@ -35,3 +38,14 @@ class Settings(BaseSettings):
     def explicit_enable_only(cls, value: Any) -> bool:
         # Deployment flags only enable on the documented literal 1; unknown values fail closed.
         return value is True or value == "1"
+
+    @model_validator(mode="after")
+    def configured_github_reference(self) -> "Settings":
+        if self.github_use_gh_token:
+            token = os.environ.get("GH_TOKEN")
+            if token:
+                if self.github_read_token is None:
+                    self.github_read_token = SecretStr(token)
+                if self.github_write_token is None:
+                    self.github_write_token = SecretStr(token)
+        return self

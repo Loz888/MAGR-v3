@@ -25,6 +25,16 @@ def issue_read(owner: str, repo: str, issue_number: int, method: str) -> dict:
 
 
 @server.tool()
+def credential_inventory() -> dict:
+    return {
+        "github": bool(os.environ.get("GITHUB_PERSONAL_ACCESS_TOKEN")),
+        "model": bool(os.environ.get("MGAR_V3_DEEPSEEK_API_KEY")),
+        "database": bool(os.environ.get("MGAR_V3_DATABASE_URL")),
+        "control": bool(os.environ.get("MGAR_V3_LOCAL_TOKEN")),
+    }
+
+
+@server.tool()
 def create_issue() -> str:
     raise AssertionError("write tools must never be called by this adapter")
 

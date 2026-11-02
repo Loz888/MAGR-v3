@@ -1,0 +1,8 @@
+{
+  "repository": "github/github-mcp-server",
+  "version": "v2.0.3",
+  "platform": "Linux-x86_64",
+  "archive_url": "https://github.com/github/github-mcp-server/releases/download/v2.0.3/github-mcp-server_Linux_x86_64.tar.gz",
+  "archive_sha256": "f797c20fe02a755865d0e2d46184ab47e31bf1619b0855b8d89c531e45a651c2",
+  "binary_sha256": "13608f06cb754be101a87ea5ebeb9ed15e632d3f709ba3b3e5866f3fc7970c70"
+}

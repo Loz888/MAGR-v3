@@ -3,7 +3,7 @@ export UV_CACHE_DIR ?= $(CURDIR)/.local/uv-cache
 export UV_PYTHON_DOWNLOADS = never
 COMPOSE = docker compose --project-name mgar-v3 --env-file .env -f deploy/compose.yaml -f deploy/compose.local.yaml
 
-.PHONY: setup deps-up deps-stop migrate doctor verify lint typecheck test dev live-preflight
+.PHONY: setup deps-up deps-stop migrate doctor verify lint typecheck test dev live-preflight install-github-mcp
 setup:
 	$(UV) sync --frozen
 	$(UV) run --frozen python scripts/bootstrap.py
@@ -15,6 +15,8 @@ migrate:
 	$(UV) run --frozen python -m mgar_v3.store.migrate
 doctor:
 	$(UV) run --frozen mgar doctor
+install-github-mcp:
+	$(UV) run --frozen python scripts/install_github_mcp.py
 live-preflight:
 	$(UV) run --frozen mgar live-preflight --profile "$(PROFILE)"
 verify:

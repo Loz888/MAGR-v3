@@ -868,6 +868,31 @@ class Engine:
                 )
             return Investigation.model_validate(call["result"])
 
+    def record_model_response(self, call_id: UUID, status: int, body: bytes) -> None:
+        if len(body) > 262144:
+            raise DomainError("MODEL_RESPONSE_LIMIT", "Provider response exceeds its byte bound")
+        content_hash = self.artifacts.put(body)
+        with self.transaction() as conn:
+            call = conn.execute(
+                "SELECT run_id FROM app.usage_calls WHERE call_id=%s", (call_id,)
+            ).fetchone()
+            if call is None:
+                raise DomainError("CALL_NOT_FOUND", "Model call was not found", 404)
+            self._run(conn, call["run_id"])
+            conn.execute(
+                "INSERT INTO app.artifacts(content_hash,byte_count) VALUES (%s,%s) "
+                "ON CONFLICT DO NOTHING",
+                (content_hash, len(body)),
+            )
+            self._event(
+                conn,
+                call["run_id"],
+                "model_response_recorded",
+                call_id=str(call_id),
+                http_status=status,
+                content_hash=content_hash,
+            )
+
     def settle_call(
         self,
         call_id: UUID,

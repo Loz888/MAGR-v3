@@ -12,4 +12,4 @@ mgar live-preflight --profile config/live-r1-proposed.json；获得已覆盖授�
 
 证据位于 v3/evidence/V31-R1-LIVE/。工程与 live 状态分开记录，保留失败尝试；不以 skip、零测试或固定返回 PASS 代替验收。
 
-本次仅准备候选配置，未启动真实调用。执行时复用会话中已覆盖的授权范围，检查匹配新 profile 哈希的运行授权配置与独立应用 GitHub 凭据；条件未具备时记 NOT_RUN。此卡未通过不进入 R2。
+2026-11-02 依据用户明确授权执行并通过，详情见 v3/docs/acceptance/r1-live-20261102.json。首个已计费响应结构失败并保留，第二次通过。完整结果由代理操作员检查并按会话委托审批；没有声称用户手动点击审批。MCP 读写进程工具隔离，共用现有 GH_TOKEN 凭据引用。
