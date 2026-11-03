@@ -1,0 +1,77 @@
+{
+  "schema": "r6-observe-engineering-v1",
+  "date_utc": "2026-11-03T03:19:55.220181+00:00",
+  "release_status": "ENGINEERING_INCOMPLETE",
+  "r6_status": "IN_PROGRESS",
+  "r6_engineering_gate": "PARTIAL",
+  "r6_live_gate": "NOT_RUN",
+  "slice": "V31-R6-01",
+  "slice_status": "DONE",
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "r5_prerequisite_commit": "69ae018",
+  "r5_live_url": "https://github.com/Loz888/MAGR-v3/pull/2",
+  "counts": {
+    "tests": 82,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "new_checks": 16,
+  "duration_seconds": 58.313,
+  "source_sha256": "84402e5d80036ab4e444de4e282676cac08c6503609cdd7d55b12842ff845e20",
+  "verification_attempt": "evidence/V31-R6-01/20261103T031835Z-3ec8c259",
+  "components": {
+    "postgres": "real_Engine_single_writer_same_session",
+    "watchdog": "real_separate_process_and_loopback_HTTP_observe_only",
+    "authorization": "distinct_limited_watchdog_token_admin_decisions_separate",
+    "recovery": "deterministic_facts_dedupe_stale_epoch_manual_fencing_and_rollback",
+    "model": "none_in_watchdog_controlled_in_regression",
+    "external_writes": "controlled_regression_only_no_live_GitHub_publication"
+  },
+  "checks": {
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "javascript_syntax": "PASS",
+    "migrations": "PASS_13_applied",
+    "doctor_postgres": "PASS",
+    "doctor_redis": "PASS",
+    "private_config_setup": "PASS",
+    "v2_tracked_files_unchanged": true
+  },
+  "scope": [
+    "independent_observe_process_no_Settings_or_model_client",
+    "limited_token_only_snapshot_and_request_submission",
+    "Engine_recomputes_current_facts_and_epoch",
+    "concurrent_dedupe_no_Run_or_progress_mutation",
+    "explicit_admin_decisions_stale_facts_prevent_control",
+    "manual_pause_old_worker_fencing_and_atomic_rollback",
+    "unknown_effects_escalate_even_after_cancel_no_replay",
+    "unavailable_service_saved_false",
+    "lost_submission_response_reported_unknown_and_deduped_without_Run_control"
+  ],
+  "billing": {
+    "new_paid_calls": 0,
+    "new_cost_micros": 0,
+    "cumulative_paid_calls": 29,
+    "cumulative_conservative_cost_micros": 28549,
+    "reserved_micros": 0,
+    "cumulative_limit_micros": 2000000
+  },
+  "pending": [
+    "independent_heartbeats_expired_executor_detection",
+    "mailbox_router_outbox_backlog_and_dependency_health",
+    "proactive_business_policy_observe_then_bounded_auto",
+    "read_only_speculation_separate_budget",
+    "full_ABC_evaluation_fault_matrix_and_deployment"
+  ],
+  "limitations": [
+    "At most 256 observations per poll; truncated coverage is explicitly partial.",
+    "Trusted host process with least credentials, not an OS sandbox.",
+    "No live model or GitHub experiment for R6."
+  ],
+  "failed_attempts_preserved": [
+    ".local/r6-watchdog-tests-attempt1.log",
+    ".local/r6-mypy-initial.log"
+  ]
+}

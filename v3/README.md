@@ -154,7 +154,7 @@ R4 完整回归 187 项、专项验收 103 项通过，0 失败、0 跳过。新
 
 ## R4 真实跨源验收
 
-已执行三正常、两负例及单 Agent 对照，实际使用 DeepSeek、GitHub 代码、知识检索和 SQL。首轮双方各 4/5；一次有界恢复后，多专家五例均有通过记录，首轮失败保留。本轮新增 23 次调用、保守 USD 0.024569，累计 USD 0.027025。完整回归 196 项、R4 专项 119 项通过。详细结果及限制见 [真实验收报告](docs/r4-live-report.md)；live 标记 PARTIAL，R5 受控工程进展见下方；R6 尚未开始。
+已执行三正常、两负例及单 Agent 对照，实际使用 DeepSeek、GitHub 代码、知识检索和 SQL。首轮双方各 4/5；一次有界恢复后，多专家五例均有通过记录，首轮失败保留。本轮新增 23 次调用、保守 USD 0.024569，累计 USD 0.027025。完整回归 196 项、R4 专项 119 项通过。详细结果及限制见 [真实验收报告](docs/r4-live-report.md)；live 标记 PARTIAL，R5 与 R6 最新进展见下方。
 
 
 ## R5 受限修复工程
@@ -166,14 +166,14 @@ R4 完整回归 187 项、专项验收 103 项通过，0 失败、0 跳过。新
 受控工程验收覆盖完整回归 229 项，0 失败、0 跳过；四个真实 SIGKILL 点通过。[公开验收摘要](docs/acceptance/r5-engineering-20261102.json) 单列了工程范围、未完成适配和费用。
 
 
-## R5 真实适配补全
+## R5 真实适配与最终验收
 
-现已补上 GitHub 固定提交及完整 tree/blob 证明、真实 DeepSeek 补丁适配、跨阶段累计费用约束、官方 MCP Draft PR、部分成功只读对账与显式继续。Web/CLI/API 也支持专用真实配置、完整提案审批及编辑重测。完整回归 245 项，0 失败、0 跳过；包含六个强制终止恢复案例。
+已完成 GitHub 固定提交及完整 tree/blob 证明、真实 DeepSeek 适配、累计预算、官方 MCP Draft PR 和只读恢复。最终工程回归 249 项通过，0 失败/错误/跳过；真实 [Draft PR #2](https://github.com/Loz888/MAGR-v3/pull/2) 接收后 SIGKILL 经只读对账恢复，未合并。
 
-本轮工程验收中的模型和写入远端使用受控服务，另有实际 GitHub/MCP 只读源码探测。未新增付费调用或业务 PR；真实验收需要新冻结配置及许可，R5 整体暂为 IN_PROGRESS，R6 保持 TODO。详见 [适配验收](docs/acceptance/r5-native-engineering-20261102.json)、[ADR 0008](docs/adr/0008-r5-native-adapters.md) 和 [运行说明](docs/r5-runbook.md)。
+原始三次模型输出均在 diff 格式/定位检查失败，原始成绩保留 FAIL。仅规范化第一份结果的 hunk 行数后，在独立 Run 重放已结算输出，通过公开及 28 个独立隐藏子案例；没有新增调用或延长原 Run。用户对完整提案的批准及显式同哈希续签均保留。累计 29 次、保守 USD 0.028549。见 [真实报告](docs/r5-live-report.md)、[机器摘要](docs/acceptance/r5-live-20261103.json) 和 [运行说明](docs/r5-runbook.md)。
 
-2026-11-03 的真实试验已执行：三次 DeepSeek 原始 diff 均在格式/定位校验失败，原始成绩保留 FAIL。只规范化第一份结果的 hunk 行数后，独立 Run 重放已结算输出，公开测试及 28 个独立隐藏子案例通过。没有增加模型调用或延长原 Run 期限。完整提案等待审批；真实 Draft PR 与发布响应丢失恢复未执行，R5 为 PARTIAL，R6 保持 TODO。累计 29 次调用、USD 0.028549。详见 [R5 真实验收摘要](docs/acceptance/r5-live-20261103.json) 和 [ADR 0009](docs/adr/0009-r5-counts-only-replay.md)。
+## R6 确定性 Watchdog 首个切片
 
-R5 规范化与重放工程完整回归：248 项通过，0 失败、0 错误、0 跳过；lint、类型检查和前端语法通过。真实发布验收仍待完整提案审批。
+R5 门禁通过后开始。独立 observe 进程使用专用限权令牌，只读取安全快照并提交恢复请求；Engine 重新核对事实、去重并持久化，由人明确决定等待、转人工、暂停或取消。未知副作用不重放，旧 epoch 提交被拒绝。
 
-R5 最终验收通过：249 项工程回归通过；真实 Draft PR [#2](https://github.com/Loz888/MAGR-v3/pull/2) 经接收后 SIGKILL 只读恢复成功，未合并。原始模型试验失败保留，规范化重放单列通过。累计费用仍 USD 0.028549；R6 将从确定性 Watchdog 开始。详见 [真实报告](docs/r5-live-report.md)。
+注册首切片验收 82 项通过，0 失败/错误/跳过；含 16 项新检查和真实 PostgreSQL、独立进程、HTTP、权限、回滚及服务不可用。新增付费调用与业务发布为零。R6 整体仍 IN_PROGRESS/PARTIAL：心跳/积压/依赖健康、主动策略、投机预算、完整 A/B/C 和部署故障矩阵未完成。详见 [R6 使用说明](docs/r6-runbook.md)。

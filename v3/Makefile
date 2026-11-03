@@ -52,3 +52,9 @@ sandbox-build:
 	$(UV) run --frozen python scripts/build_r5_sandbox.py
 r5-demo:
 	$(UV) run --frozen python scripts/r5_demo.py
+
+.PHONY: watchdog-setup watchdog-once
+watchdog-setup:
+	$(UV) run --frozen python scripts/setup_watchdog.py
+watchdog-once:
+	env -i PATH="$(PATH)" LANG=C.UTF-8 "$(CURDIR)/.venv/bin/python" -m mgar_v3.recovery.watchdog --config "$(CURDIR)/.local/watchdog/client.json" --once

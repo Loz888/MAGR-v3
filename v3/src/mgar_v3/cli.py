@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -11,15 +12,26 @@ from redis import Redis
 from redis.exceptions import RedisError
 
 from mgar_v3.preflight import preflight
-from mgar_v3.settings import Settings
+from mgar_v3.settings import ROOT, Settings
 
 
 def doctor(settings: Settings) -> int:
     result = {"postgres": "NOT_RUN", "redis": "NOT_RUN", "live": "NOT_RUN"}
     try:
         with psycopg.connect(settings.database_url.get_secret_value(), connect_timeout=3) as conn:
-            row = conn.execute("SELECT count(*) FROM app.schema_migrations").fetchone()
-            result["postgres"] = "PASS" if row and row[0] >= 11 else "FAIL"
+            applied: dict[str, str] = dict(
+                conn.execute("SELECT name,sha256 FROM app.schema_migrations").fetchall()
+            )
+            required = list((ROOT / "migrations").glob("*.sql"))
+            result["postgres"] = (
+                "PASS"
+                if required
+                and all(
+                    applied.get(p.name) == hashlib.sha256(p.read_bytes()).hexdigest()
+                    for p in required
+                )
+                else "FAIL"
+            )
     except psycopg.Error:
         result["postgres"] = "FAIL"
     try:
@@ -40,6 +52,12 @@ def main(argv: list[str] | None = None) -> int:
     commands.add_parser("doctor")
     commands.add_parser("tickets")
     commands.add_parser("routing")
+    commands.add_parser("recovery-requests")
+    recovery = commands.add_parser("recovery-decision")
+    recovery.add_argument("request_id")
+    recovery.add_argument(
+        "--decision", choices=["wait", "escalate", "pause", "cancel"], required=True
+    )
     ticket = commands.add_parser("ticket")
     ticket.add_argument("ticket_id")
     event = commands.add_parser("event")
@@ -118,7 +136,14 @@ def main(argv: list[str] | None = None) -> int:
         timeout=60,
     ) as client:
         try:
-            if args.command in {"tickets", "routing"}:
+            if args.command == "recovery-requests":
+                response = client.get("/api/v3/recovery-requests")
+            elif args.command == "recovery-decision":
+                response = client.post(
+                    "/api/v3/recovery-requests/" + args.request_id + "/decision",
+                    json={"decision": args.decision},
+                )
+            elif args.command in {"tickets", "routing"}:
                 response = client.get(
                     "/api/v3/tickets" if args.command == "tickets" else "/api/v3/router/status"
                 )

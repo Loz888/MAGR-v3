@@ -24,7 +24,7 @@ def test_real_postgres_vector_and_idempotent_migrations(database):
     assert migrate(database) == []
     with psycopg.connect(database) as conn:
         assert conn.execute("SELECT '[1,2,3]'::vector <-> '[1,2,3]'::vector").fetchone() == (0.0,)
-        assert conn.execute("SELECT count(*) FROM app.schema_migrations").fetchone() == (12,)
+        assert conn.execute("SELECT count(*) FROM app.schema_migrations").fetchone() == (13,)
 
 
 def test_real_redis_ping_and_reconstructable_cache():
@@ -65,6 +65,7 @@ def test_call_limit_migration_preserves_existing_one_call_budgets(tmp_path):
             "0010_r5_repairs.sql",
             "0011_r5_live.sql",
             "0012_review_renewals.sql",
+            "0013_recovery_requests.sql",
         ]
         assert migrate(dsn) == []
         with psycopg.connect(dsn, autocommit=True) as conn:

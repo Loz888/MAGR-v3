@@ -26,6 +26,7 @@ from mgar_v3.graph.runner import Runner
 from mgar_v3.knowledge.api import register
 from mgar_v3.live import load_permit
 from mgar_v3.mcp.r4 import server
+from mgar_v3.recovery.api import register as register_recovery
 from mgar_v3.repair.domain import ApprovalDecision, EditDecision, RepairInput
 from mgar_v3.repair.graph import acknowledge_approval
 from mgar_v3.repair.live import repair_permit
@@ -672,4 +673,5 @@ def create_app(
         )
 
     register(app, authority, authenticated)
+    register_recovery(app, configuration, authority, authenticated)
     return app

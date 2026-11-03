@@ -190,5 +190,27 @@
       "web": "shared_authenticated_API",
       "budget": "real_cumulative_PG_group_including_R1_R4_predecessors"
     }
+  },
+  "V31-R6-01": {
+    "tests": [
+      "tests/test_r6_watchdog.py",
+      "tests/test_environment.py",
+      "tests/test_api.py",
+      "tests/test_cli.py",
+      "tests/test_coordination.py",
+      "tests/test_duplex.py",
+      "tests/test_effects.py",
+      "tests/test_recovery.py",
+      "tests/test_r5_review_renewal.py"
+    ],
+    "timeout_seconds": 300,
+    "components": {
+      "postgres": "real_Engine_single_writer_same_session",
+      "watchdog": "real_separate_process_and_loopback_HTTP_observe_only",
+      "authorization": "distinct_limited_watchdog_token_admin_decisions_separate",
+      "recovery": "deterministic_facts_dedupe_stale_epoch_manual_fencing_and_rollback",
+      "model": "none_in_watchdog_controlled_in_regression",
+      "external_writes": "controlled_regression_only_no_live_GitHub_publication"
+    }
   }
 }

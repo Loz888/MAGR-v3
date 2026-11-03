@@ -193,13 +193,28 @@
       "id": "V31-R6",
       "phase": "R6",
       "title": "Watchdog、主动性与发布评测",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "dependencies": [
         "V31-R5"
       ],
-      "engineering_gate": "NOT_RUN",
+      "engineering_gate": "PARTIAL",
       "live_gate": "NOT_RUN",
-      "maps_to": []
+      "maps_to": [],
+      "evidence": "v3/docs/acceptance/r6-observe-engineering-20261103.json",
+      "note": "Observe-only watchdog first slice PASS (82 checks); heartbeat/backlog/health, proactive auto, speculation budgets, ABC and deployment pending."
+    },
+    {
+      "id": "V31-R6-01",
+      "phase": "R6",
+      "title": "确定性观察与恢复请求首个切片",
+      "status": "DONE",
+      "dependencies": [
+        "V31-R5"
+      ],
+      "engineering_gate": "PASS",
+      "live_gate": "NOT_RUN",
+      "maps_to": [],
+      "evidence": "v3/docs/acceptance/r6-observe-engineering-20261103.json"
     }
   ]
 }

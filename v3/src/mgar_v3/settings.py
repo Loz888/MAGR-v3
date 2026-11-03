@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     database_url: SecretStr
     redis_url: SecretStr = SecretStr("redis://127.0.0.1:56379/0")
     local_token: SecretStr = Field(min_length=24)
+    watchdog_token: SecretStr | None = Field(default=None, min_length=24)
     github_webhook_secret: SecretStr = SecretStr("")
     artifact_root: Path = ROOT / ".local/artifacts"
     project_id: str = "orders-demo"
@@ -76,6 +77,8 @@ class Settings(BaseSettings):
 
     @model_validator(mode="after")
     def configured_github_reference(self) -> "Settings":
+        if self.watchdog_token and self.watchdog_token == self.local_token:
+            raise ValueError("Watchdog requires a separate limited token")
         if self.github_use_gh_token:
             token = os.environ.get("GH_TOKEN")
             if token:

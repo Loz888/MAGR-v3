@@ -15,7 +15,8 @@
 | V31-R4 | RAG 与多专家 | DONE | PASS | PARTIAL |
 | V31-R4-LIVE | 真实跨源调查与单 Agent 对照 | DONE | PASS | PARTIAL |
 | V31-R5 | 受限修复与 Draft PR | DONE | PASS（249 项） | PASS（恢复闭环） |
-| V31-R6 | Watchdog、主动性与发布评测 | TODO | NOT_RUN | NOT_RUN |
+| V31-R6 | Watchdog、主动性与发布评测 | IN_PROGRESS | PARTIAL | NOT_RUN |
+| V31-R6-01 | 确定性观察与恢复请求首个切片 | DONE | PASS（82 项） | NOT_RUN |
 
 2026-11-02 用户授权真实调用与 GitHub 推送；沿用最多 3 次物理调用、累计 USD 2 的限制。R0 与 R1 工程复验通过，R1 真实闭环 PASS 后才启动 R2。实际调用 2 次，保守计费 USD 0.001745，结果评论一条；模型落库与远程写回执两个 SIGKILL 恢复点通过。
 
@@ -45,3 +46,6 @@ R5 真实适配工程补齐：完整回归 245 项全部通过，新增官方 MC
 
 
 R5 最终门禁已通过：249 项回归、lint/typecheck/前端语法均通过；真实 Draft PR #2 的完整树和只读 SIGKILL 恢复通过。原始三次模型格式/定位失败保留 FAIL，后续不新增调用的规范化重放单列 PASS。累计仍 29 次、USD 0.028549，无未知或预留。R5 标 DONE，仅覆盖实测纯函数；R6 可开始工程，完整项目仍为 ENGINEERING_INCOMPLETE。
+
+
+R5 全部门禁通过后已开始 R6。首个切片 V31-R6-01 注册验收 82 项通过，含 16 项新增真实 PG/独立进程/HTTP 检查；专用限权令牌、Engine 唯一写者恢复请求、事实重核、去重、显式人工决定、epoch 防护及事务回滚通过。追加迁移 0013，未新增模型调用或业务发布，累计仍 USD 0.028549。R6 主任务保持 IN_PROGRESS/PARTIAL，心跳、积压/依赖健康、主动策略、只读投机预算、完整 A/B/C 与部署故障矩阵仍待完成。见 v3/docs/r6-runbook.md。

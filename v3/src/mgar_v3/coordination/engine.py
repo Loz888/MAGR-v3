@@ -25,6 +25,7 @@ from mgar_v3.evaluation.store import Trials
 from mgar_v3.evidence.artifacts import ArtifactStore
 from mgar_v3.knowledge.store import Knowledge
 from mgar_v3.live import LivePermit
+from mgar_v3.recovery.store import Recovery
 from mgar_v3.repair.store import Repairs
 from mgar_v3.routing.store import Routing
 from mgar_v3.settings import Settings
@@ -63,6 +64,7 @@ class Engine:
         self.tools = ToolAuthority(self)
         self.trials = Trials(self)
         self.repairs = Repairs(self)
+        self.recovery = Recovery(self)
 
     def close(self) -> None:
         with self._mutex:
