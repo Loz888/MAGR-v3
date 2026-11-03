@@ -1,0 +1,13 @@
+{
+  "status": "COMPLETED_QUALITY_FAIL",
+  "assignments": 90,
+  "passed": 46,
+  "failed": 44,
+  "not_run": 0,
+  "unknown_usage": 0,
+  "model_calls": 195,
+  "settled_upper_micros": 87980,
+  "cumulative_upper_micros": 116529,
+  "external_business_publications": 0,
+  "initial_stop_and_reconciliation_retained": true
+}

@@ -57,9 +57,15 @@ class StructuredModel:
             self.engine.settings.redis_url.get_secret_value(),
             "model:" + p.profile_hash + ":" + str(run_id),
         )
-        call_id = self.engine.reserve_call(run_id, epoch, step, self.permit)
-        client = self.client or httpx.Client(timeout=45)
+        # Local TLS/client setup must succeed before a paid reservation is created.
         try:
+            client = self.client or httpx.Client(timeout=45)
+        except (OSError, httpx.HTTPError):
+            raise DomainError(
+                "MODEL_CLIENT_UNAVAILABLE", "Model client setup failed before paid reservation"
+            ) from None
+        try:
+            call_id = self.engine.reserve_call(run_id, epoch, step, self.permit)
             try:
                 response = client.post(
                     "https://api.deepseek.com/v1/chat/completions",
@@ -68,18 +74,18 @@ class StructuredModel:
                 )
                 self.engine.record_model_response(call_id, response.status_code, response.content)
                 value = response.json()
-            except (httpx.HTTPError, ValueError):
+            except (httpx.HTTPError, ValueError, OSError):
                 self.engine.settle_call(call_id, None)
                 raise DomainError(
                     "USAGE_UNKNOWN", "Structured model request outcome is unknown"
                 ) from None
             usage = value.get("usage") if isinstance(value, dict) else None
-            if p.investigation_version == "r5-repair-v1" and (
+            if (p.investigation_version == "r5-repair-v1" or p.case_id.startswith("r6-eval:")) and (
                 not isinstance(value, dict) or value.get("model") != p.model_id
             ):
                 self.engine.settle_call(call_id, None)
                 raise DomainError(
-                    "USAGE_UNKNOWN", "Provider model differs from the frozen R5 price scope"
+                    "USAGE_UNKNOWN", "Provider model differs from the frozen price scope"
                 )
             if not isinstance(usage, dict) or any(
                 type(usage.get(k)) is not int or usage[k] < 0

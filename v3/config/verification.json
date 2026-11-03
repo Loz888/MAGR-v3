@@ -212,5 +212,90 @@
       "model": "none_in_watchdog_controlled_in_regression",
       "external_writes": "controlled_regression_only_no_live_GitHub_publication"
     }
+  },
+  "V31-R6": {
+    "tests": [
+      "tests/test_acceptance.py",
+      "tests/test_api.py",
+      "tests/test_billing_reconciliation.py",
+      "tests/test_cli.py",
+      "tests/test_coordination.py",
+      "tests/test_duplex.py",
+      "tests/test_effects.py",
+      "tests/test_environment.py",
+      "tests/test_final_evaluation.py",
+      "tests/test_final_resume.py",
+      "tests/test_mcp.py",
+      "tests/test_models.py",
+      "tests/test_pipeline.py",
+      "tests/test_r4_api.py",
+      "tests/test_r4_context.py",
+      "tests/test_r4_experts.py",
+      "tests/test_r4_knowledge.py",
+      "tests/test_r4_mcp.py",
+      "tests/test_r4_recovery.py",
+      "tests/test_r4_trials.py",
+      "tests/test_r5_live.py",
+      "tests/test_r5_model_recovery.py",
+      "tests/test_r5_recount.py",
+      "tests/test_r5_recovery.py",
+      "tests/test_r5_repair.py",
+      "tests/test_r5_review_renewal.py",
+      "tests/test_r6_policies.py",
+      "tests/test_r6_runtime.py",
+      "tests/test_r6_watchdog.py",
+      "tests/test_rate_limit.py",
+      "tests/test_recovery.py",
+      "tests/test_router_api.py",
+      "tests/test_router_model.py",
+      "tests/test_routing.py",
+      "tests/test_verification.py"
+    ],
+    "timeout_seconds": 1800,
+    "components": {
+      "postgres": "real_disposable_database_17_migrations",
+      "redis": "real",
+      "watchdog": "separate_process_loopback_HTTP_limited_identity",
+      "proactivity": "Engine_scoped_bounded_readonly_independent_budget",
+      "model": "controlled_HTTP_no_paid_calls",
+      "github": "controlled_MCP_and_Git_metadata_no_publication",
+      "docker_go": "real_isolated_public_and_independent_hidden_tests",
+      "recovery": "real_SIGKILL_and_unknown_effect_reconciliation",
+      "benchmark": "fixed_30_cases_90_assignments_protocol_only_live_NOT_RUN"
+    }
+  },
+  "V31-R6-RESUME": {
+    "tests": [
+      "tests/test_final_resume.py",
+      "tests/test_final_evaluation.py",
+      "tests/test_models.py",
+      "tests/test_environment.py",
+      "tests/test_verification.py"
+    ],
+    "timeout_seconds": 300,
+    "components": {
+      "postgres": "real",
+      "model": "controlled_HTTP_only_no_new_paid_calls",
+      "go": "real_isolated_reference_oracles",
+      "recovery": "explicit_continuation_no_reruns_no_reset_sealed_results_unknown_stop"
+    }
+  },
+  "V31-R6-BILLING": {
+    "tests": [
+      "tests/test_billing_reconciliation.py",
+      "tests/test_final_resume.py",
+      "tests/test_final_evaluation.py",
+      "tests/test_models.py",
+      "tests/test_environment.py",
+      "tests/test_verification.py"
+    ],
+    "timeout_seconds": 300,
+    "components": {
+      "postgres": "real",
+      "model": "controlled_HTTP_only_no_new_paid_calls",
+      "billing": "exact_hourly_request_and_token_attribution_same_Run_budget_idempotent_no_invented_per_call_usage",
+      "continuation": "AST_proof_of_identical_generation_and_pricing",
+      "go": "real_isolated_hidden_oracle_checks"
+    }
   }
 }

@@ -31,6 +31,12 @@ def register(
     def snapshot(request: Request) -> Snapshot:
         return authority(request).recovery.snapshot()
 
+    @app.get("/api/v3/watchdog/health", dependencies=[Depends(observer)])
+    def health(request: Request) -> dict[str, str]:
+        from mgar_v3.recovery.health import probe
+
+        return probe(authority(request))
+
     @app.post("/api/v3/watchdog/recovery-requests", dependencies=[Depends(observer)])
     def submit(request: Request, body: RecoveryInput) -> dict[str, Any]:
         row = authority(request).recovery.submit(body)

@@ -40,6 +40,10 @@ def test_router_reuses_known_result_and_records_response_artifact(routed, trigge
             and budget["settled_micros"] == 120
             and budget["reserved_micros"] == 0
         )
+        totals = routed.benchmarks.cost(conn, routed.settings.repository)
+        assert totals == {"calls": 1, "cost_micros": 120, "unknown": 0}
+        with pytest.raises(DomainError):
+            routed.benchmarks.check_global(conn, routed.settings.repository, 2000000)
         call = conn.execute("SELECT * FROM app.router_calls").fetchone()
         assert call["response_hash"] is not None
         assert b"prompt_tokens" in routed.artifacts.read(call["response_hash"])
@@ -101,6 +105,12 @@ def test_failed_router_call_is_not_automatically_reissued(routed, trigger, failu
             conn.execute("UPDATE app.router_inbox SET next_attempt_at=now()")
         assert RouterWorker(routed, DeepSeekRouter(routed, permit, client)).tick() is None
     assert len(calls) == 1 and routed.routing.metrics()["pending_events"] == 1
+    if failure == "unknown":
+        from mgar_v3.recovery.domain import detect
+
+        signal = next(s for s in detect(routed.recovery.snapshot()) if s.kind == "outcome_unknown")
+        assert signal.run_id is None
+        assert routed.recovery.submit(signal)["created"]
     with routed.transaction() as conn:
         call = conn.execute("SELECT * FROM app.router_calls").fetchone()
         assert call["status"] == ("unknown" if failure == "unknown" else "known")

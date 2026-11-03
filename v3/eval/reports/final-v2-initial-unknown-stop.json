@@ -1,0 +1,12 @@
+{
+  "status": "PARTIAL",
+  "reason": "UNKNOWN_USAGE_STOP",
+  "ledger_reservations": 55,
+  "confirmed_usage_calls": 53,
+  "unconfirmed_calls": 2,
+  "settled_micros": 24597,
+  "reserved_micros": 12288,
+  "remaining_not_run": 66,
+  "resume_forbidden_until_authoritative_reconciliation": true,
+  "no_unknown_resend": true
+}

@@ -1,0 +1,71 @@
+{
+  "authoritative_scores_unchanged": true,
+  "business_failure_reasons": {
+    "wrong_value:dedup_amount": 14,
+    "invalid_citation": 3,
+    "missing_source_role": 4,
+    "wrong_value:implementation_deduplicates": 9,
+    "wrong_value:distinct_orders": 2,
+    "wrong_status": 15,
+    "independent_hidden_tests_failed": 12,
+    "wrong_value:paid_events": 5,
+    "wrong_value_fields": 9,
+    "wrong_value:event_amount": 1,
+    "missing_value:dedup_amount": 3,
+    "missing_value:paid_events": 2,
+    "missing_value:distinct_orders": 2,
+    "missing_value:event_amount": 2,
+    "missing_value:implementation_deduplicates": 2
+  },
+  "boolean_encoding_only_examples": [
+    {
+      "case_id": "cross-04",
+      "arm": "C",
+      "value": "no"
+    },
+    {
+      "case_id": "cross-01",
+      "arm": "B",
+      "value": "no"
+    },
+    {
+      "case_id": "cross-02",
+      "arm": "A",
+      "value": "no"
+    },
+    {
+      "case_id": "cross-00",
+      "arm": "A",
+      "value": "no"
+    }
+  ],
+  "hidden_patch_suite_passes": {
+    "A": 0,
+    "B": 0,
+    "C": 1
+  },
+  "hidden_patch_suite_denominator_per_arm": 5,
+  "repair_task_passes": {
+    "A": 0,
+    "B": 0,
+    "C": 0
+  },
+  "positive_recall_at5": {
+    "A": {
+      "hits": 20,
+      "total": 20
+    },
+    "B": {
+      "hits": 19,
+      "total": 20
+    },
+    "C": {
+      "hits": 20,
+      "total": 20
+    }
+  },
+  "notes": [
+    "Patch test passes and overall repair-task success are distinct.",
+    "Frozen strict grades are retained; no post-hoc regrading."
+  ]
+}

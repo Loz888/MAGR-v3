@@ -15,6 +15,19 @@ from pathlib import Path
 from uuid import uuid4
 
 
+def source_fingerprint(root: Path) -> str:
+    fingerprint = hashlib.sha256()
+    for subtree in ["src", "migrations", "config", "scripts", "tests", "eval/final-v1", "deploy"]:
+        for path in sorted((root / subtree).rglob("*")):
+            if path.is_file() and "__pycache__" not in path.parts:
+                fingerprint.update(str(path.relative_to(root)).encode() + b"\0")
+                fingerprint.update(path.read_bytes() + b"\0")
+    for name in ["pyproject.toml", "uv.lock"]:
+        if (root / name).is_file():
+            fingerprint.update(name.encode() + b"\0" + (root / name).read_bytes())
+    return fingerprint.hexdigest()
+
+
 def execute(root: Path, task: str, registry: dict, evidence_root: Path | None = None) -> dict:
     if task not in registry:
         return {"task": task, "status": "NOT_RUN", "reason": "unknown_task", "exit_code": 2}
@@ -35,6 +48,10 @@ def execute(root: Path, task: str, registry: dict, evidence_root: Path | None = 
     junit = directory / "junit.xml"
     command = [sys.executable, "-m", "pytest", "-q", *targets, f"--junitxml={junit}"]
     started = datetime.now(UTC).isoformat()
+    frozen_source = source_fingerprint(root)
+    revision = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=root, capture_output=True, text=True, check=False
+    )
     before = time.monotonic()
     try:
         with (directory / "command.log").open("wb") as log:
@@ -67,12 +84,9 @@ def execute(root: Path, task: str, registry: dict, evidence_root: Path | None = 
         reason = "no_collected_tests"
     elif counts["skipped"]:
         reason = "skipped_tests"
-    fingerprint = hashlib.sha256()
-    for subtree in ["src", "migrations", "config", "scripts", "tests"]:
-        for path in sorted((root / subtree).rglob("*")):
-            if path.is_file() and "__pycache__" not in path.parts:
-                fingerprint.update(str(path.relative_to(root)).encode())
-                fingerprint.update(path.read_bytes())
+    final_source = source_fingerprint(root)
+    if final_source != frozen_source:
+        passed, reason = False, "source_changed_during_verification"
     result = {
         "task": task,
         "status": "PASS" if passed else "FAIL",
@@ -88,8 +102,9 @@ def execute(root: Path, task: str, registry: dict, evidence_root: Path | None = 
         "exit_code": 0 if passed else (exit_code or 1),
         "counts": counts,
         "components": entry.get("components", {}),
-        "git_commit": None,
-        "source_sha256": fingerprint.hexdigest(),
+        "git_commit": revision.stdout.strip() if revision.returncode == 0 else None,
+        "source_sha256": frozen_source,
+        "finished_source_sha256": final_source,
         "log_path": str((directory / "command.log").relative_to(root)),
         "attempt_path": str(directory.relative_to(root)),
     }

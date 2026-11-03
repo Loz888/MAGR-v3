@@ -1,0 +1,12 @@
+{
+  "exit_code": 137,
+  "status": "KILLED",
+  "reason": "system_terminated; memory_pressure_suspected_not_confirmed",
+  "completed": 18,
+  "paid_calls": 42,
+  "settled_micros": 20283,
+  "reserved_micros": 0,
+  "last_started_assignment": "negative-04:C",
+  "last_assignment_paid_calls": 0,
+  "baseline_source_sha256": "47a4c7bcb76335096c51a99a9367522be48bf00c594de9392bd78b2e731220bf"
+}

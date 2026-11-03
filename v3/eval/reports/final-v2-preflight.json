@@ -1,0 +1,318 @@
+{
+  "status": "PASS",
+  "scope": "real evidence connectors and conservative prompt bounds only",
+  "model_quality_gate": "NOT_RUN",
+  "new_paid_calls": 0,
+  "cases": [
+    {
+      "case_id": "qa-00",
+      "context_upper_bound": 7711,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "qa-01",
+      "context_upper_bound": 7715,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "qa-02",
+      "context_upper_bound": 7704,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "qa-03",
+      "context_upper_bound": 7711,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "qa-04",
+      "context_upper_bound": 7709,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "qa-05",
+      "context_upper_bound": 7715,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "qa-06",
+      "context_upper_bound": 7706,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "qa-07",
+      "context_upper_bound": 7705,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "qa-08",
+      "context_upper_bound": 7703,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "qa-09",
+      "context_upper_bound": 7725,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "cross-00",
+      "context_upper_bound": 6935,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-01",
+      "context_upper_bound": 6968,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-02",
+      "context_upper_bound": 6935,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-03",
+      "context_upper_bound": 6968,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-04",
+      "context_upper_bound": 6935,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-05",
+      "context_upper_bound": 6968,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-06",
+      "context_upper_bound": 6935,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-07",
+      "context_upper_bound": 6968,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-08",
+      "context_upper_bound": 6936,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-09",
+      "context_upper_bound": 6969,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-00",
+      "context_upper_bound": 7275,
+      "tool_calls": 5,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "repair-01",
+      "context_upper_bound": 7271,
+      "tool_calls": 5,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "repair-02",
+      "context_upper_bound": 7289,
+      "tool_calls": 5,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "repair-03",
+      "context_upper_bound": 7291,
+      "tool_calls": 5,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "repair-04",
+      "context_upper_bound": 7274,
+      "tool_calls": 5,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "negative-00",
+      "context_upper_bound": 6202,
+      "tool_calls": 5,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "negative-01",
+      "context_upper_bound": 6161,
+      "tool_calls": 5,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "negative-02",
+      "context_upper_bound": 6285,
+      "tool_calls": 5,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "negative-03",
+      "context_upper_bound": 5833,
+      "tool_calls": 4,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "negative-04",
+      "context_upper_bound": 5568,
+      "tool_calls": 3,
+      "recall_at5": 0,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    }
+  ]
+}

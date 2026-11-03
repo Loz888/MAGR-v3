@@ -10,6 +10,7 @@ from psycopg.rows import dict_row
 from psycopg.types.json import Jsonb
 
 from mgar_v3.agents.tools import ToolAuthority
+from mgar_v3.benchmark.store import Benchmarks
 from mgar_v3.context.store import ContextStore
 from mgar_v3.domain import (
     DomainError,
@@ -25,6 +26,7 @@ from mgar_v3.evaluation.store import Trials
 from mgar_v3.evidence.artifacts import ArtifactStore
 from mgar_v3.knowledge.store import Knowledge
 from mgar_v3.live import LivePermit
+from mgar_v3.proactivity.store import Proactivity
 from mgar_v3.recovery.store import Recovery
 from mgar_v3.repair.store import Repairs
 from mgar_v3.routing.store import Routing
@@ -65,6 +67,8 @@ class Engine:
         self.trials = Trials(self)
         self.repairs = Repairs(self)
         self.recovery = Recovery(self)
+        self.proactivity = Proactivity(self)
+        self.benchmarks = Benchmarks(self)
 
     def close(self) -> None:
         with self._mutex:
@@ -439,6 +443,7 @@ class Engine:
                 (run_id, run_id),
             )
             self._event(conn, run_id, "run_started", execution_epoch=updated["execution_epoch"])
+            self.recovery.heartbeat(run_id, updated["execution_epoch"])
             return {**row, **updated, "status": "running"}
 
     def prepare_intake(self, run_id: UUID, epoch: int) -> Row:
@@ -732,6 +737,7 @@ class Engine:
             run = self._run(conn, evidence.run_id, epoch)
             if run["status"] != "running" or run["project_id"] != evidence.project_id:
                 raise DomainError("EVIDENCE_REJECTED", "Evidence is outside the current execution")
+            self.proactivity.charge_read(conn, evidence.run_id)
             conn.execute(
                 "INSERT INTO app.artifacts(content_hash,byte_count) VALUES (%s,%s) "
                 "ON CONFLICT DO NOTHING",
@@ -820,6 +826,18 @@ class Engine:
                 )
                 self._end_ticket(conn, run, "failed")
                 self._event(conn, run_id, "verification_failed", reasons=verdict.reasons)
+                return None
+            scope = conn.execute(
+                "SELECT scope FROM app.mandates WHERE mandate_id=%s", (run["mandate_id"],)
+            ).fetchone()
+            if scope and scope["scope"].get("read_only"):
+                conn.execute(
+                    "UPDATE app.runs SET status='succeeded',outcome='internal_report',"
+                    "report_hash=%s WHERE run_id=%s",
+                    (content_hash, run_id),
+                )
+                self._end_ticket(conn, run, "internal_report")
+                self._event(conn, run_id, "readonly_report_completed", report_hash=content_hash)
                 return None
             self.routing.require_primary(run_id, run["thread_id"])
             target = f"github:{run['external_key']}"
@@ -988,6 +1006,11 @@ class Engine:
         return action, run
 
     def _validate_action(self, conn: Connection, action: Row, run: Row) -> None:
+        readonly = conn.execute(
+            "SELECT scope FROM app.mandates WHERE mandate_id=%s", (run["mandate_id"],)
+        ).fetchone()
+        if readonly and readonly["scope"].get("read_only"):
+            raise DomainError("READ_ONLY_RUN", "Read-only investigations cannot publish", 403)
         if action["action_type"] == "draft_pr":
             self.repairs.validate_action(action, run)
         if run["graph_version"] == "r4-experts-v1":
@@ -1462,7 +1485,11 @@ class Engine:
             ).fetchone():
                 raise DomainError("MODEL_CALL_ALREADY_RECORDED", "Model step cannot be resent")
             self.repairs.reserve_budget(conn, profile.profile_hash, amount)
+            self.proactivity.reserve(conn, run_id, amount)
             trial_budget_hash = self.trials.reserve(conn, profile.profile_hash, amount)
+            final_budget_hash = self.benchmarks.reserve(conn, run_id, amount)
+            if trial_budget_hash and final_budget_hash:
+                raise DomainError("BENCHMARK_SCOPE_CHANGED", "A call cannot belong to two trials")
             reserved = conn.execute(
                 "UPDATE app.authorization_budgets SET reserved_micros=reserved_micros+%s,"
                 "used_calls=used_calls+1 WHERE profile_hash=%s AND used_calls<call_limit "
@@ -1479,11 +1506,21 @@ class Engine:
                 raise DomainError(
                     "BUDGET_EXHAUSTED", "Model call exceeds its remaining budget", 403
                 )
+            self.benchmarks.check_global(conn, run["repository"], amount)
             call_id = uuid4()
             conn.execute(
                 "INSERT INTO app.usage_calls(call_id,run_id,step_key,status,reserved_micros,"
-                "profile_hash,trial_budget_hash) VALUES (%s,%s,%s,'reserved',%s,%s,%s)",
-                (call_id, run_id, step_key, amount, profile.profile_hash, trial_budget_hash),
+                "profile_hash,trial_budget_hash,final_budget_hash) "
+                "VALUES (%s,%s,%s,'reserved',%s,%s,%s,%s)",
+                (
+                    call_id,
+                    run_id,
+                    step_key,
+                    amount,
+                    profile.profile_hash,
+                    trial_budget_hash,
+                    final_budget_hash,
+                ),
             )
             self._event(
                 conn, run_id, "model_reserved", call_id=str(call_id), reserved_micros=amount
@@ -1599,8 +1636,11 @@ class Engine:
                 ("authorization_budgets", "profile_hash", call["profile_hash"]),
                 ("budgets", "mandate_id", run["mandate_id"]),
             ]
+            self.proactivity.settle(conn, run["run_id"], call["reserved_micros"], cost_micros)
             if call["trial_budget_hash"] is not None:
                 ledgers.append(("authorization_budgets", "profile_hash", call["trial_budget_hash"]))
+            if call["final_budget_hash"] is not None:
+                ledgers.append(("benchmark_budgets", "budget_hash", call["final_budget_hash"]))
             for table, key, value in ledgers:
                 conn.execute(
                     f"UPDATE app.{table} SET reserved_micros=reserved_micros-%s,"

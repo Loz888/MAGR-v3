@@ -580,3 +580,104 @@ def test_frozen_r1_profile_hash_is_unchanged_by_r2_publication_limit_default():
         profile.profile_hash == "5502fc0230f61f8658fef64adb891729cf668da83c1fcdc2ef440c9b31a740e1"
     )
     assert profile.max_result_comments == 1
+
+
+@pytest.mark.parametrize(
+    "live_case", [{"max_model_calls": 3, "max_cost_micros": 200000}], indirect=True
+)
+def test_r6_unknown_usage_blocks_available_budget_and_remains_visible_after_cancel(live_case):
+    from mgar_v3.recovery.domain import Decision, detect
+
+    engine, permit, run = live_case
+    call = engine.reserve_call(run["run_id"], run["execution_epoch"], "unknown-first", permit)
+    engine.settle_call(call, None)
+    with pytest.raises(DomainError) as error:
+        engine.reserve_call(run["run_id"], run["execution_epoch"], "blocked-second", permit)
+    assert error.value.code == "USAGE_UNKNOWN"
+    engine.cancel(run["run_id"])
+    signal = next(s for s in detect(engine.recovery.snapshot()) if s.kind == "outcome_unknown")
+    request = engine.recovery.submit(signal)
+    with pytest.raises(DomainError):
+        engine.recovery.decide(request["request_id"], Decision(decision="cancel"), "owner")
+    assert (
+        engine.recovery.decide(request["request_id"], Decision(decision="escalate"), "owner")[
+            "status"
+        ]
+        == "needs_human"
+    )
+
+
+def test_structured_client_setup_failure_never_creates_paid_reservation(live_case, monkeypatch):
+    from mgar_v3.benchmark.domain import Summary
+    from mgar_v3.models.structured import StructuredModel
+
+    engine, permit, run = live_case
+
+    def unavailable(**kwargs):
+        raise OSError("controlled local TLS initialization failure")
+
+    monkeypatch.setattr("mgar_v3.models.structured.httpx.Client", unavailable)
+    with pytest.raises(DomainError) as error:
+        StructuredModel(engine, permit).complete(
+            run["run_id"], run["execution_epoch"], "client-setup", "Return JSON", {}, Summary
+        )
+    assert error.value.code == "MODEL_CLIENT_UNAVAILABLE"
+    with engine.transaction() as conn:
+        assert not conn.execute("SELECT 1 FROM app.usage_calls").fetchone()
+        assert (
+            conn.execute("SELECT used_calls FROM app.authorization_budgets").fetchone()[
+                "used_calls"
+            ]
+            == 0
+        )
+
+
+@pytest.mark.parametrize("site", ["request", "receipt"])
+def test_structured_io_loss_after_reservation_holds_unknown_and_never_resends(
+    live_case, monkeypatch, site
+):
+    from mgar_v3.benchmark.domain import Summary
+    from mgar_v3.models.structured import StructuredModel
+
+    engine, permit, run = live_case
+    calls = []
+
+    def respond(request):
+        calls.append(request)
+        if site == "request":
+            raise OSError("controlled transport I/O loss")
+        return httpx.Response(
+            200,
+            json={
+                "model": permit.profile.model_id,
+                "usage": {"prompt_tokens": 100, "completion_tokens": 10},
+                "choices": [
+                    {
+                        "finish_reason": "stop",
+                        "message": {"content": '{"notes":"read","need_more":false}'},
+                    }
+                ],
+            },
+        )
+
+    if site == "receipt":
+
+        def lost(*args):
+            raise OSError("controlled receipt persistence failure")
+
+        monkeypatch.setattr(engine, "record_model_response", lost)
+    with httpx.Client(transport=httpx.MockTransport(respond)) as client:
+        model = StructuredModel(engine, permit, client)
+        for _ in range(2):
+            with pytest.raises(DomainError) as error:
+                model.complete(
+                    run["run_id"], run["execution_epoch"], "io-loss", "Return JSON", {}, Summary
+                )
+            assert error.value.code == "USAGE_UNKNOWN"
+    assert len(calls) == 1
+    with engine.transaction() as conn:
+        row = conn.execute(
+            "SELECT status,reserved_micros,settled_micros FROM app.usage_calls"
+        ).fetchone()
+        assert row["status"] == "unknown" and row["settled_micros"] is None
+        assert row["reserved_micros"] == permit.profile.reservation_micros

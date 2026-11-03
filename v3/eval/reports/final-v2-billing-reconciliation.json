@@ -1,0 +1,22 @@
+{
+  "receipt_hash": "31427729b53ec7ab28a6c8ce267e57b7f91ff270164fa75787b621fc3b8d2a63",
+  "call_ids": [
+    "422089ae-1a2c-4c6c-af5a-b5d45ef07998",
+    "6f3f27ef-db0f-4eec-a830-8db2f26a3dbe"
+  ],
+  "known_requests": 11,
+  "provider_requests": 13,
+  "group_prompt_tokens": 613,
+  "group_cache_hit_tokens": 128,
+  "group_cache_miss_tokens": 485,
+  "provider_hour_start": "2026-11-03T14:00:00+08:00",
+  "provider_hour_end": "2026-11-03T15:00:00+08:00",
+  "group_completion_tokens": 322,
+  "group_upper_micros": 572,
+  "currency": "USD_FROZEN_UPPER_BOUND",
+  "invoice_currency": "CNY",
+  "per_call_usage": "unknown; costs allocated within one Run",
+  "basis": "owner-supplied complete provider hourly bill; no FX conversion",
+  "no_resend": true,
+  "approved_by": "loz888"
+}

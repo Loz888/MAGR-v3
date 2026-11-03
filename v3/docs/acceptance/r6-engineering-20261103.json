@@ -1,0 +1,121 @@
+{
+  "schema": "r6-delivery-v2",
+  "r6_status": "IN_PROGRESS",
+  "release_status": "ENGINEERING_INCOMPLETE",
+  "engineering_implementation": "COMPLETE",
+  "engineering_gate": "PASS",
+  "live_gate": "FAIL",
+  "quality_gate": "FAIL",
+  "baseline_full_regression": {
+    "tests": 288,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "attempt": "evidence/V31-R6/20261103T051700Z-e1cc9320"
+  },
+  "continuation_regression": {
+    "tests": 52,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "attempt": "evidence/V31-R6-RESUME/20261103T060116Z-a19f2fa2"
+  },
+  "io_regression": {
+    "tests": 59,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": ".local/r6-io-regression.log"
+  },
+  "test_sets_overlap": true,
+  "lint": "PASS",
+  "mypy": {
+    "status": "PASS",
+    "modules": 97
+  },
+  "javascript": "PASS",
+  "migrations": 17,
+  "clean_install_backup_restore": "PASS",
+  "evaluation": {
+    "manifest_hash": "920a8aada257eb574fb2850cd1c9a8d03aef1f69a855f86797e0a95e8d4437b5",
+    "assignments": 90,
+    "states": {
+      "PASS": 46,
+      "FAIL": 44
+    },
+    "independent_judge": true,
+    "model_judge": false,
+    "source_commit": "62d41f9de3ef6dc50122c893756ee97f9e472c4e",
+    "preflight_cases": 30,
+    "preflight_status": "PASS",
+    "positive_recall_at5": [
+      20,
+      20
+    ],
+    "new_github_business_publications": 0,
+    "forbidden_actions": 0,
+    "completed": 90,
+    "arms": {
+      "A": 15,
+      "B": 15,
+      "C": 16
+    },
+    "hidden_patch_suite_passes": {
+      "A": 0,
+      "B": 0,
+      "C": 1
+    },
+    "denominator_per_arm": 30,
+    "quality_gate_passed": false
+  },
+  "billing": {
+    "new_reservations": 195,
+    "new_confirmed_usage_calls": 195,
+    "new_unconfirmed_calls": 0,
+    "new_settled_micros": 87980,
+    "new_reserved_micros": 0,
+    "cumulative_settled_micros": 116529,
+    "cumulative_worst_case_micros": 116529,
+    "authorized_new_max_cost_micros": 2000000,
+    "authorized_cumulative_max_cost_micros": 4000000,
+    "enforced_plan_call_limit": 270,
+    "enforced_plan_max_cost_micros": 1658880,
+    "enforced_repository_limit_micros": 2000000,
+    "new_calls_after_unknown": "zero until authoritative aggregate reconciliation; then original unstarted assignments continued",
+    "refund_of_unknown": false,
+    "cumulative_call_count": 224,
+    "aggregate_settled_upper_micros": 572,
+    "per_call_tokens_for_reconciled_pair": "unknown; explicitly allocated aggregate cost"
+  },
+  "v2": {
+    "commit": "fe7e04a480142b59394b1aabf91515cd9d44334c",
+    "tracked_files_changed": false,
+    "python_passed": 453,
+    "python_subtests_passed": 15,
+    "go_passed": 680,
+    "go_failed_events": 2,
+    "go_failed_checks": 1,
+    "status": "FAIL_EXISTING_EXPIRED_EVIDENCE",
+    "failure": "TestRound2PreflightRejectsChangedCheckpoint/valid and parent; 7-day official evidence freshness guard"
+  },
+  "blockers": [
+    "C scored 16/30, normal 13/25, negative 3/5, citations 98%; frozen quality thresholds unmet",
+    "V2 historical pricing evidence expired; one check and parent test failed; V2 scope preserved"
+  ],
+  "full_regression": {
+    "tests": 295,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "attempt": "evidence/V31-R6/20261103T062255Z-2d6d4095",
+    "source_sha256": "1c1a97a24ef9f7d1639fdf5c144c563be606e6aeead360ed5ed69acfd74ed393"
+  },
+  "billing_regression": {
+    "tests": 61,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "attempt": "evidence/V31-R6-BILLING/20261103T114150Z-c6d1a7c0",
+    "source_sha256": "54000a68e929c0c5f37ed936b34d421da338fb404b94c0bd91f6acb36a830bde"
+  }
+}

@@ -48,6 +48,8 @@ def poll(config: Configuration) -> dict[str, int | bool]:
         trust_env=False,
         headers={"X-MGAR-Watchdog-Token": config.token.get_secret_value()},
     ) as client:
+        health = client.get("/api/v3/watchdog/health")
+        health.raise_for_status()
         response = client.get("/api/v3/watchdog/snapshot")
         response.raise_for_status()
         snapshot = Snapshot.model_validate(response.json())

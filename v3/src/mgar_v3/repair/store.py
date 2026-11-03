@@ -369,6 +369,13 @@ class Repairs:
             run = self.engine._run(conn, run_id, epoch)
             if run["status"] != "running" or run["thread_revision"] != revision:
                 raise DomainError("STALE_INPUT", "Repair input changed before proposal")
+            scope = conn.execute(
+                "SELECT scope FROM app.mandates WHERE mandate_id=%s", (run["mandate_id"],)
+            ).fetchone()
+            if scope and scope["scope"].get("read_only"):
+                raise DomainError(
+                    "READ_ONLY_RUN", "Read-only investigations cannot propose repairs", 403
+                )
             key = f"{run['ticket_id']}:draft:r{revision}:g{run['proposal_generation']}"
             old = conn.execute(
                 "SELECT action_id FROM app.actions WHERE dedupe_key=%s", (key,)

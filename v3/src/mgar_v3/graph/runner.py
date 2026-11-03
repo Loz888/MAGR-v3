@@ -53,6 +53,14 @@ class Runner:
         self.investigator = investigator or FixtureInvestigator()
 
     def execute(self, run_id: UUID) -> UUID | None:
+        from mgar_v3.recovery.heartbeat import worker_heartbeat
+
+        with worker_heartbeat(
+            self.engine.recovery, run_id, lambda: getattr(self, "execution_epoch", None)
+        ):
+            return self._execute(run_id)
+
+    def _execute(self, run_id: UUID) -> UUID | None:
         if self.engine.get_run(run_id)["graph_version"] == "r5-repair-v1":
             from mgar_v3.repair.graph import execute_repair
 

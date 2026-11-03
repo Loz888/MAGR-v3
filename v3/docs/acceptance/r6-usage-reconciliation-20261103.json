@@ -1,0 +1,65 @@
+{
+  "schema": "r6-usage-reconciliation-v1",
+  "status": "RECONCILED_AGGREGATE",
+  "endpoint": "https://api.deepseek.com/v1/chat/completions",
+  "model": "deepseek-flash",
+  "calls": [
+    {
+      "local_call_id": "422089ae-1a2c-4c6c-af5a-b5d45ef07998",
+      "provider_request_id": null,
+      "run_id": "721a70bc-bd5b-4a4b-bd56-2f5a4c4986b6",
+      "step_key": "r6-final:0",
+      "status": "known_aggregate_allocation",
+      "reserved_micros": 6144,
+      "reserved_at_utc": "2026-11-03T06:06:30.484727+00:00",
+      "reserved_at_asia_shanghai": "2026-11-03T14:06:30.484727+08:00",
+      "provider_response_saved": false,
+      "allocated_upper_micros": 286,
+      "per_call_tokens": "unknown; not zero-filled",
+      "response_outcome": "lost; not retried"
+    },
+    {
+      "local_call_id": "6f3f27ef-db0f-4eec-a830-8db2f26a3dbe",
+      "provider_request_id": null,
+      "run_id": "721a70bc-bd5b-4a4b-bd56-2f5a4c4986b6",
+      "step_key": "r6-final:1",
+      "status": "known_aggregate_allocation",
+      "reserved_micros": 6144,
+      "reserved_at_utc": "2026-11-03T06:06:30.508199+00:00",
+      "reserved_at_asia_shanghai": "2026-11-03T14:06:30.508199+08:00",
+      "provider_response_saved": false,
+      "allocated_upper_micros": 286,
+      "per_call_tokens": "unknown; not zero-filled",
+      "response_outcome": "lost; not retried"
+    }
+  ],
+  "unconfirmed_micros": 0,
+  "resend_permitted": false,
+  "settlement_requirement": "Satisfied by owner-supplied complete provider hourly bill; aggregate allocation audited; per-call token counts remain unknown.",
+  "remaining_assignments_not_run": 0,
+  "project_id": "r6-final-f2b6fed9b2ec",
+  "repository": "loz888/magr-v3",
+  "recovery_request_id": "06a4fc9e-a9fd-4e3a-be64-a24f6a93f90b",
+  "reconciliation": {
+    "receipt_hash": "31427729b53ec7ab28a6c8ce267e57b7f91ff270164fa75787b621fc3b8d2a63",
+    "call_ids": [
+      "422089ae-1a2c-4c6c-af5a-b5d45ef07998",
+      "6f3f27ef-db0f-4eec-a830-8db2f26a3dbe"
+    ],
+    "known_requests": 11,
+    "provider_requests": 13,
+    "group_prompt_tokens": 613,
+    "group_cache_hit_tokens": 128,
+    "group_cache_miss_tokens": 485,
+    "provider_hour_start": "2026-11-03T14:00:00+08:00",
+    "provider_hour_end": "2026-11-03T15:00:00+08:00",
+    "group_completion_tokens": 322,
+    "group_upper_micros": 572,
+    "currency": "USD_FROZEN_UPPER_BOUND",
+    "invoice_currency": "CNY",
+    "per_call_usage": "unknown; costs allocated within one Run",
+    "basis": "owner-supplied complete provider hourly bill; no FX conversion",
+    "no_resend": true,
+    "approved_by": "loz888"
+  }
+}

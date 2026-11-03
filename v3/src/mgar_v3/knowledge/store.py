@@ -434,8 +434,17 @@ class Knowledge:
             return snapshot, rows, scope
 
     def search(
-        self, request: Search, actor: str | None = None, run_id: UUID | None = None
+        self,
+        request: Search,
+        actor: str | None = None,
+        run_id: UUID | None = None,
+        *,
+        benchmark_no_reranker: bool = False,
     ) -> dict[str, Any]:
+        if benchmark_no_reranker:
+            if run_id is None:
+                raise DomainError("ABLATION_SCOPE_DENIED", "Frozen benchmark Run required", 403)
+            self.engine.benchmarks.require_ablation(run_id, "no_reranker")
         actor = self.actor(actor)
         snapshot_id = request.snapshot_id or self.active(actor)
         if snapshot_id is None:
@@ -452,6 +461,8 @@ class Knowledge:
             rows = [r for r in rows if r["source_version"] in request.source_versions]
         by_id = {str(row["chunk_id"]): row for row in rows}
         request_hash = digest(request.model_dump(mode="json"))
+        if benchmark_no_reranker:
+            request_hash = digest([request_hash, "benchmark_no_reranker"])
         key = "mgar:rag:" + digest(
             {
                 "request": request_hash,
@@ -523,8 +534,12 @@ class Knowledge:
             ranked = []
             for chunk_id, fused_score in fused:
                 row = by_id[chunk_id]
-                score = ranker.score(
-                    features(request.query, row["text_content"], qvec, vectors[chunk_id])
+                score = (
+                    fused_score
+                    if benchmark_no_reranker
+                    else ranker.score(
+                        features(request.query, row["text_content"], qvec, vectors[chunk_id])
+                    )
                 )
                 ranked.append((chunk_id, score, fused_score))
             ranked.sort(key=lambda x: (-x[1], -x[2], x[0]))
@@ -570,7 +585,7 @@ class Knowledge:
                 "snapshot_id": str(snapshot_id),
                 "observed_at": snapshot["created_at"].isoformat(),
                 "embedding_mode": embedder.mode,
-                "reranker_mode": ranker.mode,
+                "reranker_mode": "benchmark_disabled" if benchmark_no_reranker else ranker.mode,
                 "vector_ranking": vector_scores,
                 "bm25_ranking": lexical,
             }

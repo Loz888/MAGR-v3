@@ -26,6 +26,7 @@ from mgar_v3.graph.runner import Runner
 from mgar_v3.knowledge.api import register
 from mgar_v3.live import load_permit
 from mgar_v3.mcp.r4 import server
+from mgar_v3.proactivity.api import register as register_proactivity
 from mgar_v3.recovery.api import register as register_recovery
 from mgar_v3.repair.domain import ApprovalDecision, EditDecision, RepairInput
 from mgar_v3.repair.graph import acknowledge_approval
@@ -637,6 +638,28 @@ def create_app(
         try:
             payload = json.loads(raw)
             if (
+                request.headers.get("X-GitHub-Event") == "workflow_run"
+                and payload.get("action") == "completed"
+                and payload.get("workflow_run", {}).get("conclusion") in {"failure", "timed_out"}
+            ):
+                from mgar_v3.proactivity.domain import ProactiveEvent
+
+                workflow = payload["workflow_run"]
+                pulls = workflow.get("pull_requests", [])
+                observations = service.proactivity.observe(
+                    ProactiveEvent(
+                        external_event_id=delivery,
+                        repository=payload["repository"]["full_name"],
+                        actor=payload["sender"]["login"],
+                        kind="ci_failure",
+                        issue_number=pulls[0]["number"] if pulls else 1,
+                        source_ref=workflow["head_sha"],
+                        body=str(workflow.get("name", ""))[:8000],
+                    ),
+                    live_permit,
+                )
+                return jsonable_encoder({"status": "observed", "observations": observations})
+            if (
                 request.headers.get("X-GitHub-Event") != "issue_comment"
                 or payload.get("action") != "created"
             ):
@@ -674,4 +697,5 @@ def create_app(
 
     register(app, authority, authenticated)
     register_recovery(app, configuration, authority, authenticated)
+    register_proactivity(app, authority, authenticated, live_permit)
     return app

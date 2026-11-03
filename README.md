@@ -7,7 +7,7 @@
 
 2026-11-02 已依次通过 R0/R1、R2 和 R3 门禁。R3 交付时 150 项 V3 测试通过，0 失败、0 跳过；R3 任务验收 89 项通过。R3 增加受限 Router、批处理与版本校验、并行工单、同权限上下文召回，以及 Web/CLI/GitHub 共用的工单视图。
 
-截至 R3 交付时，真实模型累计调用 3 次，保守计费 USD 0.002456。R1 发布一条结果评论；R3 只在两个冻结的合成事件上验证真实 Router，并通过结果落库后的 SIGKILL 恢复，不新增评论。完整项目仍为 ENGINEERING_INCOMPLETE，R4 真实跨源验收首轮双方各 4/5，live 为 PARTIAL。R5 已通过受限修复与真实 Draft PR 恢复验收；R6 正在实施，首个 observe Watchdog 切片已通过工程验收。
+截至 R3 交付时，真实模型累计调用 3 次，保守计费 USD 0.002456。R1 发布一条结果评论；R3 只在两个冻结的合成事件上验证真实 Router，并通过结果落库后的 SIGKILL 恢复，不新增评论。完整项目仍为 ENGINEERING_INCOMPLETE，R4 真实跨源验收首轮双方各 4/5，live 为 PARTIAL。R5 已通过受限修复与真实 Draft PR 恢复验收；R6 工程实现已补齐，90 项真实最终评测已完成，候选质量门槛为 FAIL。
 本项目使用独立仓库，不修改相邻 V2 的源码、锁文件、迁移或历史证据。
 
 验收入口：[结果评论](https://github.com/Loz888/MAGR-v3/issues/1#issuecomment-6568469661)。最新摘要见 `v3/docs/acceptance/r1-live-20261102.json`；首批历史见 `v3/docs/first-batch-status.md`。
@@ -52,4 +52,8 @@ R4 最新实际验收：三个正常、两个不足/越权案例已完成模型�
 
 R5 最终验收通过：249 项工程回归通过，真实 [Draft PR #2](https://github.com/Loz888/MAGR-v3/pull/2) 在接收后 SIGKILL 的只读恢复中成功对账，未合并。原始三次模型格式/定位失败保留；只规范化 hunk 行数后的重放单列通过。累计 29 次调用、USD 0.028549。见 [真实报告](v3/docs/r5-live-report.md)。
 
-R6 已开始：独立确定性 Watchdog 首切片、受限观察身份、Engine 恢复请求和人工处理经 82 项注册验收通过。R6 整体仍 IN_PROGRESS/PARTIAL，完整主动策略、投机预算与 A/B/C 尚未完成。运行见 [R6 使用说明](v3/docs/r6-runbook.md)。
+## R6 最新结果
+
+监控、有限主动性、独立只读预算和三臂评测已实现。真实 90 项全部执行：A 15/30、B 15/30、C 16/30，质量门槛 FAIL；不能标 LIVE_READY。本轮 195 次调用、保守 US$0.087980，累计 224 次、US$0.116529，无未知预占。原始失败、进程中断和账单核对均保留。
+
+工程完整基线 295 项、追加核账/恢复专项 61 项通过（有重叠）。最新范围见 [R6 交付报告](v3/docs/r6-delivery.md)。项目仍为 ENGINEERING_INCOMPLETE，V2 另有历史价格证据过期检查失败，未修改 V2。

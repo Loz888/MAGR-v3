@@ -83,6 +83,9 @@ class RouterBudget:
                 raise DomainError(
                     "BUDGET_EXHAUSTED", "Shared model call or cost budget is exhausted", 403
                 )
+            self.engine.benchmarks.check_global(
+                conn, self.engine.settings.repository.lower(), p.reservation_micros
+            )
             call_id = uuid4()
             conn.execute(
                 "INSERT INTO app.router_calls(call_id,batch_id,budget_profile_hash,"

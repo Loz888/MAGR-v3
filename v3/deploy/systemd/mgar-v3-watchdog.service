@@ -1,0 +1,20 @@
+[Unit]
+Description=MGAR V3 limited observe Watchdog
+After=mgar-v3.service
+
+[Service]
+Type=simple
+User=mgar-watchdog
+Group=mgar-watchdog
+WorkingDirectory=/opt/mgar/v3
+ExecStart=/usr/bin/env -i PATH=/usr/bin:/bin LANG=C.UTF-8 /opt/mgar/v3/.venv/bin/python -m mgar_v3.recovery.watchdog --config /etc/mgar-watchdog/client.json
+Restart=on-failure
+RestartSec=5
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

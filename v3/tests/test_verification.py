@@ -42,3 +42,17 @@ def test_timeout_preserves_nonzero_status(tmp_path):
     assert result["command_exit_code"] == 124
     assert result["status"] == "FAIL"
     assert result["reason"] == "timeout"
+
+
+def test_source_change_during_run_invalidates_otherwise_passing_receipt(tmp_path):
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src/runtime.py").write_text("version = 1\n")
+    (tmp_path / "test_probe.py").write_text(
+        "from pathlib import Path\n"
+        "def test_changes_source():\n"
+        "    Path('src/runtime.py').write_text('version = 2\\n')\n"
+    )
+    result = runner.execute(tmp_path, "probe", {"probe": {"tests": ["test_probe.py"]}})
+    assert result["command_exit_code"] == 0
+    assert result["status"] == "FAIL"
+    assert result["reason"] == "source_changed_during_verification"
