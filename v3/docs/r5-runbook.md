@@ -90,6 +90,8 @@ uv run --frozen python scripts/r5_live.py publish --directory .local/r5-live-CAS
 uv run --frozen python scripts/r5_live.py reconcile --directory .local/r5-live-CASE
 ```
 
+如果用户在原提案到期后才明确批准相同的完整内容，可在 publish 命令增加 `--renew-expired-proposal`。它仅为完全未发送的相同哈希记录一次新的人工审阅有效期；原 Action 内容与原到期时间保留，不自动续期或扩大额度。默认审批仍拒绝过期提案。源码或证据变化、已发送动作和未知结果均不能借此继续。见 [ADR 0010](adr/0010-explicit-review-renewal.md)。
+
 真实成功将得到 GitHub Draft PR；不合并。所有业务写仍经 Engine Action/Outbox/Dispatcher，源码普通 git push 与业务发布是不同的出口。profile 固定提交之后，不要在发布前推进它的基础分支；变化会阻断发布，需要重新冻结、测试和审批。
 
 补丁进入严格应用前只允许确定性重算 hunk 行数声明，不改变起始位置、路径或代码字节。提案显示原始与规范化 diff 的哈希和来源调用；原始输出永久保留。失配上下文、路径或 AST 仍会拒绝。见 [ADR 0009](adr/0009-r5-counts-only-replay.md)。

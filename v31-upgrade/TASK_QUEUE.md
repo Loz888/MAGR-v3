@@ -14,7 +14,7 @@
 | V31-R3 | 受限 Router LLM 与多任务 | DONE | PASS | PASS |
 | V31-R4 | RAG 与多专家 | DONE | PASS | PARTIAL |
 | V31-R4-LIVE | 真实跨源调查与单 Agent 对照 | DONE | PASS | PARTIAL |
-| V31-R5 | 受限修复与 Draft PR | IN_PROGRESS | PASS（248 项回归） | PARTIAL |
+| V31-R5 | 受限修复与 Draft PR | DONE | PASS（249 项） | PASS（恢复闭环） |
 | V31-R6 | Watchdog、主动性与发布评测 | TODO | NOT_RUN | NOT_RUN |
 
 2026-11-02 用户授权真实调用与 GitHub 推送；沿用最多 3 次物理调用、累计 USD 2 的限制。R0 与 R1 工程复验通过，R1 真实闭环 PASS 后才启动 R2。实际调用 2 次，保守计费 USD 0.001745，结果评论一条；模型落库与远程写回执两个 SIGKILL 恢复点通过。
@@ -39,3 +39,9 @@ R5 真实适配工程补齐：完整回归 245 项全部通过，新增官方 MC
 
 
 2026-11-03 R5 冻结真实实验消耗三次 DeepSeek 调用，原始 diff 格式/定位检查全部失败，保留 FAIL。补充只重算 hunk 行数的确定性规范化后，独立 Run 在同一 profile 下重放第一份已结算结果，公开测试及 28 个隐藏子案例通过，未延长原 Run 期限、未新增模型调用。累计 29 次、USD 0.028549，R5 本轮 USD 0.001524。最终 Draft PR 完整 payload 等待用户审批，真实发布及回执丢失恢复尚未执行。完整回归 248 项通过，0 失败、0 错误、0 跳过；lint、typecheck 和前端语法通过。R5 保持 IN_PROGRESS/PARTIAL，R6 仍为 TODO。见 v3/docs/acceptance/r5-live-20261103.json 和 ADR 0009。
+
+
+用户批准完整提案后，真实 Draft PR #2 已创建并通过接收后 SIGKILL 的只读恢复。远端父提交、完整 tree、唯一变化文件均匹配完整获批 payload；Outbox 派发一次，未合并。原提案过期后以同一 payload_hash 的显式人工审阅记录续签，原 Action 不变；新增迁移 0012。最终工程回归发现两处旧迁移清单断言未更新，已保留失败并修正重跑。全部门禁通过后才开始 R6。详见 v3/docs/r5-live-report.md。
+
+
+R5 最终门禁已通过：249 项回归、lint/typecheck/前端语法均通过；真实 Draft PR #2 的完整树和只读 SIGKILL 恢复通过。原始三次模型格式/定位失败保留 FAIL，后续不新增调用的规范化重放单列 PASS。累计仍 29 次、USD 0.028549，无未知或预留。R5 标 DONE，仅覆盖实测纯函数；R6 可开始工程，完整项目仍为 ENGINEERING_INCOMPLETE。

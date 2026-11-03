@@ -492,6 +492,62 @@ class Repairs:
             )
             return action_id
 
+    def renew_review(self, action_id: UUID, payload_hash: str, actor: str) -> "Row":
+        """Record one fresh human review, never extend or mutate the original proposal."""
+        if actor.lower() not in {a.lower() for a in self.engine.settings.allowed_actors}:
+            raise DomainError("ACTOR_DENIED", "Actor cannot renew this review", 403)
+        with self.engine.transaction() as conn:
+            action, run = self.engine._action(conn, action_id)
+            if action["action_type"] != "draft_pr" or action["payload_hash"] != payload_hash:
+                raise DomainError("APPROVAL_HASH_MISMATCH", "Review needs the exact Draft PR hash")
+            if (
+                action["status"] != "proposed"
+                or conn.execute(
+                    "SELECT 1 FROM app.outbox WHERE action_id=%s UNION ALL "
+                    "SELECT 1 FROM app.repair_publication_steps WHERE action_id=%s UNION ALL "
+                    "SELECT 1 FROM app.approvals WHERE action_id=%s",
+                    (action_id, action_id, action_id),
+                ).fetchone()
+            ):
+                raise DomainError(
+                    "REVIEW_RENEWAL_DENIED", "Only an entirely unsent proposal can renew"
+                )
+            # Revalidate every other fence and protected receipt for this fresh review.
+            self.engine._validate_action(conn, {**action, "unexpired": True}, run)
+            old = conn.execute(
+                "SELECT *,expires_at>now() AS unexpired FROM app.action_review_renewals "
+                "WHERE action_id=%s",
+                (action_id,),
+            ).fetchone()
+            if old:
+                if not old["unexpired"]:
+                    raise DomainError(
+                        "STALE_ACTION", "Renewed review expired; re-propose explicitly"
+                    )
+                return old
+            if action["unexpired"]:
+                return action
+            renewed = conn.execute(
+                "INSERT INTO app.action_review_renewals(action_id,payload_hash,actor,expires_at) "
+                "VALUES (%s,%s,%s,now()+%s) RETURNING *,expires_at>now() AS unexpired",
+                (
+                    action_id,
+                    payload_hash,
+                    actor,
+                    timedelta(seconds=self.engine.settings.approval_ttl_seconds),
+                ),
+            ).fetchone()
+            self.engine._event(
+                conn,
+                run["run_id"],
+                "repair_review_renewed",
+                action_id=str(action_id),
+                payload_hash=payload_hash,
+                actor=actor,
+            )
+            assert renewed is not None
+            return renewed
+
     def validate_action(self, action: "Row", run: "Row") -> None:
         from mgar_v3.repair.source import candidate_tree, working_files
 

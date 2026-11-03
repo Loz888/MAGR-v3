@@ -170,6 +170,7 @@
       "tests/test_r5_recount.py",
       "tests/test_r5_recovery.py",
       "tests/test_r5_repair.py",
+      "tests/test_r5_review_renewal.py",
       "tests/test_rate_limit.py",
       "tests/test_recovery.py",
       "tests/test_router_api.py",

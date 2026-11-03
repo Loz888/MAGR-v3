@@ -145,6 +145,7 @@ def execute(
     approved: str | None,
     crash_model: bool = False,
     crash_pr: bool = False,
+    renew_review: bool = False,
 ) -> None:
     settings = configured(directory)
     permit = repair_permit(settings)
@@ -242,6 +243,8 @@ def execute(
                         403,
                     )
                 permit.validate(external_write=True)
+                if renew_review:
+                    engine.repairs.renew_review(action["action_id"], approved, settings.local_actor)
                 engine.approve(action["action_id"], approved, settings.local_actor)
                 acknowledge_approval(engine, run_id, approved)
                 dispatcher.tick()
@@ -301,6 +304,7 @@ def main() -> None:
     parser.add_argument("--approved-payload-hash")
     parser.add_argument("--crash-after-settlement", action="store_true")
     parser.add_argument("--crash-after-pr-accepted", action="store_true")
+    parser.add_argument("--renew-expired-proposal", action="store_true")
     args = parser.parse_args()
     if args.stage == "prepare":
         prepare(args.directory, args.issue, args.base_sha)
@@ -312,6 +316,7 @@ def main() -> None:
             args.approved_payload_hash,
             args.crash_after_settlement,
             args.crash_after_pr_accepted,
+            args.renew_expired_proposal,
         )
 
 

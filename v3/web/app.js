@@ -54,7 +54,7 @@ async function show(id) {
     const preview=document.createElement("pre"); preview.textContent=action.payload.body; wrap.append(state,preview);
     if (action.action_type === "draft_pr") {
       state.textContent=`Draft PR · ${action.status} · ${action.payload.source_origin === "fixture_git" ? "本地协议演示" : "GitHub"}`;
-      const proof=document.createElement("pre"); proof.textContent=JSON.stringify({repository:action.payload.repository,base:action.payload.base_sha,branch:action.payload.branch,expires_at:action.expires_at,public_tests:action.payload.public_receipt,independent_tests:action.payload.hidden_receipt},null,2); wrap.append(proof);
+      const proof=document.createElement("pre"); proof.textContent=JSON.stringify({repository:action.payload.repository,base:action.payload.base_sha,branch:action.payload.branch,expires_at:action.review_expires_at??action.expires_at,public_tests:action.payload.public_receipt,independent_tests:action.payload.hidden_receipt},null,2); wrap.append(proof);
       for (const receipt of [action.payload.public_receipt,action.payload.hidden_receipt]) wrap.append(button("读取测试记录",async()=>{const text=document.createElement("pre");text.textContent=await api(`/runs/${ticket.run_id}/repair/artifacts/${receipt.log_hash}`);wrap.append(text);}));
       if (action.status === "proposed") {
         const edit=document.createElement("textarea");edit.value=action.payload.diff;edit.rows=12;edit.setAttribute("aria-label","编辑完整补丁，提交后重新测试");wrap.append(edit);edited=edit;

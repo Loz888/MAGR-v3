@@ -1,10 +1,10 @@
 {
   "schema": "r5-live-acceptance-v1",
-  "date_utc": "2026-11-03T01:02:27.742706+00:00",
+  "date_utc": "2026-11-03T03:00:32.046097+00:00",
   "release_status": "ENGINEERING_INCOMPLETE",
-  "r5_status": "IN_PROGRESS",
+  "r5_status": "DONE",
   "engineering_gate": "PASS",
-  "live_gate": "PARTIAL",
+  "live_gate": "PASS",
   "frozen_profile_hash": "807d8c5e68601cb945b28c35cc80de92ab764b0e898d3725445f7c3fc986925e",
   "source_base_sha": "c6f072e5994cb57fedd0bad796478b005870c7b6",
   "source_base_tree": "ceea02604d7cdd4af3b9bc4d6cf8fc8b5466ae22",
@@ -49,7 +49,7 @@
     "hidden_exit_code": 0,
     "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
     "usage_before_equals_after": true,
-    "full_tree_verified_by_publication": "PENDING",
+    "full_tree_verified_by_publication": "PASS",
     "runtime_source_sha256": "6d5424f299c296f84501d35875890c0b7cb8e5168133b80cc8508c099c84e2df"
   },
   "proposal": {
@@ -59,14 +59,32 @@
       "v3/examples/repair-target/orders.go"
     ],
     "candidate_tree": "225486485923c602efd450fb6cc9c92e5c25b125",
-    "approval_status": "PENDING",
-    "publication_status": "NOT_RUN",
-    "draft_pr_url": null
+    "approval_status": "APPROVED",
+    "publication_status": "SUCCEEDED",
+    "draft_pr_url": "https://github.com/Loz888/MAGR-v3/pull/2",
+    "draft_pr_number": 2,
+    "head_sha": "8c1163b4edf16ef27bcebf97f41e1b28b4b6a9a5",
+    "draft": true,
+    "merged": false,
+    "fresh_review_renewal": {
+      "original_action_and_expiry_preserved": true,
+      "same_payload_hash": true,
+      "reviewed_at": "2026-11-03T02:38:05.898068+00:00",
+      "review_expires_at": "2026-11-03T03:38:05.898068+00:00"
+    }
   },
   "recovery_checks": {
     "model_settlement_SIGKILL": "PASS",
     "settled_result_reused_without_repeat_call": true,
-    "real_PR_response_SIGKILL": "NOT_RUN"
+    "real_PR_response_SIGKILL": "PASS",
+    "read_only_reconciliation": "PASS",
+    "outbox_attempts": 1,
+    "remote_prs_for_approved_branch": 1,
+    "publication_steps": [
+      "branch:succeeded",
+      "commit:succeeded",
+      "pull_request:succeeded"
+    ]
   },
   "billing": {
     "r5_paid_calls": 3,
@@ -79,11 +97,7 @@
     "unknown_calls": 0,
     "cumulative_limit_micros": 2000000
   },
-  "pending": [
-    "exact_payload_approval",
-    "one_real_Draft_PR",
-    "real_PR_response_loss_readonly_reconciliation"
-  ],
+  "pending": [],
   "r6_status": "TODO",
   "limitations": [
     "Original frozen trial failed; recovery is reported separately.",
@@ -100,18 +114,20 @@
     ".local/r5-recount-tests-attempt1.log",
     ".local/r5-recount-tests-attempt2.log",
     ".local/r5-recount-integration-attempt1.log",
-    ".local/r5-replay-tests-attempt1.log"
+    ".local/r5-replay-tests-attempt1.log",
+    ".local/r5-review-renewal-tests-attempt1.log",
+    "evidence/V31-R5/20261103T023800Z-49d26327"
   ],
   "engineering_verification": {
     "counts": {
-      "tests": 248,
+      "tests": 249,
       "failures": 0,
       "errors": 0,
       "skipped": 0
     },
-    "duration_seconds": 915.873,
-    "source_sha256": "6d5424f299c296f84501d35875890c0b7cb8e5168133b80cc8508c099c84e2df",
-    "attempt_path": "evidence/V31-R5/20261103T004638Z-47e986d9",
+    "duration_seconds": 965.675,
+    "source_sha256": "5353735c242f89b4e132853c5d3c9367e209d691b31aaab0d72f8f5eba13debf",
+    "attempt_path": "evidence/V31-R5/20261103T024232Z-ef6fcde5",
     "components": {
       "postgres": "real",
       "docker": "real_nonroot_network_none_readonly_no_credentials",
@@ -129,5 +145,12 @@
     "typecheck": "PASS",
     "javascript_syntax": "PASS",
     "v2_tracked_files_unchanged": true
+  },
+  "live_scope": "One real Draft PR after counts-only recorded-result recovery; original frozen trial remains FAIL.",
+  "failed_engineering_attempt": {
+    "attempt": "evidence/V31-R5/20261103T023800Z-49d26327",
+    "tests_before_interrupt": 154,
+    "failures": 2,
+    "reason": "Migration assertions still expected 11 rather than appended 12; preserved and rerun."
   }
 }

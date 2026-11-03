@@ -961,7 +961,11 @@ class Engine:
             self._run(conn, run_id)
             self.tools.resolution(run_id)
             return conn.execute(
-                "SELECT * FROM app.actions WHERE run_id=%s ORDER BY created_at", (run_id,)
+                "SELECT a.*,coalesce(v.expires_at,a.expires_at) AS review_expires_at "
+                "FROM app.actions a LEFT JOIN app.action_review_renewals v "
+                "ON v.action_id=a.action_id AND v.payload_hash=a.payload_hash "
+                "WHERE a.run_id=%s ORDER BY a.created_at",
+                (run_id,),
             ).fetchall()
 
     def _action(self, conn: Connection, action_id: UUID) -> tuple[Row, Row]:
@@ -972,7 +976,10 @@ class Engine:
             raise DomainError("NOT_FOUND", "Action was not found", 404)
         run = self._run(conn, reference["run_id"])
         action = conn.execute(
-            "SELECT *,expires_at>now() AS unexpired FROM app.actions WHERE action_id=%s FOR UPDATE",
+            "SELECT a.*,coalesce(v.expires_at,a.expires_at)>now() AS unexpired "
+            "FROM app.actions a LEFT JOIN app.action_review_renewals v "
+            "ON v.action_id=a.action_id AND v.payload_hash=a.payload_hash "
+            "WHERE a.action_id=%s FOR UPDATE OF a",
             (action_id,),
         ).fetchone()
         assert action is not None
