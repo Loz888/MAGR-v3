@@ -1,0 +1,82 @@
+{
+  "qa-00": {
+    "status": "supported",
+    "values": {
+      "limit": "4"
+    }
+  },
+  "qa-01": {
+    "status": "supported",
+    "values": {
+      "limit": "17"
+    }
+  },
+  "qa-02": {
+    "status": "supported",
+    "values": {
+      "limit": "53"
+    }
+  },
+  "qa-03": {
+    "status": "supported",
+    "values": {
+      "limit": "80"
+    }
+  },
+  "qa-04": {
+    "status": "supported",
+    "values": {
+      "limit": "7"
+    }
+  },
+  "qa-05": {
+    "status": "supported",
+    "values": {
+      "limit": "45"
+    }
+  },
+  "qa-06": {
+    "status": "supported",
+    "values": {
+      "limit": "12"
+    }
+  },
+  "qa-07": {
+    "status": "supported",
+    "values": {
+      "limit": "75"
+    }
+  },
+  "qa-08": {
+    "status": "supported",
+    "values": {
+      "limit": "6"
+    }
+  },
+  "qa-09": {
+    "status": "supported",
+    "values": {
+      "limit": "250000"
+    }
+  },
+  "negative-00": {
+    "status": "insufficient",
+    "values": {}
+  },
+  "negative-01": {
+    "status": "insufficient",
+    "values": {}
+  },
+  "negative-02": {
+    "status": "denied",
+    "values": {}
+  },
+  "negative-03": {
+    "status": "insufficient",
+    "values": {}
+  },
+  "negative-04": {
+    "status": "denied",
+    "values": {}
+  }
+}
