@@ -1,5 +1,6 @@
 "Run-local checkpoints; Engine alone records candidates, decisions and write intents."
 
+import hashlib
 from typing import TYPE_CHECKING, Any, Protocol, TypedDict, cast
 from uuid import UUID
 
@@ -14,7 +15,7 @@ from mgar_v3.repair.domain import PatchReply, Snapshot
 from mgar_v3.repair.hidden import suite
 from mgar_v3.repair.sandbox import Sandbox
 from mgar_v3.repair.source import working_files
-from mgar_v3.repair.workspace import apply_diff, fixture_diff
+from mgar_v3.repair.workspace import apply_diff, fixture_diff, recount_diff
 
 if TYPE_CHECKING:
     from mgar_v3.graph.runner import Runner
@@ -124,13 +125,30 @@ def builder(
                 feedback = "Previous model response failed the required JSON/diff schema."
                 continue
             try:
-                files = apply_diff(snapshot, proposal["diff"])
+                candidate_diff = recount_diff(proposal["diff"])
+                files = apply_diff(snapshot, candidate_diff)
             except DomainError as exc:
                 feedback = "Patch rejected by the source policy: " + exc.code + ": " + str(exc)
                 store.finish(
                     run_id, epoch, revision, f"validation:{attempt}", {"reason": exc.code}
                 ) if store.step(run_id, epoch, revision, f"validation:{attempt}") is None else None
                 continue
+            if candidate_diff != proposal["diff"]:
+                key = f"normalization:{attempt}"
+                if store.step(run_id, epoch, revision, key) is None:
+                    store.finish(
+                        run_id,
+                        epoch,
+                        revision,
+                        key,
+                        {
+                            "algorithm": "hunk_counts_v1",
+                            "raw_diff_hash": hashlib.sha256(proposal["diff"].encode()).hexdigest(),
+                            "normalized_diff_hash": hashlib.sha256(
+                                candidate_diff.encode()
+                            ).hexdigest(),
+                        },
+                    )
             work = working_files(snapshot, files)
             public = test(f"public:{attempt}", work, snapshot.expected_tests)
             hidden = test(
@@ -139,7 +157,7 @@ def builder(
                 [*snapshot.expected_tests, "TestR5Hidden"],
             )
             candidate = store.candidate(
-                run_id, epoch, revision, attempt, proposal["diff"], files, public, hidden
+                run_id, epoch, revision, attempt, candidate_diff, files, public, hidden
             )
             if candidate["verified"]:
                 try:

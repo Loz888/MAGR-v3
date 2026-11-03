@@ -126,6 +126,30 @@ def workspace_hash(files: dict[str, str]) -> str:
     return digest({p: hashlib.sha256(v.encode()).hexdigest() for p, v in sorted(files.items())})
 
 
+def recount_diff(diff: str) -> str:
+    """Canonicalize counts only; paths, start positions and every body byte stay intact."""
+    if len(diff.encode()) > 32768 or "\r" in diff or "\0" in diff or len(diff.splitlines()) > 250:
+        raise DomainError("PATCH_LIMIT", "Patch exceeds its size or line bound")
+    lines = diff.splitlines(keepends=True)
+    for index, line in enumerate(lines):
+        if not line.startswith("@@ "):
+            continue
+        match = re.fullmatch(r"@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@([^\n]*)\n", line)
+        if match is None:
+            raise DomainError("PATCH_FORMAT", "Hunk header is invalid")
+        old_count = new_count = 0
+        for body in lines[index + 1 :]:
+            if body.startswith(("@@ ", "--- a/", "diff --git ")):
+                break
+            if body[:1] not in {" ", "+", "-"}:
+                raise DomainError("PATCH_FORMAT", "Hunk body contains an unsupported line")
+            old_count += body[:1] in {" ", "-"}
+            new_count += body[:1] in {" ", "+"}
+        if (old_count, new_count) != (int(match[2] or "1"), int(match[4] or "1")):
+            lines[index] = f"@@ -{match[1]},{old_count} +{match[3]},{new_count} @@{match[5]}\n"
+    return "".join(lines)
+
+
 def apply_diff(snapshot: Snapshot, diff: str) -> dict[str, str]:
     if len(diff.encode()) > 32768 or "\r" in diff or "\0" in diff or len(diff.splitlines()) > 250:
         raise DomainError("PATCH_LIMIT", "Patch exceeds its size or line bound")

@@ -178,13 +178,16 @@
       "id": "V31-R5",
       "phase": "R5",
       "title": "受限修复与 Draft PR",
-      "status": "TODO",
+      "status": "IN_PROGRESS",
       "dependencies": [
         "V31-R4"
       ],
-      "engineering_gate": "NOT_RUN",
-      "live_gate": "NOT_RUN",
-      "maps_to": []
+      "engineering_gate": "PASS",
+      "live_gate": "PARTIAL",
+      "maps_to": [],
+      "evidence": "v3/docs/acceptance/r5-live-20261103.json",
+      "live_evidence": "v3/docs/acceptance/r5-live-20261103.json",
+      "note": "Full 248-test regression PASS. Frozen live trial failed at raw diff validation. Counts-only recorded-result recovery passes public and 28 hidden cases; exact Draft PR approval and real publication recovery pending."
     },
     {
       "id": "V31-R6",

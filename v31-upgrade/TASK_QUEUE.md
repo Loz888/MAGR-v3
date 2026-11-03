@@ -14,7 +14,7 @@
 | V31-R3 | 受限 Router LLM 与多任务 | DONE | PASS | PASS |
 | V31-R4 | RAG 与多专家 | DONE | PASS | PARTIAL |
 | V31-R4-LIVE | 真实跨源调查与单 Agent 对照 | DONE | PASS | PARTIAL |
-| V31-R5 | 受限修复与 Draft PR | IN_PROGRESS | PASS（含真实适配工程） | NOT_RUN |
+| V31-R5 | 受限修复与 Draft PR | IN_PROGRESS | PASS（248 项回归） | PARTIAL |
 | V31-R6 | Watchdog、主动性与发布评测 | TODO | NOT_RUN | NOT_RUN |
 
 2026-11-02 用户授权真实调用与 GitHub 推送；沿用最多 3 次物理调用、累计 USD 2 的限制。R0 与 R1 工程复验通过，R1 真实闭环 PASS 后才启动 R2。实际调用 2 次，保守计费 USD 0.001745，结果评论一条；模型落库与远程写回执两个 SIGKILL 恢复点通过。
@@ -36,3 +36,6 @@ R5 首轮受控工程通过：注册验收覆盖完整回归 229 项，0 失败�
 
 
 R5 真实适配工程补齐：完整回归 245 项全部通过，新增官方 MCP/Git 元数据核对、真实模型适配及累计预算组、生产 Draft PR 适配和显式继续未发送子步骤。六个 SIGKILL 案例通过，历史 profile 哈希和旧快照兼容。真实源码只读探测通过；工程中的模型/发布协议仍为受控服务，未新增付费调用或业务 PR。真实模型与 PR 最终验收待冻结独立许可；R5 为 IN_PROGRESS，R6 不提前启动。摘要 v3/docs/acceptance/r5-native-engineering-20261102.json。
+
+
+2026-11-03 R5 冻结真实实验消耗三次 DeepSeek 调用，原始 diff 格式/定位检查全部失败，保留 FAIL。补充只重算 hunk 行数的确定性规范化后，独立 Run 在同一 profile 下重放第一份已结算结果，公开测试及 28 个隐藏子案例通过，未延长原 Run 期限、未新增模型调用。累计 29 次、USD 0.028549，R5 本轮 USD 0.001524。最终 Draft PR 完整 payload 等待用户审批，真实发布及回执丢失恢复尚未执行。完整回归 248 项通过，0 失败、0 错误、0 跳过；lint、typecheck 和前端语法通过。R5 保持 IN_PROGRESS/PARTIAL，R6 仍为 TODO。见 v3/docs/acceptance/r5-live-20261103.json 和 ADR 0009。

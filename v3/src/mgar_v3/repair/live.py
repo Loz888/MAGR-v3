@@ -113,3 +113,31 @@ class DeepSeekPatcher:
             },
             PatchReply,
         )
+
+
+class RecordedPatcher:
+    """Explicit offline replay under the identical frozen profile, with no HTTP fallback."""
+
+    mode = "live"
+
+    def __init__(self, engine: "Engine", permit: LivePermit, source_run_id: UUID, revision: int):
+        self.engine, self.permit = engine, permit
+        self.source_run_id, self.revision = source_run_id, revision
+
+    def propose(self, snapshot: Snapshot, question: str, attempt: int, feedback: str) -> PatchReply:
+        self.permit.validate()
+        if snapshot != load_snapshot(self.permit) or question != self.permit.profile.question:
+            raise DomainError("R5_SOURCE_CHANGED", "Replay requires the identical source/question")
+        with self.engine.transaction() as conn:
+            result = conn.execute(
+                "SELECT result FROM app.usage_calls WHERE run_id=%s AND profile_hash=%s "
+                "AND step_key=%s AND status='known' AND result ? 'diff'",
+                (
+                    self.source_run_id,
+                    self.permit.profile.profile_hash,
+                    f"r5:patch:r{self.revision}:{attempt}",
+                ),
+            ).fetchone()
+        if not result:
+            raise DomainError("MODEL_RESULT_UNAVAILABLE", "No matching settled replay result")
+        return PatchReply.model_validate(result["result"])

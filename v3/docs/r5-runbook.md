@@ -92,6 +92,10 @@ uv run --frozen python scripts/r5_live.py reconcile --directory .local/r5-live-C
 
 真实成功将得到 GitHub Draft PR；不合并。所有业务写仍经 Engine Action/Outbox/Dispatcher，源码普通 git push 与业务发布是不同的出口。profile 固定提交之后，不要在发布前推进它的基础分支；变化会阻断发布，需要重新冻结、测试和审批。
 
+补丁进入严格应用前只允许确定性重算 hunk 行数声明，不改变起始位置、路径或代码字节。提案显示原始与规范化 diff 的哈希和来源调用；原始输出永久保留。失配上下文、路径或 AST 仍会拒绝。见 [ADR 0009](adr/0009-r5-counts-only-replay.md)。
+
+超过修复期限的 Run 不自动续期。对适配器修复后的已付费输出进行恢复验证时，操作员必须单独记录来源 Run/输入版本及新 Run，用 `RecordedPatcher` 在完全相同的冻结 profile 下读取已知结果；没有网络回退或新调用额度。新 Run 重新测试，最终提案重新审批。原始试验的失败与恢复后的结果分别报告，不能合并成绩。
+
 模型结算后恢复实验可在首次 model 命令加 `--crash-after-settlement`，预期进程被强制结束，再执行不带该参数的 model 命令。PR 回执恢复实验可在首次 publish 加 `--crash-after-pr-accepted`，再执行 reconcile。它们分别复用已结算结果和只读寻找已创建 PR，不重复付费或写入。
 
 只有分支/提交的部分成功时，只读对账后仍保持未知动作，等待人工检查；确认所有已发步骤成功后，可显式授权剩余未发步骤：

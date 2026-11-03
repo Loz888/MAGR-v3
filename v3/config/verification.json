@@ -167,6 +167,7 @@
       "tests/test_r4_trials.py",
       "tests/test_r5_live.py",
       "tests/test_r5_model_recovery.py",
+      "tests/test_r5_recount.py",
       "tests/test_r5_recovery.py",
       "tests/test_r5_repair.py",
       "tests/test_rate_limit.py",

@@ -1,6 +1,7 @@
 import difflib
 import hashlib
 import json
+import re
 import sys
 from datetime import UTC, datetime, timedelta
 from uuid import UUID, uuid4
@@ -16,7 +17,7 @@ from mgar_v3.live import Authorization, LivePermit, LiveProfile
 from mgar_v3.mcp.client import ReadOnlyGitHubMCP
 from mgar_v3.repair.domain import GitEntry, RepairInput, RepairScope, Snapshot
 from mgar_v3.repair.graph import execute_repair
-from mgar_v3.repair.live import DeepSeekPatcher, load_snapshot
+from mgar_v3.repair.live import DeepSeekPatcher, RecordedPatcher, load_snapshot
 from mgar_v3.repair.publication import LiveDraftMCPTransport
 from mgar_v3.repair.source import candidate_tree, git_tree, verify_snapshot, working_files
 from mgar_v3.repair.workspace import apply_diff, blob, fixture_snapshot
@@ -417,11 +418,9 @@ def test_partial_native_publication_only_continues_unissued_steps_after_explicit
     assert len(calls) == 1
 
 
-def test_malformed_hunk_receives_public_feedback_and_uses_a_distinct_bounded_attempt(
+def test_stale_context_receives_public_feedback_and_uses_a_distinct_bounded_attempt(
     engine, tmp_path
 ):
-    import re
-
     run_id, permit, snapshot = live_case(engine, tmp_path)
     calls = []
 
@@ -430,9 +429,10 @@ def test_malformed_hunk_receives_public_feedback_and_uses_a_distinct_bounded_att
         calls.append(body)
         text = patch(snapshot)
         if len(calls) == 1:
-            text = re.sub(r"(@@ -\d+)(?:,\d+)?( \+\d+)(?:,\d+)? @@", r"\1,999\2,999 @@", text)
+            assert "     total := 0" in text
+            text = text.replace("     total := 0", "     total := 999", 1)
         else:
-            assert "actual removed/context" in body["messages"][1]["content"]
+            assert "exact source bytes" in body["messages"][1]["content"]
             assert "TestR5Hidden" not in body["messages"][1]["content"]
         return httpx.Response(
             200,
@@ -455,3 +455,65 @@ def test_malformed_hunk_receives_public_feedback_and_uses_a_distinct_bounded_att
         Runner(engine), run_id, DeepSeekPatcher(engine, run_id, 1, permit, client)
     )
     assert len(calls) == 2 and len(engine.actions(run_id)) == 1
+
+
+def test_hunk_count_recovery_preserves_paid_result_and_binds_provenance(engine, tmp_path):
+    run_id, permit, snapshot = live_case(engine, tmp_path)
+    original = patch(snapshot)
+    raw = re.sub(r"(@@ -\d+)(?:,\d+)?( \+\d+)(?:,\d+)? @@", r"\1,999\2,999 @@", original)
+    calls = []
+
+    def response(request):
+        calls.append(request)
+        return httpx.Response(
+            200,
+            json={
+                "model": "deepseek-flash",
+                "usage": {"prompt_tokens": 100, "completion_tokens": 200},
+                "choices": [
+                    {
+                        "finish_reason": "stop",
+                        "message": {
+                            "content": json.dumps(
+                                {"diff": raw, "explanation": "counts-only recovery"}
+                            )
+                        },
+                    }
+                ],
+            },
+        )
+
+    client = httpx.Client(transport=httpx.MockTransport(response))
+    assert execute_repair(
+        Runner(engine), run_id, DeepSeekPatcher(engine, run_id, 1, permit, client)
+    )
+    action = engine.actions(run_id)[0]
+    assert len(calls) == 1 and action["payload"]["diff"] == original
+    assert action["payload"]["public_receipt"]["passed"]
+    assert action["payload"]["hidden_receipt"]["passed"]
+    proof = action["payload"]["model_receipts"][0]
+    assert proof["transformation"] == "hunk_counts_v1"
+    assert proof["raw_diff_hash"] == hashlib.sha256(raw.encode()).hexdigest()
+    assert proof["normalized_diff_hash"] == hashlib.sha256(original.encode()).hexdigest()
+    with engine.transaction() as conn:
+        recorded = conn.execute("SELECT result FROM app.usage_calls").fetchone()
+        assert recorded["result"]["diff"] == raw
+        normalized = conn.execute(
+            "SELECT result FROM app.repair_steps WHERE step_key='normalization:0'"
+        ).fetchone()
+        assert normalized["result"]["raw_diff_hash"] == proof["raw_diff_hash"]
+
+    engine.cancel(run_id)
+    replay_id, replay_permit, _ = live_case(engine, tmp_path)
+    provider = RecordedPatcher(
+        engine, replay_permit, run_id, engine.get_run(run_id)["input_revision"]
+    )
+    with pytest.raises(DomainError, match="identical"):
+        provider.propose(snapshot, "different question", 0, "")
+    with pytest.raises(DomainError, match="No matching"):
+        provider.propose(snapshot, replay_permit.profile.question, 2, "")
+    assert execute_repair(Runner(engine), replay_id, provider)
+    replay = engine.actions(replay_id)[0]
+    assert replay["payload"]["model_receipts"][0]["source_run_id"] == str(run_id)
+    with engine.transaction() as conn:
+        assert conn.execute("SELECT count(*) AS n FROM app.usage_calls").fetchone()["n"] == 1

@@ -1,0 +1,133 @@
+{
+  "schema": "r5-live-acceptance-v1",
+  "date_utc": "2026-11-03T01:02:27.742706+00:00",
+  "release_status": "ENGINEERING_INCOMPLETE",
+  "r5_status": "IN_PROGRESS",
+  "engineering_gate": "PASS",
+  "live_gate": "PARTIAL",
+  "frozen_profile_hash": "807d8c5e68601cb945b28c35cc80de92ab764b0e898d3725445f7c3fc986925e",
+  "source_base_sha": "c6f072e5994cb57fedd0bad796478b005870c7b6",
+  "source_base_tree": "ceea02604d7cdd4af3b9bc4d6cf8fc8b5466ae22",
+  "frozen_trial": {
+    "run_id": "9437a61b-27a7-442f-8519-2d397e58fd76",
+    "verdict": "FAIL",
+    "model_calls": 3,
+    "failures": [
+      "PATCH_FORMAT",
+      "PATCH_FORMAT",
+      "PATCH_STALE"
+    ],
+    "candidate_tests_run": 0,
+    "reason": "Raw model diff headers or original context locations rejected",
+    "runtime_source_sha256": "1eb97598454bca0e6c3bffcacfa803b7261a988f52e959d304e937b12c397a27"
+  },
+  "recovery": {
+    "run_id": "ff6b7ebd-839c-4312-8efa-a8b5b7eada09",
+    "mode": "recorded_results_only_new_Run",
+    "algorithm": "hunk_counts_v1",
+    "original_header": "@@ -7,8 +7,16 @@",
+    "normalized_header": "@@ -7,9 +7,16 @@",
+    "body_or_start_positions_changed": false,
+    "source_run_deadline_extended": false,
+    "public_test_passed": true,
+    "hidden_test_passed": true,
+    "independent_hidden_subcases": 28,
+    "source_model_receipts": [
+      {
+        "call_id": "80e4d0a0-74f4-4dca-8a51-fde7cef6be87",
+        "step_key": "r5:patch:r3:0",
+        "profile_hash": "807d8c5e68601cb945b28c35cc80de92ab764b0e898d3725445f7c3fc986925e",
+        "raw_diff_hash": "d5b59065d20b4709ab24b5dc46932ee9b2eebbf3d33ee07cefb1e66d3708bc65",
+        "source_run_id": "9437a61b-27a7-442f-8519-2d397e58fd76",
+        "transformation": "hunk_counts_v1",
+        "normalized_diff_hash": "e061468884f83df89e14076cff2414ac338ac05827f9e1eff3d9df422a9bd9e6"
+      }
+    ],
+    "new_paid_calls": 0,
+    "baseline_exit_code": 1,
+    "public_exit_code": 0,
+    "hidden_exit_code": 0,
+    "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+    "usage_before_equals_after": true,
+    "full_tree_verified_by_publication": "PENDING",
+    "runtime_source_sha256": "6d5424f299c296f84501d35875890c0b7cb8e5168133b80cc8508c099c84e2df"
+  },
+  "proposal": {
+    "payload_hash": "ea5145bb41da599d4f6789b21f8f2d56daf50519a5af2a2f5bf5e8e5a75f1dd3",
+    "expires_at": "2026-11-03T01:47:00.458745+00:00",
+    "editable_paths": [
+      "v3/examples/repair-target/orders.go"
+    ],
+    "candidate_tree": "225486485923c602efd450fb6cc9c92e5c25b125",
+    "approval_status": "PENDING",
+    "publication_status": "NOT_RUN",
+    "draft_pr_url": null
+  },
+  "recovery_checks": {
+    "model_settlement_SIGKILL": "PASS",
+    "settled_result_reused_without_repeat_call": true,
+    "real_PR_response_SIGKILL": "NOT_RUN"
+  },
+  "billing": {
+    "r5_paid_calls": 3,
+    "r5_cost_micros": 1524,
+    "r5_authorized_max_calls": 3,
+    "r5_authorized_max_cost_micros": 14748,
+    "cumulative_paid_calls": 29,
+    "cumulative_cost_micros": 28549,
+    "reserved_micros": 0,
+    "unknown_calls": 0,
+    "cumulative_limit_micros": 2000000
+  },
+  "pending": [
+    "exact_payload_approval",
+    "one_real_Draft_PR",
+    "real_PR_response_loss_readonly_reconciliation"
+  ],
+  "r6_status": "TODO",
+  "limitations": [
+    "Original frozen trial failed; recovery is reported separately.",
+    "One bounded pure Go function, not arbitrary repository repair.",
+    "R4 live remains PARTIAL; full release evaluation is not complete."
+  ],
+  "notes": [
+    "Costs use the frozen conservative peak prices; actual provider invoice may differ.",
+    "Source code Git pushes are separate from the approved Action/Outbox Draft PR protocol.",
+    "No additional paid calls are permitted: the R5 3-call grant is exhausted."
+  ],
+  "failed_attempts_preserved": [
+    ".local/r5-live-20261102-native/model-*-attempt1.log",
+    ".local/r5-recount-tests-attempt1.log",
+    ".local/r5-recount-tests-attempt2.log",
+    ".local/r5-recount-integration-attempt1.log",
+    ".local/r5-replay-tests-attempt1.log"
+  ],
+  "engineering_verification": {
+    "counts": {
+      "tests": 248,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "duration_seconds": 915.873,
+    "source_sha256": "6d5424f299c296f84501d35875890c0b7cb8e5168133b80cc8508c099c84e2df",
+    "attempt_path": "evidence/V31-R5/20261103T004638Z-47e986d9",
+    "components": {
+      "postgres": "real",
+      "docker": "real_nonroot_network_none_readonly_no_credentials",
+      "go": "real_compiler_public_and_independent_hidden_tests",
+      "langgraph": "real_postgres_checkpoint_and_approval_interrupt",
+      "model": "controlled_HTTP_of_production_R5_adapter",
+      "github": "real_stdio_MCP_controlled_remote_and_Git_tree_proof",
+      "recovery": "real_SIGKILL_sandbox_candidate_branch_PR_and_costed_model_cache",
+      "web": "shared_authenticated_API",
+      "budget": "real_cumulative_PG_group_including_R1_R4_predecessors"
+    }
+  },
+  "checks": {
+    "lint": "PASS",
+    "typecheck": "PASS",
+    "javascript_syntax": "PASS",
+    "v2_tracked_files_unchanged": true
+  }
+}

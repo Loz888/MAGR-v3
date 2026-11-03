@@ -1,5 +1,6 @@
 """Engine-owned repair records. Network, compiler and CAS writes stay outside transactions."""
 
+import hashlib
 import json
 from datetime import timedelta
 from typing import TYPE_CHECKING, Any
@@ -11,7 +12,7 @@ from mgar_v3.domain import DomainError, TriggerInput, digest
 from mgar_v3.repair.domain import RepairInput, Snapshot, publication_requests
 from mgar_v3.repair.hidden import suite
 from mgar_v3.repair.sandbox import local_lock
-from mgar_v3.repair.workspace import fixture_snapshot, workspace_hash
+from mgar_v3.repair.workspace import fixture_snapshot, recount_diff, workspace_hash
 
 if TYPE_CHECKING:
     from mgar_v3.coordination.engine import Connection, Engine, Row
@@ -417,11 +418,21 @@ class Repairs:
                 ),
             }
             if run["execution_mode"] == "live":
-                calls = conn.execute(
-                    "SELECT call_id,step_key,profile_hash FROM app.usage_calls "
-                    "WHERE run_id=%s AND status='known' AND result->>'diff'=%s",
-                    (run_id, diff),
+                recorded = conn.execute(
+                    "SELECT call_id,run_id,step_key,profile_hash,result->>'diff' AS raw_diff "
+                    "FROM app.usage_calls WHERE profile_hash="
+                    "(SELECT scope->>'profile_hash' FROM app.mandates WHERE mandate_id=%s) "
+                    "AND status='known' AND result ? 'diff' ORDER BY call_id",
+                    (run["mandate_id"],),
                 ).fetchall()
+                calls = []
+                for call in recorded:
+                    try:
+                        normalized = recount_diff(call["raw_diff"])
+                    except DomainError:
+                        continue
+                    if normalized == diff:
+                        calls.append(call)
                 manual = conn.execute(
                     "SELECT diff_hash FROM app.repair_manual_inputs "
                     "WHERE run_id=%s AND input_revision=%s",
@@ -435,8 +446,12 @@ class Repairs:
                 payload["model_receipts"] = [
                     {
                         "call_id": str(c["call_id"]),
+                        "source_run_id": str(c["run_id"]),
                         "step_key": c["step_key"],
                         "profile_hash": c["profile_hash"],
+                        "transformation": "hunk_counts_v1" if c["raw_diff"] != diff else "none",
+                        "raw_diff_hash": hashlib.sha256(c["raw_diff"].encode()).hexdigest(),
+                        "normalized_diff_hash": hashlib.sha256(diff.encode()).hexdigest(),
                     }
                     for c in calls
                 ]
