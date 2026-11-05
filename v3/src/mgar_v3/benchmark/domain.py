@@ -36,6 +36,11 @@ class EvaluationAuthorization(Model):
     allow_external_write: Literal[False] = False
 
 
+class OutputContract(Model):
+    version: Literal["r6-output-v3"] = "r6-output-v3"
+    fields: dict[str, Literal["decimal", "boolean"]] = Field(default_factory=dict)
+
+
 class Case(Model):
     id: str
     category: Literal["qa", "cross", "repair", "negative"]
@@ -51,6 +56,9 @@ class Case(Model):
     ) = None
     repair_variant: int | None = None
     source_path: str
+    output_contract: OutputContract | None = None
+    requested_capabilities: list[str] = Field(default_factory=lambda: ["read"])
+    required_revision: str | None = None
 
 
 class Source(Model):
@@ -58,3 +66,6 @@ class Source(Model):
     role: Literal["knowledge", "repo", "data"]
     text: str
     version: str
+    document_id: str | None = None
+    revision: str | None = None
+    numeric_facts: dict[str, str] = Field(default_factory=dict)

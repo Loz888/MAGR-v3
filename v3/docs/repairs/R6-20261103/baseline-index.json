@@ -1,0 +1,20 @@
+{
+  "schema": "r6-repair-baseline-v1",
+  "commit": "8c82de7e136a1865d0efbc280a86ef4a11f84f99",
+  "assignments": 90,
+  "states": {
+    "FAIL": 44,
+    "PASS": 46
+  },
+  "files_sha256": {
+    "eval/reports/final-v2-manifest.json": "e0f6239bded4af07b11ed869a04931d3148a1b5275a6364ba72f197907d1a231",
+    "eval/reports/final-v2-results.json": "fdc834d5b324f0d56f20d472a0236f1475c14ff871e292ee494b4d792136c1cc",
+    "eval/reports/final-v2-answers.jsonl": "2c9959d73cff7eb62fd9d59ea358a6bd97ebc6719dcd3e1af55eba32cd893c12",
+    "eval/reports/final-v2-summary.json": "3d2f33aceb41b51e40e3b888ec2bbe38937335af33506ce6f2aaa617f464ff4e",
+    "eval/reports/final-v2-baseline-source.zip": "676f8395c97e553c0484dbd796de7ffe6c4a72c2336a3e21184ba9bf9e5ef180",
+    "eval/final-v1/cases.json": "2da792b8a273a551e413a2ff4b101db66c90970c8afa5b65d0fca72fc1f89142",
+    "eval/final-v1/corpus.json": "21c664a6d84dc8539c9511e61e50251740eb106700d96345a53118e8ec1ef1bc",
+    "eval/final-v1/oracles.json": "0461ebf346341d42520489c452b2d87511a84e4653e2fa72e7c3439b2df3c1d4"
+  },
+  "grade_changes_permitted": false
+}

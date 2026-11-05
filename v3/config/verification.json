@@ -249,7 +249,8 @@
       "tests/test_router_api.py",
       "tests/test_router_model.py",
       "tests/test_routing.py",
-      "tests/test_verification.py"
+      "tests/test_verification.py",
+      "tests/test_r6_repair_contract.py"
     ],
     "timeout_seconds": 1800,
     "components": {
@@ -296,6 +297,25 @@
       "billing": "exact_hourly_request_and_token_attribution_same_Run_budget_idempotent_no_invented_per_call_usage",
       "continuation": "AST_proof_of_identical_generation_and_pricing",
       "go": "real_isolated_hidden_oracle_checks"
+    }
+  },
+  "V31-R6-REPAIR": {
+    "tests": [
+      "tests/test_r6_repair_contract.py",
+      "tests/test_final_evaluation.py",
+      "tests/test_final_resume.py",
+      "tests/test_billing_reconciliation.py",
+      "tests/test_models.py",
+      "tests/test_verification.py"
+    ],
+    "timeout_seconds": 300,
+    "components": {
+      "postgres": "real_disposable_database_17_migrations",
+      "model": "controlled_only_no_paid_calls",
+      "numeric": "observed_SQL_aggregate_min_event_and_exact_Decimal",
+      "policy": "public_capabilities_current_ACL_scope_revision_no_oracle_labels",
+      "contract": "strict_fields_boolean_strings_fail_closed_and_bounded_repair",
+      "go": "real_isolated_hidden_oracle_regression"
     }
   }
 }

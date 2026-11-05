@@ -15,6 +15,7 @@ def main() -> None:
     parser.add_argument("stage", choices=["prepare", "plan", "preflight", "run", "report"])
     parser.add_argument("--directory", type=Path, required=True)
     parser.add_argument("--source-ref")
+    parser.add_argument("--dataset", choices=["final-v1", "final-v3"], default="final-v1")
     parser.add_argument("--authorization", type=Path)
     parser.add_argument("--execute-paid", action="store_true")
     parser.add_argument("--resume", action="store_true")
@@ -29,7 +30,7 @@ def main() -> None:
     if args.stage == "prepare":
         if not args.source_ref:
             parser.error("prepare needs a fixed GitHub --source-ref")
-        manifest = prepare(args.directory, args.source_ref, args.ablation)
+        manifest = prepare(args.directory, args.source_ref, args.ablation, args.dataset)
     else:
         manifest = verify(args.directory, args.continuation)
     if args.stage in {"prepare", "plan"}:

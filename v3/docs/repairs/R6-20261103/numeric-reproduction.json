@@ -1,0 +1,15 @@
+{
+  "scope": "deterministic reproduction of archived observed rows; not a new model score",
+  "baseline_case": "cross-07",
+  "baseline_arm": "C",
+  "raw_evidence_sha256": "50e22fbc65496daf717ede726d730bc2aa65be749ea07a7c0cd6ba17626ac9d5",
+  "original_value": "48.00",
+  "recomputed_observed_metrics": {
+    "paid_events": "4",
+    "distinct_orders": "2",
+    "event_amount": "73.00",
+    "dedup_amount": "20.00"
+  },
+  "original_grade": "FAIL",
+  "regraded": false
+}

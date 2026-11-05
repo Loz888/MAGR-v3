@@ -21,6 +21,12 @@ def collect(
     supplement: bool = False,
     ablation: str = "none",
 ) -> tuple[list[Source], list[str], dict[str, Any]]:
+    if case.output_contract is not None:
+        from mgar_v3.benchmark.scoped_tools import collect_scoped
+
+        return collect_scoped(
+            engine, run_id, epoch, case, inputs, supplement=supplement, ablation=ablation
+        )
     sources = []
     errors = []
     calls = 0

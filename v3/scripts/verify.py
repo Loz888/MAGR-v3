@@ -17,7 +17,16 @@ from uuid import uuid4
 
 def source_fingerprint(root: Path) -> str:
     fingerprint = hashlib.sha256()
-    for subtree in ["src", "migrations", "config", "scripts", "tests", "eval/final-v1", "deploy"]:
+    for subtree in [
+        "src",
+        "migrations",
+        "config",
+        "scripts",
+        "tests",
+        "eval/final-v1",
+        "eval/final-v3",
+        "deploy",
+    ]:
         for path in sorted((root / subtree).rglob("*")):
             if path.is_file() and "__pycache__" not in path.parts:
                 fingerprint.update(str(path.relative_to(root)).encode() + b"\0")

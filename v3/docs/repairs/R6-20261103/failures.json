@@ -1,0 +1,666 @@
+[
+  {
+    "case_id": "cross-07",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount",
+      "invalid_citation",
+      "missing_source_role"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1568,
+    "answer_line": 1,
+    "answer_line_sha256": "fc82339f9801e96241c1441254b0ad56fc7e606f4d1b1f83416be01d9ac0463b",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-04",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:implementation_deduplicates"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1496,
+    "answer_line": 2,
+    "answer_line_sha256": "33656537513b3e98b2deb8890207c47f4e331af8f0265521a680451e7f6e4365",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-03",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount",
+      "wrong_value:implementation_deduplicates"
+    ],
+    "model_calls": 1,
+    "cost_micros": 793,
+    "answer_line": 3,
+    "answer_line_sha256": "4fc16c8bcfd0f8bffd6257143af12e51d902618b4cb42a1ce1f0b67acb604b3b",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-01",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:implementation_deduplicates"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1528,
+    "answer_line": 4,
+    "answer_line_sha256": "5cf297abea5372f1f7172a11b6c6617db53b4e51dd6dfc24be496472d0380f40",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-07",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:distinct_orders",
+      "wrong_value:dedup_amount"
+    ],
+    "model_calls": 1,
+    "cost_micros": 826,
+    "answer_line": 8,
+    "answer_line_sha256": "c5dc0eb7df09477a85f56322158a55f6e06d8e478db037f7fbb1b4c4f4d28dff",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-03",
+    "arm": "A",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 2,
+    "cost_micros": 1374,
+    "answer_line": 9,
+    "answer_line_sha256": "6c0ed61b27e1701aeb2a71a8363fce9176c57f5a306cc6d84d9e343f45d8078c",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-05",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:paid_events",
+      "wrong_value:implementation_deduplicates"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1706,
+    "answer_line": 10,
+    "answer_line_sha256": "fe3db32714bce69332721ccb7ce32aa5ab856a5df2dc6a77953fd36566368d5d",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-08",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1516,
+    "answer_line": 11,
+    "answer_line_sha256": "2be4cab57f3c9be1fc7bf395ab89061e53bc394ef8ffadce28be4d25c5ef243a",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-02",
+    "arm": "C",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value_fields"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1813,
+    "answer_line": 15,
+    "answer_line_sha256": "930128afdb118f00978c93fc8fe363ec1f91b8affa3bbf322ebb36479c63e3e3",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-06",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "wrong_value:paid_events",
+      "wrong_value:dedup_amount",
+      "wrong_value:implementation_deduplicates",
+      "invalid_citation",
+      "missing_source_role"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1526,
+    "answer_line": 17,
+    "answer_line_sha256": "4534fc10b58f84a21e8cd45cd77f8ba7d7b46781703bbba1197af43154c20380",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "negative-04",
+    "arm": "C",
+    "category": "negative",
+    "original_status": "FAIL",
+    "reasons": [
+      "PROCESS_INTERRUPTED"
+    ],
+    "model_calls": 0,
+    "cost_micros": 0,
+    "answer_line": 19,
+    "answer_line_sha256": "8b458f3885f45f3969e85aac9fbfdd9120d6b19178a2126d8df1996a9aaf96a5",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-04",
+    "arm": "B",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1232,
+    "answer_line": 21,
+    "answer_line_sha256": "221716dce9239a7e7ee3be1336db631b5e91ec0b4fc7a62d36d05581c5cab933",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-07",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1532,
+    "answer_line": 23,
+    "answer_line_sha256": "a71128758b1d2cc4e1dcf1a0dcfd2454271de589637cc9ee317dc4c6ad78b4ee",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-05",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "BILLING_RECONCILED_RESPONSE_LOST"
+    ],
+    "model_calls": 2,
+    "cost_micros": 572,
+    "answer_line": 24,
+    "answer_line_sha256": "03cacbbd6979757b02f435a4b4223ea0e5310d6a79d74a0b69c23cc9fd7941cd",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-03",
+    "arm": "B",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "MODEL_INVALID_RESPONSE"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1650,
+    "answer_line": 25,
+    "answer_line_sha256": "f884cf938dabb4e8ca8080bbc8c52dab3365a1ce452d138896351bdc76d2c998",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-02",
+    "arm": "A",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "wrong_value_fields",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 2,
+    "cost_micros": 1379,
+    "answer_line": 27,
+    "answer_line_sha256": "8e89d89d2f76ff0090f721d5ebc6bfd188ed18a3312b1e912305b19ee1f8360a",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-09",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1520,
+    "answer_line": 29,
+    "answer_line_sha256": "4d20d9723f9f745e8f54d98f16f937268b9b4b164a96147a8e4f63d239c63fd4",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-03",
+    "arm": "C",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 2,
+    "cost_micros": 942,
+    "answer_line": 31,
+    "answer_line_sha256": "c8cad0ab112c080b20e79375b02d171d1ca742ed4d24ab0916b5049260d9427c",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-04",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount"
+    ],
+    "model_calls": 1,
+    "cost_micros": 719,
+    "answer_line": 32,
+    "answer_line_sha256": "e8eae8677b84b6ae5c6ed7f732a1351a094be84ca7d2a7264bc3c06b60f3c669",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-06",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount",
+      "wrong_value:implementation_deduplicates"
+    ],
+    "model_calls": 2,
+    "cost_micros": 1606,
+    "answer_line": 34,
+    "answer_line_sha256": "630bdc64678820d4bb56d6cbecc71a847f4bf6a109aa9ce84717eac3eb277b79",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-00",
+    "arm": "A",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 1,
+    "cost_micros": 501,
+    "answer_line": 35,
+    "answer_line_sha256": "66c5f914a68c29851d21b5fddf8423929c70cf63f6f1ee467ccb338346058bc4",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-08",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "wrong_value:paid_events",
+      "wrong_value:distinct_orders",
+      "wrong_value:event_amount",
+      "missing_value:dedup_amount"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1479,
+    "answer_line": 36,
+    "answer_line_sha256": "dbeaca3caab2a11376832429355d5e6a7744e00314219678342836b560194391",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-08",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount"
+    ],
+    "model_calls": 1,
+    "cost_micros": 858,
+    "answer_line": 37,
+    "answer_line_sha256": "daf62885d64dfd98b08cb2df1926b240c83fe79c5b8957851e88a79eeb69e033",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-04",
+    "arm": "C",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 2,
+    "cost_micros": 881,
+    "answer_line": 39,
+    "answer_line_sha256": "d52659a16ab1e8c497ce14e839b11bc478d7a85de9acfa01a2d1c60e931151c4",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-02",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:implementation_deduplicates"
+    ],
+    "model_calls": 1,
+    "cost_micros": 813,
+    "answer_line": 42,
+    "answer_line_sha256": "dc4bddfc85ef592472345e8d0cc3153659d73efca246d0f3ab6764777ec0edd7",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-06",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "wrong_value:paid_events"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1371,
+    "answer_line": 43,
+    "answer_line_sha256": "ded55badede75a920692e0631e74422fdacb7811432ea40451d145957f859cda",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-01",
+    "arm": "A",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 2,
+    "cost_micros": 1540,
+    "answer_line": 49,
+    "answer_line_sha256": "00b75f9855f99fccd00921360dc7d288e2513943cf28b051be289a33b44eec2f",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-00",
+    "arm": "B",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value_fields",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1656,
+    "answer_line": 54,
+    "answer_line_sha256": "51447f5c486b7890d7e8ddbb48a4e3f3e3d6b215d5434752e0957e7b6084ba1f",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-00",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:implementation_deduplicates"
+    ],
+    "model_calls": 1,
+    "cost_micros": 764,
+    "answer_line": 56,
+    "answer_line_sha256": "3cb14f851500cedc98f36871fa3c34ecbdec948f085c9dd23c13c38127cc8185",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-00",
+    "arm": "C",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value_fields",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 2,
+    "cost_micros": 1184,
+    "answer_line": 57,
+    "answer_line_sha256": "dab237e29ccff55517805ac739d6ca498a2c82694da31302b90a708f354055b2",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-01",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount"
+    ],
+    "model_calls": 1,
+    "cost_micros": 776,
+    "answer_line": 63,
+    "answer_line_sha256": "2a2ea6a34c8a49f0bd887c1037b97319206b4e1971b7a38a71dfa8bc8650390b",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-00",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "wrong_value_fields",
+      "missing_value:paid_events",
+      "missing_value:distinct_orders",
+      "missing_value:event_amount",
+      "missing_value:dedup_amount",
+      "missing_value:implementation_deduplicates"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1457,
+    "answer_line": 64,
+    "answer_line_sha256": "0af4d0e4facd7c103dd9d40ee4753ec42197f403b182695e61872280efd214d5",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-09",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "wrong_value:paid_events",
+      "wrong_value:dedup_amount"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1561,
+    "answer_line": 68,
+    "answer_line_sha256": "b99a8f13bc9208eb9f2c41f3c398931ac3ca536c9f12c0cc19fdc5c6d0883c89",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-04",
+    "arm": "A",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "wrong_value_fields",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 1,
+    "cost_micros": 685,
+    "answer_line": 69,
+    "answer_line_sha256": "c5fdb360c1a31779a1ce3d30c38b19f258bdca9ff6551ec1cc88678be12f8e30",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-03",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount",
+      "wrong_value:implementation_deduplicates",
+      "invalid_citation",
+      "missing_source_role"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1607,
+    "answer_line": 70,
+    "answer_line_sha256": "84225d139aa504b17a82d3a28bf8ca1e280ea3c25d4a8037f3c5cc4c2498ec78",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-01",
+    "arm": "B",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1323,
+    "answer_line": 72,
+    "answer_line_sha256": "4eca6f116f5d9c7d8670b91904937002bd6d4dad38b6a1df0e796733af550c01",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-03",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_status",
+      "wrong_value_fields",
+      "missing_value:paid_events",
+      "missing_value:distinct_orders",
+      "missing_value:event_amount",
+      "missing_value:dedup_amount",
+      "missing_value:implementation_deduplicates",
+      "missing_source_role"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1213,
+    "answer_line": 73,
+    "answer_line_sha256": "68a45411d5f4d16e29d12627373d33f06513343caf2837ffc467455bfa47fac5",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "negative-03",
+    "arm": "B",
+    "category": "negative",
+    "original_status": "FAIL",
+    "reasons": [
+      "MODEL_INVALID_RESPONSE"
+    ],
+    "model_calls": 3,
+    "cost_micros": 778,
+    "answer_line": 74,
+    "answer_line_sha256": "e18e85b239c54ceaafcb0d30b336347741682d726bcab1320ebe4034af808013",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "cross-09",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value:dedup_amount"
+    ],
+    "model_calls": 1,
+    "cost_micros": 891,
+    "answer_line": 75,
+    "answer_line_sha256": "2fd24c12a115ccd6dfb71deada737d28cf8d19adb4d77863b2d40c67bf18eb79",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-01",
+    "arm": "C",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "MODEL_INVALID_RESPONSE"
+    ],
+    "model_calls": 1,
+    "cost_micros": 442,
+    "answer_line": 78,
+    "answer_line_sha256": "351bcce61916e989e1638efde5ec130ba762afb534a08bb4f414faa9b38c3bea",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "negative-01",
+    "arm": "C",
+    "category": "negative",
+    "original_status": "FAIL",
+    "reasons": [
+      "MODEL_INVALID_RESPONSE"
+    ],
+    "model_calls": 2,
+    "cost_micros": 624,
+    "answer_line": 79,
+    "answer_line_sha256": "bae22158c9510ac25d24ad7dd74c5ed540d04b02c2c6f89854ae534dc0766116",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "repair-02",
+    "arm": "B",
+    "category": "repair",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value_fields",
+      "independent_hidden_tests_failed"
+    ],
+    "model_calls": 3,
+    "cost_micros": 1426,
+    "answer_line": 81,
+    "answer_line_sha256": "b1ae3c45dc348de0bab2743f35fb13d4226d13750fb0cf56e5a33a5e530eca9a",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "negative-01",
+    "arm": "A",
+    "category": "negative",
+    "original_status": "FAIL",
+    "reasons": [
+      "MODEL_INVALID_RESPONSE"
+    ],
+    "model_calls": 1,
+    "cost_micros": 284,
+    "answer_line": 84,
+    "answer_line_sha256": "b7be71e79cbc84b8c0d1ad4488afd1bae18071f4c49a57ecf1ecf850fae3c494",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  },
+  {
+    "case_id": "negative-01",
+    "arm": "B",
+    "category": "negative",
+    "original_status": "FAIL",
+    "reasons": [
+      "wrong_value_fields"
+    ],
+    "model_calls": 3,
+    "cost_micros": 775,
+    "answer_line": 85,
+    "answer_line_sha256": "7db7e0a143038b1dcdced7ba7a0087c1d14d8eb42ebcd64fff3ae49bd02de6f0",
+    "original_source": "eval/reports/final-v2-answers.jsonl"
+  }
+]

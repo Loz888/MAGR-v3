@@ -1,4 +1,4 @@
-"""Explicit continuation: one paid assignment per fresh process, one existing budget."""
+"""One assignment per fresh process, using one explicitly authorized frozen budget."""
 
 import argparse
 import json
@@ -16,7 +16,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--directory", type=Path, required=True)
     parser.add_argument("--authorization", type=Path, required=True)
-    parser.add_argument("--continuation", type=Path, required=True)
+    parser.add_argument("--continuation", type=Path)
     parser.add_argument("--execute-paid", action="store_true")
     args = parser.parse_args()
     if not args.execute_paid:
@@ -26,7 +26,15 @@ def main() -> None:
     logs = directory / "workers"
     logs.mkdir(mode=0o700, exist_ok=True)
     for _ in range(90):
-        before, _ = resume_state(directory, manifest)
+        resuming = (directory / "execution.json").exists()
+        if resuming:
+            before, _ = resume_state(directory, manifest)
+        else:
+            before = json.loads((directory / "results.json").read_text())
+            if before != manifest["assignments"]:
+                raise DomainError(
+                    "BENCHMARK_CHANGED", "Fresh trial must have untouched assignments"
+                )
         remaining = sum(r["status"] == "NOT_RUN" for r in before)
         if remaining == 0:
             print(json.dumps({"status": "completed", "assignments": 90}), flush=True)
@@ -49,12 +57,13 @@ def main() -> None:
             str(directory),
             "--authorization",
             str(args.authorization.resolve()),
-            "--continuation",
-            str(args.continuation.resolve()),
-            "--resume",
             "--one-assignment",
             "--execute-paid",
         ]
+        if resuming:
+            command.append("--resume")
+        if args.continuation:
+            command.extend(["--continuation", str(args.continuation.resolve())])
         try:
             with path.open("xb") as log:
                 worker = subprocess.run(

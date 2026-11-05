@@ -11,7 +11,7 @@ from mgar_v3.benchmark.domain import Case, EvaluationAuthorization
 from mgar_v3.benchmark.executor import Executor
 from mgar_v3.benchmark.metrics import summarize
 from mgar_v3.benchmark.oracle import cross_expected, grade, hidden_suite
-from mgar_v3.benchmark.prepare import DATA, configuration, fingerprint, write
+from mgar_v3.benchmark.prepare import DATA, DATASETS, configuration, fingerprint, write
 from mgar_v3.coordination.engine import Engine
 from mgar_v3.domain import DomainError, Verification, digest
 from mgar_v3.evidence.artifacts import ArtifactStore
@@ -31,7 +31,7 @@ SUPERVISION_CHANGES = {
     "src/mgar_v3/benchmark/reconcile.py",
     "scripts/reconcile_final_usage.py",
 }
-FROZEN_FOLDERS = ("src", "migrations", "scripts", "config", "eval/final-v1")
+FROZEN_FOLDERS = ("src", "migrations", "scripts", "config", "eval/final-v1", "eval/final-v3")
 
 
 def same_model_protocol(original: bytes, revised: bytes) -> bool:
@@ -229,9 +229,18 @@ def verify(directory: Path, continuation: Path | None = None) -> dict[str, Any]:
             raise DomainError("BENCHMARK_CHANGED", "Frozen implementation changed")
         verify_continuation(directory, manifest, continuation)
     cases = [Case.model_validate(c) for c in manifest["cases"]]
+    dataset = DATASETS.get(manifest.get("dataset", "final-v1"))
+    if dataset is None:
+        raise DomainError("BENCHMARK_CHANGED", "Unknown public dataset revision")
+    if (
+        manifest.get("dataset_cases_sha256")
+        and hashlib.sha256((dataset / "cases.json").read_bytes()).hexdigest()
+        != manifest["dataset_cases_sha256"]
+    ):
+        raise DomainError("BENCHMARK_CHANGED", "Public request contracts changed")
     public_cases = [
         Case.model_validate(c).model_dump(mode="json")
-        for c in json.loads((DATA / "cases.json").read_text())
+        for c in json.loads((dataset / "cases.json").read_text())
     ]
     if manifest["cases"] != public_cases or manifest["quality_thresholds"] != {
         "C_total_min": 24,

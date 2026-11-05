@@ -1,11 +1,12 @@
 """Real evidence connector/context checks with zero model calls and no output grading."""
 
+import gc
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from mgar_v3.benchmark.domain import Case
+from mgar_v3.benchmark.domain import Answer, Case
 from mgar_v3.benchmark.executor import SYSTEM, bounded
 from mgar_v3.benchmark.prepare import configuration, write
 from mgar_v3.benchmark.run import verify
@@ -66,6 +67,12 @@ def preflight(directory: Path) -> dict[str, Any]:
                 "sources": bounded(sources),
                 "source_errors": errors,
                 "expert_notes": [{"notes": "x" * 600}] * 2,
+                "answer_schema": Answer.model_json_schema(),
+                "output_contract": (
+                    case.output_contract.model_dump(mode="json") if case.output_contract else None
+                ),
+                "required_contract_version": "2026-final-v1",
+                "capabilities": ["read", "local_patch_proposal"],
             }
             if case.category == "repair":
                 payload["files"] = inputs["repair_snapshots"][case.id]["files"]
@@ -92,6 +99,9 @@ def preflight(directory: Path) -> dict[str, Any]:
                     Activation(policy_hash=policy.policy_hash, mode="revoked"), cfg.local_actor
                 )
             engine.close()
+            engine.knowledge.embedder = None
+            engine.knowledge.ranker = None
+            gc.collect()
     result = {
         "status": "PASS",
         "scope": "real evidence connectors and conservative prompt bounds only",

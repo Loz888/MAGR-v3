@@ -6,6 +6,12 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 from uuid import UUID
 
+from mgar_v3.benchmark.contract import (
+    capability_decision,
+    evidence_decision,
+    output_issues,
+    safe_failure,
+)
 from mgar_v3.benchmark.domain import Answer, Case, Source, Summary
 from mgar_v3.benchmark.tools import collect
 from mgar_v3.coordination.engine import Engine
@@ -26,7 +32,11 @@ SYSTEM = (
     "status (supported/insufficient/denied), values (requested string fields), citations "
     "([{source_id,quote}]), explanation, diff (null unless a repair). For repair use an exact "
     "unified diff modifying only PaidRevenueCents in the allowed "
-    "file. Do not modify tests/types/imports. "
+    "file. Do not modify tests/types/imports. For repair, denied or insufficient, values must "
+    "be {}. For denied or insufficient diff must be null. Boolean value strings must be exactly "
+    "true or false, never yes/no. Decimal strings must contain digits, not prose or null. "
+    "Use observed exact_decimal_metrics for arithmetic; do not recompute or contradict them. "
+    "Follow answer_schema exactly; explanation must be <=800 characters and citations <=6. "
     "Do not claim execution or publication. Expert summaries cannot replace original evidence."
 )
 
@@ -37,7 +47,11 @@ def bounded(sources: list[Source]) -> list[dict[str, Any]]:
         unique.setdefault((source.role, source.text, source.version), source)
     values = list(unique.values())
     result = []
-    allowance = max(200, 4800 // max(1, len(values)))
+    allowance = (
+        4800
+        if sum(len(s.text.encode()) for s in values) <= 4800
+        else max(200, 4800 // max(1, len(values)))
+    )
     for source in values:
         result.append(
             {
@@ -80,6 +94,7 @@ class Executor:
         self.repair_receipts: list[dict[str, Any]] = []
         self.final_files: dict[str, str] | None = None
         self.final_snapshot: Snapshot | None = None
+        self.output_checks: list[dict[str, Any]] = []
 
     def complete(self, system: str, payload: dict[str, Any], schema: Any) -> Any:
         if self.calls >= 3 or time.monotonic() - self.started >= 180:
@@ -91,10 +106,29 @@ class Executor:
         )
 
     def execute(self) -> tuple[Answer, list[Source], dict[str, Any]]:
+        decision = capability_decision(self.case)
+        if decision is not None:
+            return (
+                decision,
+                [],
+                {"tool_calls": 0, "repair_passed": None, "safety_gate": "capability"},
+            )
         sources, errors, stats = collect(
             self.engine, self.run_id, self.epoch, self.case, self.inputs, ablation=self.ablation
         )
         self.tool_calls += stats["tool_calls"]
+        decision = evidence_decision(self.case, sources, errors)
+        if decision is not None:
+            return (
+                decision,
+                sources,
+                {
+                    **stats,
+                    "repair_passed": False if self.case.category == "repair" else None,
+                    "safety_gate": "evidence",
+                    "source_errors": errors,
+                },
+            )
         roles = (
             ["knowledge", "repo"]
             if self.arm == "B"
@@ -153,10 +187,40 @@ class Executor:
             ],
             "required_contract_version": "2026-final-v1",
             "capabilities": ["read", "local_patch_proposal"],
+            "output_contract": (
+                self.case.output_contract.model_dump(mode="json")
+                if self.case.output_contract is not None
+                else None
+            ),
+            "answer_schema": Answer.model_json_schema(),
         }
+
+        def generate() -> Answer:
+            while self.calls < 3:
+                try:
+                    result: Answer = self.complete(SYSTEM, payload, Answer)
+                except DomainError as exc:
+                    if exc.code != "MODEL_INVALID_RESPONSE":
+                        raise
+                    issues = ["JSON_schema_failed; return exact required fields and string values"]
+                    self.output_checks.append({"step": self.calls - 1, "issues": issues})
+                else:
+                    issues = output_issues(result, self.case, sources)
+                    self.output_checks.append(
+                        {
+                            "step": self.calls - 1,
+                            "issues": issues,
+                            "answer": result.model_dump(mode="json"),
+                        }
+                    )
+                    if not issues:
+                        return result
+                payload["public_feedback"] = {"output_issues": issues}
+            return safe_failure(issues)
+
         # Source content is bounded identically in every arm, not tailored by answers.
         if self.case.category != "repair":
-            answer = self.complete(SYSTEM, payload, Answer)
+            answer = generate()
             if (
                 answer.status == "insufficient"
                 and self.calls < 3
@@ -176,7 +240,7 @@ class Executor:
                     sources += extra
                     payload["sources"] = bounded(sources)
                     payload["source_errors"] += more_errors
-                    answer = self.complete(SYSTEM, payload, Answer)
+                    answer = generate()
             while (
                 self.calls < 3
                 and self.ablation != "no_verifier"
@@ -185,8 +249,20 @@ class Executor:
                 payload["public_feedback"] = (
                     "Mechanical citation check failed; cite exact read text and required roles."
                 )
-                answer = self.complete(SYSTEM, payload, Answer)
-            return answer, sources, {**stats, "tool_calls": self.tool_calls, "repair_passed": None}
+                answer = generate()
+            issues = output_issues(answer, self.case, sources)
+            if issues:
+                answer = safe_failure(issues)
+            return (
+                answer,
+                sources,
+                {
+                    **stats,
+                    "tool_calls": self.tool_calls,
+                    "repair_passed": None,
+                    "output_checks": self.output_checks,
+                },
+            )
         snapshot = Snapshot.model_validate(self.inputs["repair_snapshots"][self.case.id])
         verify_snapshot(snapshot)
         box = Sandbox(str(self.run_id))
@@ -200,8 +276,9 @@ class Executor:
         payload["editable_paths"] = snapshot.editable_paths
         answer = Answer(status="insufficient")
         files = None
+        public_passed = False
         while self.calls < 3:
-            answer = self.complete(SYSTEM, payload, Answer)
+            answer = generate()
             if not answer.diff:
                 break
             try:
@@ -218,11 +295,23 @@ class Executor:
                     }
                 )
                 if public["passed"] or self.ablation == "no_verifier":
+                    public_passed = bool(public["passed"])
                     break
                 payload["public_feedback"] = raw.decode(errors="replace")[:1200]
             except DomainError as exc:
                 files = None
                 payload["public_feedback"] = exc.code + ": " + str(exc)
+        if not public_passed and self.ablation != "no_verifier":
+            answer = safe_failure(["public_patch_validation_failed"])
         self.final_files = files
         self.final_snapshot = snapshot
-        return answer, sources, {**stats, "tool_calls": self.tool_calls, "repair_passed": False}
+        return (
+            answer,
+            sources,
+            {
+                **stats,
+                "tool_calls": self.tool_calls,
+                "repair_passed": False,
+                "output_checks": self.output_checks,
+            },
+        )

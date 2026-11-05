@@ -19,11 +19,12 @@ from mgar_v3.repair.source import freeze_github
 from mgar_v3.settings import ROOT, Settings
 
 DATA = ROOT / "eval/final-v1"
+DATASETS = {"final-v1": DATA, "final-v3": ROOT / "eval/final-v3"}
 
 
 def fingerprint() -> str:
     h = hashlib.sha256()
-    for folder in ("src", "migrations", "scripts", "config", "eval/final-v1"):
+    for folder in ("src", "migrations", "scripts", "config", "eval/final-v1", "eval/final-v3"):
         for path in sorted((ROOT / folder).rglob("*")):
             if path.is_file() and "__pycache__" not in path.parts:
                 h.update(str(path.relative_to(ROOT)).encode() + b"\0" + path.read_bytes() + b"\0")
@@ -51,14 +52,20 @@ def configuration(
     )
 
 
-def prepare(directory: Path, source_ref: str, ablation: str = "none") -> dict[str, Any]:
+def prepare(
+    directory: Path, source_ref: str, ablation: str = "none", dataset: str = "final-v1"
+) -> dict[str, Any]:
     if not re.fullmatch(r"[a-f0-9]{40}", source_ref):
         raise ValueError("Source ref must be a full immutable Git commit")
     if ablation not in {"none", "no_reranker", "no_evidence_repair", "no_verifier"}:
         raise ValueError("Unknown ablation")
     if (directory / "manifest.json").exists():
         raise DomainError("FROZEN_EXISTS", "Frozen evaluation cannot be overwritten")
-    cases = [Case.model_validate(c) for c in json.loads((DATA / "cases.json").read_text())]
+    if dataset not in DATASETS:
+        raise ValueError("Unknown public dataset revision")
+    cases = [
+        Case.model_validate(c) for c in json.loads((DATASETS[dataset] / "cases.json").read_text())
+    ]
     if len(cases) != 30 or {
         c.category: sum(x.category == c.category for x in cases) for c in cases
     } != {"qa": 10, "cross": 10, "repair": 5, "negative": 5}:
@@ -175,7 +182,7 @@ def prepare(directory: Path, source_ref: str, ablation: str = "none") -> dict[st
             )
             for arm in "ABC":
                 profile = LiveProfile(
-                    case_id=f"r6-eval:{source_ref[:12]}:{ablation}:{case.id}:{arm}",
+                    case_id=f"r6-eval:{dataset}:{source_ref[:12]}:{ablation}:{case.id}:{arm}",
                     project_id=case_project,
                     repository=cfg.repository,
                     issue_number=1,
@@ -228,6 +235,10 @@ def prepare(directory: Path, source_ref: str, ablation: str = "none") -> dict[st
     oracle_bytes = (DATA / "oracles.json").read_bytes()
     manifest = {
         "schema": "r6-final-evaluation-v1",
+        "dataset": dataset,
+        "dataset_cases_sha256": hashlib.sha256(
+            (DATASETS[dataset] / "cases.json").read_bytes()
+        ).hexdigest(),
         "repository": cfg.repository,
         "source_ref": source_ref,
         "implementation_sha256": fingerprint(),
