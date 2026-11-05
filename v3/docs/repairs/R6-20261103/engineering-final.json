@@ -1,0 +1,46 @@
+{
+  "task": "V31-R6-REPAIR",
+  "status": "PASS",
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "reason": null,
+  "argv": [
+    "/workspace/MAGR-v3/v3/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_r6_repair_contract.py",
+    "tests/test_final_evaluation.py",
+    "tests/test_final_resume.py",
+    "tests/test_billing_reconciliation.py",
+    "tests/test_models.py",
+    "tests/test_verification.py",
+    "--junitxml=/workspace/MAGR-v3/v3/evidence/V31-R6-REPAIR/20261105T024218Z-73b3a8bf/junit.xml"
+  ],
+  "cwd": "/workspace/MAGR-v3/v3",
+  "started_at": "2026-11-05T02:42:18.160184+00:00",
+  "finished_at": "2026-11-05T02:43:38.767942+00:00",
+  "duration_seconds": 80.595,
+  "command_exit_code": 0,
+  "exit_code": 0,
+  "counts": {
+    "tests": 78,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "components": {
+    "postgres": "real_disposable_database_17_migrations",
+    "model": "controlled_only_no_paid_calls",
+    "numeric": "observed_SQL_aggregate_min_event_and_exact_Decimal",
+    "policy": "public_capabilities_current_ACL_scope_revision_no_oracle_labels",
+    "contract": "strict_fields_boolean_strings_fail_closed_and_bounded_repair",
+    "go": "real_isolated_hidden_oracle_regression"
+  },
+  "git_commit": "437e957f7c4aa6809f6220018765bc3dbbb92aeb",
+  "source_sha256": "5ee4f667e27c4f256ab84c68b35ee35c33fa20b5e5210fc9dc0314e25922d681",
+  "finished_source_sha256": "5ee4f667e27c4f256ab84c68b35ee35c33fa20b5e5210fc9dc0314e25922d681",
+  "log_path": "evidence/V31-R6-REPAIR/20261105T024218Z-73b3a8bf/command.log",
+  "attempt_path": "evidence/V31-R6-REPAIR/20261105T024218Z-73b3a8bf",
+  "scope_note": "78 targeted checks after final prompt/scoping metadata changes; overlaps with the 321-test baseline. Includes actual public and 28-case hidden Go pipeline with a controlled model."
+}

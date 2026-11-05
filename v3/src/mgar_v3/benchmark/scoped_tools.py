@@ -174,6 +174,7 @@ def collect_scoped(
             text = json.dumps(
                 {
                     "exact_decimal_metrics": facts,
+                    "citation_lines": [key + "=" + value for key, value in facts.items()],
                     "raw_rows": rows,
                     "selection": (
                         "earliest paid event_id per order; include zero and negative amounts"

@@ -308,3 +308,103 @@ def test_new_public_contracts_keep_original_business_inputs_and_frozen_judge():
     for old, new in zip(original, revised, strict=True):
         assert all(new[key] == value for key, value in old.items())
         assert OutputContract.model_validate(new["output_contract"]).version == "r6-output-v3"
+
+
+def test_repair_output_survives_full_public_and_hidden_pipeline_without_optional_knowledge(
+    engine, monkeypatch
+):
+    import difflib
+
+    from mgar_v3.benchmark.oracle import hidden_suite
+    from mgar_v3.repair.sandbox import Sandbox
+    from mgar_v3.repair.source import working_files
+    from mgar_v3.repair.workspace import fixture_snapshot, tree
+
+    prefix = DATA / "public/repair-0"
+    files = {p.name: p.read_text() for p in prefix.iterdir() if p.is_file()}
+    before = files["orders.go"]
+    after = (
+        before[: before.index("func PaidRevenueCents")]
+        + """func PaidRevenueCents(orders []Order) int {
+    selected := make(map[string]int)
+    for _, order := range orders {
+        if order.Status == "paid" { selected[order.ID] = order.Amount }
+    }
+    total := 0
+    for _, amount := range selected { total += amount }
+    return total
+}
+"""
+    )
+    patch = "".join(
+        difflib.unified_diff(
+            before.splitlines(True),
+            after.splitlines(True),
+            fromfile="a/orders.go",
+            tofile="b/orders.go",
+        )
+    )
+    snapshot = fixture_snapshot(engine.settings.repository).model_copy(
+        update={"files": files, "base_tree": tree(files)},
+    )
+    s = source(role="repo", text=before)
+    monkeypatch.setattr(
+        "mgar_v3.benchmark.executor.collect",
+        lambda *a, **k: (
+            [s],
+            [],
+            {"tool_calls": 1, "recall_at5": None},
+        ),
+    )
+    seen = []
+
+    class Controlled:
+        def complete(self, *args):
+            payload, schema = args[-2:]
+            if schema is Summary:
+                if payload["role"] == "knowledge":
+                    assert payload["required"] is False and not payload["sources"]
+                return Summary(notes="Only the requested Repo patch contract applies.")
+            seen.append(payload)
+            assert payload["required_contract_version"] is None
+            assert payload["output_contract"]["fields"] == {}
+            assert all(s["role"] == "repo" for s in payload["sources"])
+            assert {n["role"]: n["required"] for n in payload["expert_notes"]} == {
+                "knowledge": False,
+                "repo": True,
+            }
+            return Answer(
+                status="supported",
+                values={},
+                diff=patch,
+                citations=[{"source_id": s.id, "quote": "func PaidRevenueCents"}],
+            )
+
+    request = case(
+        category="repair",
+        required_roles=["repo"],
+        document_id=None,
+        required_revision=None,
+        output_contract={},
+    )
+    run = uuid4()
+    executor = Executor(
+        engine,
+        None,
+        run,
+        1,
+        request,
+        "B",
+        {"repair_snapshots": {request.id: snapshot.model_dump(mode="json")}},
+    )
+    executor.model = Controlled()
+    answer, _, _ = executor.execute()
+    assert answer.status == "supported" and answer.values == {} and answer.diff
+    assert len(seen) == 1 and executor.calls == 3
+    assert executor.final_files is not None
+    receipt, log = Sandbox(str(run)).run(
+        {**working_files(snapshot, executor.final_files), "zz_r6_hidden_test.go": hidden_suite(0)},
+        ["TestPaidRevenueCents", "TestR6Hidden"],
+    )
+    assert receipt["passed"], log.decode()
+    assert len([n for n in receipt["tests"] if n.startswith("TestR6Hidden/")]) == 28

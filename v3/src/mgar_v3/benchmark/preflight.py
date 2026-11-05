@@ -66,12 +66,17 @@ def preflight(directory: Path) -> dict[str, Any]:
                 "required_roles": case.required_roles,
                 "sources": bounded(sources),
                 "source_errors": errors,
-                "expert_notes": [{"notes": "x" * 600}] * 2,
+                "expert_notes": [
+                    {"role": r, "required": r in case.required_roles, "notes": "x" * 600}
+                    for r in ["knowledge", "repo"]
+                ],
                 "answer_schema": Answer.model_json_schema(),
                 "output_contract": (
                     case.output_contract.model_dump(mode="json") if case.output_contract else None
                 ),
-                "required_contract_version": "2026-final-v1",
+                "required_contract_version": (
+                    case.required_revision if case.output_contract else "2026-final-v1"
+                ),
                 "capabilities": ["read", "local_patch_proposal"],
             }
             if case.category == "repair":
