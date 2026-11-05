@@ -1,0 +1,19 @@
+{
+  "schema": "current-official-price-observation-v1",
+  "status": "PASS",
+  "checked_at": "2026-11-05T08:32:57.444750+00:00",
+  "official_evidence_receipt": "receipt.json",
+  "logical_model": "flash-1017",
+  "api_model": "deepseek-flash",
+  "documented_model_version": "DeepSeek-V4.1-Flash-1017",
+  "usd_peak_per_million": {
+    "cache_hit": "0.006",
+    "cache_miss": "0.3",
+    "output": "1.2"
+  },
+  "frozen_upper_rates_still_match_current_official_page": true,
+  "original_reviewed_at_unchanged": "2026-10-26T12:26:21+00:00",
+  "historical_price_files_modified": false,
+  "new_live_grant_or_round_activated": false,
+  "note": "Current official GET observation supplements engineering maintenance. It does not rewrite historical reviewed_at or make a consumed/frozen paid round executable."
+}

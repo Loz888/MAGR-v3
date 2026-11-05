@@ -1,0 +1,10 @@
+{
+  "container": "mgar-r6-host-builder",
+  "root_entries": 10423,
+  "skipped_entries": 6074,
+  "scope": "Dedicated minimal guest image; boot drivers in initramfs, installation-only9p modules retained; no production host modified.",
+  "boot_files": {
+    "initrd.img-6.1.0-54-amd64": "be5e5242704b653411422a4618828e45dd7b22dd29f23483b0de3030ca80c3f6",
+    "vmlinuz-6.1.0-54-amd64": "ffbde3c2e962dbec1dba21519370ff81926addd85f7f9b58167b0321ba2735e8"
+  }
+}

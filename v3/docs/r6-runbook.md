@@ -1,6 +1,8 @@
 # R6 监控、有限主动性与评测运行说明
 
-R6 工程实现已补齐；最新 v6 真实 90 项评测质量门槛 PASS，全项目发布阻塞仍在，不能标 LIVE_READY。当前结果、费用与交付范围见 [交付报告](r6-delivery.md)。下述默认 Watchdog 仍为 observe；主动策略需要管理员对完整 hash 明确激活。
+> 2026-11-05 更新：三项发布阻塞已在用户批准的独立 Linux/systemd VM 范围内实测通过；R6 状态 ACCEPTED_ISOLATED_VM。下文历史结果与当时限制保留。实际部署、两次整节点 SIGKILL、正常重启和 PG/角色/CAS 恢复见 [完整宿主修复档案](repairs/R6-HOST-20261105/README.md)。不覆盖物理存储掉电、生产主机或多节点 HA。
+
+R6 工程实现、v6真实90项质量验收和三项发布门禁已在独立测试VM范围内完成，状态为 ACCEPTED_ISOLATED_VM。当前结果、费用与交付范围见 [交付报告](r6-delivery.md)。下述默认 Watchdog 仍为 observe；主动策略需要管理员对完整 hash 明确激活。
 
 ## 本机运行
 
@@ -118,7 +120,7 @@ uv run --frozen python scripts/delivery.py smoke --output .local/deploy-check --
 
 smoke 创建自己的两套临时数据库和源码/虚拟环境，检查真实 HTTP、PG 连接丢失、SIGKILL 恢复和 pg_dump/psql 还原，结束只删除本次生成的临时库。脚本需要本机 Docker、现有 V3 PostgreSQL 管理连接和 Python 3.12；测试自身不启用付费或发布。它不是生产数据库恢复脚本。
 
-生产部署可参考 `deploy/systemd/`：Engine 和 Watchdog 使用不同系统用户，server.env 与客户端配置分别 0600，源码可读、`.local` 只允许 Engine 写。示例固定 `/opt/mgar/v3`，应按本机路径调整；保持单 Engine 实例和环回监听，不把 API/数据库直接暴露到公网。没有在本环境启用宿主 systemd 或开放外网服务。
+生产部署可参考 `deploy/systemd/`：Engine 和 Watchdog 使用不同系统用户，server.env 与客户端配置分别 0600，源码可读、`.local` 只允许 Engine 写。示例固定 `/opt/mgar/v3`，应按本机路径调整；保持单 Engine 实例和环回监听，不把 API/数据库直接暴露到公网。原云容器不启用systemd；本次另建独立VM完成实际systemd部署与整节点恢复验收，外网服务未开放。
 
 升级前停止接收新任务并等待在途网络请求结束，保留 unknown 项，不重发。停止应用，使用现有 PostgreSQL 管理工具制作完整备份并另外备份 `.local/artifacts`、模型/配置及私有许可，验证备份后执行 `make migrate`、`make doctor`，再启动应用/Watchdog。迁移不可原地降级；回退时用原版本源码、新数据库恢复经验证备份并恢复匹配 CAS。Redis 可重建，不作为业务权威。不要用本机演示的 `make setup` 覆盖生产凭据。
 

@@ -1,0 +1,47 @@
+{
+  "schema": "r6-three-release-gates-v1",
+  "status": "PASS",
+  "scope": "user-approved isolated Linux/systemd virtual test node",
+  "checked_at": "2026-11-05T13:43:44.455694+00:00",
+  "gates": {
+    "v2_price_evidence_engineering": "PASS",
+    "actual_systemd_host_deployment": "PASS",
+    "whole_virtual_node_crash_and_recovery": "PASS"
+  },
+  "v2_commit": "f1318b22e4dc20e510e66bc6251d7f3e4e09982d",
+  "v3_model_snapshot": "c5ca75cd59fc2206bda1d6486955774350227e04",
+  "model_manifest_hash": "61147ae43e2e8f9cfff3b430b9422d27ed7fa609a8e77447a3f30f2c132695d9",
+  "model_quality_unchanged": {
+    "PASS": 87,
+    "FAIL": 3
+  },
+  "generation_source_fingerprint_unchanged": true,
+  "new_model_generation_requests": 0,
+  "original_finance": {
+    "calls": 633,
+    "cost_micros": 299317,
+    "unknown": 0
+  },
+  "boot_ids": [
+    "6d747c02-41ea-4465-9633-219c0c46ca27",
+    "2bce3f1f-4035-4bd7-9666-f0d637d85552",
+    "6b770636-aeab-4601-9afd-3f16be1d1830",
+    "63b00ef0-42cb-4cba-8214-e0e5c5fc3de1"
+  ],
+  "actual_sandbox_image": "sha256:0773ba0144b70dc0d7d92455c38a8886c1f04e266367418a28fba6a92bb77133",
+  "actual_go_tests_in_guest": [
+    "TestPaidRevenueCents"
+  ],
+  "budget_reservation_preserved_controlled_micros": 4352,
+  "unknown_resend_blocked": true,
+  "full_role_database_CAS_restore": "PASS",
+  "all_failures_preserved": true,
+  "runtime_limits_weakened": false,
+  "production_physical_hypervisor_or_storage_power_loss_tested": false,
+  "user_production_host_deployed": false,
+  "limitations": [
+    "Acceptance is the selected isolated virtual test node, not a physical storage power failure or multi-node HA claim.",
+    "V2 historical price files and model experiment outcomes unchanged; old paid rounds are not reactivated.",
+    "R6 v6 model3failures stayFAIL; no model superiority/generalization claim."
+  ]
+}

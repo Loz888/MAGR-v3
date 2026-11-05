@@ -179,23 +179,25 @@
       "id": "RELEASE-B001",
       "problem": "Adjacent V2 official price evidence freshness check failed historically",
       "cause": "Prior reviewed evidence older than7day threshold",
-      "change": "No V2 source/history edits allowed by repository rules; target V2 maintenance needs its own current evidence workflow",
+      "change": "Explicit user-authorized V2 P7-06J isolates historic fixture clock; production uses current time. 688 Go ordinary/race and 453 Python plus15subtests pass;623 historic file hashes unchanged. New official observation does not reactivate old paid rounds.",
       "evidence": [
-        "final-assessment.json"
+        "final-assessment.json",
+        "../R6-HOST-20261105/v2-engineering.json"
       ],
-      "status": "OPEN_OUTSIDE_V3_SCOPE"
+      "status": "CLOSED_P7_06J"
     },
     {
       "id": "RELEASE-B002",
       "problem": "Host systemd and whole-node production failure not validated",
       "cause": "Managed container PID1tail and systemd offline, not production target",
-      "change": "Retain deployment templates and runbook; validate on actual target host before production claim",
+      "change": "User chose isolated Linux/systemd VM. Actual PID1/systemd deployment,2whole-QEMU SIGKILL,normal restart,unknown reservation/epoch fencing,PG/roles/CAS restore passed. Physical storage and user production host not tested.",
       "evidence": [
         "../../r6-runbook.md",
         "host-capability-check-20261105.json",
-        "final-assessment.json"
+        "final-assessment.json",
+        "../R6-HOST-20261105/host-result.json"
       ],
-      "status": "OPEN_REQUIRES_TARGET_HOST"
+      "status": "CLOSED_ISOLATED_VM_SCOPE"
     }
   ]
 }

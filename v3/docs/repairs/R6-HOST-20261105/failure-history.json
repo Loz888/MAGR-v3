@@ -1,0 +1,77 @@
+{
+  "all_failed_attempts_preserved": true,
+  "failures": [
+    {
+      "id": "HOST-01",
+      "problem": "QEMU ROM files not found",
+      "fix": "Explicit QEMU data/SeaBIOS paths and no VGA; preserve failed pre-boot attempt1",
+      "evidence": "attempt-1/failure.json"
+    },
+    {
+      "id": "HOST-02",
+      "problem": "Unprivileged rootfs export changed ownership; Redis config unreadable",
+      "fix": "Explicit Redis config/data/log owner restoration, without granting broad read permissions",
+      "evidence": "attempt-2/startup-diagnostic.log"
+    },
+    {
+      "id": "HOST-03",
+      "problem": "postgres cannot read root0600 backup file",
+      "fix": "Root reads private SQL, passes it through psql stdin; backup privacy preserved",
+      "evidence": "attempt-2/startup-diagnostic.log"
+    },
+    {
+      "id": "HOST-04",
+      "problem": "SQL_ASCII restored TEXT became bytes; migration hash guard rejected startup",
+      "fix": "Explicit UTF8 cluster/database with template0, preserve failed SQL_ASCII fork; original hashes unchanged",
+      "evidence": "attempt-2/migrate-diagnostic.log"
+    },
+    {
+      "id": "HOST-05",
+      "problem": "Missing Docker dependency and installer PATH omitted /usr/local/bin",
+      "fix": "Install actual offline Docker/static runtime/pinned image, explicit trusted installer PATH; no fake client",
+      "evidence": "attempt-3/docker-diagnostic.log"
+    },
+    {
+      "id": "HOST-06",
+      "problem": "VFS image import exhausted3GiB guest root and temporary backing space",
+      "fix": "Verified matching Debian overlay module, overlay2, discard, reclaim only failed disposable guest Docker cache and reconstructable tool caches; original DBs untouched",
+      "evidence": "attempt-3/resource-failure-stop.json"
+    },
+    {
+      "id": "HOST-07",
+      "problem": "TCG cold test dependency compilation exceeded unchanged45second sandbox bound",
+      "fix": "Cache-only image variant prewarms trusted standard-library testing/internal/testdeps; compiler, entrypoint, model inputs and sandbox security/timeout unchanged; actual canary then passed",
+      "evidence": "attempt-4/boot-1.serial.log"
+    },
+    {
+      "id": "HOST-08",
+      "problem": "Supervisor failed to parse real PASS JSON prefixed by terminal escape codes",
+      "fix": "Strip ANSI in supervision only; seal/retain actual first stage, continue without rerunning workflow or changing guest checks",
+      "evidence": "attempt-5/continuation-parser-reviewed.json"
+    },
+    {
+      "id": "HOST-09",
+      "problem": "Normal reboot supervisor waited without draining connected serial; QEMU serial backpressure delayed shutdown and supervisor120second wait timed out",
+      "fix": "Confirm original normal exit0 and clean unmount, retain timeout. Drain serial continuously while waiting up to300seconds; prove corrected supervision by an additional real reboot and poweroff, sandbox45second runtime unchanged.",
+      "evidence": "attempt-5/continuation-normal-reboot-reviewed.json"
+    },
+    {
+      "id": "HOST-10",
+      "problem": "Restore assertion used plain DSN and assumed default role read-only, bypassing actual production DataReader connection settings",
+      "fix": "Use production DataReader query/session options, verify actual INSERT denied even with session read-only off; preserve failed restored DB and restore new copy; compare restored CAS bytes and probes against restored DB. No production model source/ACL changed.",
+      "evidence": "attempt-5/backup-repair/review.json"
+    },
+    {
+      "id": "HOST-11",
+      "problem": "Deployment copied sandbox image but omitted trusted AST parser binary",
+      "fix": "Copy exact pinned helper, verify lock hash and ownership; actual service user accepts function-body-only change and denies import change.",
+      "evidence": "attempt-5/backup-repair/boot-4-runtime-assets.log"
+    },
+    {
+      "id": "HOST-12",
+      "problem": "Final poweroff supervision repeated the unread-serial backpressure pattern",
+      "fix": "Stop only owned supervisor to release serial; original guest then normal poweroff exit0. Public wait_exit drains serial; extra real whole-node reboot and poweroff both verified exit0. All passed fault stages kept without repetition.",
+      "evidence": "attempt-5/supervision-check/result.json"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=MGAR isolated acceptance PostgreSQL 16 node
+After=local-fs.target
+
+[Service]
+Type=forking
+User=postgres
+Group=postgres
+RuntimeDirectory=mgar-postgres
+PIDFile=/run/mgar-postgres/postmaster.pid
+ExecStart=/usr/lib/postgresql/16/bin/pg_ctl -D /var/lib/postgresql/mgar -l /var/lib/postgresql/mgar/server.log -w start
+ExecStop=/usr/lib/postgresql/16/bin/pg_ctl -D /var/lib/postgresql/mgar -w stop -m fast
+Restart=on-failure
+RestartSec=2
+TimeoutStartSec=120
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target

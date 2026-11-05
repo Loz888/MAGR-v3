@@ -1,0 +1,10 @@
+{
+  "version": "6.1.190-1",
+  "official_deb_url": "https://deb.debian.org/debian-security/pool/updates/main/l/linux-signed-amd64/linux-image-6.1.0-54-amd64_6.1.190-1_amd64.deb",
+  "deb_sha256": "d788f148714b4cec6a9ff5e66282f56d9a7a0c2c12ac3e5093de12abaf47f56e",
+  "files_sha256": {
+    "./boot/vmlinuz-6.1.0-54-amd64": "ffbde3c2e962dbec1dba21519370ff81926addd85f7f9b58167b0321ba2735e8",
+    "./lib/modules/6.1.0-54-amd64/kernel/fs/overlayfs/overlay.ko": "87cae4058b4d1344e59687af6356f938410f49fc98538e9f0a012776e9a8ba3d"
+  },
+  "kernel_matches_original_signed_APT_image": true
+}

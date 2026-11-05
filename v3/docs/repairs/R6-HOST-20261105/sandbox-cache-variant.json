@@ -1,0 +1,16 @@
+{
+  "lock": {
+    "schema": "r5-sandbox-lock-v1",
+    "image_id": "sha256:0773ba0144b70dc0d7d92455c38a8886c1f04e266367418a28fba6a92bb77133",
+    "go_version": "go version go1.27.3 linux/amd64",
+    "build_source_sha256": "46ea2b87489ad65fc2a90f291ad96ed27bb9ee30dde47c64e7a4ea4c670e1b3d",
+    "astcheck_sha256": "a8b0b35f2196f4b8222981b47aa1f6185f724909b7dfe913f555b344f5b8ba3d",
+    "cache_preparation": "offline_go_build_testing/internal/testdeps",
+    "base_image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+    "compiler_and_entrypoint_changed": false,
+    "cache_and_local_telemetry_only": true
+  },
+  "archive_sha256": "48782fdf208d5f81be0fec6ecc08433a991e5ec35db446c2bab1e3703f69406d",
+  "original_default_cloud_lock_unchanged": true,
+  "source_folders_generation_unchanged": true
+}

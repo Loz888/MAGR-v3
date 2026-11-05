@@ -1,0 +1,11 @@
+[Unit]
+Description=Initialize isolated MGAR acceptance fork once
+After=mgar-postgres.service mgar-docker.service
+Requires=mgar-postgres.service mgar-docker.service
+Before=mgar-v3.service
+
+[Service]
+Type=oneshot
+ExecStart=/opt/mgar/v3/.venv/bin/python /opt/mgar/v3/deploy/host-acceptance/guest_check.py initialize
+RemainAfterExit=yes
+TimeoutStartSec=180

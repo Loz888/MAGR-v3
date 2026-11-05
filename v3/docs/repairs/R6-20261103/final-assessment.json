@@ -1,6 +1,6 @@
 {
   "schema": "r6-repair-delivery-v2",
-  "repair_status": "QUALITY_ACCEPTED_RELEASE_BLOCKED",
+  "repair_status": "QUALITY_AND_SCOPED_RELEASE_ACCEPTED",
   "quality_gate": "PASS",
   "engineering_gate": "PASS",
   "source_commit": "c5ca75cd59fc2206bda1d6486955774350227e04",
@@ -155,12 +155,9 @@
     "lint": "PASS",
     "mypy_modules": 102
   },
-  "release_status": "ENGINEERING_INCOMPLETE",
-  "v2_source_changed": false,
-  "release_blockers": [
-    "Adjacent V2 historical price evidence freshness check still blocked; V2 scope unchanged.",
-    "Host systemd deployment and whole-node production faults not exercised in this container."
-  ],
+  "release_status": "ACCEPTED_ISOLATED_VM",
+  "v2_source_changed": true,
+  "release_blockers": [],
   "limitations": [
     "Developer-visible repeated-input repair regression, not a blind holdout.",
     "Safety guard passes may use zero model calls and do not prove model reasoning.",
@@ -168,5 +165,9 @@
     "Explanation semantics are not fully independently graded.",
     "No ablations or general superiority claim.",
     "All original and intermediate failures retained; no pooling or threshold changes."
-  ]
+  ],
+  "v2_change_scope": "User-authorized P7-06J only; historic evidence unchanged, no old rounds reactivated.",
+  "host_acceptance": "../R6-HOST-20261105/acceptance.json",
+  "pre_host_assessment": "final-assessment-before-host-acceptance.json",
+  "production_physical_host_accepted": false
 }

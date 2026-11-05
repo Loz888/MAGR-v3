@@ -1,0 +1,102 @@
+{
+  "card_id": "P7-06J",
+  "status": "PASS",
+  "git_commit": null,
+  "base_git_commit": "fe7e04a480142b59394b1aabf91515cd9d44334c",
+  "source_fingerprint": "21201af308c5fed99ea86e30fdf2eb81c61eeda75734a91f3dc7ce0c512b3127",
+  "scope": "Historical price/checkpoint test clock isolation; current official read-only price observation. No old pricing/report/checkpoint/ledger changes; no paid execution.",
+  "production_files": [
+    "eval/live/live.go"
+  ],
+  "test_files": [
+    "eval/live/round_test.go"
+  ],
+  "test_summary": {
+    "go": {
+      "status": "PASS",
+      "tests": 688,
+      "passed": 688,
+      "failed_events": 0,
+      "skipped": 0,
+      "complete": true
+    },
+    "python": {
+      "status": "PASS",
+      "tests": 453,
+      "passed": 453,
+      "failed": 0,
+      "skipped_or_xfailed": 0,
+      "complete": true,
+      "passed_subtests": 15
+    },
+    "status": "PASS"
+  },
+  "ordinary_go": {
+    "pass": 688,
+    "fail": 0,
+    "skip": 0
+  },
+  "new_model_generation_requests": 0,
+  "official_metadata_GET_requests": 2,
+  "commands": [
+    {
+      "command": "targeted original clock reproduction after restoring existing tools/PG",
+      "exit_code": 1,
+      "log": "before-restored-go.json"
+    },
+    {
+      "command": "go test -race -count=1 ./eval/live -run TestRound2PreflightRejectsChangedCheckpoint|TestRound2HistoricalPriceClockPreservesLiveFreshnessPolicy|TestLivePreflightPriceBoundsAndEvidence",
+      "exit_code": 0,
+      "log": "targeted-go.json"
+    },
+    {
+      "command": "GOFLAGS=-p=1 MGAR_ALLOW_PAID=0 bash scripts/test.sh --offline",
+      "exit_code": 0,
+      "log": "offline.log"
+    },
+    {
+      "command": "GOFLAGS=-p=1 go test -count=1 ./...",
+      "exit_code": 0,
+      "log": "ordinary-go.json"
+    }
+  ],
+  "positive_assertions": [
+    {
+      "name": "historical_checkpoint_uses_explicit_reference_clock",
+      "passed": true
+    },
+    {
+      "name": "same_current_official_peak_rates_and_api_model_verified",
+      "passed": true
+    },
+    {
+      "name": "all_historical_hashes_unchanged",
+      "passed": true
+    }
+  ],
+  "negative_assertions": [
+    {
+      "name": "future_review_rejected",
+      "passed": true
+    },
+    {
+      "name": "seven_days_plus_one_nanosecond_rejected",
+      "passed": true
+    },
+    {
+      "name": "changed_checkpoint_source_price_or_budget_rejected",
+      "passed": true
+    },
+    {
+      "name": "public_live_entry_uses_actual_current_clock",
+      "passed": true
+    }
+  ],
+  "known_limitations": [
+    "Current official observation does not change historical reviewed_at or reactivate consumed frozen rounds.",
+    "V2 original model quality and round3/P8 status unchanged.",
+    "No production database writes; tests use their own random synthetic schemas."
+  ],
+  "unverified": [],
+  "timestamp_utc": "2026-11-05T08:37:13.411497+00:00"
+}

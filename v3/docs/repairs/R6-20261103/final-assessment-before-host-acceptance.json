@@ -1,0 +1,172 @@
+{
+  "schema": "r6-repair-delivery-v2",
+  "repair_status": "QUALITY_ACCEPTED_RELEASE_BLOCKED",
+  "quality_gate": "PASS",
+  "engineering_gate": "PASS",
+  "source_commit": "c5ca75cd59fc2206bda1d6486955774350227e04",
+  "manifest_hash": "61147ae43e2e8f9cfff3b430b9422d27ed7fa609a8e77447a3f30f2c132695d9",
+  "implementation_sha256": "8dce9ad52e8cae703c8b6bc3613555394e4f34d0ccdeb0fa942485486bc2d409",
+  "final_states": {
+    "PASS": 87,
+    "FAIL": 3
+  },
+  "arms": {
+    "A": {
+      "completed": 30,
+      "infrastructure_failures": 0,
+      "latency_samples": 30,
+      "success": 30,
+      "total": 30,
+      "normal_success": 25,
+      "normal_total": 25,
+      "negative_success": 5,
+      "negative_total": 5,
+      "success_interval95": [
+        0.8865,
+        1.0
+      ],
+      "repair_passed": 5,
+      "repair_total": 5,
+      "citation_validity": 1.0,
+      "citation_count": 45,
+      "p50_seconds": 1.6828,
+      "p95_seconds": 27.8045,
+      "cost_micros": 13151,
+      "tool_calls": 115,
+      "model_calls": 27,
+      "prompt_tokens": 29296,
+      "completion_tokens": 3628,
+      "recall_at5": 0.9565217391304348,
+      "recall_denominator": 23,
+      "refusal_correct": 5,
+      "average_cost_micros": 438.3666666666667
+    },
+    "B": {
+      "completed": 30,
+      "infrastructure_failures": 0,
+      "latency_samples": 30,
+      "success": 28,
+      "total": 30,
+      "normal_success": 23,
+      "normal_total": 25,
+      "negative_success": 5,
+      "negative_total": 5,
+      "success_interval95": [
+        0.7868,
+        0.9815
+      ],
+      "repair_passed": 3,
+      "repair_total": 5,
+      "citation_validity": 1.0,
+      "citation_count": 45,
+      "p50_seconds": 3.681,
+      "p95_seconds": 29.4982,
+      "cost_micros": 25058,
+      "tool_calls": 188,
+      "model_calls": 75,
+      "prompt_tokens": 45146,
+      "completion_tokens": 9568,
+      "recall_at5": 0.9565217391304348,
+      "recall_denominator": 23,
+      "refusal_correct": 5,
+      "average_cost_micros": 835.2666666666667
+    },
+    "C": {
+      "completed": 30,
+      "infrastructure_failures": 0,
+      "latency_samples": 30,
+      "success": 29,
+      "total": 30,
+      "normal_success": 24,
+      "normal_total": 25,
+      "negative_success": 5,
+      "negative_total": 5,
+      "success_interval95": [
+        0.8333,
+        0.9941
+      ],
+      "repair_passed": 5,
+      "repair_total": 5,
+      "citation_validity": 1.0,
+      "citation_count": 42,
+      "p50_seconds": 3.6626,
+      "p95_seconds": 29.8061,
+      "cost_micros": 22678,
+      "tool_calls": 186,
+      "model_calls": 60,
+      "prompt_tokens": 41465,
+      "completion_tokens": 8511,
+      "recall_at5": 0.9565217391304348,
+      "recall_denominator": 23,
+      "refusal_correct": 5,
+      "average_cost_micros": 755.9333333333333
+    }
+  },
+  "hidden_patch_suite_passes": {
+    "A": 5,
+    "B": 3,
+    "C": 5
+  },
+  "original_failure_count": 44,
+  "original_failure_records_preserved": true,
+  "final": {
+    "completed": 90,
+    "calls": 162,
+    "settled_micros": 60887,
+    "unknown": 0,
+    "reserved_micros": 0
+  },
+  "repair_session": {
+    "calls": 409,
+    "limit": 469,
+    "remaining_calls": 60,
+    "cost_micros": 182788
+  },
+  "cumulative": {
+    "calls": 633,
+    "cost_micros": 299317,
+    "unknown": 0
+  },
+  "forbidden_actions": 0,
+  "write_invariants_checked": 90,
+  "deterministic_guard_assignments": {
+    "A": 5,
+    "B": 5,
+    "C": 5
+  },
+  "comparison_transitions": {
+    "original": {
+      "FAIL->PASS": 41,
+      "PASS->PASS": 46,
+      "FAIL->FAIL": 3
+    },
+    "v4": {
+      "PASS->PASS": 73,
+      "FAIL->PASS": 14,
+      "PASS->FAIL": 1,
+      "FAIL->FAIL": 2
+    }
+  },
+  "sql_audit_receipts_verified": 150,
+  "engineering_evidence": {
+    "latest_targeted": 99,
+    "sets_overlap": true,
+    "model": "controlled",
+    "lint": "PASS",
+    "mypy_modules": 102
+  },
+  "release_status": "ENGINEERING_INCOMPLETE",
+  "v2_source_changed": false,
+  "release_blockers": [
+    "Adjacent V2 historical price evidence freshness check still blocked; V2 scope unchanged.",
+    "Host systemd deployment and whole-node production faults not exercised in this container."
+  ],
+  "limitations": [
+    "Developer-visible repeated-input repair regression, not a blind holdout.",
+    "Safety guard passes may use zero model calls and do not prove model reasoning.",
+    "Hidden patch pass and complete repair task pass are distinct.",
+    "Explanation semantics are not fully independently graded.",
+    "No ablations or general superiority claim.",
+    "All original and intermediate failures retained; no pooling or threshold changes."
+  ]
+}

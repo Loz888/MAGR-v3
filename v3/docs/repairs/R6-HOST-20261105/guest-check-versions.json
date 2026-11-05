@@ -1,0 +1,5 @@
+{
+  "initial_seven_stage_guest_check_sha256": "04fd51f7f218bd6b268a1fb87048cc66fd8ed3dd24c00b28b49d1356995f7f1e",
+  "final_guest_check_sha256": "051eebb9c9bc8513ecff13cd23467052b98fa11729d31a4874a5265e2265d1a1",
+  "changes": "Deployment asset installation and restore verification corrected; model generation source and earlier successful fault-stage assertions unchanged."
+}

@@ -1,0 +1,201 @@
+{
+  "schema": "r6-problem-and-resolution-register-v1",
+  "latest_manifest": "61147ae43e2e8f9cfff3b430b9422d27ed7fa609a8e77447a3f30f2c132695d9",
+  "quality_gate": "PASS",
+  "all_historical_failures_preserved": true,
+  "entries": [
+    {
+      "id": "R6-F001",
+      "problem": "Revenue output48 disagreed with actual rows and model explanation20",
+      "cause": "Model-only arithmetic and no exact observed-fact final invariant",
+      "change": "Exact Decimal over actual PG-read rows plus independent SQL count/sum/min cross-check; include nonpositive payments and earliest paid event only",
+      "engineering": "Observed data, out-of-order events, cancelled/zero/negative regressions",
+      "evidence": [
+        "numeric-reproduction.json",
+        "engineering-v6.json"
+      ],
+      "status": "IMPLEMENTED_REAL_REGRESSION_RECORDED"
+    },
+    {
+      "id": "R6-F002",
+      "problem": "Normal answers and refusals used incompatible fields/statuses",
+      "cause": "Output encoding requirements implicit; completion did not always satisfy strict public contract",
+      "change": "Public typed output schema and allowed roles; final exact fields/numeric/citation guard; bounded feedback without coercion",
+      "engineering": "Real PG and controlled malformed/typed envelope tests",
+      "evidence": [
+        "engineering-v6.json",
+        "../../../eval/reports/final-v6-answers.jsonl"
+      ],
+      "status": "IMPLEMENTED_NOT_GUARANTEED_EVERY_OUTPUT"
+    },
+    {
+      "id": "R6-F003",
+      "problem": "Insufficient evidence and forbidden actions misclassified",
+      "cause": "Capability and actual evidence availability not independently checked before inference",
+      "change": "Public requested capabilities, actual revoked ACL, required source/document/revision checks; no hidden negative labels/case IDs determine runtime result",
+      "engineering": "Denied and missing/version/ACL guard integration regressions",
+      "evidence": [
+        "engineering-v6.json"
+      ],
+      "status": "IMPLEMENTED_REAL_NEGATIVE_RESULTS_RECORDED",
+      "v6_negative_success": {
+        "A": 5,
+        "B": 5,
+        "C": 5
+      },
+      "zero_model_guard_disclosure": true
+    },
+    {
+      "id": "R6-F004",
+      "problem": "Identical SQL data appeared conflicting after supplementary read",
+      "cause": "Volatile observation receipts/hashes leaked into semantic model evidence",
+      "change": "Stable SQL rows/metrics/query in all expert/master messages; observations only in private immutable CAS",
+      "engineering": "Repeated PG content equality with distinct immutable audit receipts; decoded messages excluded audit hashes",
+      "evidence": [
+        "interim-v3.json",
+        "engineering-v4.json",
+        "../../../eval/reports/final-v6-failure-analysis.json"
+      ],
+      "status": "IMPLEMENTED_REAL_REGRESSION_RECORDED"
+    },
+    {
+      "id": "R6-F005",
+      "problem": "Expert returned correct45 in wrong notes envelope; joined quotation not verbatim",
+      "cause": "Expert schema error aborted master; model-supplied quote text could combine segments",
+      "change": "Discard/audit only known schema-invalid expert notes and continue from original sources; exact predeclared quote IDs mapped to original spans; unknown outcomes still stop",
+      "engineering": "Stored malformed-response replay, unknown-stop checks, exact/unknown quote ID rejection",
+      "evidence": [
+        "expert-malformed-reproduction.json",
+        "engineering-v5.json",
+        "engineering-v6.json"
+      ],
+      "status": "IMPLEMENTED_REAL_WIRE_FAILURES_STILL_REPORTED"
+    },
+    {
+      "id": "R6-F006",
+      "problem": "14/15 v4 repair tasks failed; raw diff context/header errors and semantic errors",
+      "cause": "Model responsible for low-level diff frame as well as business logic",
+      "change": "Body-only bounded output; trusted frozen owned function frame renders deterministic diff; unchanged AST permission guard/public+28hidden Go tests",
+      "engineering": "All5 contracts controlled body renderer plus injection rejection using real isolated Go",
+      "evidence": [
+        "engineering-v5.json",
+        "engineering-v6.json"
+      ],
+      "status": "IMPLEMENTED_MODEL_RELIABILITY_LIMITED_TO_REPORTED_DATA",
+      "v6_task_passes": {
+        "A": 5,
+        "B": 3,
+        "C": 5
+      },
+      "v6_hidden_patch_passes": {
+        "A": 5,
+        "B": 3,
+        "C": 5
+      }
+    },
+    {
+      "id": "R6-F007",
+      "problem": "v4 supervisor raised WORKER_LIMIT after90 completed assignments",
+      "cause": "Finite loop checked completion only before iteration",
+      "change": "Check durable all-complete state after last worker; no retry of prior completed batch",
+      "engineering": "Controlled final-iteration regression",
+      "evidence": [
+        "engineering-v5.json",
+        "../../../eval/reports/final-v4-closed.json",
+        "../../../eval/reports/final-v6-closed.json"
+      ],
+      "status": "FIXED_FULL_RUN_RECEIPT_RECORDED"
+    },
+    {
+      "id": "R6-F008",
+      "problem": "v5 master HTTP400 JSON-object prompt lacked literalJSON; first task3attempts thenstop",
+      "cause": "New SYSTEM_V5 omitted provider JSON-mode precondition; old context-only preflight did not check it",
+      "change": "Explicit JSON instruction; guard master before any expert spending and every complete before input/reserve; same check in real preflight",
+      "engineering": "Missing JSON before collect/transport/ledger denial, valid message acceptance, controlled actual HTTP-body assertion",
+      "evidence": [
+        "json-mode-incident.md",
+        "engineering-json-guard.json",
+        "engineering-v6.json",
+        "../../../eval/reports/final-v5-billing-reconciliation.json"
+      ],
+      "status": "FIXED_NEW_FROZEN_REAL_RUN_RECORDED",
+      "financial": "Owner Nov05 complete15:00hour has2knownrequests/input608/output279, excludes definite400. Settled0additionalUSD, per-call tokens unknown; no call refund or resend.",
+      "archive_sha256": "75821a2deb879c6bcb466b087456fb1244fa620c5a46bb798c2817f3852809ba"
+    },
+    {
+      "id": "R6-F009",
+      "problem": "Post-settlement export assertion initially used usage_calls-only count and manifest hash for budget lookup",
+      "cause": "Private report script ignored historical router call and derived benchmark budget hash",
+      "change": "Use authoritative repository cost API and grant-to-budget join; no second settlement, charge or retry",
+      "engineering": "Corrected read-only ledger assertion471calls/238430microUSD/unknown0; before/after receipt sealed",
+      "evidence": [
+        "v5-incident.json"
+      ],
+      "status": "REPORT_SCRIPT_CORRECTED"
+    },
+    {
+      "id": "R6-F010",
+      "problem": "Latest true-model failures, if any, remain after new wire protocol",
+      "cause": "See exact independent reasons and raw outcomes; do not infer each cause from summary alone",
+      "change": "Preserve each failure and full denominator, classify; no threshold changes or posthoc regrading",
+      "evidence": [
+        "../../../eval/reports/final-v6-failure-analysis.json",
+        "../../../eval/reports/final-v6-answers.jsonl",
+        "v6-residual-reproductions.json"
+      ],
+      "status": "OPEN",
+      "failed_assignments": [
+        {
+          "case_id": "cross-05",
+          "arm": "C",
+          "reasons": [
+            "wrong_status",
+            "wrong_value_fields",
+            "missing_value:paid_events",
+            "missing_value:distinct_orders",
+            "missing_value:event_amount",
+            "missing_value:dedup_amount",
+            "missing_value:implementation_deduplicates",
+            "missing_source_role"
+          ]
+        },
+        {
+          "case_id": "repair-03",
+          "arm": "B",
+          "reasons": [
+            "independent_hidden_tests_failed"
+          ]
+        },
+        {
+          "case_id": "repair-02",
+          "arm": "B",
+          "reasons": [
+            "independent_hidden_tests_failed"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "RELEASE-B001",
+      "problem": "Adjacent V2 official price evidence freshness check failed historically",
+      "cause": "Prior reviewed evidence older than7day threshold",
+      "change": "No V2 source/history edits allowed by repository rules; target V2 maintenance needs its own current evidence workflow",
+      "evidence": [
+        "final-assessment.json"
+      ],
+      "status": "OPEN_OUTSIDE_V3_SCOPE"
+    },
+    {
+      "id": "RELEASE-B002",
+      "problem": "Host systemd and whole-node production failure not validated",
+      "cause": "Managed container PID1tail and systemd offline, not production target",
+      "change": "Retain deployment templates and runbook; validate on actual target host before production claim",
+      "evidence": [
+        "../../r6-runbook.md",
+        "host-capability-check-20261105.json",
+        "final-assessment.json"
+      ],
+      "status": "OPEN_REQUIRES_TARGET_HOST"
+    }
+  ]
+}

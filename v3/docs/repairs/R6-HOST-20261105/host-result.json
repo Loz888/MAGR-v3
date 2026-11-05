@@ -1,0 +1,309 @@
+{
+  "status": "PASS",
+  "scope": "isolated_QEMU_Linux_systemd_test_node",
+  "stages": [
+    {
+      "stage": "before",
+      "status": "PASS",
+      "checks": {
+        "boot_id": "6d747c02-41ea-4465-9633-219c0c46ca27",
+        "pid1": "systemd",
+        "virtualization": "qemu",
+        "network": "loopback_only_no_nic",
+        "service_users": [
+          "mgar",
+          "mgar-watchdog"
+        ],
+        "original_finance": {
+          "calls": 633,
+          "cost_micros": 299317,
+          "unknown": 0
+        },
+        "sandbox": {
+          "actual_docker_go_sandbox": true,
+          "proof": {
+            "receipt_id": "69dff1a6-46db-48e9-96c4-98725ebb33bd",
+            "image_id": "sha256:0773ba0144b70dc0d7d92455c38a8886c1f04e266367418a28fba6a92bb77133",
+            "workspace_hash": "25868884467a8e69cf022043074eb73c77490ed13cb53c8ca282524276dbc68a",
+            "exit_code": 0,
+            "stop_reason": null,
+            "policy": {
+              "network": "none",
+              "user": "65532:65532",
+              "read_only": true,
+              "mounts": [],
+              "cap_drop": [
+                "ALL"
+              ],
+              "no_new_privileges": true,
+              "memory_bytes": 536870912,
+              "pids_limit": 96
+            },
+            "passed": true,
+            "tests": [
+              "TestPaidRevenueCents"
+            ],
+            "failed_tests": [],
+            "skipped": 0
+          },
+          "log_sha256": "db2d859b1445dac0d0922cdd48841b9a05c927d15359fe16605dc259bf20167d"
+        },
+        "fixture_run": "53fb2a43-9fa2-4f4f-b229-efa29784b92f",
+        "report_sha256": "0f1acbd4ccb9889eef20021ea09e22a6fa7a4d92603627c281f04c3cceccdaf6",
+        "committed_probe": true,
+        "cas": [
+          "110a525b50743faa7c905b46e9402227b5cc24bb5618246e1258c7c87f71be94",
+          2196
+        ]
+      }
+    },
+    {
+      "stage": "prepare-cut",
+      "status": "PASS",
+      "checks": {
+        "boot_id": "6d747c02-41ea-4465-9633-219c0c46ca27",
+        "active_uncommitted_backend": true,
+        "engine_service_active": true
+      }
+    },
+    {
+      "stage": "after-cut",
+      "status": "PASS",
+      "checks": {
+        "boot_id": "2bce3f1f-4035-4bd7-9666-f0d637d85552",
+        "pid1": "systemd",
+        "virtualization": "qemu",
+        "network": "loopback_only_no_nic",
+        "service_users": [
+          "mgar",
+          "mgar-watchdog"
+        ],
+        "original_finance": {
+          "calls": 633,
+          "cost_micros": 299317,
+          "unknown": 0
+        },
+        "report_unchanged": true,
+        "dedupe_unchanged": true,
+        "committed_probe_present": true,
+        "uncommitted_probe_absent": true,
+        "cas": [
+          "110a525b50743faa7c905b46e9402227b5cc24bb5618246e1258c7c87f71be94",
+          2196
+        ],
+        "postgres_crash_recovery": true,
+        "new_boot_id": true
+      }
+    },
+    {
+      "stage": "after-normal",
+      "status": "PASS",
+      "checks": {
+        "boot_id": "6b770636-aeab-4601-9afd-3f16be1d1830",
+        "pid1": "systemd",
+        "virtualization": "qemu",
+        "network": "loopback_only_no_nic",
+        "service_users": [
+          "mgar",
+          "mgar-watchdog"
+        ],
+        "original_finance": {
+          "calls": 633,
+          "cost_micros": 299317,
+          "unknown": 0
+        },
+        "report_unchanged": true,
+        "dedupe_unchanged": true,
+        "committed_probe_present": true,
+        "uncommitted_probe_absent": true,
+        "cas": [
+          "110a525b50743faa7c905b46e9402227b5cc24bb5618246e1258c7c87f71be94",
+          2196
+        ]
+      }
+    },
+    {
+      "stage": "prepare-inflight",
+      "status": "PASS",
+      "checks": {
+        "boot_id": "6b770636-aeab-4601-9afd-3f16be1d1830",
+        "call_id": "6e3f6c20-3e16-44af-bb7f-7ad0d30baacd",
+        "old_epoch": 1,
+        "physical_model_requests": 0,
+        "profile_hash": "71853dd10ec3fc93cd21759292e1228b1c21c1e9e9eccc51961125bc76551677",
+        "reservation_micros": 4352,
+        "run_id": "bbf34b9a-da17-4010-bf1c-51213d2d7cad"
+      }
+    },
+    {
+      "stage": "after-inflight",
+      "status": "PASS",
+      "checks": {
+        "boot_id": "63b00ef0-42cb-4cba-8214-e0e5c5fc3de1",
+        "pid1": "systemd",
+        "virtualization": "qemu",
+        "network": "loopback_only_no_nic",
+        "service_users": [
+          "mgar",
+          "mgar-watchdog"
+        ],
+        "original_finance": {
+          "calls": 633,
+          "cost_micros": 299317,
+          "unknown": 0
+        },
+        "controlled_reserved_became_unknown": true,
+        "reservation_kept_micros": 4352,
+        "old_epoch_fenced": true,
+        "unknown_resume_blocked": true,
+        "no_resend": true,
+        "physical_model_requests": 0
+      }
+    },
+    {
+      "stage": "backup-restore",
+      "status": "PASS",
+      "checks": {
+        "report_unchanged": true,
+        "dedupe_unchanged": true,
+        "committed_probe_present": true,
+        "uncommitted_probe_absent": true,
+        "cas": [
+          "110a525b50743faa7c905b46e9402227b5cc24bb5618246e1258c7c87f71be94",
+          2196
+        ],
+        "pg_dump_restore": true,
+        "reader_role_restored_readonly": true,
+        "actual_production_DataReader_query": true,
+        "write_denied_with_session_readonly_disabled": true,
+        "restored_CAS_bytes_verified": true,
+        "unknown_budget_restored": true,
+        "http_from_restored_database": true,
+        "backup_sha256": "1d72d352bb71e32380ff12b2566af099f41f05faa382f88531ae9b3c59dd902b"
+      }
+    }
+  ],
+  "supplemental_stages": [
+    {
+      "stage": "runtime-assets",
+      "status": "PASS",
+      "checks": {
+        "boot_id": "63b00ef0-42cb-4cba-8214-e0e5c5fc3de1",
+        "pid1": "systemd",
+        "virtualization": "qemu",
+        "network": "loopback_only_no_nic",
+        "service_users": [
+          "mgar",
+          "mgar-watchdog"
+        ],
+        "original_finance": {
+          "calls": 633,
+          "cost_micros": 299317,
+          "unknown": 0
+        },
+        "report_unchanged": true,
+        "dedupe_unchanged": true,
+        "committed_probe_present": true,
+        "uncommitted_probe_absent": true,
+        "cas": [
+          "110a525b50743faa7c905b46e9402227b5cc24bb5618246e1258c7c87f71be94",
+          2196
+        ],
+        "trusted_ast_helper_present_hash_verified": true,
+        "ast_valid_body_accepted_import_change_denied_as_service_user": true,
+        "actual_restored_database_probes_verified": true,
+        "restored_CAS_hashes_equal_original": true,
+        "restored_CAS": [
+          "110a525b50743faa7c905b46e9402227b5cc24bb5618246e1258c7c87f71be94",
+          2196
+        ],
+        "physical_model_requests": 0
+      }
+    },
+    {
+      "stage": "runtime-assets",
+      "status": "PASS",
+      "checks": {
+        "boot_id": "2d3d4733-348b-4172-910d-9f06c77b2427",
+        "pid1": "systemd",
+        "virtualization": "qemu",
+        "network": "loopback_only_no_nic",
+        "service_users": [
+          "mgar",
+          "mgar-watchdog"
+        ],
+        "original_finance": {
+          "calls": 633,
+          "cost_micros": 299317,
+          "unknown": 0
+        },
+        "report_unchanged": true,
+        "dedupe_unchanged": true,
+        "committed_probe_present": true,
+        "uncommitted_probe_absent": true,
+        "cas": [
+          "110a525b50743faa7c905b46e9402227b5cc24bb5618246e1258c7c87f71be94",
+          2196
+        ],
+        "trusted_ast_helper_present_hash_verified": true,
+        "ast_valid_body_accepted_import_change_denied_as_service_user": true,
+        "actual_restored_database_probes_verified": true,
+        "restored_CAS_hashes_equal_original": true,
+        "restored_CAS": [
+          "110a525b50743faa7c905b46e9402227b5cc24bb5618246e1258c7c87f71be94",
+          2196
+        ],
+        "physical_model_requests": 0
+      }
+    },
+    {
+      "stage": "runtime-assets",
+      "status": "PASS",
+      "checks": {
+        "boot_id": "0bd1f787-6b15-4f01-806b-7bb589c2cace",
+        "pid1": "systemd",
+        "virtualization": "qemu",
+        "network": "loopback_only_no_nic",
+        "service_users": [
+          "mgar",
+          "mgar-watchdog"
+        ],
+        "original_finance": {
+          "calls": 633,
+          "cost_micros": 299317,
+          "unknown": 0
+        },
+        "report_unchanged": true,
+        "dedupe_unchanged": true,
+        "committed_probe_present": true,
+        "uncommitted_probe_absent": true,
+        "cas": [
+          "110a525b50743faa7c905b46e9402227b5cc24bb5618246e1258c7c87f71be94",
+          2196
+        ],
+        "trusted_ast_helper_present_hash_verified": true,
+        "ast_valid_body_accepted_import_change_denied_as_service_user": true,
+        "actual_restored_database_probes_verified": true,
+        "restored_CAS_hashes_equal_original": true,
+        "restored_CAS": [
+          "110a525b50743faa7c905b46e9402227b5cc24bb5618246e1258c7c87f71be94",
+          2196
+        ],
+        "physical_model_requests": 0
+      }
+    }
+  ],
+  "four_distinct_boot_ids": [
+    "6d747c02-41ea-4465-9633-219c0c46ca27",
+    "2bce3f1f-4035-4bd7-9666-f0d637d85552",
+    "6b770636-aeab-4601-9afd-3f16be1d1830",
+    "63b00ef0-42cb-4cba-8214-e0e5c5fc3de1"
+  ],
+  "new_physical_model_requests": 0,
+  "physical_hypervisor_or_storage_power_loss_tested": false,
+  "before_stage_retained_not_repeated": true,
+  "normal_reboot_actual_exit": 0,
+  "guest_stopped_after_acceptance": true,
+  "original_failed_restored_database_preserved": true,
+  "supervision_fix_actual_reboot_and_poweroff": "PASS"
+}

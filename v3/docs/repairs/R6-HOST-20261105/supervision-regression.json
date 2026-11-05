@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "normal_reboot_exit": 0,
+  "normal_poweroff_exit": 0,
+  "normal_reboot_seconds": 2.3709081650013104,
+  "normal_poweroff_seconds": 2.291235031996621,
+  "serial_drained_during_wait": true,
+  "new_model_requests": 0
+}

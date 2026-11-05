@@ -1,6 +1,6 @@
 # V3.1 增量任务队列
 
-2026-11-05 最新 v6：完整 90 项 87 PASS、3 FAIL，A/B/C 为 30/28/29；C 正常 24/25、负例 5/5，R6 业务质量 PASS。99 项工程专项、lint/类型检查通过；累计 633 次、保守 US$0.299317，未知/预占零。全项目仍 ENGINEERING_INCOMPLETE：V2 历史价格证据和实际宿主部署/整节点故障验证尚未关闭。修复问题、完整过程和最新结果见修复档案。 [完整档案](../v3/docs/repairs/R6-20261103/README.md)
+2026-11-05 最新验收：R6 在用户批准的独立 Linux/systemd 测试虚拟机范围内 DONE。V2 价格检查工程门禁、实际 systemd 部署、整虚拟节点断电/重启及备份恢复均 PASS。v6 真实模型成绩保持 87/90，A/B/C 为 30/28/29；C 正常 24/25、负例 5/5，质量门槛 PASS。累计 633 次、保守 US$0.299317，本次新增模型调用 0；原始失败全部保留。此结论不覆盖用户生产宿主、物理存储掉电或多节点 HA。 [三项门禁与完整修复过程](../v3/docs/repairs/R6-HOST-20261105/README.md)。 [完整档案](../v3/docs/repairs/R6-20261103/README.md)
 
 原始 34 卡保持在 v3-upgrade/，不重写原 TODO 与历史。新卡映射表示采用对应契约，不表示原卡整体完成。
 
@@ -17,7 +17,8 @@
 | V31-R4 | RAG 与多专家 | DONE | PASS | PARTIAL |
 | V31-R4-LIVE | 真实跨源调查与单 Agent 对照 | DONE | PASS | PARTIAL |
 | V31-R5 | 受限修复与 Draft PR | DONE | PASS（249 项） | PASS（恢复闭环） |
-| V31-R6 | Watchdog、主动性与发布评测 | IN_PROGRESS（发布门禁未关闭） | PASS（最新99项；与历史有重叠） | PASS（v6质量；发布仍阻塞） |
+| V31-R6 | Watchdog、主动性与发布评测 | DONE（独立 systemd VM 范围） | PASS（99项专项＋实际VM验收） | PASS（v6质量87/90） |
+| V31-R6-HOST | V2价格工程检查、宿主部署与整节点恢复 | DONE（用户批准的测试VM） | PASS（V2全量＋7阶段VM断言） | NOT_APPLICABLE（新增模型调用0） |
 | V31-R6-01 | 确定性观察与恢复请求首个切片 | DONE | PASS（82 项） | NOT_RUN |
 
 2026-11-02 用户授权真实调用与 GitHub 推送；沿用最多 3 次物理调用、累计 USD 2 的限制。R0 与 R1 工程复验通过，R1 真实闭环 PASS 后才启动 R2。实际调用 2 次，保守计费 USD 0.001745，结果评论一条；模型落库与远程写回执两个 SIGKILL 恢复点通过。

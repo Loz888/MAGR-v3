@@ -1,0 +1,19 @@
+[Unit]
+Description=Offline Docker daemon for the isolated MGAR acceptance VM
+After=local-fs.target
+Before=mgar-v3.service
+
+[Service]
+Type=notify
+ExecStart=/usr/local/bin/dockerd --host=unix:///run/docker.sock --storage-driver=overlay2 --bridge=none --iptables=false --ip6tables=false --ip-forward=false --ip-masq=false --pidfile=/run/docker.pid --exec-root=/run/docker --data-root=/var/lib/docker
+Restart=on-failure
+RestartSec=3
+Delegate=yes
+KillMode=process
+TasksMax=infinity
+LimitNOFILE=1048576
+TimeoutStartSec=180
+TimeoutStopSec=60
+
+[Install]
+WantedBy=multi-user.target
