@@ -1,0 +1,17 @@
+{
+  "issues": [
+    {
+      "id": "COORD-001",
+      "problem": "First controlled integration attempted to bind D into original ABC-only app.benchmark_runs; PostgreSQL rejected it before any model request.",
+      "status": "FIXED_CONTROLLED_80_PASS",
+      "fix": "Separate DEF binding table and experiment-only budget adapter, original immutable grants and same Engine transaction/settlement retained. Old ABC constraint/results are untouched.",
+      "original_log_sha256": "7c6b3d796f11335aa061863966c39dd15649f5e3ac47defe6181995beeb9d817"
+    }
+  ],
+  "real_model_gate": "NOT_RUN",
+  "original_ABC": {
+    "PASS": 87,
+    "FAIL": 3,
+    "regraded": false
+  }
+}

@@ -320,5 +320,25 @@
       "go": "real_isolated_hidden_oracle_regression",
       "wire": "exact_quote_catalog_body_only_patch_rendering_known_invalid_expert_fallback_unknown_stop"
     }
+  },
+  "V31-R6-COORD": {
+    "tests": [
+      "tests/test_coordination_eval.py",
+      "tests/test_router_model.py",
+      "tests/test_routing.py",
+      "tests/test_duplex.py",
+      "tests/test_environment.py",
+      "tests/test_verification.py"
+    ],
+    "timeout_seconds": 300,
+    "components": {
+      "postgres": "real_17_original_migrations_and_separate_DEF_schema",
+      "redis": "real_source_cache_trial_namespace_only",
+      "worker": "same_real_LangGraph_R2_and_production_Verifier",
+      "model": "controlled_HTTP_ONLY_in_registered_tests",
+      "recovery": "real_SIGKILL_known_response_reuse_epoch_fencing_unknown_no_resend",
+      "live": "NOT_RUN_until_exact_new_manifest_authorization",
+      "business_history": "original_ABC87_PASS3_FAIL_unmodified"
+    }
   }
 }

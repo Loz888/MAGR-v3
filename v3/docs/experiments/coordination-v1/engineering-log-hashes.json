@@ -1,0 +1,12 @@
+{
+  "files": {
+    ".local/coordination-engineering-attempt-1.log": "7c6b3d796f11335aa061863966c39dd15649f5e3ac47defe6181995beeb9d817",
+    ".local/coordination-engineering-attempt-2.log": "2d05cb5756197481c41aba1fb8cc62dd1d96df7081416343b8acf9c8986556e0",
+    ".local/coordination-lint-final.log": "a220b562d6bdb3655673add818cabd1dbd6857a7efc7d06ff8178f9e0e2501e2",
+    ".local/coordination-typecheck-final.log": "c46fd52f59c0d30f715d3488ef6dd60220c762648def5da8f156faea84d09b25",
+    "evidence/V31-R6-COORD/20261105T155941Z-fefca8a0/command.log": "586b45b1b9778467938b6f225436b72eae8c0780f89300b79b2b16d82870c752",
+    "evidence/V31-R6-COORD/20261105T155941Z-fefca8a0/junit.xml": "84e1002b6f177b23e7c693663903ea6ab1c683344bf40e3c3cb51bc43e33d158"
+  },
+  "raw_private_logs_preserved": true,
+  "paid_requests_in_engineering": 0
+}

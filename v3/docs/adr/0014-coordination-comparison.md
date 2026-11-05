@@ -1,0 +1,11 @@
+# ADR0014：D/E/F协调实验的因果边界
+
+用户要求补齐原任务书14.2遗漏的D/E/F实测报告。使用独立实验协调适配器，复用真实Engine入口、primary订阅、Mailbox、LangGraph R2、Verifier、只读报告和已持久化的付费账本；不新增产品环境开关或改变产品Router的权限协议。E/F共用同一个受限JSON路由提示，E在每条非重复获准事件前执行，F在冷事件阶段执行并批处理，已订阅事件不调用Router。该提示支持向已有Run投递，与产品现有冷启动Router提示有区别，报告必须说明。
+
+D执行预先写好的人工操作表，表不发给E/F；其延迟不含人的决策时间，不能据此推断真实人工效率。事件流、操作表与独立Oracle分别冻结；执行器不导入Oracle。四个区组分别按固定种子随机安排D/E/F，指标保持每臂同一分母。两次重复只是有限开发实测，不声称盲测或统计显著优势。
+
+固定Worker通过原R2图在读取安全边界接收两次后续输入，再对同一来源作一次真实模型引用调查；三臂都执行相同边界协议。负例的ACL拒绝、重复去重不证明模型推理。没有代码修复和检索子任务，隐藏补丁测试与Recall@5记N/A，原A/B/C87/90和三项失败原样引用，不合并成绩。
+
+本地缓存仅为固定Worker冻结来源的Redis缓存，冷区组清理本实验命名空间，预热区组在计时前读取一次并单列预热开销；PG和供应商缓存未强制清空。记录供应商cache-hit/miss实际token，不能把本地cold称作供应商零缓存。
+
+实验SQL只建立coordination_eval schema，初始化和后续写入都经原Engine连接。路由成本使用原StructuredModel与app.usage_calls，单独标记router角色，不伪装app.router_calls产品冷Router。D/E/F使用独立绑定表，不更改旧benchmark_runs仅允许A/B/C的约束；同一Engine连接复用原immutable grant、benchmark_budgets及原结算。每次模型调用绑定新冻结配置、只读Mandate与实验预算。旧授权和旧失败均不可覆盖，unknown保留预占并停止。真实SIGKILL只作用本实验子进程；已结算响应的续跑须核对原manifest、调用结果和epoch，禁止未知重发。

@@ -20,6 +20,7 @@
 | V31-R6 | Watchdog、主动性与发布评测 | DONE（独立 systemd VM 范围） | PASS（99项专项＋实际VM验收） | PASS（v6质量87/90） |
 | V31-R6-HOST | V2价格工程检查、宿主部署与整节点恢复 | DONE（用户批准的测试VM） | PASS（V2全量＋7阶段VM断言） | NOT_APPLICABLE（新增模型调用0） |
 | V31-R6-01 | 确定性观察与恢复请求首个切片 | DONE | PASS（82 项） | NOT_RUN |
+| V31-R6-COORD | D/E/F全局协调对照补验 | IN_PROGRESS（新冻结真实调用待许可） | PASS（80项） | NOT_RUN |
 
 2026-11-02 用户授权真实调用与 GitHub 推送；沿用最多 3 次物理调用、累计 USD 2 的限制。R0 与 R1 工程复验通过，R1 真实闭环 PASS 后才启动 R2。实际调用 2 次，保守计费 USD 0.001745，结果评论一条；模型落库与远程写回执两个 SIGKILL 恢复点通过。
 

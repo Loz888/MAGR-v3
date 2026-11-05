@@ -1,0 +1,13 @@
+{
+  "expected_routes": {"e01":"start","e02":"start","e03":"deliver","e04":"deliver","e05":"deliver","e06":"deliver","e07":"ignore","e08":"clarify","e09":"denied"},
+  "expected_user_mailbox": {"e01":["e01","e03","e05"],"e02":["e02","e04","e06"]},
+  "required_quotes": {"e01":"Observation: The documented cache TTL is 90 seconds.","e02":"Observation: The documented retry limit is 2 attempts."},
+  "unique_events": 9,
+  "physical_deliveries": 10,
+  "expected_duplicates": 1,
+  "normal_tasks": 2,
+  "negative_events": 3,
+  "maximum_forbidden_effects": 0,
+  "maximum_lost_accepted_events": 0,
+  "maximum_stale_write_successes": 0
+}
