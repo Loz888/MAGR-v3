@@ -1,0 +1,29 @@
+{
+  "schema": "coordination-freeze-receipt-v1",
+  "status": "FROZEN_NOT_EXECUTED",
+  "manifest_hash": "9df391cdb86900b4c8e1f83968c211ea3025f3a51e40b2ad855b61a41f9b4d29",
+  "source_commit": "8bba1637ddada3129d13b09bfe6d88ec28b2f856",
+  "trials": 12,
+  "router_call_cap": 44,
+  "worker_call_cap": 24,
+  "max_new_calls": 68,
+  "max_new_cost_micros": 208896,
+  "cumulative_upper_micros": 508213,
+  "original_finance": {
+    "calls": 633,
+    "cost_micros": 299317,
+    "unknown": 0
+  },
+  "original_ABC_protected_files": {
+    "eval/reports/final-v6-results.json": "77367cde4deeff2e42a352f1864e53ca9709fc1ae7e28923107264ece380908c",
+    "eval/reports/final-v6-answers.jsonl": "257f38466ef975eca9eb7e9642403fb338b2c2936191520c527a360ac41988b0",
+    "eval/reports/final-v6-summary.json": "dec35d15f5f8196b8e272d54bfa31e5349ad15d27fa30274729efcb336cbf9b1",
+    "eval/reports/final-v6-failure-analysis.json": "65ec5c6a4ee0ce9e6af610b320297e751aa612a7e094a6191888e9692b3e2947",
+    "docs/repairs/R6-20261103/v6-residual-reproductions.json": "9d61dd354def52554b0e55ba6d9105f17e74754b85b753c9091666e0b8b74f25",
+    "docs/repairs/R6-20261103/issue-register.json": "552398a7c3719f376bcbbf1cfdbbf50a40cdb820e16178dbc174b35ea15dee1c"
+  },
+  "new_generation_requests": 0,
+  "engineering_tests": 80,
+  "pricing": "current reviewed peak upper bound",
+  "authorization": "A separate exact-manifest grant is required; proposal allow_paid=false."
+}

@@ -1,6 +1,6 @@
 # D/E/F 全局协调对照
 
-当前状态：工程80项PASS，真实模型实验NOT_RUN，尚无D/E/F完成率或节省比例结论。原A/B/C的87/90及三项失败原样保留。
+当前状态：工程80项PASS，新版本已冻结，真实模型实验NOT_RUN，尚无D/E/F完成率或节省比例结论。原A/B/C的87/90及三项失败原样保留。
 
 | 方案 | 协调方式 | 固定Worker |
 |---|---|---|
@@ -40,3 +40,5 @@ make verify TASK=V31-R6-COORD
 禁止覆盖执行目录或静默重开整个实验。执行器与独立判定分别保存逐事件记录、模型结果、来源和费用；完整报告应包含所有12次及故障/续跑证据、原A/B/C文件哈希核对。新模型失败按实际记录，不修改旧成绩。
 
 [工程验收](engineering.json)、[日志哈希](engineering-log-hashes.json)、[开发问题与修复](development-issues.json)、[ADR0014](../../adr/0014-coordination-comparison.md)。
+
+冻结源码 `8bba1637ddada3129d13b09bfe6d88ec28b2f856`；manifest `9df391cdb86900b4c8e1f83968c211ea3025f3a51e40b2ad855b61a41f9b4d29`。见 [冻结收据](freeze.json)、[完整冻结清单](../../../eval/reports/coordination-v1-manifest.json)、[默认不启用付费的授权提案](../../../eval/reports/coordination-v1-authorization.proposed.json)。最多新增US$0.208896，基于原保守US$0.299317，累计上界US$0.508213，低于原仓库US$2硬上限。

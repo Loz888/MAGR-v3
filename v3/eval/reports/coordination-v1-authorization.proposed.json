@@ -1,0 +1,9 @@
+{
+  "manifest_hash": "9df391cdb86900b4c8e1f83968c211ea3025f3a51e40b2ad855b61a41f9b4d29",
+  "approved_by": "loz888",
+  "expires_at": "2026-11-07T16:04:25.143875+00:00",
+  "max_new_calls": 68,
+  "max_new_cost_micros": 208896,
+  "allow_paid": false,
+  "allow_external_write": false
+}
