@@ -17,4 +17,8 @@
 
 新批次保守费用最多 **US$1.382400**，当前全部历史保守费用 **US$0.237912**，新最坏累计 **US$1.620312**，仍低于代码 US$2 硬上限和此前累计 US$4 的费用授权；本次只需补充调用次数许可。数据仍仅为此前获准的合成知识、合成 SQL 结果和公开 GitHub 代码，目的地仍是 DeepSeek 官方 completion 接口；不发送密钥、连接串、隐藏判定数据或历史答案。
 
-新 manifest、固定源码提交、真实零付费预检和预算摘要准备完成后会附在此处；实际执行许可默认 allow_paid=false。未经追加调用额度批准，不执行下一轮付费评测。仍不发布 GitHub 业务结果，不进入 R7 或生产部署。
+新 manifest、固定源码提交、真实零付费预检和预算摘要已经冻结；实际执行许可为 allow_paid=false。未经追加调用额度批准，不执行下一轮付费评测。仍不发布 GitHub 业务结果，不进入 R7 或生产部署。
+
+固定源码：`9486279ea967e0925e569ec4d70e0f9db38fbb7f`；manifest：`59c1a16606e8234e0f08ade3e3bd9e8d727b3a7a732a37ad0520db9e2b57a836`。真实30项预检通过，保守上下文最大 9451/12288。
+
+[冻结清单](../../../eval/reports/final-v5-manifest.json) · [预算与许可状态](next-proposal.json) · [零付费预检](../../../eval/reports/final-v5-preflight.json) · [待批准执行许可](../../../eval/reports/final-v5-authorization.proposed.json)

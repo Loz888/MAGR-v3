@@ -1,0 +1,9 @@
+{
+  "manifest_hash": "59c1a16606e8234e0f08ade3e3bd9e8d727b3a7a732a37ad0520db9e2b57a836",
+  "new_implementation_sha256": "89fb69ebd63b75a34c1aa14587ffa6c8f285c7471ed81dc51adc3bdf84a196b8",
+  "baseline_archive_sha256": "156abe3232d799e1b160a74f5255db4f078fc5bd114bea64cd3b2c688bba38d6",
+  "scope": "supervision_only_no_reruns_no_new_grant",
+  "changed_paths": [],
+  "retained_results": {},
+  "reason": "Reviewed exact frozen next-candidate source; no model calls authorized. Passing continuation at first future assignment avoids changing any frozen generation behavior."
+}

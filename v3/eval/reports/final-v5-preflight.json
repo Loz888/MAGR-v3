@@ -1,0 +1,318 @@
+{
+  "status": "PASS",
+  "scope": "real evidence connectors and conservative prompt bounds only",
+  "model_quality_gate": "NOT_RUN",
+  "new_paid_calls": 0,
+  "cases": [
+    {
+      "case_id": "qa-00",
+      "context_upper_bound": 7156,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-01",
+      "context_upper_bound": 7160,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-02",
+      "context_upper_bound": 7149,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-03",
+      "context_upper_bound": 7156,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-04",
+      "context_upper_bound": 7154,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-05",
+      "context_upper_bound": 7160,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-06",
+      "context_upper_bound": 7151,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-07",
+      "context_upper_bound": 7149,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-08",
+      "context_upper_bound": 7148,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-09",
+      "context_upper_bound": 7170,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-00",
+      "context_upper_bound": 9373,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-01",
+      "context_upper_bound": 9450,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-02",
+      "context_upper_bound": 9373,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-03",
+      "context_upper_bound": 9450,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-04",
+      "context_upper_bound": 9373,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-05",
+      "context_upper_bound": 9450,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-06",
+      "context_upper_bound": 9373,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-07",
+      "context_upper_bound": 9450,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-08",
+      "context_upper_bound": 9374,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-09",
+      "context_upper_bound": 9451,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-00",
+      "context_upper_bound": 8016,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-01",
+      "context_upper_bound": 8019,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-02",
+      "context_upper_bound": 8030,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-03",
+      "context_upper_bound": 8032,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-04",
+      "context_upper_bound": 8026,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": []
+    },
+    {
+      "case_id": "negative-00",
+      "context_upper_bound": 7605,
+      "tool_calls": 4,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "negative-01",
+      "context_upper_bound": 6695,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": [
+        "knowledge:KNOWLEDGE_DOCUMENT_NOT_FOUND"
+      ]
+    },
+    {
+      "case_id": "negative-02",
+      "context_upper_bound": 6699,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": [
+        "knowledge:KNOWLEDGE_DOCUMENT_NOT_FOUND"
+      ]
+    },
+    {
+      "case_id": "negative-03",
+      "context_upper_bound": 7438,
+      "tool_calls": 4,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "negative-04",
+      "context_upper_bound": 6691,
+      "tool_calls": 1,
+      "recall_at5": 0,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+      "source_errors": [
+        "knowledge:KNOWLEDGE_REVOKED"
+      ]
+    }
+  ]
+}
