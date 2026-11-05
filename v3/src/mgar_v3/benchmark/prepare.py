@@ -272,8 +272,14 @@ def prepare(
         "ed knowledge/repo summaries; C required-role summaries",
         "model_revision": "provider alias pinned; server revision unavailable, verify r"
         "eturned model and randomize order",
-        "exposure": "new revision/data variants; developer-visible; runtime model"
-        " has not seen oracle or these task outputs",
+        "exposure": (
+            "developer-visible repair regression reusing the first-round business inputs and "
+            "oracle; the same model alias previously answered these tasks; no blind holdout; "
+            "no oracle or archived answers supplied to runtime"
+            if dataset == "final-v3"
+            else "new revision/data variants; developer-visible; runtime model"
+            " has not seen oracle or these task outputs"
+        ),
         "ablations": ["no_reranker", "no_evidence_repair", "no_verifier"],
         "ablation": ablation,
     }
