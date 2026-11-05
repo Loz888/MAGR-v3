@@ -11,7 +11,7 @@ from mgar_v3.benchmark.executor import SYSTEM, SYSTEM_V5, bounded
 from mgar_v3.benchmark.prepare import configuration, write
 from mgar_v3.benchmark.run import verify
 from mgar_v3.benchmark.tools import collect
-from mgar_v3.benchmark.wire import quote_sources, response_schema
+from mgar_v3.benchmark.wire import quote_sources, require_json_mode, response_schema
 from mgar_v3.coordination.engine import Engine
 from mgar_v3.domain import DomainError, digest
 from mgar_v3.evidence.artifacts import ArtifactStore
@@ -85,6 +85,7 @@ def preflight(directory: Path) -> dict[str, Any]:
             if case.category == "repair":
                 payload["files"] = inputs["repair_snapshots"][case.id]["files"]
                 payload["editable_paths"] = inputs["repair_snapshots"][case.id]["editable_paths"]
+            require_json_mode(SYSTEM_V5 if case.output_contract else SYSTEM, payload)
             upper = (
                 len(
                     (

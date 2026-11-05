@@ -6,7 +6,7 @@ import pytest
 from pydantic import SecretStr
 
 from mgar_v3.benchmark.domain import EvaluationAuthorization
-from mgar_v3.benchmark.reconcile import HourlyReceipt, reconcile
+from mgar_v3.benchmark.reconcile import HourlyReceipt, reconcile, reconcile_rejected
 from mgar_v3.domain import DomainError, digest
 from mgar_v3.live import Authorization, LivePermit, LiveProfile
 from mgar_v3.proactivity.domain import Activation, Policy, ProactiveEvent
@@ -196,3 +196,73 @@ def test_incomplete_or_unattributable_bill_never_releases_hold(engine, pending, 
             ]
             == 12288
         )
+
+
+@pytest.fixture
+def rejected(engine, pending):
+    calls, bill = pending
+    engine.settle_call(
+        calls[0],
+        42,
+        {
+            "prompt_tokens": 100,
+            "completion_tokens": 10,
+            "prompt_cache_hit_tokens": 20,
+            "prompt_cache_miss_tokens": 80,
+        },
+    )
+    engine.record_model_response(calls[1], 400, b'{"error":{"type":"invalid_request_error"}}')
+    archive = engine.artifacts.put(b"controlled original provider CSV archive")
+    receipt = bill.model_copy(
+        update={
+            "request_count": 2,
+            "input_cache_hit_tokens": 40,
+            "input_cache_miss_tokens": 160,
+            "output_tokens": 20,
+            "paid_amount": Decimal(".0004816"),
+        }
+    )
+    return calls[1], receipt, archive
+
+
+def test_definite_rejection_needs_complete_bill_not_http_status_alone(engine, rejected):
+    call, bill, archive = rejected
+    result = reconcile_rejected(engine, bill, call, archive)
+    assert reconcile_rejected(engine, bill, call, archive) == result
+    assert result["settled_micros"] == 0 and not result["call_count_refunded"]
+    with engine.transaction() as conn:
+        row = conn.execute("SELECT * FROM app.usage_calls WHERE call_id=%s", (call,)).fetchone()
+        assert row["status"] == "known" and row["settled_micros"] == 0
+        assert row["usage"]["per_call_tokens_unknown"] and "prompt_tokens" not in row["usage"]
+        budget = conn.execute(
+            "SELECT used_calls,reserved_micros FROM app.benchmark_budgets"
+        ).fetchone()
+        assert budget == {"used_calls": 3, "reserved_micros": 0}
+        assert not conn.execute("SELECT 1 FROM app.outbox").fetchone()
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"request_count": 3},
+        {"model": "wrong-model"},
+        {"approved_by": "outsider"},
+        {"output_tokens": 21, "paid_amount": Decimal(".0004896")},
+    ],
+)
+def test_rejection_bill_mismatch_preserves_hold(engine, rejected, change):
+    call, bill, archive = rejected
+    with pytest.raises(DomainError):
+        reconcile_rejected(engine, bill.model_copy(update=change), call, archive)
+    with engine.transaction() as conn:
+        row = conn.execute(
+            "SELECT status FROM app.usage_calls WHERE call_id=%s", (call,)
+        ).fetchone()
+        assert row["status"] == "unknown"
+
+
+def test_other_unknown_or_absent_rejection_cannot_use_bill(engine, pending):
+    calls, bill = pending
+    archive = engine.artifacts.put(b"controlled invoice")
+    with pytest.raises(DomainError):
+        reconcile_rejected(engine, bill, calls[0], archive)

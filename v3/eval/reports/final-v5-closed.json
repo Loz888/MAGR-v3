@@ -1,0 +1,32 @@
+{
+  "status": "CLOSED_PARTIAL_PROVIDER_REQUEST_CONTRACT_FAILURE",
+  "closed_at": "2026-11-05T07:43:43.530931+00:00",
+  "manifest_hash": "59c1a16606e8234e0f08ade3e3bd9e8d727b3a7a732a37ad0520db9e2b57a836",
+  "completed": 1,
+  "states": {
+    "FAIL": 1,
+    "NOT_RUN": 89
+  },
+  "calls": 3,
+  "settled_micros": 518,
+  "reserved_micros": 0,
+  "unknown": 0,
+  "global_ledger": {
+    "calls": 471,
+    "cost_micros": 238430,
+    "unknown": 0
+  },
+  "budget": {
+    "used_calls": 3,
+    "reserved_micros": 0,
+    "settled_micros": 518,
+    "call_limit": 225,
+    "limit_micros": 1382400
+  },
+  "repair_session_calls": 247,
+  "repair_session_limit": 469,
+  "repair_session_remaining": 222,
+  "reason": "Master prompt omitted required literal JSON; complete owner provider bill exactly matches both successful calls and excludes definite HTTP400. No resend. New prompt requires a new manifest.",
+  "results_sha256": "1b2cfa5820e109c70390dacdec15cdade8b64baef43387004e104fa2b2c81be8",
+  "audit_note": "Post-settlement receipt generation initially queried usage_calls alone rather than repository usage+router ledger and used manifest hash instead of derived budget hash. Read-only assertion stopped export, not settlement. Correct repository cost API and grant join used; no settlement repeated."
+}

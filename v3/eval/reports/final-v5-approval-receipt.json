@@ -1,0 +1,22 @@
+{
+  "schema": "r6-v5-user-approval-v1",
+  "approved_at_utc": "2026-11-05T07:17:11.921588+00:00",
+  "manifest_hash": "59c1a16606e8234e0f08ade3e3bd9e8d727b3a7a732a37ad0520db9e2b57a836",
+  "source_commit": "9486279ea967e0925e569ec4d70e0f9db38fbb7f",
+  "user_instruction": "批准追加调用额度，请继续完成任务，并追加问题记录和解决问题的过程",
+  "additional_calls_approved": 199,
+  "previous_session_limit": 270,
+  "new_session_limit": 469,
+  "already_spent_session_calls": 244,
+  "next_batch_max_calls": 225,
+  "previous_remaining_carried": 26,
+  "new_max_cost_micros": 1382400,
+  "prior_cumulative_cost_micros": 237912,
+  "cumulative_upper_bound_micros": 1620312,
+  "repository_enforced_cap_micros": 2000000,
+  "previous_financial_authorization_cumulative_micros": 4000000,
+  "external_business_writes": false,
+  "data_destination": "https://api.deepseek.com/v1/chat/completions",
+  "data_scope": "Same approved synthetic knowledge, synthetic SQL results and public GitHub source; excludes hidden judge data, archived answers, credentials and DSNs.",
+  "do_not_reset_previous_consumption": true
+}

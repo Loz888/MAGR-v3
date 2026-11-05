@@ -1,0 +1,50 @@
+{
+  "settlement": {
+    "call_id": "cbaef16d-6d49-49c1-80cf-39df896d2c36",
+    "receipt_hash": "1e6b379fb49e6d3af54aa5f4016f2d1dcd149f1651d4ed6b7f35f63d6ca25d2d",
+    "archive_hash": "75821a2deb879c6bcb466b087456fb1244fa620c5a46bb798c2817f3852809ba",
+    "response_hash": "72b8ad8483700a8063d35fbcb2f7757fbf63c66acd6a91433c237f3f0c862752",
+    "provider_requests": 2,
+    "known_requests": 2,
+    "settled_micros": 0,
+    "basis": "complete_provider_hour_matches_all_known_usage_excludes_definite_rejection",
+    "per_call_tokens_unknown": true,
+    "no_resend": true,
+    "call_count_refunded": false
+  },
+  "before": {
+    "case_id": "cross-07",
+    "category": "cross",
+    "arm": "C",
+    "status": "UNKNOWN",
+    "reason": "USAGE_UNKNOWN",
+    "seconds": 3.8575,
+    "cost_micros": 518,
+    "reserved_micros": 6144,
+    "model_calls": 3,
+    "prompt_tokens": 608,
+    "completion_tokens": 279,
+    "forbidden_actions": 0,
+    "write_invariant_checked": true
+  },
+  "after": {
+    "case_id": "cross-07",
+    "category": "cross",
+    "arm": "C",
+    "status": "FAIL",
+    "reason": "BILLING_RECONCILED_PROVIDER_REJECTION",
+    "seconds": 3.8575,
+    "cost_micros": 518,
+    "reserved_micros": 0,
+    "model_calls": 3,
+    "prompt_tokens": 608,
+    "completion_tokens": 279,
+    "forbidden_actions": 0,
+    "write_invariant_checked": true,
+    "prior_status": "UNKNOWN",
+    "infrastructure_failure": true,
+    "reconciliation_hash": "1e6b379fb49e6d3af54aa5f4016f2d1dcd149f1651d4ed6b7f35f63d6ca25d2d"
+  },
+  "original_archive_sha256": "75821a2deb879c6bcb466b087456fb1244fa620c5a46bb798c2817f3852809ba",
+  "tokens_scope": "record totals cover known successful calls only; rejection per-call tokens unknown"
+}

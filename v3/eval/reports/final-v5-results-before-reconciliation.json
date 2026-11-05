@@ -1,0 +1,551 @@
+[
+  {
+    "case_id": "cross-07",
+    "category": "cross",
+    "arm": "C",
+    "status": "UNKNOWN",
+    "reason": "USAGE_UNKNOWN",
+    "seconds": 3.8575,
+    "cost_micros": 518,
+    "reserved_micros": 6144,
+    "model_calls": 3,
+    "prompt_tokens": 608,
+    "completion_tokens": 279,
+    "forbidden_actions": 0,
+    "write_invariant_checked": true
+  },
+  {
+    "case_id": "cross-04",
+    "category": "cross",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-03",
+    "category": "cross",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-01",
+    "category": "cross",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-02",
+    "category": "negative",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-03",
+    "category": "qa",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-05",
+    "category": "qa",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-07",
+    "category": "cross",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-03",
+    "category": "repair",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-05",
+    "category": "cross",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-08",
+    "category": "cross",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-03",
+    "category": "negative",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-02",
+    "category": "cross",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-00",
+    "category": "qa",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-02",
+    "category": "repair",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-03",
+    "category": "negative",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-06",
+    "category": "cross",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-09",
+    "category": "qa",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-04",
+    "category": "negative",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-00",
+    "category": "negative",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-04",
+    "category": "repair",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-09",
+    "category": "qa",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-07",
+    "category": "cross",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-05",
+    "category": "cross",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-03",
+    "category": "repair",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-01",
+    "category": "qa",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-02",
+    "category": "repair",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-05",
+    "category": "cross",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-09",
+    "category": "cross",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-01",
+    "category": "cross",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-03",
+    "category": "repair",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-04",
+    "category": "cross",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-03",
+    "category": "qa",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-06",
+    "category": "cross",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-00",
+    "category": "repair",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-08",
+    "category": "cross",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-08",
+    "category": "cross",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-09",
+    "category": "qa",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-04",
+    "category": "repair",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-07",
+    "category": "qa",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-02",
+    "category": "negative",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-02",
+    "category": "cross",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-06",
+    "category": "cross",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-05",
+    "category": "qa",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-04",
+    "category": "negative",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-02",
+    "category": "cross",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-04",
+    "category": "qa",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-02",
+    "category": "qa",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-01",
+    "category": "repair",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-01",
+    "category": "qa",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-00",
+    "category": "qa",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-07",
+    "category": "qa",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-08",
+    "category": "qa",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-00",
+    "category": "repair",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-00",
+    "category": "negative",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-00",
+    "category": "cross",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-00",
+    "category": "repair",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-04",
+    "category": "qa",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-06",
+    "category": "qa",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-01",
+    "category": "qa",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-00",
+    "category": "qa",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-02",
+    "category": "qa",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-01",
+    "category": "cross",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-00",
+    "category": "cross",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-08",
+    "category": "qa",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-02",
+    "category": "negative",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-04",
+    "category": "cross",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-09",
+    "category": "cross",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-04",
+    "category": "repair",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-03",
+    "category": "cross",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-00",
+    "category": "negative",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-01",
+    "category": "repair",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-03",
+    "category": "cross",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-03",
+    "category": "negative",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-09",
+    "category": "cross",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-07",
+    "category": "qa",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-04",
+    "category": "qa",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-01",
+    "category": "repair",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-01",
+    "category": "negative",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "cross-00",
+    "category": "cross",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "repair-02",
+    "category": "repair",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-02",
+    "category": "qa",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-05",
+    "category": "qa",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-01",
+    "category": "negative",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-01",
+    "category": "negative",
+    "arm": "B",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-08",
+    "category": "qa",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "negative-04",
+    "category": "negative",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-06",
+    "category": "qa",
+    "arm": "C",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-06",
+    "category": "qa",
+    "arm": "A",
+    "status": "NOT_RUN"
+  },
+  {
+    "case_id": "qa-03",
+    "category": "qa",
+    "arm": "C",
+    "status": "NOT_RUN"
+  }
+]

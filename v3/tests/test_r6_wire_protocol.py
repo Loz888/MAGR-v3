@@ -227,6 +227,7 @@ def test_known_malformed_expert_is_charged_once_then_master_uses_original_eviden
 
     def respond(request):
         body = json.loads(request.content)
+        assert any("json" in str(m["content"]).lower() for m in body["messages"])
         seen.append(body)
         if len(seen) == 1:
             content = original["raw_content"]
@@ -384,3 +385,72 @@ def test_supervisor_returns_success_after_exactly_ninety_settled_assignments(
         "status": "completed",
         "assignments": 90,
     }
+
+
+def test_provider_json_mode_precondition_is_checked_before_any_call_or_reservation(engine):
+    from mgar_v3.benchmark.executor import SYSTEM_V5
+    from mgar_v3.benchmark.wire import require_json_mode
+
+    require_json_mode(SYSTEM_V5, {"answer_schema": WireAnswer.model_json_schema()})
+    require_json_mode("Return JSON", {})
+    require_json_mode("Use the requested format", {"format": "json"})
+
+    class NeverSend:
+        def complete(self, *args):
+            pytest.fail("Invalid local JSON-mode request reached the model transport")
+
+    executor = Executor(
+        engine,
+        None,
+        uuid4(),
+        1,
+        Case(
+            id="preflight",
+            category="qa",
+            question="cap?",
+            required_roles=["knowledge"],
+            source_path="public.md",
+            output_contract={"fields": {"limit": "decimal"}},
+        ),
+        "A",
+        {},
+    )
+    executor.model = NeverSend()
+    with pytest.raises(DomainError, match="requires JSON"):
+        executor.complete(
+            "Answer the bounded task", {"answer_schema": {"type": "object"}}, WireAnswer
+        )
+    assert executor.calls == 0
+    with engine.transaction() as conn:
+        assert not conn.execute("SELECT 1 FROM app.usage_calls").fetchone()
+        assert not conn.execute(
+            "SELECT 1 FROM app.run_events WHERE kind='model_input_recorded'"
+        ).fetchone()
+
+
+def test_invalid_master_contract_stops_before_experts_or_tools(engine, monkeypatch):
+    monkeypatch.setattr("mgar_v3.benchmark.executor.SYSTEM_V5", "Use the requested output format")
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("Invalid producer contract must stop before tools or paid expert branches")
+
+    monkeypatch.setattr("mgar_v3.benchmark.executor.collect", forbidden)
+    executor = Executor(
+        engine,
+        None,
+        uuid4(),
+        1,
+        Case(
+            id="contract-guard",
+            category="qa",
+            question="cap?",
+            required_roles=["knowledge"],
+            source_path="public.md",
+            output_contract={"fields": {"limit": "decimal"}},
+        ),
+        "C",
+        {},
+    )
+    with pytest.raises(DomainError, match="requires JSON"):
+        executor.execute()
+    assert executor.calls == 0

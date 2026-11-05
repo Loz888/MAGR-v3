@@ -1,5 +1,6 @@
 """Explicit model transport contracts; resolve only predeclared exact quote spans."""
 
+import json
 from typing import Any, Literal
 
 from pydantic import Field
@@ -8,6 +9,14 @@ from mgar_v3.benchmark.domain import Answer, Case, Citation
 from mgar_v3.domain import DomainError, Model
 from mgar_v3.repair.body import body_diff
 from mgar_v3.repair.domain import Snapshot
+
+
+def require_json_mode(system: str, payload: dict[str, Any]) -> None:
+    # DeepSeek validates this before inference. Do it before recording/reserving a call.
+    if "json" not in (system + json.dumps(payload, ensure_ascii=False)).lower():
+        raise DomainError(
+            "MODEL_JSON_MODE_INVALID", "JSON-object mode requires JSON in the supplied messages"
+        )
 
 
 class QuoteChoice(Model):

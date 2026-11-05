@@ -3,7 +3,19 @@
     "case_id": "cross-07",
     "category": "cross",
     "arm": "C",
-    "status": "NOT_RUN"
+    "status": "FAIL",
+    "reason": "BILLING_RECONCILED_PROVIDER_REJECTION",
+    "seconds": 3.8575,
+    "cost_micros": 518,
+    "reserved_micros": 0,
+    "model_calls": 3,
+    "prompt_tokens": 608,
+    "completion_tokens": 279,
+    "forbidden_actions": 0,
+    "write_invariant_checked": true,
+    "prior_status": "UNKNOWN",
+    "infrastructure_failure": true,
+    "reconciliation_hash": "1e6b379fb49e6d3af54aa5f4016f2d1dcd149f1651d4ed6b7f35f63d6ca25d2d"
   },
   {
     "case_id": "cross-04",
