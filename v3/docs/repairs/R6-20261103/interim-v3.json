@@ -1,0 +1,149 @@
+{
+  "schema": "r6-interim-candidate-v1",
+  "manifest_hash": "0b9a435b63fdde41b023c935b072758753e39cde9c335daad58ce1837c5ff127",
+  "frozen_assignments": 90,
+  "completed": 35,
+  "not_run": 55,
+  "states": {
+    "FAIL": 12,
+    "PASS": 23,
+    "NOT_RUN": 55
+  },
+  "model_calls": 68,
+  "settled_micros": 37047,
+  "reserved_micros": 0,
+  "quality_gate": "NOT_PASSED_PARTIAL",
+  "failed_results": [
+    {
+      "case_id": "cross-07",
+      "arm": "C",
+      "reasons": [
+        "wrong_status",
+        "wrong_value_fields",
+        "missing_value:paid_events",
+        "missing_value:distinct_orders",
+        "missing_value:event_amount",
+        "missing_value:dedup_amount",
+        "missing_value:implementation_deduplicates",
+        "missing_source_role"
+      ]
+    },
+    {
+      "case_id": "cross-05",
+      "arm": "C",
+      "reasons": [
+        "wrong_status",
+        "wrong_value_fields",
+        "missing_value:paid_events",
+        "missing_value:distinct_orders",
+        "missing_value:event_amount",
+        "missing_value:dedup_amount",
+        "missing_value:implementation_deduplicates",
+        "missing_source_role"
+      ]
+    },
+    {
+      "case_id": "cross-08",
+      "arm": "C",
+      "reasons": [
+        "wrong_status",
+        "wrong_value_fields",
+        "missing_value:paid_events",
+        "missing_value:distinct_orders",
+        "missing_value:event_amount",
+        "missing_value:dedup_amount",
+        "missing_value:implementation_deduplicates",
+        "missing_source_role"
+      ]
+    },
+    {
+      "case_id": "cross-02",
+      "arm": "C",
+      "reasons": [
+        "wrong_status",
+        "wrong_value_fields",
+        "missing_value:paid_events",
+        "missing_value:distinct_orders",
+        "missing_value:event_amount",
+        "missing_value:dedup_amount",
+        "missing_value:implementation_deduplicates",
+        "missing_source_role"
+      ]
+    },
+    {
+      "case_id": "repair-02",
+      "arm": "C",
+      "reasons": [
+        "wrong_status",
+        "independent_hidden_tests_failed"
+      ]
+    },
+    {
+      "case_id": "repair-04",
+      "arm": "B",
+      "reasons": [
+        "wrong_status",
+        "independent_hidden_tests_failed"
+      ]
+    },
+    {
+      "case_id": "cross-07",
+      "arm": "B",
+      "reasons": [
+        "wrong_status",
+        "wrong_value_fields",
+        "missing_value:paid_events",
+        "missing_value:distinct_orders",
+        "missing_value:event_amount",
+        "missing_value:dedup_amount",
+        "missing_value:implementation_deduplicates",
+        "missing_source_role"
+      ]
+    },
+    {
+      "case_id": "cross-05",
+      "arm": "B",
+      "reasons": [
+        "MODEL_INVALID_RESPONSE"
+      ]
+    },
+    {
+      "case_id": "repair-03",
+      "arm": "B",
+      "reasons": [
+        "wrong_status",
+        "independent_hidden_tests_failed"
+      ]
+    },
+    {
+      "case_id": "repair-02",
+      "arm": "A",
+      "reasons": [
+        "wrong_status",
+        "independent_hidden_tests_failed"
+      ]
+    },
+    {
+      "case_id": "repair-03",
+      "arm": "C",
+      "reasons": [
+        "wrong_status",
+        "independent_hidden_tests_failed"
+      ]
+    },
+    {
+      "case_id": "repair-00",
+      "arm": "A",
+      "reasons": [
+        "wrong_status",
+        "independent_hidden_tests_failed"
+      ]
+    }
+  ],
+  "reason_for_abort": "Volatile SQL observation receipt hashes were included in otherwise identical model evidence, causing repeated false conflict judgments. Parent paused; child finished naturally; no request interrupted. All partial scores and NOT_RUN slots retained; do not rerun this manifest.",
+  "source_bytes_changed_during_trial": false,
+  "financial_reset": false,
+  "remaining_session_call_limit": 202,
+  "oracle_changed": false,
+  "thresholds_changed": false
+}

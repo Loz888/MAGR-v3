@@ -53,10 +53,16 @@ def configuration(
 
 
 def prepare(
-    directory: Path, source_ref: str, ablation: str = "none", dataset: str = "final-v1"
+    directory: Path,
+    source_ref: str,
+    ablation: str = "none",
+    dataset: str = "final-v1",
+    max_new_calls: int = 270,
 ) -> dict[str, Any]:
     if not re.fullmatch(r"[a-f0-9]{40}", source_ref):
         raise ValueError("Source ref must be a full immutable Git commit")
+    if type(max_new_calls) is not int or not 1 <= max_new_calls <= 270:
+        raise ValueError("Shared call envelope must be between 1 and 270")
     if ablation not in {"none", "no_reranker", "no_evidence_repair", "no_verifier"}:
         raise ValueError("Unknown ablation")
     if (directory / "manifest.json").exists():
@@ -220,7 +226,8 @@ def prepare(
         for a in "ABC"
     ]
     random.Random(20261103).shuffle(order)
-    maximum = sum(p["profile"]["max_cost_micros"] for p in profiles)
+    per_call = LiveProfile.model_validate(profiles[0]["profile"]).reservation_micros
+    maximum = min(sum(p["profile"]["max_cost_micros"] for p in profiles), max_new_calls * per_call)
     if maximum + prior["cost_micros"] > 2000000:
         raise DomainError("BUDGET_EXHAUSTED", "Final plan exceeds cumulative USD 2")
     write(
@@ -246,7 +253,7 @@ def prepare(
         "profiles": profiles,
         "assignments": order,
         "seed": 20261103,
-        "max_new_calls": 270,
+        "max_new_calls": max_new_calls,
         "max_new_cost_micros": maximum,
         "prior_cost_micros": prior["cost_micros"],
         "cumulative_limit_micros": 2000000,

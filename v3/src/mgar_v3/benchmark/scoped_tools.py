@@ -42,6 +42,7 @@ def collect_scoped(
         document_id: str | None = None,
         revision: str | None = None,
         numeric_facts: dict[str, str] | None = None,
+        audit_artifacts: list[str] | None = None,
     ) -> None:
         if len(text.encode()) > 8192:
             raise DomainError("EVIDENCE_TOO_LARGE", "Do not compute or cite truncated evidence")
@@ -70,6 +71,7 @@ def collect_scoped(
                 document_id=document_id,
                 revision=revision,
                 numeric_facts=numeric_facts or {},
+                audit_artifacts=audit_artifacts or [],
             )
         )
 
@@ -181,16 +183,22 @@ def collect_scoped(
                     ),
                     "first_paid_events": selected,
                     "sql_queries": [raw["statement"], aggregate["statement"], first["statement"]],
-                    "sql_result_hashes": [
-                        raw["result_hash"],
-                        aggregate["result_hash"],
-                        first["result_hash"],
-                    ],
                 },
                 ensure_ascii=False,
                 separators=(",", ":"),
             )
-            record("data", text, config["fixture_hash"], "sql://" + table, numeric_facts=facts)
+            audit = [
+                engine.artifacts.put(json.dumps(result, sort_keys=True).encode())
+                for result in [raw, aggregate, first]
+            ]
+            record(
+                "data",
+                text,
+                config["fixture_hash"],
+                "sql://" + table,
+                numeric_facts=facts,
+                audit_artifacts=audit,
+            )
         except DomainError as exc:
             if exc.code == "BENCHMARK_INPUT_CHANGED":
                 raise
@@ -203,6 +211,6 @@ def collect_scoped(
             "recall_at5": int(target in retrieved) if target else None,
             "knowledge_target_present": target is not None,
             "supplement": supplement,
-            "evidence_protocol": "r6-scoped-v3",
+            "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
         },
     )

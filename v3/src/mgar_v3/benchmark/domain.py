@@ -69,3 +69,4 @@ class Source(Model):
     document_id: str | None = None
     revision: str | None = None
     numeric_facts: dict[str, str] = Field(default_factory=dict)
+    audit_artifacts: list[str] = Field(default_factory=list)

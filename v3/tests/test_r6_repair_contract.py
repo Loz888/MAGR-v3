@@ -11,7 +11,7 @@ from mgar_v3.agents.data import provision
 from mgar_v3.agents.numeric import revenue_metrics
 from mgar_v3.benchmark.contract import capability_decision, evidence_decision, output_issues
 from mgar_v3.benchmark.domain import Answer, Case, OutputContract, Source, Summary
-from mgar_v3.benchmark.executor import Executor
+from mgar_v3.benchmark.executor import Executor, bounded, public_source
 from mgar_v3.benchmark.oracle import cross_expected
 from mgar_v3.benchmark.prepare import DATA
 from mgar_v3.benchmark.tools import collect
@@ -257,7 +257,17 @@ def test_scoped_real_postgres_arithmetic_and_revocation_never_use_case_expected_
     data = next(s for s in sources if s.role == "data")
     assert data.numeric_facts["dedup_amount"] == "20.00"
     assert data.numeric_facts["event_amount"] == "73.00"
-    assert len(json.loads(data.text)["sql_result_hashes"]) == 3
+    assert len(data.audit_artifacts) == 3
+    audit = [json.loads(engine.artifacts.read(h)) for h in data.audit_artifacts]
+    assert all("result_hash" in r and "observed_at" in r for r in audit)
+    again, _, _ = collect(engine, run, epoch, request, inputs, supplement=True)
+    repeated = next(s for s in again if s.role == "data")
+    assert repeated.text == data.text and repeated.numeric_facts == data.numeric_facts
+    assert repeated.audit_artifacts != data.audit_artifacts
+    assert len(bounded([data, repeated])) == 1
+    assert "audit_artifacts" not in public_source(data)
+    assert all(h not in json.dumps(bounded([data, repeated])) for h in data.audit_artifacts)
+    assert "sql_result_hashes" not in data.text
     assert stats["tool_calls"] <= 8
     repair_sources, _, _ = collect(
         engine,
@@ -408,3 +418,67 @@ def test_repair_output_survives_full_public_and_hidden_pipeline_without_optional
     )
     assert receipt["passed"], log.decode()
     assert len([n for n in receipt["tests"] if n.startswith("TestR6Hidden/")]) == 28
+
+
+def test_remaining_call_envelope_is_frozen_below_task_reservations(tmp_path, monkeypatch):
+    from mgar_v3.benchmark import run
+
+    m = json.loads((DATA.parents[1] / "eval/reports/final-v2-manifest.json").read_text())
+    m["cases"] = [
+        Case.model_validate(c).model_dump(mode="json")
+        for c in json.loads((DATA / "cases.json").read_text())
+    ]
+    m["max_new_calls"] = 202
+    m["max_new_cost_micros"] = 202 * 6144
+    (tmp_path / "inputs.json").write_text("{}")
+    m["inputs_sha256"] = hashlib.sha256(b"{}").hexdigest()
+    monkeypatch.setattr(run, "fingerprint", lambda: m["implementation_sha256"])
+    path = tmp_path / "manifest.json"
+    path.write_text(json.dumps(m))
+    assert run.verify(tmp_path)["max_new_calls"] == 202
+    for cap, cost in [(271, 271 * 6144), (202, 202 * 6144 + 1), (0, 0)]:
+        path.write_text(json.dumps({**m, "max_new_calls": cap, "max_new_cost_micros": cost}))
+        with pytest.raises(DomainError):
+            run.verify(tmp_path)
+
+
+def test_postgres_remaining_group_cap_does_not_refill_profile_calls(engine, trigger):
+    from datetime import UTC, datetime, timedelta
+
+    from mgar_v3.benchmark.domain import EvaluationAuthorization
+
+    engine.settings.allow_paid = True
+    manifest = {
+        "repository": engine.settings.repository,
+        "profiles": [],
+        "max_new_calls": 2,
+        "max_new_cost_micros": 12288,
+        "prior_cost_micros": 0,
+    }
+    grant = EvaluationAuthorization(
+        manifest_hash=digest(manifest),
+        approved_by="owner",
+        expires_at=datetime.now(UTC) + timedelta(hours=1),
+        max_new_calls=2,
+        max_new_cost_micros=12288,
+        allow_paid=True,
+    )
+    budget = engine.benchmarks.authorize(manifest, grant)
+    run = engine.ingest(trigger).run_id
+    with engine.transaction() as conn:
+        conn.execute(
+            "INSERT INTO app.benchmark_runs VALUES (%s,%s,%s,%s)",
+            (run, digest(manifest), "bounded", "A"),
+        )
+    for _ in range(2):
+        with engine.transaction() as conn:
+            assert engine.benchmarks.reserve(conn, run, 6144) == budget
+    with pytest.raises(DomainError, match="shared grant exhausted"):
+        with engine.transaction() as conn:
+            engine.benchmarks.reserve(conn, run, 6144)
+    with engine.transaction() as conn:
+        row = conn.execute(
+            "SELECT * FROM app.benchmark_budgets WHERE budget_hash=%s", (budget,)
+        ).fetchone()
+        assert row["used_calls"] == row["call_limit"] == 2
+        assert row["reserved_micros"] == 12288

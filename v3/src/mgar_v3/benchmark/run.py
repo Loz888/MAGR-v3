@@ -279,14 +279,16 @@ def verify(directory: Path, continuation: Path | None = None) -> dict[str, Any]:
                 profile.output_micros_per_million,
             )
         )
-    if len(identities) != 1 or manifest["max_new_calls"] != 270:
+    call_envelope = manifest["max_new_calls"]
+    if len(identities) != 1 or type(call_envelope) is not int or not 1 <= call_envelope <= 270:
         raise DomainError(
             "BENCHMARK_CHANGED", "Arms must share one frozen model/price/context bound"
         )
-    if (
-        sum(p["profile"]["max_cost_micros"] for p in manifest["profiles"])
-        != (manifest["max_new_cost_micros"])
-    ):
+    shared_maximum = min(
+        sum(p["profile"]["max_cost_micros"] for p in manifest["profiles"]),
+        call_envelope * profile.reservation_micros,
+    )
+    if shared_maximum != manifest["max_new_cost_micros"]:
         raise DomainError("BENCHMARK_CHANGED", "Shared cost cap differs from task reservations")
     for path, key in [
         (directory / "inputs.json", "inputs_sha256"),

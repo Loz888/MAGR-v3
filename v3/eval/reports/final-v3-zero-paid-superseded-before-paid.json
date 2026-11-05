@@ -1,0 +1,6 @@
+{
+  "status": "SUPERSEDED_BEFORE_PAID",
+  "manifest_hash": "d459c6a174afeb3a04825b1820a03acb1615a3401b82b95f30d64968b2a8ee93",
+  "model_calls": 0,
+  "reason": "Generated exposure wording did not explicitly acknowledge reused first-round inputs. Correct manifest metadata before authorizing the paid regression. Inputs, independent oracle and thresholds unchanged."
+}

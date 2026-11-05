@@ -1,0 +1,318 @@
+{
+  "status": "PASS",
+  "scope": "real evidence connectors and conservative prompt bounds only",
+  "model_quality_gate": "NOT_RUN",
+  "new_paid_calls": 0,
+  "cases": [
+    {
+      "case_id": "qa-00",
+      "context_upper_bound": 7182,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-01",
+      "context_upper_bound": 7186,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-02",
+      "context_upper_bound": 7175,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-03",
+      "context_upper_bound": 7182,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-04",
+      "context_upper_bound": 7180,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-05",
+      "context_upper_bound": 7186,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-06",
+      "context_upper_bound": 7177,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-07",
+      "context_upper_bound": 7175,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-08",
+      "context_upper_bound": 7174,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "qa-09",
+      "context_upper_bound": 7196,
+      "tool_calls": 3,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-00",
+      "context_upper_bound": 9552,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-01",
+      "context_upper_bound": 9629,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-02",
+      "context_upper_bound": 9552,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-03",
+      "context_upper_bound": 9629,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-04",
+      "context_upper_bound": 9552,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-05",
+      "context_upper_bound": 9629,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-06",
+      "context_upper_bound": 9552,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-07",
+      "context_upper_bound": 9629,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-08",
+      "context_upper_bound": 9553,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "cross-09",
+      "context_upper_bound": 9630,
+      "tool_calls": 7,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-00",
+      "context_upper_bound": 8028,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-01",
+      "context_upper_bound": 8031,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-02",
+      "context_upper_bound": 8042,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-03",
+      "context_upper_bound": 8044,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "repair-04",
+      "context_upper_bound": 8038,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": []
+    },
+    {
+      "case_id": "negative-00",
+      "context_upper_bound": 7592,
+      "tool_calls": 4,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "negative-01",
+      "context_upper_bound": 6760,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": [
+        "knowledge:KNOWLEDGE_DOCUMENT_NOT_FOUND"
+      ]
+    },
+    {
+      "case_id": "negative-02",
+      "context_upper_bound": 6764,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "knowledge_target_present": false,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": [
+        "knowledge:KNOWLEDGE_DOCUMENT_NOT_FOUND"
+      ]
+    },
+    {
+      "case_id": "negative-03",
+      "context_upper_bound": 7425,
+      "tool_calls": 4,
+      "recall_at5": 1,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": [
+        "data:DATA_SOURCE_NOT_CONFIGURED"
+      ]
+    },
+    {
+      "case_id": "negative-04",
+      "context_upper_bound": 6756,
+      "tool_calls": 1,
+      "recall_at5": 0,
+      "knowledge_target_present": true,
+      "supplement": false,
+      "evidence_protocol": "r6-scoped-v3",
+      "source_errors": [
+        "knowledge:KNOWLEDGE_REVOKED"
+      ]
+    }
+  ]
+}

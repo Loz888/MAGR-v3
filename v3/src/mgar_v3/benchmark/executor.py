@@ -41,6 +41,11 @@ SYSTEM = (
 )
 
 
+def public_source(source: Source) -> dict[str, Any]:
+    # Observation receipts include timestamps/snapshot IDs, not semantic content versions.
+    return source.model_dump(mode="json", exclude={"audit_artifacts"})
+
+
 def bounded(sources: list[Source]) -> list[dict[str, Any]]:
     unique: dict[tuple[str, str, str], Source] = {}
     for source in sources:
@@ -55,7 +60,7 @@ def bounded(sources: list[Source]) -> list[dict[str, Any]]:
     for source in values:
         result.append(
             {
-                **source.model_dump(mode="json"),
+                **public_source(source),
                 "text": source.text.encode()[:allowance].decode(errors="ignore"),
             }
         )
@@ -152,7 +157,7 @@ class Executor:
                     "question": self.case.question,
                     "role": role,
                     "required": role in self.case.required_roles,
-                    "sources": [s.model_dump(mode="json") for s in sources if s.role == role],
+                    "sources": [public_source(s) for s in sources if s.role == role],
                 },
                 Summary,
             )

@@ -1,0 +1,27 @@
+{
+  "manifest_hash": "0b9a435b63fdde41b023c935b072758753e39cde9c335daad58ce1837c5ff127",
+  "new_implementation_sha256": "0ab7dbb249c692a9681593c3afeb42bf57b0d56151245519aa53fc908e48e72b",
+  "baseline_archive_sha256": "ad65f7921dbf4fc13a457cfae0e8eff1afe927ffc318211be4426ad6bebbb680",
+  "scope": "supervision_only_no_reruns_no_new_grant",
+  "changed_paths": [],
+  "retained_results": {
+    "cross-07:C": "9e9eef88519a3e63f6fcba4f03ac1e76e49942e9dd5ee80286d638aa7cf0b209"
+  },
+  "reviewed_at": "2026-11-05T02:53:04.095190+00:00",
+  "failed_worker_log": "workers/supervision-stop-before-review/remaining-89.log",
+  "failed_worker_sha256": "8456e4b26a05b08e5b323d2e40e29a09f57a092bc0609bfd161a10bbcd449b2d",
+  "reason": "Fresh-process worker 2 required explicit continuation; it exited before Engine or any model call. Frozen source, grant, budget, and first failed result are unchanged.",
+  "financial_review": {
+    "used_calls": 3,
+    "settled_micros": 1726,
+    "reserved_micros": 0,
+    "unknown": 0,
+    "cumulative": {
+      "calls": 227,
+      "cost_micros": 118255,
+      "unknown": 0
+    }
+  },
+  "remaining_assignments": 89,
+  "replay_completed": false
+}

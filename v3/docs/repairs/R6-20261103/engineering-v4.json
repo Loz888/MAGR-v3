@@ -1,0 +1,46 @@
+{
+  "task": "V31-R6-REPAIR",
+  "status": "PASS",
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "reason": null,
+  "argv": [
+    "/workspace/MAGR-v3/v3/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_r6_repair_contract.py",
+    "tests/test_final_evaluation.py",
+    "tests/test_final_resume.py",
+    "tests/test_billing_reconciliation.py",
+    "tests/test_models.py",
+    "tests/test_verification.py",
+    "--junitxml=/workspace/MAGR-v3/v3/evidence/V31-R6-REPAIR/20261105T030129Z-5f4fc9cd/junit.xml"
+  ],
+  "cwd": "/workspace/MAGR-v3/v3",
+  "started_at": "2026-11-05T03:01:29.868679+00:00",
+  "finished_at": "2026-11-05T03:02:51.837004+00:00",
+  "duration_seconds": 81.954,
+  "command_exit_code": 0,
+  "exit_code": 0,
+  "counts": {
+    "tests": 80,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "components": {
+    "postgres": "real_disposable_database_17_migrations",
+    "model": "controlled_only_no_paid_calls",
+    "numeric": "observed_SQL_aggregate_min_event_and_exact_Decimal",
+    "policy": "public_capabilities_current_ACL_scope_revision_no_oracle_labels",
+    "contract": "strict_fields_boolean_strings_fail_closed_and_bounded_repair",
+    "go": "real_isolated_hidden_oracle_regression"
+  },
+  "git_commit": "1db078fbdaa85999f26e49d6796508cef1ade749",
+  "source_sha256": "2a8c68c39b826d7dd1fa695a4fb818e26c8dd7b34931bff010cd19c3e8b8df95",
+  "finished_source_sha256": "2a8c68c39b826d7dd1fa695a4fb818e26c8dd7b34931bff010cd19c3e8b8df95",
+  "log_path": "evidence/V31-R6-REPAIR/20261105T030129Z-5f4fc9cd/command.log",
+  "attempt_path": "evidence/V31-R6-REPAIR/20261105T030129Z-5f4fc9cd",
+  "scope_note": "80 targeted checks after removing volatile SQL receipt metadata from model evidence and lowering the next frozen shared envelope; overlaps with prior 321/78 checks. Actual PostgreSQL repeat reads verify stable semantic content and distinct immutable audit CAS records."
+}
