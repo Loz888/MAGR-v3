@@ -6,11 +6,12 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
-from mgar_v3.benchmark.domain import Answer, Case
-from mgar_v3.benchmark.executor import SYSTEM, bounded
+from mgar_v3.benchmark.domain import Case
+from mgar_v3.benchmark.executor import SYSTEM, SYSTEM_V5, bounded
 from mgar_v3.benchmark.prepare import configuration, write
 from mgar_v3.benchmark.run import verify
 from mgar_v3.benchmark.tools import collect
+from mgar_v3.benchmark.wire import quote_sources, response_schema
 from mgar_v3.coordination.engine import Engine
 from mgar_v3.domain import DomainError, digest
 from mgar_v3.evidence.artifacts import ArtifactStore
@@ -64,13 +65,15 @@ def preflight(directory: Path) -> dict[str, Any]:
             payload = {
                 "question": case.question,
                 "required_roles": case.required_roles,
-                "sources": bounded(sources),
+                "sources": (
+                    quote_sources(bounded(sources))[0] if case.output_contract else bounded(sources)
+                ),
                 "source_errors": errors,
                 "expert_notes": [
                     {"role": r, "required": r in case.required_roles, "notes": "x" * 600}
                     for r in ["knowledge", "repo"]
                 ],
-                "answer_schema": Answer.model_json_schema(),
+                "answer_schema": response_schema(case).model_json_schema(),
                 "output_contract": (
                     case.output_contract.model_dump(mode="json") if case.output_contract else None
                 ),
@@ -85,7 +88,8 @@ def preflight(directory: Path) -> dict[str, Any]:
             upper = (
                 len(
                     (
-                        SYSTEM + json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+                        (SYSTEM_V5 if case.output_contract else SYSTEM)
+                        + json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
                     ).encode()
                 )
                 + 2048

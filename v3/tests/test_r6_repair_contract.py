@@ -15,6 +15,7 @@ from mgar_v3.benchmark.executor import Executor, bounded, public_source
 from mgar_v3.benchmark.oracle import cross_expected
 from mgar_v3.benchmark.prepare import DATA
 from mgar_v3.benchmark.tools import collect
+from mgar_v3.benchmark.wire import WireAnswer, WirePatch
 from mgar_v3.domain import DomainError, digest
 from mgar_v3.rag.domain import ACLUpdate, Upload
 
@@ -167,10 +168,10 @@ def test_execution_fails_closed_after_three_known_invalid_outputs(engine, monkey
         def complete(self, *args):
             if args[-1] is Summary:
                 return Summary(notes="No additional evidence needed.")
-            return Answer(
+            return WireAnswer(
                 status="supported",
                 values={"limit": "4"},
-                citations=[{"source_id": "fabricated", "quote": s.text}],
+                citations=[{"quote_id": "s99q0"}],
             )
 
     for arm in "ABC":
@@ -383,11 +384,12 @@ def test_repair_output_survives_full_public_and_hidden_pipeline_without_optional
                 "knowledge": False,
                 "repo": True,
             }
-            return Answer(
+            return WirePatch(
                 status="supported",
-                values={},
-                diff=patch,
-                citations=[{"source_id": s.id, "quote": "func PaidRevenueCents"}],
+                function_body=after.split("func PaidRevenueCents(orders []Order) int {", 1)[
+                    1
+                ].rsplit("}", 1)[0],
+                citations=[{"quote_id": "s0q0"}],
             )
 
     request = case(
@@ -409,7 +411,7 @@ def test_repair_output_survives_full_public_and_hidden_pipeline_without_optional
     )
     executor.model = Controlled()
     answer, _, _ = executor.execute()
-    assert answer.status == "supported" and answer.values == {} and answer.diff
+    assert answer.status == "supported" and answer.values == {} and answer.diff == patch
     assert len(seen) == 1 and executor.calls == 3
     assert executor.final_files is not None
     receipt, log = Sandbox(str(run)).run(

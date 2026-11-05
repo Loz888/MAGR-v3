@@ -250,7 +250,8 @@
       "tests/test_router_model.py",
       "tests/test_routing.py",
       "tests/test_verification.py",
-      "tests/test_r6_repair_contract.py"
+      "tests/test_r6_repair_contract.py",
+      "tests/test_r6_wire_protocol.py"
     ],
     "timeout_seconds": 1800,
     "components": {
@@ -306,16 +307,18 @@
       "tests/test_final_resume.py",
       "tests/test_billing_reconciliation.py",
       "tests/test_models.py",
-      "tests/test_verification.py"
+      "tests/test_verification.py",
+      "tests/test_r6_wire_protocol.py"
     ],
-    "timeout_seconds": 300,
+    "timeout_seconds": 600,
     "components": {
       "postgres": "real_disposable_database_17_migrations",
       "model": "controlled_only_no_paid_calls",
       "numeric": "observed_SQL_aggregate_min_event_and_exact_Decimal",
       "policy": "public_capabilities_current_ACL_scope_revision_no_oracle_labels",
       "contract": "strict_fields_boolean_strings_fail_closed_and_bounded_repair",
-      "go": "real_isolated_hidden_oracle_regression"
+      "go": "real_isolated_hidden_oracle_regression",
+      "wire": "exact_quote_catalog_body_only_patch_rendering_known_invalid_expert_fallback_unknown_stop"
     }
   }
 }

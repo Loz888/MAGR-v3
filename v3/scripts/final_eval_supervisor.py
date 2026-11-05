@@ -93,6 +93,9 @@ def main() -> None:
             ),
             flush=True,
         )
+        if all(row["status"] != "NOT_RUN" for row in after):
+            print(json.dumps({"status": "completed", "assignments": 90}), flush=True)
+            return
     raise DomainError("WORKER_LIMIT", "Finite supervisor invocation limit reached")
 
 

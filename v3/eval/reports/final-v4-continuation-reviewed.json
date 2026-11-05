@@ -1,0 +1,10 @@
+{
+  "manifest_hash": "6b3cc5ce0fe9eba2a0a7b0e280eac8363f3f07d133a685f0dde9e9c3f9864ad3",
+  "new_implementation_sha256": "5ba9ce583a56ea4f850ab53650cd09df43781cb7635ab15bbc634c213f402ef3",
+  "baseline_archive_sha256": "623ebbe73cc6217d04850a0b98fc50d3956e17620b377367ab0d2f98ade98b57",
+  "scope": "supervision_only_no_reruns_no_new_grant",
+  "changed_paths": [],
+  "retained_results": {},
+  "reviewed_at": "2026-11-05T03:08:07.385061+00:00",
+  "reason": "Exact frozen source; one assignment per new worker; pre-reviewed explicit continuation from first assignment; no source changes, reruns or budget reset."
+}

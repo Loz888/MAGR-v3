@@ -1,0 +1,32 @@
+{
+  "case_id": "qa-05",
+  "arm": "C",
+  "provider_response_hash": "b5a2cd3c84dcca1429b503c57c0687180e5576aa12eaa542d7b6d25f7943cfd9",
+  "raw_content": "{\"values\":{\"limit\":\"45\"},\"need_more\":false,\"citations\":[{\"source_id\":\"3f6628b7-ea1f-490a-b0ca-80ae8a4ec9e9\",\"quote\":\"审计记录保留天数为 45\"}]}",
+  "summary_schema_errors": [
+    {
+      "type": "missing",
+      "loc": [
+        "notes"
+      ],
+      "msg": "Field required"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "values"
+      ],
+      "msg": "Extra inputs are not permitted"
+    },
+    {
+      "type": "extra_forbidden",
+      "loc": [
+        "citations"
+      ],
+      "msg": "Extra inputs are not permitted"
+    }
+  ],
+  "response_known_and_settled": true,
+  "original_grade": "FAIL",
+  "regraded": false
+}

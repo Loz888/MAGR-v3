@@ -1,0 +1,12 @@
+{
+  "status": "PREPARED_NOT_AUTHORIZED",
+  "manifest_hash": "6b3cc5ce0fe9eba2a0a7b0e280eac8363f3f07d133a685f0dde9e9c3f9864ad3",
+  "assignments": 90,
+  "max_new_calls": 202,
+  "max_new_cost_micros": 1241088,
+  "prior_cost_micros": 153576,
+  "cumulative_upper_bound_micros": 1394664,
+  "new_paid_calls": 0,
+  "external_writes": false,
+  "ablation": "none"
+}
