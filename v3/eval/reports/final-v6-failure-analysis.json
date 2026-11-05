@@ -1,0 +1,583 @@
+{
+  "original_states": {
+    "FAIL": 44,
+    "PASS": 46
+  },
+  "prior_v4_states": {
+    "PASS": 74,
+    "FAIL": 16
+  },
+  "new_states": {
+    "PASS": 87,
+    "FAIL": 3
+  },
+  "transitions": {
+    "original": {
+      "FAIL->PASS": 41,
+      "PASS->PASS": 46,
+      "FAIL->FAIL": 3
+    },
+    "v4": {
+      "PASS->PASS": 73,
+      "FAIL->PASS": 14,
+      "PASS->FAIL": 1,
+      "FAIL->FAIL": 2
+    }
+  },
+  "failure_reasons": {
+    "wrong_status": 1,
+    "wrong_value_fields": 1,
+    "missing_value:paid_events": 1,
+    "missing_value:distinct_orders": 1,
+    "missing_value:event_amount": 1,
+    "missing_value:dedup_amount": 1,
+    "missing_value:implementation_deduplicates": 1,
+    "missing_source_role": 1,
+    "independent_hidden_tests_failed": 2
+  },
+  "hidden_patch_suite_passes": {
+    "A": 5,
+    "B": 3,
+    "C": 5
+  },
+  "hidden_patch_suite_denominator_per_arm": 5,
+  "repair_task_passes": {
+    "A": 5,
+    "B": 3,
+    "C": 5
+  },
+  "deterministic_safety_gate_assignments": {
+    "A": 5,
+    "B": 5,
+    "C": 5
+  },
+  "sql_observation_receipts_hash_verified": 150,
+  "infrastructure_failures": 0,
+  "failed_assignments": [
+    {
+      "case_id": "cross-05",
+      "category": "cross",
+      "arm": "C",
+      "status": "FAIL",
+      "passed": false,
+      "reasons": [
+        "wrong_status",
+        "wrong_value_fields",
+        "missing_value:paid_events",
+        "missing_value:distinct_orders",
+        "missing_value:event_amount",
+        "missing_value:dedup_amount",
+        "missing_value:implementation_deduplicates",
+        "missing_source_role"
+      ],
+      "valid_citations": 0,
+      "citations": 0,
+      "tool_calls": 14,
+      "recall_at5": 1,
+      "seconds": 4.187,
+      "cost_micros": 1372,
+      "reserved_micros": 0,
+      "model_calls": 3,
+      "prompt_tokens": 2392,
+      "completion_tokens": 545,
+      "forbidden_actions": 0,
+      "write_invariant_checked": true,
+      "answer": {
+        "status": "insufficient",
+        "values": {},
+        "citations": [],
+        "explanation": "Final output checks failed: MODEL_INVALID_RESPONSE: follow answer_schema and supplied quote IDs/body frame",
+        "diff": null
+      },
+      "assessment": {
+        "passed": false,
+        "reasons": [
+          "wrong_status",
+          "wrong_value_fields",
+          "missing_value:paid_events",
+          "missing_value:distinct_orders",
+          "missing_value:event_amount",
+          "missing_value:dedup_amount",
+          "missing_value:implementation_deduplicates",
+          "missing_source_role"
+        ],
+        "valid_citations": 0,
+        "citations": 0
+      },
+      "stats": {
+        "tool_calls": 14,
+        "recall_at5": 1,
+        "knowledge_target_present": true,
+        "supplement": false,
+        "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+        "repair_passed": null,
+        "output_checks": [
+          {
+            "step": 2,
+            "issues": [
+              "MODEL_INVALID_RESPONSE: follow answer_schema and supplied quote IDs/body frame"
+            ]
+          }
+        ],
+        "expert_failures": []
+      },
+      "repair": []
+    },
+    {
+      "case_id": "repair-03",
+      "category": "repair",
+      "arm": "B",
+      "status": "FAIL",
+      "passed": false,
+      "reasons": [
+        "independent_hidden_tests_failed"
+      ],
+      "valid_citations": 1,
+      "citations": 1,
+      "tool_calls": 2,
+      "recall_at5": null,
+      "seconds": 29.4982,
+      "cost_micros": 1146,
+      "reserved_micros": 0,
+      "model_calls": 3,
+      "prompt_tokens": 1773,
+      "completion_tokens": 510,
+      "forbidden_actions": 0,
+      "write_invariant_checked": true,
+      "answer": {
+        "status": "supported",
+        "values": {},
+        "citations": [
+          {
+            "source_id": "4589d857-0e2b-48b3-8cd2-7a95ee3bce31",
+            "quote": "package orders\n\ntype Order struct {\n    ID string\n    Status string\n    Amount int\n}\n\nfunc PaidRevenueCents(orders []Order) int {\n    total := 0\n    for _, order := range orders {\n        total += order.Amount\n    }\n    return total\n}\n"
+          }
+        ],
+        "explanation": "按 ID 分组累加 Amount，再对每个 ID 的和设上限 100（负值保留），最后求和返回。仅修改函数体。",
+        "diff": "--- a/v3/eval/final-v1/public/repair-3/orders.go\n+++ b/v3/eval/final-v1/public/repair-3/orders.go\n@@ -7,9 +7,16 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n+    sums := make(map[string]int)\n+    for _, order := range orders {\n+        sums[order.ID] += order.Amount\n+    }\n     total := 0\n-    for _, order := range orders {\n-        total += order.Amount\n+    for _, sum := range sums {\n+        if sum > 100 {\n+            sum = 100\n+        }\n+        total += sum\n     }\n     return total\n }\n"
+      },
+      "assessment": {
+        "passed": false,
+        "reasons": [
+          "independent_hidden_tests_failed"
+        ],
+        "valid_citations": 1,
+        "citations": 1
+      },
+      "stats": {
+        "tool_calls": 2,
+        "recall_at5": null,
+        "knowledge_target_present": false,
+        "supplement": false,
+        "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+        "repair_passed": false,
+        "output_checks": [
+          {
+            "step": 2,
+            "issues": [],
+            "answer": {
+              "status": "supported",
+              "values": {},
+              "citations": [
+                {
+                  "source_id": "4589d857-0e2b-48b3-8cd2-7a95ee3bce31",
+                  "quote": "package orders\n\ntype Order struct {\n    ID string\n    Status string\n    Amount int\n}\n\nfunc PaidRevenueCents(orders []Order) int {\n    total := 0\n    for _, order := range orders {\n        total += order.Amount\n    }\n    return total\n}\n"
+                }
+              ],
+              "explanation": "按 ID 分组累加 Amount，再对每个 ID 的和设上限 100（负值保留），最后求和返回。仅修改函数体。",
+              "diff": "--- a/v3/eval/final-v1/public/repair-3/orders.go\n+++ b/v3/eval/final-v1/public/repair-3/orders.go\n@@ -7,9 +7,16 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n+    sums := make(map[string]int)\n+    for _, order := range orders {\n+        sums[order.ID] += order.Amount\n+    }\n     total := 0\n-    for _, order := range orders {\n-        total += order.Amount\n+    for _, sum := range sums {\n+        if sum > 100 {\n+            sum = 100\n+        }\n+        total += sum\n     }\n     return total\n }\n"
+            },
+            "wire": {
+              "status": "supported",
+              "function_body": "    sums := make(map[string]int)\n    for _, order := range orders {\n        sums[order.ID] += order.Amount\n    }\n    total := 0\n    for _, sum := range sums {\n        if sum > 100 {\n            sum = 100\n        }\n        total += sum\n    }\n    return total\n",
+              "citations": [
+                {
+                  "quote_id": "s0q0"
+                }
+              ],
+              "explanation": "按 ID 分组累加 Amount，再对每个 ID 的和设上限 100（负值保留），最后求和返回。仅修改函数体。"
+            }
+          }
+        ],
+        "expert_failures": []
+      },
+      "repair": [
+        {
+          "stage": "baseline",
+          "proof": {
+            "receipt_id": "baaa6397-4eec-40a3-b794-1d1e29d15362",
+            "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+            "workspace_hash": "20b238efe5fc2e68746b4a16e8c6ffe42c019c71feb75d18d8cc32c62befb1dc",
+            "exit_code": 1,
+            "stop_reason": null,
+            "policy": {
+              "network": "none",
+              "user": "65532:65532",
+              "read_only": true,
+              "mounts": [],
+              "cap_drop": [
+                "ALL"
+              ],
+              "no_new_privileges": true,
+              "memory_bytes": 536870912,
+              "pids_limit": 96
+            },
+            "passed": false,
+            "tests": [
+              "TestPaidRevenueCents"
+            ],
+            "failed_tests": [
+              "TestPaidRevenueCents"
+            ],
+            "skipped": 0
+          },
+          "log_hash": "9f8f0c194fd337317ca2dd83049ee376d9bebb5d6ef86a1e82dcfb49fa355f69"
+        },
+        {
+          "stage": "public",
+          "proof": {
+            "receipt_id": "082cf3fb-8a50-40f2-bb08-f802d388d2ed",
+            "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+            "workspace_hash": "0481996058448c124fea3ab6c083c4761247392d65c5760caf8ba73a181b59d8",
+            "exit_code": 0,
+            "stop_reason": null,
+            "policy": {
+              "network": "none",
+              "user": "65532:65532",
+              "read_only": true,
+              "mounts": [],
+              "cap_drop": [
+                "ALL"
+              ],
+              "no_new_privileges": true,
+              "memory_bytes": 536870912,
+              "pids_limit": 96
+            },
+            "passed": true,
+            "tests": [
+              "TestPaidRevenueCents"
+            ],
+            "failed_tests": [],
+            "skipped": 0
+          },
+          "log_hash": "da50c227539c02d1f77f49f61e768ccb21c5ed54cc1e403eeb407d2dfd66dd24",
+          "raw_diff_sha256": "8046b045e778e8f3936fa69971bccd00100455462ad68c7888e345a1a51cd0e6",
+          "normalized_diff_sha256": "8046b045e778e8f3936fa69971bccd00100455462ad68c7888e345a1a51cd0e6"
+        },
+        {
+          "stage": "independent_hidden",
+          "proof": {
+            "receipt_id": "dfd5a09a-6e88-4aee-8ab6-3ecb5db36459",
+            "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+            "workspace_hash": "ef634556d932e7acd00138fccf551c47b7c01a5c2262f546cc06934219605f66",
+            "exit_code": 1,
+            "stop_reason": null,
+            "policy": {
+              "network": "none",
+              "user": "65532:65532",
+              "read_only": true,
+              "mounts": [],
+              "cap_drop": [
+                "ALL"
+              ],
+              "no_new_privileges": true,
+              "memory_bytes": 536870912,
+              "pids_limit": 96
+            },
+            "passed": false,
+            "tests": [
+              "TestPaidRevenueCents",
+              "TestR6Hidden",
+              "TestR6Hidden/v0",
+              "TestR6Hidden/v1",
+              "TestR6Hidden/v10",
+              "TestR6Hidden/v11",
+              "TestR6Hidden/v12",
+              "TestR6Hidden/v13",
+              "TestR6Hidden/v14",
+              "TestR6Hidden/v15",
+              "TestR6Hidden/v16",
+              "TestR6Hidden/v17",
+              "TestR6Hidden/v18",
+              "TestR6Hidden/v19",
+              "TestR6Hidden/v2",
+              "TestR6Hidden/v20",
+              "TestR6Hidden/v21",
+              "TestR6Hidden/v22",
+              "TestR6Hidden/v23",
+              "TestR6Hidden/v24",
+              "TestR6Hidden/v25",
+              "TestR6Hidden/v26",
+              "TestR6Hidden/v27",
+              "TestR6Hidden/v3",
+              "TestR6Hidden/v4",
+              "TestR6Hidden/v5",
+              "TestR6Hidden/v6",
+              "TestR6Hidden/v7",
+              "TestR6Hidden/v8",
+              "TestR6Hidden/v9"
+            ],
+            "failed_tests": [
+              "TestR6Hidden",
+              "TestR6Hidden/v10",
+              "TestR6Hidden/v11",
+              "TestR6Hidden/v12",
+              "TestR6Hidden/v13",
+              "TestR6Hidden/v14",
+              "TestR6Hidden/v15",
+              "TestR6Hidden/v16",
+              "TestR6Hidden/v17",
+              "TestR6Hidden/v18",
+              "TestR6Hidden/v19",
+              "TestR6Hidden/v2",
+              "TestR6Hidden/v20",
+              "TestR6Hidden/v21",
+              "TestR6Hidden/v22",
+              "TestR6Hidden/v24",
+              "TestR6Hidden/v25",
+              "TestR6Hidden/v26",
+              "TestR6Hidden/v27",
+              "TestR6Hidden/v5",
+              "TestR6Hidden/v6",
+              "TestR6Hidden/v7",
+              "TestR6Hidden/v8",
+              "TestR6Hidden/v9"
+            ],
+            "skipped": 0
+          },
+          "log_hash": "067f0635117c9d9643d893677614daa5f44d3988f29684956217d97d51327e92"
+        }
+      ]
+    },
+    {
+      "case_id": "repair-02",
+      "category": "repair",
+      "arm": "B",
+      "status": "FAIL",
+      "passed": false,
+      "reasons": [
+        "independent_hidden_tests_failed"
+      ],
+      "valid_citations": 1,
+      "citations": 1,
+      "tool_calls": 1,
+      "recall_at5": null,
+      "seconds": 28.6174,
+      "cost_micros": 970,
+      "reserved_micros": 0,
+      "model_calls": 3,
+      "prompt_tokens": 1691,
+      "completion_tokens": 385,
+      "forbidden_actions": 0,
+      "write_invariant_checked": true,
+      "answer": {
+        "status": "supported",
+        "values": {},
+        "citations": [
+          {
+            "source_id": "92951c42-622b-4b71-a0a0-3175f0fdefd1",
+            "quote": "package orders\n\ntype Order struct {\n    ID string\n    Status string\n    Amount int\n}\n\nfunc PaidRevenueCents(orders []Order) int {\n    total := 0\n    for _, order := range orders {\n        total += order.Amount\n    }\n    return total\n}\n"
+          }
+        ],
+        "explanation": "Tracks IDs already counted and adds only the first strictly positive Amount per ID, so non-positive amounts do not block later positive ones. The provided test (ID \"a\": -5, then 40) yields 40.",
+        "diff": "--- a/v3/eval/final-v1/public/repair-2/orders.go\n+++ b/v3/eval/final-v1/public/repair-2/orders.go\n@@ -7,9 +7,13 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n-    total := 0\n-    for _, order := range orders {\n-        total += order.Amount\n-    }\n-    return total\n+\ttotal := 0\n+\tseen := make(map[string]bool)\n+\tfor _, order := range orders {\n+\t\tif order.Amount > 0 && !seen[order.ID] {\n+\t\t\tseen[order.ID] = true\n+\t\t\ttotal += order.Amount\n+\t\t}\n+\t}\n+\treturn total\n }\n"
+      },
+      "assessment": {
+        "passed": false,
+        "reasons": [
+          "independent_hidden_tests_failed"
+        ],
+        "valid_citations": 1,
+        "citations": 1
+      },
+      "stats": {
+        "tool_calls": 1,
+        "recall_at5": null,
+        "knowledge_target_present": false,
+        "supplement": false,
+        "evidence_protocol": "r6-scoped-v4-stable-content-private-observation-receipts",
+        "repair_passed": false,
+        "output_checks": [
+          {
+            "step": 2,
+            "issues": [],
+            "answer": {
+              "status": "supported",
+              "values": {},
+              "citations": [
+                {
+                  "source_id": "92951c42-622b-4b71-a0a0-3175f0fdefd1",
+                  "quote": "package orders\n\ntype Order struct {\n    ID string\n    Status string\n    Amount int\n}\n\nfunc PaidRevenueCents(orders []Order) int {\n    total := 0\n    for _, order := range orders {\n        total += order.Amount\n    }\n    return total\n}\n"
+                }
+              ],
+              "explanation": "Tracks IDs already counted and adds only the first strictly positive Amount per ID, so non-positive amounts do not block later positive ones. The provided test (ID \"a\": -5, then 40) yields 40.",
+              "diff": "--- a/v3/eval/final-v1/public/repair-2/orders.go\n+++ b/v3/eval/final-v1/public/repair-2/orders.go\n@@ -7,9 +7,13 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n-    total := 0\n-    for _, order := range orders {\n-        total += order.Amount\n-    }\n-    return total\n+\ttotal := 0\n+\tseen := make(map[string]bool)\n+\tfor _, order := range orders {\n+\t\tif order.Amount > 0 && !seen[order.ID] {\n+\t\t\tseen[order.ID] = true\n+\t\t\ttotal += order.Amount\n+\t\t}\n+\t}\n+\treturn total\n }\n"
+            },
+            "wire": {
+              "status": "supported",
+              "function_body": "\ttotal := 0\n\tseen := make(map[string]bool)\n\tfor _, order := range orders {\n\t\tif order.Amount > 0 && !seen[order.ID] {\n\t\t\tseen[order.ID] = true\n\t\t\ttotal += order.Amount\n\t\t}\n\t}\n\treturn total",
+              "citations": [
+                {
+                  "quote_id": "s0q0"
+                }
+              ],
+              "explanation": "Tracks IDs already counted and adds only the first strictly positive Amount per ID, so non-positive amounts do not block later positive ones. The provided test (ID \"a\": -5, then 40) yields 40."
+            }
+          }
+        ],
+        "expert_failures": []
+      },
+      "repair": [
+        {
+          "stage": "baseline",
+          "proof": {
+            "receipt_id": "ba979642-3d59-4b70-9fa9-d8f96190fc91",
+            "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+            "workspace_hash": "36093e42ebb1f3f2bcad69d7d65ffb446d7228f20741565dc86b6fb388049d23",
+            "exit_code": 1,
+            "stop_reason": null,
+            "policy": {
+              "network": "none",
+              "user": "65532:65532",
+              "read_only": true,
+              "mounts": [],
+              "cap_drop": [
+                "ALL"
+              ],
+              "no_new_privileges": true,
+              "memory_bytes": 536870912,
+              "pids_limit": 96
+            },
+            "passed": false,
+            "tests": [
+              "TestPaidRevenueCents"
+            ],
+            "failed_tests": [
+              "TestPaidRevenueCents"
+            ],
+            "skipped": 0
+          },
+          "log_hash": "ca7a9934bc39c18caf66c2217c372fe2e938dbe410be5e6e9a69bca5ba52dcb7"
+        },
+        {
+          "stage": "public",
+          "proof": {
+            "receipt_id": "13b50ea5-e64f-4300-8ddf-d51eebc3e4cd",
+            "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+            "workspace_hash": "e9cd2f442175fca35b86507e5d08aaef93aaf8bfb2b1bfa83ddd5e7286c97ef0",
+            "exit_code": 0,
+            "stop_reason": null,
+            "policy": {
+              "network": "none",
+              "user": "65532:65532",
+              "read_only": true,
+              "mounts": [],
+              "cap_drop": [
+                "ALL"
+              ],
+              "no_new_privileges": true,
+              "memory_bytes": 536870912,
+              "pids_limit": 96
+            },
+            "passed": true,
+            "tests": [
+              "TestPaidRevenueCents"
+            ],
+            "failed_tests": [],
+            "skipped": 0
+          },
+          "log_hash": "b76515ed0b255674b39fed7a394d5469daf74ceb8a9644f061fe2cbca7786545",
+          "raw_diff_sha256": "d1d3e240af6b928678beef6ff30c8f7c95e3292b082d3f0d4622f15228694b3c",
+          "normalized_diff_sha256": "d1d3e240af6b928678beef6ff30c8f7c95e3292b082d3f0d4622f15228694b3c"
+        },
+        {
+          "stage": "independent_hidden",
+          "proof": {
+            "receipt_id": "6de4d54d-99c2-4216-b182-73a4900dd340",
+            "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+            "workspace_hash": "a67b6e28dd4e72ca86535552dc58a06640d77490c8ed0ac37dda91dedb68e022",
+            "exit_code": 1,
+            "stop_reason": null,
+            "policy": {
+              "network": "none",
+              "user": "65532:65532",
+              "read_only": true,
+              "mounts": [],
+              "cap_drop": [
+                "ALL"
+              ],
+              "no_new_privileges": true,
+              "memory_bytes": 536870912,
+              "pids_limit": 96
+            },
+            "passed": false,
+            "tests": [
+              "TestPaidRevenueCents",
+              "TestR6Hidden",
+              "TestR6Hidden/v0",
+              "TestR6Hidden/v1",
+              "TestR6Hidden/v10",
+              "TestR6Hidden/v11",
+              "TestR6Hidden/v12",
+              "TestR6Hidden/v13",
+              "TestR6Hidden/v14",
+              "TestR6Hidden/v15",
+              "TestR6Hidden/v16",
+              "TestR6Hidden/v17",
+              "TestR6Hidden/v18",
+              "TestR6Hidden/v19",
+              "TestR6Hidden/v2",
+              "TestR6Hidden/v20",
+              "TestR6Hidden/v21",
+              "TestR6Hidden/v22",
+              "TestR6Hidden/v23",
+              "TestR6Hidden/v24",
+              "TestR6Hidden/v25",
+              "TestR6Hidden/v26",
+              "TestR6Hidden/v27",
+              "TestR6Hidden/v3",
+              "TestR6Hidden/v4",
+              "TestR6Hidden/v5",
+              "TestR6Hidden/v6",
+              "TestR6Hidden/v7",
+              "TestR6Hidden/v8",
+              "TestR6Hidden/v9"
+            ],
+            "failed_tests": [
+              "TestR6Hidden",
+              "TestR6Hidden/v10",
+              "TestR6Hidden/v11",
+              "TestR6Hidden/v12",
+              "TestR6Hidden/v13",
+              "TestR6Hidden/v14",
+              "TestR6Hidden/v15",
+              "TestR6Hidden/v16",
+              "TestR6Hidden/v17",
+              "TestR6Hidden/v18",
+              "TestR6Hidden/v19",
+              "TestR6Hidden/v20",
+              "TestR6Hidden/v21",
+              "TestR6Hidden/v22",
+              "TestR6Hidden/v25",
+              "TestR6Hidden/v26",
+              "TestR6Hidden/v27",
+              "TestR6Hidden/v7",
+              "TestR6Hidden/v8",
+              "TestR6Hidden/v9"
+            ],
+            "skipped": 0
+          },
+          "log_hash": "97da3cca1ea1c25e9ac0754a5f870d13340288897ec7167fc138fb6e709358ae"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Developer-visible repeated-input repair regression, not a blind holdout.",
+    "Safety guard passes may use zero model calls and do not prove model reasoning.",
+    "Hidden patch pass and complete repair task pass are distinct.",
+    "Explanation semantics are not fully independently graded.",
+    "No ablations or general superiority claim.",
+    "All original and intermediate failures retained; no pooling or threshold changes."
+  ]
+}

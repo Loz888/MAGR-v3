@@ -1,0 +1,17 @@
+{
+  "schema": "r6-source-change-history-v1",
+  "base_commit": "8c82de7e136a1865d0efbc280a86ef4a11f84f99",
+  "current_commit": "c5ca75cd59fc2206bda1d6486955774350227e04",
+  "paths": [
+    "v3/src",
+    "v3/config",
+    "v3/scripts",
+    "v3/tests",
+    "v3/eval/final-v3"
+  ],
+  "current_patch_sha256": "5a794597c7029e7506b519695a9a9a2dd2091ed62f9943f21104e2dd8dd3eafa",
+  "current_patch_bytes": 131552,
+  "prior_v5_commit": "9486279ea967e0925e569ec4d70e0f9db38fbb7f",
+  "prior_patch_sha256": "4ea3e774b8e3f2384bf534e2ba3d31436924f7e367a5552b10b3219afb2c23a2",
+  "history_preserved_in_git_and_baseline_archives": true
+}

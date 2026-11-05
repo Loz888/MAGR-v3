@@ -1,0 +1,18 @@
+{
+  "manifest_hash": "61147ae43e2e8f9cfff3b430b9422d27ed7fa609a8e77447a3f30f2c132695d9",
+  "source_commit": "c5ca75cd59fc2206bda1d6486955774350227e04",
+  "implementation_sha256": "8dce9ad52e8cae703c8b6bc3613555394e4f34d0ccdeb0fa942485486bc2d409",
+  "archive_sha256": "e6983bb30f48c44b7c75a6288fdb86b08e12a165600e7d5bf1378c3bc581376d",
+  "prior_cumulative_calls": 471,
+  "prior_cumulative_cost_micros": 238430,
+  "max_new_calls": 222,
+  "max_new_cost_micros": 1363968,
+  "cumulative_upper_bound_micros": 1602398,
+  "session_already_spent": 247,
+  "session_limit": 469,
+  "extra_approval_needed": false,
+  "approval_basis": "User approved199 extra calls; old spent244+v5spent3 retained. Original money/data scope unchanged.",
+  "external_business_writes": false,
+  "data_destination": "https://api.deepseek.com/v1/chat/completions",
+  "exposure": "Developer-visible repeated-input regression; no blind-holdout or superiority claim."
+}

@@ -1,0 +1,94 @@
+{
+  "schema": "r6-v6-residual-failure-analysis-v1",
+  "model_answers_not_modified": true,
+  "cases": [
+    {
+      "case_id": "cross-05",
+      "arm": "C",
+      "response_cas_sha256": "67ca79f7df167831d3dc2a62fb5d4454a0f8d8ffbc800e8a9c71dd199f60c0fb",
+      "http_status": 200,
+      "actual_raw_model_content": "{\"type\":\"json_object\",\"status\":\"supported\",\"values\":{\"paid_events\":\"4\",\"distinct_orders\":\"2\",\"event_amount\":\"69.00\",\"dedup_amount\":\"20.00\",\"implementation_deduplicates\":\"false\"},\"citations\":[{\"quote_id\":\"s0q0\"},{\"quote_id\":\"s1q0\"},{\"quote_id\":\"s2q0\"}],\"explanation\":\"知识口径 2026-final-v1：仅计 paid，按每个 order_id 最早 event_id 的 paid 去重，事件金额逐事件相加。SQL 数据：paid 事件为 event_id 2,3,4,6 共 4 个；distinct orders 为 a,b 共 2 个；event_amount=18+23+2+26=69.00；每单最早 paid：a→event 2（18.00）、b→event 4（2.00），dedup_amount=20.00。代码 paid_event_revenue 仅对 paid 行求和，无 order 去重逻辑，故 implementation_deduplicates=false。\"}",
+      "local_schema_reproduction_errors": [
+        {
+          "location": [
+            "type"
+          ],
+          "type": "extra_forbidden",
+          "message": "Extra inputs are not permitted"
+        }
+      ],
+      "root_cause": "Model added forbidden root field type=json_object; strict schema rejected it. Available third/last call was master, leaving no further repair call.",
+      "result_retained": "FAIL; no field stripping, coercion or posthoc regrading"
+    },
+    {
+      "case_id": "repair-03",
+      "arm": "B",
+      "raw_diff_sha256": "8046b045e778e8f3936fa69971bccd00100455462ad68c7888e345a1a51cd0e6",
+      "generated_diff": "--- a/v3/eval/final-v1/public/repair-3/orders.go\n+++ b/v3/eval/final-v1/public/repair-3/orders.go\n@@ -7,9 +7,16 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n+    sums := make(map[string]int)\n+    for _, order := range orders {\n+        sums[order.ID] += order.Amount\n+    }\n     total := 0\n-    for _, order := range orders {\n-        total += order.Amount\n+    for _, sum := range sums {\n+        if sum > 100 {\n+            sum = 100\n+        }\n+        total += sum\n     }\n     return total\n }\n",
+      "public_tests_passed": true,
+      "independent_hidden_passed": false,
+      "hidden_failed_tests": [
+        "TestR6Hidden",
+        "TestR6Hidden/v10",
+        "TestR6Hidden/v11",
+        "TestR6Hidden/v12",
+        "TestR6Hidden/v13",
+        "TestR6Hidden/v14",
+        "TestR6Hidden/v15",
+        "TestR6Hidden/v16",
+        "TestR6Hidden/v17",
+        "TestR6Hidden/v18",
+        "TestR6Hidden/v19",
+        "TestR6Hidden/v2",
+        "TestR6Hidden/v20",
+        "TestR6Hidden/v21",
+        "TestR6Hidden/v22",
+        "TestR6Hidden/v24",
+        "TestR6Hidden/v25",
+        "TestR6Hidden/v26",
+        "TestR6Hidden/v27",
+        "TestR6Hidden/v5",
+        "TestR6Hidden/v6",
+        "TestR6Hidden/v7",
+        "TestR6Hidden/v8",
+        "TestR6Hidden/v9"
+      ],
+      "hidden_log_hash": "067f0635117c9d9643d893677614daa5f44d3988f29684956217d97d51327e92",
+      "root_cause": "Actual generated function sums all statuses. Public requirement says paid only; no order.Status filter. Public example contains only paid rows and fails to expose this omission; independent hidden Go cases reject it.",
+      "result_retained": "FAIL; no replacement with the controlled/reference body"
+    },
+    {
+      "case_id": "repair-02",
+      "arm": "B",
+      "raw_diff_sha256": "d1d3e240af6b928678beef6ff30c8f7c95e3292b082d3f0d4622f15228694b3c",
+      "generated_diff": "--- a/v3/eval/final-v1/public/repair-2/orders.go\n+++ b/v3/eval/final-v1/public/repair-2/orders.go\n@@ -7,9 +7,13 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n-    total := 0\n-    for _, order := range orders {\n-        total += order.Amount\n-    }\n-    return total\n+\ttotal := 0\n+\tseen := make(map[string]bool)\n+\tfor _, order := range orders {\n+\t\tif order.Amount > 0 && !seen[order.ID] {\n+\t\t\tseen[order.ID] = true\n+\t\t\ttotal += order.Amount\n+\t\t}\n+\t}\n+\treturn total\n }\n",
+      "public_tests_passed": true,
+      "independent_hidden_passed": false,
+      "hidden_failed_tests": [
+        "TestR6Hidden",
+        "TestR6Hidden/v10",
+        "TestR6Hidden/v11",
+        "TestR6Hidden/v12",
+        "TestR6Hidden/v13",
+        "TestR6Hidden/v14",
+        "TestR6Hidden/v15",
+        "TestR6Hidden/v16",
+        "TestR6Hidden/v17",
+        "TestR6Hidden/v18",
+        "TestR6Hidden/v19",
+        "TestR6Hidden/v20",
+        "TestR6Hidden/v21",
+        "TestR6Hidden/v22",
+        "TestR6Hidden/v25",
+        "TestR6Hidden/v26",
+        "TestR6Hidden/v27",
+        "TestR6Hidden/v7",
+        "TestR6Hidden/v8",
+        "TestR6Hidden/v9"
+      ],
+      "hidden_log_hash": "97da3cca1ea1c25e9ac0754a5f870d13340288897ec7167fc138fb6e709358ae",
+      "root_cause": "Actual generated body checks Amount>0 and unseen ID, but omits required order.Status==paid. A cancelled positive row can consume the ID before a later paid row. Public example contains only paid rows; actual independent hidden cases reject the omission.",
+      "result_retained": "FAIL; no corrected/reference body substitution"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "r6-host-capability-check-v1",
+  "checked_at": "2026-11-05T07:58:57.539037+00:00",
+  "environment": "managed_cloud_container",
+  "pid1": "tail",
+  "systemctl_is_system_running": "offline",
+  "systemctl_exit_code": 1,
+  "actual_systemd_host_acceptance": "NOT_RUN",
+  "whole_node_production_fault_acceptance": "NOT_RUN",
+  "reason": "Current execution environment is a container without a running host systemd. Container sandbox and worker SIGKILL tests do not establish production host/node behavior.",
+  "deployment_templates": "v3/deploy/systemd/",
+  "runbook": "v3/docs/r6-runbook.md",
+  "production_claim": false
+}

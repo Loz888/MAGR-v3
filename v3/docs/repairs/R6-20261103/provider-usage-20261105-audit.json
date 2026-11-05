@@ -1,0 +1,72 @@
+{
+  "schema": "owner-provider-usage-audit-v1",
+  "archive_sha256": "75821a2deb879c6bcb466b087456fb1244fa620c5a46bb798c2817f3852809ba",
+  "raw_bill_private": true,
+  "periods": [
+    {
+      "start": "2026-11-05T10:00:00+08:00",
+      "end": "2026-11-05T11:00:00+08:00",
+      "provider": {
+        "request_count": 68,
+        "input_cache_hit_tokens": 8960,
+        "input_cache_miss_tokens": 53363,
+        "output_tokens": 15266
+      },
+      "local_successful_call_usage": {
+        "request_count": 68,
+        "input_cache_hit_tokens": 8960,
+        "input_cache_miss_tokens": 53363,
+        "output_tokens": 15266
+      },
+      "definite_rejections_excluded_from_provider_bill": 0,
+      "invoice_paid_cny": "0.22921240",
+      "comparison": "EXACT_MATCH",
+      "local_usd_frozen_upper_micros": 37047
+    },
+    {
+      "start": "2026-11-05T11:00:00+08:00",
+      "end": "2026-11-05T12:00:00+08:00",
+      "provider": {
+        "request_count": 176,
+        "input_cache_hit_tokens": 28672,
+        "input_cache_miss_tokens": 103430,
+        "output_tokens": 37189
+      },
+      "local_successful_call_usage": {
+        "request_count": 176,
+        "input_cache_hit_tokens": 28672,
+        "input_cache_miss_tokens": 103430,
+        "output_tokens": 37189
+      },
+      "definite_rejections_excluded_from_provider_bill": 0,
+      "invoice_paid_cny": "0.50551888",
+      "comparison": "EXACT_MATCH",
+      "local_usd_frozen_upper_micros": 84336
+    },
+    {
+      "start": "2026-11-05T15:00:00+08:00",
+      "end": "2026-11-05T16:00:00+08:00",
+      "provider": {
+        "request_count": 2,
+        "input_cache_hit_tokens": 0,
+        "input_cache_miss_tokens": 608,
+        "output_tokens": 279
+      },
+      "local_successful_call_usage": {
+        "request_count": 2,
+        "input_cache_hit_tokens": 0,
+        "input_cache_miss_tokens": 608,
+        "output_tokens": 279
+      },
+      "definite_rejections_excluded_from_provider_bill": 1,
+      "invoice_paid_cny": "0.003448",
+      "comparison": "EXACT_MATCH",
+      "local_usd_frozen_upper_micros": 518
+    }
+  ],
+  "provider_request_count": 246,
+  "paid_cny_total": "0.73817928",
+  "definite_rejections_total": 1,
+  "fx_conversion_used": false,
+  "scope": "Owner export snapshot of v3/v4/v5 in the three listed hours; scope frozen to those manifests. The15:00hour was in progress at export: later v6 calls in the same hour are outside this bill snapshot. Not a day-end bill or complete history."
+}

@@ -1,0 +1,9 @@
+{
+  "manifest_hash": "61147ae43e2e8f9cfff3b430b9422d27ed7fa609a8e77447a3f30f2c132695d9",
+  "new_implementation_sha256": "8dce9ad52e8cae703c8b6bc3613555394e4f34d0ccdeb0fa942485486bc2d409",
+  "baseline_archive_sha256": "e6983bb30f48c44b7c75a6288fdb86b08e12a165600e7d5bf1378c3bc581376d",
+  "scope": "supervision_only_no_reruns_no_new_grant",
+  "changed_paths": [],
+  "retained_results": {},
+  "reason": "Pre-reviewed exact frozen source; existing approval carries only remaining222calls; no prompt or judge changes during run."
+}

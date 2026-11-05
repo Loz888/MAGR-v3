@@ -1,0 +1,20 @@
+{
+  "cumulative": {
+    "calls": 468,
+    "cost_micros": 237912,
+    "unknown": 0
+  },
+  "current_budget": {
+    "used_calls": 176,
+    "reserved_micros": 0,
+    "settled_micros": 84336,
+    "call_limit": 202,
+    "limit_micros": 1241088
+  },
+  "migrations": 17,
+  "manifest_hash": "6b3cc5ce0fe9eba2a0a7b0e280eac8363f3f07d133a685f0dde9e9c3f9864ad3",
+  "verified_at": "2026-11-05T03:26:46.181520+00:00",
+  "session_calls": 244,
+  "session_call_limit": 270,
+  "session_remaining_calls": 26
+}

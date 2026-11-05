@@ -1,0 +1,877 @@
+[
+  {
+    "case_id": "cross-07",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-04",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-03",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-01",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-02",
+    "arm": "B",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-03",
+    "arm": "A",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-05",
+    "arm": "A",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-07",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-03",
+    "arm": "A",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-05",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "FAIL",
+    "original_reasons": [],
+    "new_reasons": [
+      "wrong_status",
+      "wrong_value_fields",
+      "missing_value:paid_events",
+      "missing_value:distinct_orders",
+      "missing_value:event_amount",
+      "missing_value:dedup_amount",
+      "missing_value:implementation_deduplicates",
+      "missing_source_role"
+    ]
+  },
+  {
+    "case_id": "cross-08",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-03",
+    "arm": "C",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-02",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-00",
+    "arm": "A",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-02",
+    "arm": "C",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-03",
+    "arm": "A",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-06",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-09",
+    "arm": "B",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-04",
+    "arm": "C",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-00",
+    "arm": "C",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-04",
+    "arm": "B",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-09",
+    "arm": "C",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-07",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-05",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-03",
+    "arm": "B",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "FAIL",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": [
+      "independent_hidden_tests_failed"
+    ]
+  },
+  {
+    "case_id": "qa-01",
+    "arm": "A",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-02",
+    "arm": "A",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-05",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-09",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-01",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-03",
+    "arm": "C",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "MODEL_INVALID_RESPONSE"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-04",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-03",
+    "arm": "B",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-06",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-00",
+    "arm": "A",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-08",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-08",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-09",
+    "arm": "A",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-04",
+    "arm": "C",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-07",
+    "arm": "A",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-02",
+    "arm": "A",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-02",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-06",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-05",
+    "arm": "B",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-04",
+    "arm": "B",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-02",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-04",
+    "arm": "A",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-02",
+    "arm": "C",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-01",
+    "arm": "A",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-01",
+    "arm": "C",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-00",
+    "arm": "C",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-07",
+    "arm": "C",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-08",
+    "arm": "B",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-00",
+    "arm": "B",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-00",
+    "arm": "B",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-00",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-00",
+    "arm": "C",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-04",
+    "arm": "B",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-06",
+    "arm": "B",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-01",
+    "arm": "B",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-00",
+    "arm": "B",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-02",
+    "arm": "B",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-01",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-00",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "wrong_value_fields",
+      "missing_value:paid_events",
+      "missing_value:distinct_orders",
+      "missing_value:event_amount",
+      "missing_value:dedup_amount",
+      "missing_value:implementation_deduplicates",
+      "missing_source_role"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-08",
+    "arm": "C",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-02",
+    "arm": "C",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-04",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-09",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-04",
+    "arm": "A",
+    "category": "repair",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-03",
+    "arm": "B",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-00",
+    "arm": "A",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-01",
+    "arm": "B",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-03",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-03",
+    "arm": "B",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-09",
+    "arm": "A",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-07",
+    "arm": "B",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-04",
+    "arm": "C",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-01",
+    "arm": "C",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-01",
+    "arm": "C",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "cross-00",
+    "arm": "C",
+    "category": "cross",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "repair-02",
+    "arm": "B",
+    "category": "repair",
+    "original_status": "FAIL",
+    "new_status": "FAIL",
+    "original_reasons": [
+      "wrong_status",
+      "independent_hidden_tests_failed"
+    ],
+    "new_reasons": [
+      "independent_hidden_tests_failed"
+    ]
+  },
+  {
+    "case_id": "qa-02",
+    "arm": "A",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-05",
+    "arm": "C",
+    "category": "qa",
+    "original_status": "FAIL",
+    "new_status": "PASS",
+    "original_reasons": [
+      "MODEL_INVALID_RESPONSE"
+    ],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-01",
+    "arm": "A",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-01",
+    "arm": "B",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-08",
+    "arm": "A",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "negative-04",
+    "arm": "A",
+    "category": "negative",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-06",
+    "arm": "C",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-06",
+    "arm": "A",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  },
+  {
+    "case_id": "qa-03",
+    "arm": "C",
+    "category": "qa",
+    "original_status": "PASS",
+    "new_status": "PASS",
+    "original_reasons": [],
+    "new_reasons": []
+  }
+]
