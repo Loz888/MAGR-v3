@@ -1,0 +1,315 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:mgar:design:p0-commerce-v1:view",
+  "$comment": "Design only. Not registered in runtime; no execution authorization.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "commerce-case-view-v1"
+    },
+    "case_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "case_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "current_spec_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "as_of": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "goal": {
+      "type": "string",
+      "enum": [
+        "report",
+        "draft_pr"
+      ]
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "investigation",
+        "repair"
+      ]
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "run_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "not_started",
+            "queued",
+            "running",
+            "waiting_input",
+            "waiting_approval",
+            "paused",
+            "succeeded",
+            "failed",
+            "cancelled"
+          ]
+        },
+        "input_revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "epoch": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "run_id",
+        "status",
+        "input_revision",
+        "epoch"
+      ]
+    },
+    "business": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "not_evaluated",
+            "passed",
+            "failed",
+            "needs_input",
+            "denied",
+            "unknown"
+          ]
+        },
+        "result_id": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "uuid"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "spec_hash": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "applies_to_current_input": {
+          "type": "boolean"
+        },
+        "source_access": {
+          "type": "string",
+          "enum": [
+            "allowed",
+            "revoked",
+            "unknown"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "result_id",
+        "spec_hash",
+        "applies_to_current_input",
+        "source_access"
+      ]
+    },
+    "approval": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "pending",
+        "approved",
+        "rejected",
+        "expired"
+      ]
+    },
+    "delivery": {
+      "type": "string",
+      "enum": [
+        "not_requested",
+        "not_started",
+        "awaiting_approval",
+        "publishing",
+        "delivered",
+        "unknown",
+        "failed",
+        "cancelled"
+      ]
+    },
+    "uncertainty": {
+      "type": "string",
+      "enum": [
+        "none",
+        "model",
+        "delivery",
+        "both"
+      ]
+    },
+    "current_actor_authorized": {
+      "type": "boolean"
+    },
+    "eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "repair_permit_valid": {
+          "type": "boolean"
+        },
+        "action_binding_current": {
+          "type": "boolean"
+        },
+        "approval_unexpired": {
+          "type": "boolean"
+        },
+        "stage_primary_available": {
+          "type": "boolean"
+        },
+        "write_grant_current": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "repair_permit_valid",
+        "action_binding_current",
+        "approval_unexpired",
+        "stage_primary_available",
+        "write_grant_current"
+      ]
+    },
+    "rendered": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "permission_denied",
+            "unknown_reconciliation",
+            "result_stale",
+            "cancelled",
+            "execution_failed",
+            "business_failed",
+            "approval_expired",
+            "needs_input",
+            "in_progress",
+            "paused",
+            "unverified",
+            "report_ready",
+            "awaiting_repair",
+            "draft_pr_delivered",
+            "publishing",
+            "awaiting_approval",
+            "needs_review"
+          ]
+        },
+        "can_request_repair": {
+          "type": "boolean"
+        },
+        "can_approve": {
+          "type": "boolean"
+        },
+        "can_dispatch": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "status",
+        "can_request_repair",
+        "can_approve",
+        "can_dispatch"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "case_id",
+    "case_revision",
+    "current_spec_hash",
+    "as_of",
+    "goal",
+    "phase",
+    "execution",
+    "business",
+    "approval",
+    "delivery",
+    "uncertainty",
+    "current_actor_authorized",
+    "eligibility",
+    "rendered"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "business": {
+            "properties": {
+              "status": {
+                "const": "not_evaluated"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "business": {
+            "properties": {
+              "result_id": {
+                "type": "null"
+              },
+              "spec_hash": {
+                "type": "null"
+              },
+              "applies_to_current_input": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "business": {
+            "properties": {
+              "result_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "spec_hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

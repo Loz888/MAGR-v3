@@ -1,0 +1,122 @@
+{
+  "schema": "commerce-design-fixtures-v1",
+  "status": "DESIGN_ONLY_NOT_EXECUTED",
+  "policy": {
+    "version": "commerce-revenue-v1",
+    "currency": "CNY",
+    "amount_unit": "yuan_decimal",
+    "window": {
+      "start": "2026-11-04T16:00:00Z",
+      "end": "2026-11-05T16:00:00Z"
+    },
+    "paid_rule": "status == paid; [start,end)",
+    "dedup_rule": "same order_id, min(event_id); paid amount must agree or needs_input",
+    "refund_rule": "refunded rows are excluded; no inference of a later refund for other rows",
+    "go_adapter": "sort by event_id; exact Decimal(amount)*100 -> integer cents; all statuses retained for filter testing"
+  },
+  "datasets": [
+    {
+      "id": "duplicate_paid",
+      "rows": [
+        {
+          "event_id": 1,
+          "order_id": "o-101",
+          "status": "paid",
+          "amount": "12.50",
+          "created_at": "2026-11-05T02:00:00Z"
+        },
+        {
+          "event_id": 2,
+          "order_id": "o-101",
+          "status": "paid",
+          "amount": "12.50",
+          "created_at": "2026-11-05T02:00:00Z"
+        },
+        {
+          "event_id": 3,
+          "order_id": "o-102",
+          "status": "paid",
+          "amount": "7.00",
+          "created_at": "2026-11-05T02:00:00Z"
+        }
+      ],
+      "rows_hash": "c983e23cc46dee22e76d1a15904656d275180d5a353d6228ed5abab24d8f799b",
+      "expected_design_only": {
+        "paid_events": "3",
+        "distinct_orders": "2",
+        "event_amount": "32.00",
+        "dedup_amount": "19.50",
+        "inflation_amount": "12.50",
+        "legacy_all_status_amount": "32.00",
+        "expected_go_cents": 1950
+      }
+    },
+    {
+      "id": "status_filter",
+      "rows": [
+        {
+          "event_id": 1,
+          "order_id": "o-201",
+          "status": "paid",
+          "amount": "10.00",
+          "created_at": "2026-11-05T02:00:00Z"
+        },
+        {
+          "event_id": 2,
+          "order_id": "o-202",
+          "status": "pending",
+          "amount": "50.00",
+          "created_at": "2026-11-05T02:00:00Z"
+        },
+        {
+          "event_id": 3,
+          "order_id": "o-203",
+          "status": "cancelled",
+          "amount": "30.00",
+          "created_at": "2026-11-05T02:00:00Z"
+        }
+      ],
+      "rows_hash": "32381fc04ec35c0b5bf9fd2ef0a7b59a4168c64bdad206459c538a843e3dd263",
+      "expected_design_only": {
+        "paid_events": "1",
+        "distinct_orders": "1",
+        "event_amount": "10.00",
+        "dedup_amount": "10.00",
+        "inflation_amount": "0.00",
+        "legacy_all_status_amount": "90.00",
+        "expected_go_cents": 1000
+      }
+    },
+    {
+      "id": "refunded_status",
+      "rows": [
+        {
+          "event_id": 1,
+          "order_id": "o-301",
+          "status": "paid",
+          "amount": "20.00",
+          "created_at": "2026-11-05T02:00:00Z"
+        },
+        {
+          "event_id": 2,
+          "order_id": "o-302",
+          "status": "refunded",
+          "amount": "15.00",
+          "created_at": "2026-11-05T02:00:00Z"
+        }
+      ],
+      "rows_hash": "74fc00ef4ae6da9e4503b408ce7ddc28822c787a51aec3a6ebea1d2c67edb41b",
+      "expected_design_only": {
+        "paid_events": "1",
+        "distinct_orders": "1",
+        "event_amount": "20.00",
+        "dedup_amount": "20.00",
+        "inflation_amount": "0.00",
+        "legacy_all_status_amount": "35.00",
+        "expected_go_cents": 2000
+      }
+    }
+  ],
+  "expected_values_are_public_design_examples": true,
+  "future_hidden_oracle": "Separately frozen, independent implementation; not supplied to model. These examples are not a blind set."
+}

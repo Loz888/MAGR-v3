@@ -1,0 +1,842 @@
+[
+  {
+    "name": "report_passed",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "85bf6c7c-e34c-5a90-85a3-25054b069a69",
+      "case_revision": 1,
+      "current_spec_hash": "7521dc52a1aeaa49da3bfc51c419646455ab9ecfadae80aaecb66880cc13150e",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "report",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "e7d398ee-54be-51b3-b981-b64b0ed2658d",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "6adbe0db-4099-52fe-9a08-f3db93deb81d",
+        "spec_hash": "7521dc52a1aeaa49da3bfc51c419646455ab9ecfadae80aaecb66880cc13150e",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_requested",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "report_ready",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "report_passed_repair_eligible",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "4e1ac617-eba3-5c73-a610-759abadba2f2",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "awaiting_repair",
+        "can_request_repair": true,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "repair_permit_missing",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "4e1ac617-eba3-5c73-a610-759abadba2f2",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": false,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "awaiting_repair",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "active_primary_blocks_repair",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "4e1ac617-eba3-5c73-a610-759abadba2f2",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": false,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "awaiting_repair",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "engine_succeeded_business_failed",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "failed",
+        "result_id": "f36fb14c-6433-516c-98eb-ac68c92209f3",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "business_failed",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "source_missing",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "needs_input",
+        "result_id": "56d65695-2648-59d1-b617-4aa2413fadd9",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "needs_input",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "permission_revoked",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "denied",
+        "result_id": "21496373-11b8-5b14-8cd8-8f8534876a4a",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "revoked"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "permission_denied",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "usage_unknown",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "unknown",
+        "result_id": "7da36a83-dd11-591d-9c74-e283cf0c10b7",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "model",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "unknown_reconciliation",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "old_result_after_followup",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 2,
+      "current_spec_hash": "bd1e631c81692de9007899ce46ad11f8a455df3b3664b5d0db8b0aaadab68e2d",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "4e1ac617-eba3-5c73-a610-759abadba2f2",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": false,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "result_stale",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "cancelled",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "cancelled",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "4e1ac617-eba3-5c73-a610-759abadba2f2",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "cancelled",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "execution_failed",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "failed",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "4e1ac617-eba3-5c73-a610-759abadba2f2",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "execution_failed",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "running_unverified",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "running",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "not_evaluated",
+        "result_id": null,
+        "spec_hash": null,
+        "applies_to_current_input": false,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "in_progress",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "legacy_success_unverified",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "investigation",
+      "execution": {
+        "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "not_evaluated",
+        "result_id": null,
+        "spec_hash": null,
+        "applies_to_current_input": false,
+        "source_access": "allowed"
+      },
+      "approval": "not_requested",
+      "delivery": "not_started",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": false,
+        "stage_primary_available": true,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "unverified",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "repair_awaiting_approval",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "repair",
+      "execution": {
+        "run_id": "3bf0e299-95b7-5f9c-8df9-e2a0df94b612",
+        "status": "waiting_approval",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "b79f159c-b511-5d81-9201-4364786a2b0b",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "pending",
+      "delivery": "awaiting_approval",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": true,
+        "approval_unexpired": true,
+        "stage_primary_available": false,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "awaiting_approval",
+        "can_request_repair": false,
+        "can_approve": true,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "edited_candidate_old_binding",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "repair",
+      "execution": {
+        "run_id": "3bf0e299-95b7-5f9c-8df9-e2a0df94b612",
+        "status": "waiting_approval",
+        "input_revision": 2,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "b79f159c-b511-5d81-9201-4364786a2b0b",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": false,
+        "source_access": "allowed"
+      },
+      "approval": "pending",
+      "delivery": "awaiting_approval",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": false,
+        "approval_unexpired": true,
+        "stage_primary_available": false,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "result_stale",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "approval_expired",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "repair",
+      "execution": {
+        "run_id": "3bf0e299-95b7-5f9c-8df9-e2a0df94b612",
+        "status": "waiting_approval",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "b79f159c-b511-5d81-9201-4364786a2b0b",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "expired",
+      "delivery": "awaiting_approval",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": true,
+        "approval_unexpired": false,
+        "stage_primary_available": false,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "approval_expired",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "publishing",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "repair",
+      "execution": {
+        "run_id": "3bf0e299-95b7-5f9c-8df9-e2a0df94b612",
+        "status": "running",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "b79f159c-b511-5d81-9201-4364786a2b0b",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "approved",
+      "delivery": "publishing",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": true,
+        "approval_unexpired": true,
+        "stage_primary_available": false,
+        "write_grant_current": true
+      },
+      "rendered": {
+        "status": "publishing",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": true
+      }
+    }
+  },
+  {
+    "name": "pr_response_unknown",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "repair",
+      "execution": {
+        "run_id": "3bf0e299-95b7-5f9c-8df9-e2a0df94b612",
+        "status": "waiting_approval",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "b79f159c-b511-5d81-9201-4364786a2b0b",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "approved",
+      "delivery": "unknown",
+      "uncertainty": "delivery",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": true,
+        "approval_unexpired": true,
+        "stage_primary_available": false,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "unknown_reconciliation",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "pr_delivered",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 1,
+      "current_spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "repair",
+      "execution": {
+        "run_id": "3bf0e299-95b7-5f9c-8df9-e2a0df94b612",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "b79f159c-b511-5d81-9201-4364786a2b0b",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": true,
+        "source_access": "allowed"
+      },
+      "approval": "approved",
+      "delivery": "delivered",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": true,
+        "approval_unexpired": true,
+        "stage_primary_available": false,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "draft_pr_delivered",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  },
+  {
+    "name": "old_pr_with_new_input",
+    "view": {
+      "schema": "commerce-case-view-v1",
+      "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+      "case_revision": 2,
+      "current_spec_hash": "bd1e631c81692de9007899ce46ad11f8a455df3b3664b5d0db8b0aaadab68e2d",
+      "as_of": "2026-11-06T04:00:01+08:00",
+      "goal": "draft_pr",
+      "phase": "repair",
+      "execution": {
+        "run_id": "3bf0e299-95b7-5f9c-8df9-e2a0df94b612",
+        "status": "succeeded",
+        "input_revision": 1,
+        "epoch": 1
+      },
+      "business": {
+        "status": "passed",
+        "result_id": "b79f159c-b511-5d81-9201-4364786a2b0b",
+        "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+        "applies_to_current_input": false,
+        "source_access": "allowed"
+      },
+      "approval": "approved",
+      "delivery": "delivered",
+      "uncertainty": "none",
+      "current_actor_authorized": true,
+      "eligibility": {
+        "repair_permit_valid": true,
+        "action_binding_current": true,
+        "approval_unexpired": true,
+        "stage_primary_available": false,
+        "write_grant_current": false
+      },
+      "rendered": {
+        "status": "result_stale",
+        "can_request_repair": false,
+        "can_approve": false,
+        "can_dispatch": false
+      }
+    }
+  }
+]

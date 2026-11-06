@@ -1,0 +1,485 @@
+[
+  {
+    "schema": "commerce-business-result-v1",
+    "result_id": "4e1ac617-eba3-5c73-a610-759abadba2f2",
+    "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+    "case_revision": 1,
+    "stage": "investigation",
+    "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+    "input_revision": 1,
+    "execution_epoch": 1,
+    "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+    "checker_version": "commerce-checker-v1.0",
+    "created_at": "2026-11-06T04:00:00+08:00",
+    "business_status": "passed",
+    "checks": {
+      "scope": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "evidence": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "contract": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "acceptance": {
+        "status": "passed",
+        "reason_codes": []
+      }
+    },
+    "reason_codes": [],
+    "missing_inputs": [],
+    "artifact_hash": "c8da4fa3cc87ff4ce82b85ac2cd5efd8e358dd0861fc0fcbf6bdd4a8ac0e4e19",
+    "facts": {
+      "paid_events": "3",
+      "distinct_orders": "2",
+      "event_amount": "32.00",
+      "dedup_amount": "19.50",
+      "inflation_amount": "12.50"
+    },
+    "quote_refs": [
+      {
+        "source_id": "6f00a5ff-9866-565c-b8c6-67946908102d",
+        "content_hash": "1d0eef3257ba537f57a63addaf452c5d82bda190f3ab24c2e68dbaf8513e19ca",
+        "unit_kind": "knowledge_line",
+        "start_line": 1,
+        "end_line": 1,
+        "unit_hash": "35cc732bf50249c4c6859b97ab46a8160865451dcff27967873fffb5b7998963"
+      },
+      {
+        "source_id": "6baf94c6-33c6-53e6-b3c8-a433b03acbef",
+        "content_hash": "868d98a92f017ef4c05a52f1e98593cbceb0252a33b61a66e073d68be2f74642",
+        "unit_kind": "code_lines",
+        "start_line": 1,
+        "end_line": 1,
+        "unit_hash": "e34807730113f4ccc2d706371b6751c598ba1850e71af400ed3461f9a277d41e"
+      }
+    ],
+    "numeric_receipt_hash": "90dc74921dbcb06537d16bea9b2f2983132d1b15b55df79f7d41931fcd06fb2c",
+    "test_receipt_refs": [],
+    "parent_investigation_result_hash": null
+  },
+  {
+    "schema": "commerce-business-result-v1",
+    "result_id": "5b36e13f-e516-585b-a431-3351ebfc7038",
+    "case_id": "22074bf7-9213-5405-9b80-813fac8a01a4",
+    "case_revision": 1,
+    "stage": "investigation",
+    "run_id": "808da029-7103-565c-bfba-49fa1279a8ec",
+    "input_revision": 1,
+    "execution_epoch": 1,
+    "spec_hash": "06adb9ea09bba33f808b8ac661684fe092202a82c76a34e3b7002e4dabb393df",
+    "checker_version": "commerce-checker-v1.0",
+    "created_at": "2026-11-06T04:00:00+08:00",
+    "business_status": "passed",
+    "checks": {
+      "scope": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "evidence": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "contract": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "acceptance": {
+        "status": "passed",
+        "reason_codes": []
+      }
+    },
+    "reason_codes": [],
+    "missing_inputs": [],
+    "artifact_hash": "371b9ce33ced79ae3f168a200c9a06077a25c06974ba4a09fbce85d50fa08b9d",
+    "facts": {
+      "paid_events": "1",
+      "distinct_orders": "1",
+      "event_amount": "10.00",
+      "dedup_amount": "10.00",
+      "inflation_amount": "0.00"
+    },
+    "quote_refs": [
+      {
+        "source_id": "6206b302-c572-5ad7-a131-b3dc656c900d",
+        "content_hash": "1d0eef3257ba537f57a63addaf452c5d82bda190f3ab24c2e68dbaf8513e19ca",
+        "unit_kind": "knowledge_line",
+        "start_line": 1,
+        "end_line": 1,
+        "unit_hash": "35cc732bf50249c4c6859b97ab46a8160865451dcff27967873fffb5b7998963"
+      },
+      {
+        "source_id": "6a72dca0-1adc-50e1-b494-505e51cc54e0",
+        "content_hash": "868d98a92f017ef4c05a52f1e98593cbceb0252a33b61a66e073d68be2f74642",
+        "unit_kind": "code_lines",
+        "start_line": 1,
+        "end_line": 1,
+        "unit_hash": "e34807730113f4ccc2d706371b6751c598ba1850e71af400ed3461f9a277d41e"
+      }
+    ],
+    "numeric_receipt_hash": "5f842e00d83f8b99e23b6f9cf74a6aae3ad017308d13221543c51cd7fdd232a1",
+    "test_receipt_refs": [],
+    "parent_investigation_result_hash": null
+  },
+  {
+    "schema": "commerce-business-result-v1",
+    "result_id": "7d5f9711-7eef-5acf-bbaf-5f596e5b616e",
+    "case_id": "ab773857-d7bf-543d-9663-5764039593b6",
+    "case_revision": 1,
+    "stage": "investigation",
+    "run_id": "794a6979-ffec-55bd-9c8e-0dd267fe5c57",
+    "input_revision": 1,
+    "execution_epoch": 1,
+    "spec_hash": "80fcffa1ffafc3a30faaf39e2efd8c079297f35b839acd75a482595f0e292c6d",
+    "checker_version": "commerce-checker-v1.0",
+    "created_at": "2026-11-06T04:00:00+08:00",
+    "business_status": "passed",
+    "checks": {
+      "scope": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "evidence": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "contract": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "acceptance": {
+        "status": "passed",
+        "reason_codes": []
+      }
+    },
+    "reason_codes": [],
+    "missing_inputs": [],
+    "artifact_hash": "b3e3f09413b9881c41a0487ed845bda4664dfe499c6c1e193b1ad83a305dd886",
+    "facts": {
+      "paid_events": "1",
+      "distinct_orders": "1",
+      "event_amount": "20.00",
+      "dedup_amount": "20.00",
+      "inflation_amount": "0.00"
+    },
+    "quote_refs": [
+      {
+        "source_id": "3348604d-bbff-59a9-a271-53b9b48a3cdd",
+        "content_hash": "1d0eef3257ba537f57a63addaf452c5d82bda190f3ab24c2e68dbaf8513e19ca",
+        "unit_kind": "knowledge_line",
+        "start_line": 1,
+        "end_line": 1,
+        "unit_hash": "35cc732bf50249c4c6859b97ab46a8160865451dcff27967873fffb5b7998963"
+      },
+      {
+        "source_id": "100e656c-0d15-51e8-8a7e-1789277e515f",
+        "content_hash": "868d98a92f017ef4c05a52f1e98593cbceb0252a33b61a66e073d68be2f74642",
+        "unit_kind": "code_lines",
+        "start_line": 1,
+        "end_line": 1,
+        "unit_hash": "e34807730113f4ccc2d706371b6751c598ba1850e71af400ed3461f9a277d41e"
+      }
+    ],
+    "numeric_receipt_hash": "82881cf3a709316d645d9ae8ccd702f51eac3b2d7c7bc758da16e33ce9c9f2fd",
+    "test_receipt_refs": [],
+    "parent_investigation_result_hash": null
+  },
+  {
+    "schema": "commerce-business-result-v1",
+    "result_id": "b79f159c-b511-5d81-9201-4364786a2b0b",
+    "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+    "case_revision": 1,
+    "stage": "repair_proposal",
+    "run_id": "3bf0e299-95b7-5f9c-8df9-e2a0df94b612",
+    "input_revision": 1,
+    "execution_epoch": 1,
+    "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+    "checker_version": "commerce-checker-v1.0",
+    "created_at": "2026-11-06T04:00:00+08:00",
+    "business_status": "passed",
+    "checks": {
+      "scope": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "evidence": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "contract": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "acceptance": {
+        "status": "passed",
+        "reason_codes": []
+      }
+    },
+    "reason_codes": [],
+    "missing_inputs": [],
+    "artifact_hash": "434b2b361788a55e5c37a70cfebee2905691415a0e5a8fee3da415fc9fe3b6c4",
+    "facts": {},
+    "quote_refs": [],
+    "numeric_receipt_hash": null,
+    "test_receipt_refs": [
+      {
+        "kind": "public",
+        "receipt_hash": "aca1122b38367d92f92448ada78e64318a811fed2ac00c87e86b64d62157fc2e",
+        "status": "passed",
+        "skipped": 0
+      },
+      {
+        "kind": "independent",
+        "receipt_hash": "759bb96bba3ae49f724a317ef8b766f0b4606a4147bd0811d1d76852b2c09274",
+        "status": "passed",
+        "skipped": 0
+      }
+    ],
+    "parent_investigation_result_hash": "5ad86edadb51ff2d49ee8539560c7a3cdd70ae4230bc312f47f293b93769e981"
+  },
+  {
+    "schema": "commerce-business-result-v1",
+    "result_id": "6adbe0db-4099-52fe-9a08-f3db93deb81d",
+    "case_id": "85bf6c7c-e34c-5a90-85a3-25054b069a69",
+    "case_revision": 1,
+    "stage": "investigation",
+    "run_id": "e7d398ee-54be-51b3-b981-b64b0ed2658d",
+    "input_revision": 1,
+    "execution_epoch": 1,
+    "spec_hash": "7521dc52a1aeaa49da3bfc51c419646455ab9ecfadae80aaecb66880cc13150e",
+    "checker_version": "commerce-checker-v1.0",
+    "created_at": "2026-11-06T04:00:00+08:00",
+    "business_status": "passed",
+    "checks": {
+      "scope": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "evidence": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "contract": {
+        "status": "passed",
+        "reason_codes": []
+      },
+      "acceptance": {
+        "status": "passed",
+        "reason_codes": []
+      }
+    },
+    "reason_codes": [],
+    "missing_inputs": [],
+    "artifact_hash": "c8da4fa3cc87ff4ce82b85ac2cd5efd8e358dd0861fc0fcbf6bdd4a8ac0e4e19",
+    "facts": {
+      "paid_events": "3",
+      "distinct_orders": "2",
+      "event_amount": "32.00",
+      "dedup_amount": "19.50",
+      "inflation_amount": "12.50"
+    },
+    "quote_refs": [
+      {
+        "source_id": "6f00a5ff-9866-565c-b8c6-67946908102d",
+        "content_hash": "1d0eef3257ba537f57a63addaf452c5d82bda190f3ab24c2e68dbaf8513e19ca",
+        "unit_kind": "knowledge_line",
+        "start_line": 1,
+        "end_line": 1,
+        "unit_hash": "35cc732bf50249c4c6859b97ab46a8160865451dcff27967873fffb5b7998963"
+      },
+      {
+        "source_id": "6baf94c6-33c6-53e6-b3c8-a433b03acbef",
+        "content_hash": "868d98a92f017ef4c05a52f1e98593cbceb0252a33b61a66e073d68be2f74642",
+        "unit_kind": "code_lines",
+        "start_line": 1,
+        "end_line": 1,
+        "unit_hash": "e34807730113f4ccc2d706371b6751c598ba1850e71af400ed3461f9a277d41e"
+      }
+    ],
+    "numeric_receipt_hash": "90dc74921dbcb06537d16bea9b2f2983132d1b15b55df79f7d41931fcd06fb2c",
+    "test_receipt_refs": [],
+    "parent_investigation_result_hash": null
+  },
+  {
+    "schema": "commerce-business-result-v1",
+    "result_id": "f36fb14c-6433-516c-98eb-ac68c92209f3",
+    "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+    "case_revision": 1,
+    "stage": "investigation",
+    "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+    "input_revision": 1,
+    "execution_epoch": 1,
+    "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+    "checker_version": "commerce-checker-v1.0",
+    "created_at": "2026-11-06T04:00:00+08:00",
+    "business_status": "failed",
+    "checks": {
+      "scope": {
+        "status": "not_run",
+        "reason_codes": []
+      },
+      "evidence": {
+        "status": "not_run",
+        "reason_codes": []
+      },
+      "contract": {
+        "status": "failed",
+        "reason_codes": [
+          "OUTPUT_CONTRACT_FAILED"
+        ]
+      },
+      "acceptance": {
+        "status": "not_run",
+        "reason_codes": []
+      }
+    },
+    "reason_codes": [
+      "OUTPUT_CONTRACT_FAILED"
+    ],
+    "missing_inputs": [],
+    "artifact_hash": null,
+    "facts": {},
+    "quote_refs": [],
+    "numeric_receipt_hash": null,
+    "test_receipt_refs": [],
+    "parent_investigation_result_hash": null
+  },
+  {
+    "schema": "commerce-business-result-v1",
+    "result_id": "56d65695-2648-59d1-b617-4aa2413fadd9",
+    "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+    "case_revision": 1,
+    "stage": "investigation",
+    "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+    "input_revision": 1,
+    "execution_epoch": 1,
+    "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+    "checker_version": "commerce-checker-v1.0",
+    "created_at": "2026-11-06T04:00:00+08:00",
+    "business_status": "needs_input",
+    "checks": {
+      "scope": {
+        "status": "not_run",
+        "reason_codes": []
+      },
+      "evidence": {
+        "status": "not_run",
+        "reason_codes": [
+          "SOURCE_UNAVAILABLE"
+        ]
+      },
+      "contract": {
+        "status": "not_run",
+        "reason_codes": []
+      },
+      "acceptance": {
+        "status": "not_run",
+        "reason_codes": []
+      }
+    },
+    "reason_codes": [
+      "SOURCE_UNAVAILABLE"
+    ],
+    "missing_inputs": [
+      "readable data source"
+    ],
+    "artifact_hash": null,
+    "facts": {},
+    "quote_refs": [],
+    "numeric_receipt_hash": null,
+    "test_receipt_refs": [],
+    "parent_investigation_result_hash": null
+  },
+  {
+    "schema": "commerce-business-result-v1",
+    "result_id": "21496373-11b8-5b14-8cd8-8f8534876a4a",
+    "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+    "case_revision": 1,
+    "stage": "investigation",
+    "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+    "input_revision": 1,
+    "execution_epoch": 1,
+    "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+    "checker_version": "commerce-checker-v1.0",
+    "created_at": "2026-11-06T04:00:00+08:00",
+    "business_status": "denied",
+    "checks": {
+      "scope": {
+        "status": "failed",
+        "reason_codes": [
+          "SOURCE_ACL_REVOKED"
+        ]
+      },
+      "evidence": {
+        "status": "not_run",
+        "reason_codes": []
+      },
+      "contract": {
+        "status": "not_run",
+        "reason_codes": []
+      },
+      "acceptance": {
+        "status": "not_run",
+        "reason_codes": []
+      }
+    },
+    "reason_codes": [
+      "SOURCE_ACL_REVOKED"
+    ],
+    "missing_inputs": [],
+    "artifact_hash": null,
+    "facts": {},
+    "quote_refs": [],
+    "numeric_receipt_hash": null,
+    "test_receipt_refs": [],
+    "parent_investigation_result_hash": null
+  },
+  {
+    "schema": "commerce-business-result-v1",
+    "result_id": "7da36a83-dd11-591d-9c74-e283cf0c10b7",
+    "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+    "case_revision": 1,
+    "stage": "investigation",
+    "run_id": "f667fc1d-ed03-58ab-80b4-a48dd4fb0772",
+    "input_revision": 1,
+    "execution_epoch": 1,
+    "spec_hash": "c5605c6a7a732bf305a2526c5fe0bb97f740792b2728cf2907ed04d7a9747fc7",
+    "checker_version": "commerce-checker-v1.0",
+    "created_at": "2026-11-06T04:00:00+08:00",
+    "business_status": "unknown",
+    "checks": {
+      "scope": {
+        "status": "unknown",
+        "reason_codes": [
+          "USAGE_UNKNOWN"
+        ]
+      },
+      "evidence": {
+        "status": "not_run",
+        "reason_codes": []
+      },
+      "contract": {
+        "status": "not_run",
+        "reason_codes": []
+      },
+      "acceptance": {
+        "status": "not_run",
+        "reason_codes": []
+      }
+    },
+    "reason_codes": [
+      "USAGE_UNKNOWN"
+    ],
+    "missing_inputs": [],
+    "artifact_hash": null,
+    "facts": {},
+    "quote_refs": [],
+    "numeric_receipt_hash": null,
+    "test_receipt_refs": [],
+    "parent_investigation_result_hash": null
+  }
+]

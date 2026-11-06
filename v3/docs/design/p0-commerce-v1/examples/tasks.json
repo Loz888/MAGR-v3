@@ -1,0 +1,118 @@
+[
+  {
+    "schema": "commerce-case-v1",
+    "case_id": "138e493d-ab28-5260-8e0b-3ebd6fb7de4a",
+    "case_revision": 1,
+    "task_kind": "duplicate_paid",
+    "project_id": "commerce-design-demo",
+    "repository": "loz888/magr-v3",
+    "issue_number": 10000001,
+    "actor": "demo-owner",
+    "goal": "draft_pr",
+    "window": {
+      "start": "2026-11-04T16:00:00Z",
+      "end": "2026-11-05T16:00:00Z"
+    },
+    "policy_version": "commerce-revenue-v1",
+    "source_refs": {
+      "knowledge_snapshot_hash": "b63f4a8d9c7d0bf7e85e5b490e3275b9fe870f67bfbd16e1d47ad3f80d0a5e9b",
+      "data_fixture_hash": "c983e23cc46dee22e76d1a15904656d275180d5a353d6228ed5abab24d8f799b",
+      "source_ref": "4e0374e90733ce018201db862ab117e08424378d",
+      "source_tree": "8027ed07d96cdf637743ec98447d790ebf30c0ec",
+      "source_path": "v3/examples/repair-target/orders.go",
+      "source_content_hash": "747c73b7158c380fc3732e8e83eb4e57568cc0057215e7db95110b3651d03e34"
+    },
+    "acceptance_profile_hash": "f170dd8f45da439233f452d55da908ff0a074b7470375bd391e7ee2d4f0d6a97",
+    "authorization_refs": {
+      "investigation_profile_hash": "217d82b0b1acadc129edd2a8b52055fde259d23effbfc73a34470d332990799d",
+      "repair_profile_hash": "bf1a39bf67632f937cc6050994a00c176b98bee888792360cd755531c34e0975"
+    }
+  },
+  {
+    "schema": "commerce-case-v1",
+    "case_id": "22074bf7-9213-5405-9b80-813fac8a01a4",
+    "case_revision": 1,
+    "task_kind": "status_filter",
+    "project_id": "commerce-design-demo",
+    "repository": "loz888/magr-v3",
+    "issue_number": 10000002,
+    "actor": "demo-owner",
+    "goal": "draft_pr",
+    "window": {
+      "start": "2026-11-04T16:00:00Z",
+      "end": "2026-11-05T16:00:00Z"
+    },
+    "policy_version": "commerce-revenue-v1",
+    "source_refs": {
+      "knowledge_snapshot_hash": "b63f4a8d9c7d0bf7e85e5b490e3275b9fe870f67bfbd16e1d47ad3f80d0a5e9b",
+      "data_fixture_hash": "32381fc04ec35c0b5bf9fd2ef0a7b59a4168c64bdad206459c538a843e3dd263",
+      "source_ref": "4e0374e90733ce018201db862ab117e08424378d",
+      "source_tree": "8027ed07d96cdf637743ec98447d790ebf30c0ec",
+      "source_path": "v3/examples/repair-target/orders.go",
+      "source_content_hash": "747c73b7158c380fc3732e8e83eb4e57568cc0057215e7db95110b3651d03e34"
+    },
+    "acceptance_profile_hash": "b3ce7dce1ac5c898fe77fc8e33789ac2a62dcf55fb9ff0f273c16d3a16e45b65",
+    "authorization_refs": {
+      "investigation_profile_hash": "bbd02f2707609f88fcd91669b899ac18e2541b22e62c0e56ff3a2bbfd3748508",
+      "repair_profile_hash": "ce7ffbd5960ffdc688f3192584e2d8bfb7a1deb4ae39aea8e8b186a6091dac5f"
+    }
+  },
+  {
+    "schema": "commerce-case-v1",
+    "case_id": "ab773857-d7bf-543d-9663-5764039593b6",
+    "case_revision": 1,
+    "task_kind": "refunded_status",
+    "project_id": "commerce-design-demo",
+    "repository": "loz888/magr-v3",
+    "issue_number": 10000003,
+    "actor": "demo-owner",
+    "goal": "draft_pr",
+    "window": {
+      "start": "2026-11-04T16:00:00Z",
+      "end": "2026-11-05T16:00:00Z"
+    },
+    "policy_version": "commerce-revenue-v1",
+    "source_refs": {
+      "knowledge_snapshot_hash": "b63f4a8d9c7d0bf7e85e5b490e3275b9fe870f67bfbd16e1d47ad3f80d0a5e9b",
+      "data_fixture_hash": "74fc00ef4ae6da9e4503b408ce7ddc28822c787a51aec3a6ebea1d2c67edb41b",
+      "source_ref": "4e0374e90733ce018201db862ab117e08424378d",
+      "source_tree": "8027ed07d96cdf637743ec98447d790ebf30c0ec",
+      "source_path": "v3/examples/repair-target/orders.go",
+      "source_content_hash": "747c73b7158c380fc3732e8e83eb4e57568cc0057215e7db95110b3651d03e34"
+    },
+    "acceptance_profile_hash": "5650f2e08250822ea1e1c3d2490c83c7b66be6835da6431e3bd66a089721693d",
+    "authorization_refs": {
+      "investigation_profile_hash": "25e5e3aead60dfdcec625a6c6877d280e87ede2e770824e9ef632efd299b2c07",
+      "repair_profile_hash": "c3d778aa4e4f6107a566b679902eb25d2904e5dda9f12af6c8f9db7fd9aafa30"
+    }
+  },
+  {
+    "schema": "commerce-case-v1",
+    "case_id": "85bf6c7c-e34c-5a90-85a3-25054b069a69",
+    "case_revision": 1,
+    "task_kind": "duplicate_paid",
+    "project_id": "commerce-design-demo",
+    "repository": "loz888/magr-v3",
+    "issue_number": 10000004,
+    "actor": "demo-owner",
+    "goal": "report",
+    "window": {
+      "start": "2026-11-04T16:00:00Z",
+      "end": "2026-11-05T16:00:00Z"
+    },
+    "policy_version": "commerce-revenue-v1",
+    "source_refs": {
+      "knowledge_snapshot_hash": "b63f4a8d9c7d0bf7e85e5b490e3275b9fe870f67bfbd16e1d47ad3f80d0a5e9b",
+      "data_fixture_hash": "c983e23cc46dee22e76d1a15904656d275180d5a353d6228ed5abab24d8f799b",
+      "source_ref": "4e0374e90733ce018201db862ab117e08424378d",
+      "source_tree": "8027ed07d96cdf637743ec98447d790ebf30c0ec",
+      "source_path": "v3/examples/repair-target/orders.go",
+      "source_content_hash": "747c73b7158c380fc3732e8e83eb4e57568cc0057215e7db95110b3651d03e34"
+    },
+    "acceptance_profile_hash": "f170dd8f45da439233f452d55da908ff0a074b7470375bd391e7ee2d4f0d6a97",
+    "authorization_refs": {
+      "investigation_profile_hash": "217d82b0b1acadc129edd2a8b52055fde259d23effbfc73a34470d332990799d",
+      "repair_profile_hash": null
+    }
+  }
+]

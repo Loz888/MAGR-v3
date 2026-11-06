@@ -1,0 +1,341 @@
+{
+  "schema": "p0-commerce-acceptance-plan-v1",
+  "status": "DESIGN_COMPLETE_NOT_EXECUTED",
+  "implementation": "NOT_STARTED",
+  "engineering": "NOT_RUN",
+  "live": "NOT_RUN",
+  "scope": [
+    "P0-A commerce case closure",
+    "P0-B independent business result and presentation"
+  ],
+  "normal_cases": [
+    {
+      "id": "P0-N01",
+      "kind": "duplicate_paid",
+      "goal": "draft_pr",
+      "expected_report": {
+        "paid_events": "3",
+        "distinct_orders": "2",
+        "event_amount": "32.00",
+        "dedup_amount": "19.50",
+        "inflation_amount": "12.50"
+      },
+      "expected_go_cents": 1950
+    },
+    {
+      "id": "P0-N02",
+      "kind": "status_filter",
+      "goal": "draft_pr",
+      "expected_report": {
+        "paid_events": "1",
+        "distinct_orders": "1",
+        "event_amount": "10.00",
+        "dedup_amount": "10.00",
+        "inflation_amount": "0.00"
+      },
+      "expected_go_cents": 1000
+    },
+    {
+      "id": "P0-N03",
+      "kind": "refunded_status",
+      "goal": "draft_pr",
+      "expected_report": {
+        "paid_events": "1",
+        "distinct_orders": "1",
+        "event_amount": "20.00",
+        "dedup_amount": "20.00",
+        "inflation_amount": "0.00"
+      },
+      "expected_go_cents": 2000
+    }
+  ],
+  "negative_cases": [
+    {
+      "id": "P0-N04",
+      "kind": "status_filter",
+      "setup": "独立SQL来源缺失/不可读，其他来源可用",
+      "expected_business": "needs_input",
+      "expected_display": "needs_input",
+      "max_model_calls": 0,
+      "github_writes": 0,
+      "repair_started": false
+    },
+    {
+      "id": "P0-N05",
+      "kind": "duplicate_paid",
+      "setup": "来源读取前或引用提交前撤销知识ACL",
+      "expected_business": "denied",
+      "expected_display": "permission_denied",
+      "max_model_calls": 0,
+      "github_writes": 0,
+      "repair_started": false,
+      "revocation_after_model_dispatch": "已发调用按实际账本保留；该竞态只列工程受控变体，不算零调用真实场景"
+    }
+  ],
+  "historical_regressions": [
+    {
+      "id": "P0-R01",
+      "baseline": "v6 C cross-05",
+      "source": "eval/reports/final-v6-failure-analysis.json",
+      "old_expected": "FAIL",
+      "new_expected": "错误根结构无法提交passed；新合法样例按严格契约校验",
+      "old_outcome_unchanged": true
+    },
+    {
+      "id": "P0-R02",
+      "baseline": "v6 B repair-02",
+      "source": "eval/reports/final-v6-failure-analysis.json",
+      "old_expected": "FAIL",
+      "new_expected": "遗漏paid过滤的原候选被独立测试拒绝",
+      "old_outcome_unchanged": true
+    },
+    {
+      "id": "P0-R03",
+      "baseline": "v6 B repair-03",
+      "source": "eval/reports/final-v6-failure-analysis.json",
+      "old_expected": "FAIL",
+      "new_expected": "遗漏paid过滤的原候选被独立测试拒绝",
+      "old_outcome_unchanged": true
+    },
+    {
+      "id": "P0-R04",
+      "baseline": "v2 E r0/warm e01",
+      "source": "docs/repairs/COORD-20261106/v2-residual-failure.json",
+      "old_expected": "FAIL",
+      "new_expected": "原缺前缀输出保持拒绝；新quote_ref从实际来源完整行渲染",
+      "old_outcome_unchanged": true
+    },
+    {
+      "id": "P0-R05",
+      "baseline": "v1 D statement/quote mismatch",
+      "source": "docs/experiments/coordination-v1/normal-task-outcomes.json",
+      "old_expected": "FAIL",
+      "new_expected": "statement与quote不一致不能通过契约",
+      "old_outcome_unchanged": true
+    }
+  ],
+  "engineering_controls": [
+    {
+      "id": "P0-C01",
+      "topic": "同请求幂等",
+      "expected": "相同键不产生第二Case/Run/Action/调用",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C02",
+      "topic": "同键异内容",
+      "expected": "EVENT_ID_REUSED且旧对象不变",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C03",
+      "topic": "调查/修复冲突",
+      "expected": "active primary存在时拒绝创建修复，不投递为普通消息",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C04",
+      "topic": "双创建竞争",
+      "expected": "同Case revision两个修复请求仅一个成功",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C05",
+      "topic": "输入变更",
+      "expected": "旧结果不可适用，旧审批不能发布新内容",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C06",
+      "topic": "旧epoch",
+      "expected": "旧结果和旧发布提交均拒绝",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C07",
+      "topic": "只读到修复权限",
+      "expected": "没有独立修复profile时无法开始修复",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C08",
+      "topic": "来源与typed cell",
+      "expected": "错误来源/数值/OID/hash不通过",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C09",
+      "topic": "完整行引用",
+      "expected": "缺前缀/标点/statement不一致均不能变PASS",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C10",
+      "topic": "金额与去重",
+      "expected": "Decimal精度、空集合、冲突重复金额和窗口边界符合公开口径",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C11",
+      "topic": "截断和过期数据",
+      "expected": "不展示完整核账PASS",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C12",
+      "topic": "撤权竞态",
+      "expected": "提交前与展示前重核，受限正文不返回",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C13",
+      "topic": "无文件/网络IO的业务事务",
+      "expected": "对prepare/SQL-only提交边界注入检查",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C14",
+      "topic": "结果/原Run联合提交回滚",
+      "expected": "两处SQL任一失败不留下可交付索引或Action",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C15",
+      "topic": "公开/独立测试门槛",
+      "expected": "任何失败/跳过/超时都不可审批发布",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C16",
+      "topic": "准确提案审批",
+      "expected": "旧payload/旧测试/编辑后旧审批/过期审批均拒绝",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C17",
+      "topic": "模型未知",
+      "expected": "保留预占和第一次请求，不重发，不启动后续Case",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C18",
+      "topic": "发布回执丢失",
+      "expected": "保留outcome_unknown，只读核对完整对象，禁止重复发布",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C19",
+      "topic": "取消后的晚回执",
+      "expected": "记录远端事实，不恢复Run或宣称当前Case已交付",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C20",
+      "topic": "已结算进程恢复",
+      "expected": "只复用原已知有效响应，旧epoch拒绝；不放宽原恢复规则",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C21",
+      "topic": "四维投影",
+      "expected": "API/UI/写出守卫与status-rules一致，执行成功业务失败不可显示调查通过",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "P0-C22",
+      "topic": "旧版本兼容",
+      "expected": "无新business_result的历史Run显示未评估，不改原状态或旧Oracle",
+      "status": "NOT_RUN"
+    }
+  ],
+  "stages": [
+    {
+      "id": "design",
+      "checks": "文档链接、JSON Schema/样例、口径数值、状态守卫和范围保护",
+      "paid_calls": 0,
+      "business_gate": "NOT_RUN"
+    },
+    {
+      "id": "controlled_engineering",
+      "checks": "真实PG/Redis/原Go沙箱+受控模型，五场景、五历史问题和22项边界；运行相关原注册门禁",
+      "status": "NOT_RUN",
+      "paid_calls": 0
+    },
+    {
+      "id": "frozen_live",
+      "checks": "源码/公开规格/数据/模型/价格/目标/独立Oracle预冻结，真实DeepSeek和GitHub测试仓库，5场景",
+      "status": "NOT_RUN",
+      "uses_new_manifest_and_grant": true
+    }
+  ],
+  "live_proposal_not_authorization": {
+    "max_new_model_calls": 18,
+    "normal_investigation_calls_per_case": 3,
+    "normal_repair_calls_per_case": 3,
+    "negative_model_calls": 0,
+    "context_tokens": 8192,
+    "max_output_tokens": 512,
+    "input_peak_usd_per_million": "0.3",
+    "output_peak_usd_per_million": "1.2",
+    "reservation_micros_per_call": 3072,
+    "max_new_upper_cost_micros": 55296,
+    "max_new_upper_cost_usd": "0.055296",
+    "repository_hard_cap_micros": 2000000,
+    "model_destination": "https://api.deepseek.com/v1/chat/completions",
+    "pricing_revalidation_required_at_freeze": true,
+    "max_draft_prs": 3,
+    "max_branch_commit_pr_substeps": 9,
+    "issue_comments": 0,
+    "merges": 0,
+    "deployments": 0,
+    "actual_authorization_created": false,
+    "test_issues": "设计样例编号为占位；未来必须绑定实际自有测试目标及有效许可"
+  },
+  "release_gates": {
+    "normal_report_passed": "3/3",
+    "normal_public_and_independent_tests_passed": "3/3",
+    "approved_exact_draft_pr_delivered": "3/3",
+    "negative_handled_correctly": "2/2",
+    "historical_regression_checks": "5/5",
+    "engineering_controls": "22/22",
+    "lost_accepted_events": 0,
+    "forbidden_effects": 0,
+    "duplicate_remote_writes": 0,
+    "stale_result_commits": 0,
+    "unreconciled_usage_at_acceptance": 0,
+    "note": "正常业务成功与负例处理正确分列；原历史失败不改。门槛为拟议验收定义，尚无实测结果。"
+  },
+  "required_evidence": [
+    "每Case的task/spec/来源锁定hash",
+    "调查/修复Run与输入版本关系",
+    "全部原始模型/工具回执的私有CAS及脱敏hash索引",
+    "独立业务结果与四维展示快照",
+    "公开与独立Go测试回执",
+    "准确Action payload/人工审批/Outbox/远端完整对象核对",
+    "逐调用模型/费用/unknown/预占与累计账本",
+    "所有失败、未运行及恢复日志"
+  ],
+  "reporting_rules": [
+    "出现unknown立即保留预占并停止剩余真实任务；不重发、不自动重新执行整组",
+    "已知失败和任何纠正分别计次计费，三次单阶段上限和18次共享上限都不可重置",
+    "源码/数据/契约改变必须冻结新版本；原文件不覆盖",
+    "失败修复复验不能覆盖原三项失败和D/E/F历史",
+    "本设计验收是开发者可见的小型业务整合验证，不作盲测、生产或多Agent优越性结论"
+  ],
+  "excluded_improvements": [
+    "通用SQL/跨表",
+    "开放规划/复杂Router",
+    "跨文件/多语言修复",
+    "团队登录/角色产品化",
+    "检索扩展",
+    "独立盲测与消融",
+    "负载长跑",
+    "生产HA"
+  ],
+  "baseline_finance_unchanged": {
+    "calls": 750,
+    "upper_cost_micros": 311513,
+    "unknown": 0,
+    "new_calls_in_design": 0
+  }
+}

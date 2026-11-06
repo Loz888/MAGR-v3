@@ -1,0 +1,656 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:mgar:design:p0-commerce-v1:result",
+  "$comment": "Design only. Not registered in runtime; no execution authorization.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "commerce-business-result-v1"
+    },
+    "result_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "case_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "case_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "investigation",
+        "repair_proposal"
+      ]
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "input_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "execution_epoch": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "spec_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "checker_version": {
+      "const": "commerce-checker-v1.0"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "business_status": {
+      "type": "string",
+      "enum": [
+        "passed",
+        "failed",
+        "needs_input",
+        "denied",
+        "unknown"
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "passed",
+                "failed",
+                "unknown",
+                "not_run",
+                "not_applicable"
+              ]
+            },
+            "reason_codes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]{0,79}$"
+              },
+              "maxItems": 32,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "status",
+            "reason_codes"
+          ]
+        },
+        "evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "passed",
+                "failed",
+                "unknown",
+                "not_run",
+                "not_applicable"
+              ]
+            },
+            "reason_codes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]{0,79}$"
+              },
+              "maxItems": 32,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "status",
+            "reason_codes"
+          ]
+        },
+        "contract": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "passed",
+                "failed",
+                "unknown",
+                "not_run",
+                "not_applicable"
+              ]
+            },
+            "reason_codes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]{0,79}$"
+              },
+              "maxItems": 32,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "status",
+            "reason_codes"
+          ]
+        },
+        "acceptance": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": {
+              "type": "string",
+              "enum": [
+                "passed",
+                "failed",
+                "unknown",
+                "not_run",
+                "not_applicable"
+              ]
+            },
+            "reason_codes": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z][A-Z0-9_]{0,79}$"
+              },
+              "maxItems": 32,
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "status",
+            "reason_codes"
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "evidence",
+        "contract",
+        "acceptance"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9_]{0,79}$"
+      },
+      "maxItems": 32,
+      "uniqueItems": true
+    },
+    "missing_inputs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "maxItems": 16,
+      "uniqueItems": true
+    },
+    "artifact_hash": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "facts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "paid_events": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "distinct_orders": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)$"
+        },
+        "event_amount": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$"
+        },
+        "dedup_amount": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$"
+        },
+        "inflation_amount": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$"
+        }
+      },
+      "required": []
+    },
+    "quote_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "content_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "unit_kind": {
+            "type": "string",
+            "enum": [
+              "knowledge_line",
+              "code_lines"
+            ]
+          },
+          "start_line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "end_line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "unit_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "source_id",
+          "content_hash",
+          "unit_kind",
+          "start_line",
+          "end_line",
+          "unit_hash"
+        ]
+      },
+      "maxItems": 24
+    },
+    "numeric_receipt_hash": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "test_receipt_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "public",
+              "independent"
+            ]
+          },
+          "receipt_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "failed",
+              "unknown"
+            ]
+          },
+          "skipped": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "kind",
+          "receipt_hash",
+          "status",
+          "skipped"
+        ]
+      },
+      "maxItems": 2
+    },
+    "parent_investigation_result_hash": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "result_id",
+    "case_id",
+    "case_revision",
+    "stage",
+    "run_id",
+    "input_revision",
+    "execution_epoch",
+    "spec_hash",
+    "checker_version",
+    "created_at",
+    "business_status",
+    "checks",
+    "reason_codes",
+    "missing_inputs",
+    "artifact_hash",
+    "facts",
+    "quote_refs",
+    "numeric_receipt_hash",
+    "test_receipt_refs",
+    "parent_investigation_result_hash"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "business_status": {
+            "const": "passed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "checks": {
+            "properties": {
+              "scope": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  },
+                  "reason_codes": {
+                    "maxItems": 0
+                  }
+                }
+              },
+              "evidence": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  },
+                  "reason_codes": {
+                    "maxItems": 0
+                  }
+                }
+              },
+              "contract": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  },
+                  "reason_codes": {
+                    "maxItems": 0
+                  }
+                }
+              },
+              "acceptance": {
+                "properties": {
+                  "status": {
+                    "const": "passed"
+                  },
+                  "reason_codes": {
+                    "maxItems": 0
+                  }
+                }
+              }
+            }
+          },
+          "artifact_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "reason_codes": {
+            "maxItems": 0
+          },
+          "missing_inputs": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "business_status": {
+            "not": {
+              "const": "passed"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "reason_codes": {
+            "minItems": 1
+          },
+          "facts": {
+            "maxProperties": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "business_status": {
+            "const": "needs_input"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "missing_inputs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "business_status": {
+            "enum": [
+              "denied",
+              "unknown"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "artifact_hash": {
+            "type": "null"
+          },
+          "quote_refs": {
+            "maxItems": 0
+          },
+          "numeric_receipt_hash": {
+            "type": "null"
+          },
+          "test_receipt_refs": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "stage": {
+            "const": "investigation"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parent_investigation_result_hash": {
+            "type": "null"
+          },
+          "test_receipt_refs": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "stage": {
+            "const": "repair_proposal"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parent_investigation_result_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "facts": {
+            "maxProperties": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "stage": {
+            "const": "investigation"
+          },
+          "business_status": {
+            "const": "passed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "facts": {
+            "required": [
+              "paid_events",
+              "distinct_orders",
+              "event_amount",
+              "dedup_amount",
+              "inflation_amount"
+            ]
+          },
+          "numeric_receipt_hash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "quote_refs": {
+            "minItems": 2,
+            "allOf": [
+              {
+                "contains": {
+                  "properties": {
+                    "unit_kind": {
+                      "const": "knowledge_line"
+                    }
+                  }
+                },
+                "minContains": 1
+              },
+              {
+                "contains": {
+                  "properties": {
+                    "unit_kind": {
+                      "const": "code_lines"
+                    }
+                  }
+                },
+                "minContains": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "stage": {
+            "const": "repair_proposal"
+          },
+          "business_status": {
+            "const": "passed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "test_receipt_refs": {
+            "minItems": 2,
+            "items": {
+              "properties": {
+                "status": {
+                  "const": "passed"
+                },
+                "skipped": {
+                  "const": 0
+                }
+              }
+            },
+            "allOf": [
+              {
+                "contains": {
+                  "properties": {
+                    "kind": {
+                      "const": "public"
+                    }
+                  }
+                },
+                "minContains": 1
+              },
+              {
+                "contains": {
+                  "properties": {
+                    "kind": {
+                      "const": "independent"
+                    }
+                  }
+                },
+                "minContains": 1
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

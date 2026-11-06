@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:mgar:design:p0-commerce-v1:task",
+  "$comment": "Design only. Not registered in runtime; no execution authorization.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "commerce-case-v1"
+    },
+    "case_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "case_revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "task_kind": {
+      "type": "string",
+      "enum": [
+        "duplicate_paid",
+        "status_filter",
+        "refunded_status"
+      ]
+    },
+    "project_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "repository": {
+      "type": "string",
+      "pattern": "^[a-z0-9_.-]+/[a-z0-9_.-]+$"
+    },
+    "issue_number": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "actor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "goal": {
+      "type": "string",
+      "enum": [
+        "report",
+        "draft_pr"
+      ]
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "end": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ]
+    },
+    "policy_version": {
+      "const": "commerce-revenue-v1"
+    },
+    "source_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "knowledge_snapshot_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "data_fixture_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "source_ref": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "source_tree": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "source_path": {
+          "const": "v3/examples/repair-target/orders.go"
+        },
+        "source_content_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "knowledge_snapshot_hash",
+        "data_fixture_hash",
+        "source_ref",
+        "source_tree",
+        "source_path",
+        "source_content_hash"
+      ]
+    },
+    "acceptance_profile_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "authorization_refs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "investigation_profile_hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "repair_profile_hash": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "investigation_profile_hash",
+        "repair_profile_hash"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "case_id",
+    "case_revision",
+    "task_kind",
+    "project_id",
+    "repository",
+    "issue_number",
+    "actor",
+    "goal",
+    "window",
+    "policy_version",
+    "source_refs",
+    "acceptance_profile_hash",
+    "authorization_refs"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "goal": {
+            "const": "draft_pr"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authorization_refs": {
+            "properties": {
+              "repair_profile_hash": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "goal": {
+            "const": "report"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authorization_refs": {
+            "properties": {
+              "repair_profile_hash": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

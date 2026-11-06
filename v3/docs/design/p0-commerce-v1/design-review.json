@@ -1,0 +1,23 @@
+{
+  "schema": "p0-design-review-v1",
+  "design_status": "DESIGN_COMPLETE",
+  "checks": "PASS",
+  "schemas_valid": 3,
+  "valid_task_examples": 4,
+  "valid_result_examples": 9,
+  "valid_view_examples": 20,
+  "independent_display_and_button_expectations": 20,
+  "malformed_examples_rejected": 11,
+  "fixture_arithmetic_verified": 3,
+  "local_links_verified": 43,
+  "protected_runtime_and_historical_files_unchanged": 424,
+  "scope": "Only two P0 designs; no P1/P2 implementation or experiments",
+  "implementation": "NOT_STARTED",
+  "engineering_gate": "NOT_RUN",
+  "live_gate": "NOT_RUN",
+  "new_model_calls": 0,
+  "new_cost_micros": 0,
+  "github_business_operations": 0,
+  "baseline_commit": "4e0374e90733ce018201db862ab117e08424378d",
+  "checked_at": "2026-11-06T06:04:11.535245+00:00"
+}
