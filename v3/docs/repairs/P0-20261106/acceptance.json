@@ -1,0 +1,30 @@
+{
+  "schema": "p0-implementation-acceptance-v1",
+  "engineering_gate": "PASS",
+  "full_regression": {
+    "passed": 404,
+    "receipt": "engineering-full-404.json",
+    "scope": "before_last_P0_only_classification_and_acceptance_startup_fix"
+  },
+  "final_P0_regression": {
+    "passed": 30,
+    "receipt": "engineering-final-p0-30.json",
+    "code_sha256": "9f353a52dbad516cf9e050bcf7cac94d3045c671de4662fe194d6e5655ab4afb"
+  },
+  "live": {
+    "manifest_hash": "7b4b7f46c15c0e19d19276a84df4688aeac76f94d3601ba61b97c42f77ce52fd",
+    "normal_investigation": "3/3",
+    "normal_repair_proposal": "3/3",
+    "negative_cases": "2/2",
+    "negative_model_calls": 0,
+    "delivery": "NOT_RUN_EXACT_ACTION_APPROVAL_REQUIRED"
+  },
+  "new_model_calls": 9,
+  "new_upper_cost_micros": 1635,
+  "repository_calls": 759,
+  "repository_upper_cost_micros": 313148,
+  "unknown": 0,
+  "reserved": 0,
+  "P0_overall": "IN_PROGRESS_pending_three_real_Draft_PR_deliveries",
+  "original_ABC_87_of_90_and_all_DEF_failures": "unchanged"
+}

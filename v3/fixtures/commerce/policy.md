@@ -1,0 +1,6 @@
+# Commerce revenue policy v1
+
+Observation: Count only paid events within the timezone-aware half-open reporting window.
+Observation: Pending, cancelled and refunded rows are excluded from paid revenue.
+Observation: Deduplicate paid rows by order_id using the smallest event_id; conflicting paid amounts require clarification.
+Observation: Amounts are nonnegative CNY yuan decimals with two places. Convert to integer cents exactly.

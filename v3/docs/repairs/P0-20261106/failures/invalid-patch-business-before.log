@@ -1,0 +1,36 @@
+F
+=================================== FAILURES ===================================
+_ test_exhausted_invalid_patch_responses_have_explicit_failed_business_result __
+
+commerce = <mgar_v3.commerce.store.Commerce object at 0x7fb339d497f0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7fb339cf5070>
+
+    def test_exhausted_invalid_patch_responses_have_explicit_failed_business_result(commerce,monkeypatch):
+        from mgar_v3.commerce.provider import CommercePatcher
+        case_id,_,output=investigated(commerce)
+        receipt=commerce.start_repair(case_id,RepairRequest(expected_case_revision=1,
+            investigation_result_hash=output["result_hash"],client_request_id=str(uuid4())))
+        def invalid(*args,**kwargs):
+            raise DomainError("MODEL_INVALID_RESPONSE","Controlled invalid patch schema")
+        monkeypatch.setattr(CommercePatcher,"propose",invalid)
+        run_id=UUID(receipt["run_id"])
+        Runner(commerce.engine).execute(run_id)
+        result=commerce.current_result(case_id,"repair_proposal")
+>       assert result is not None and result["payload"]["business_status"]=="failed"
+E       assert (None is not None)
+
+tests/test_p0_commerce.py:681: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+Building prefix dict from the default dictionary ...
+Loading model from cache /tmp/jieba.cache
+Loading model cost 0.465 seconds.
+Prefix dict has been built successfully.
+------------------------------ Captured log setup ------------------------------
+DEBUG    jieba:__init__.py:113 Building prefix dict from the default dictionary ...
+DEBUG    jieba:__init__.py:132 Loading model from cache /tmp/jieba.cache
+DEBUG    jieba:__init__.py:164 Loading model cost 0.465 seconds.
+DEBUG    jieba:__init__.py:166 Prefix dict has been built successfully.
+=========================== short test summary info ============================
+FAILED tests/test_p0_commerce.py::test_exhausted_invalid_patch_responses_have_explicit_failed_business_result
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 26 deselected in 10.62s

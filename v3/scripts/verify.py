@@ -23,6 +23,8 @@ def source_fingerprint(root: Path) -> str:
         "config",
         "scripts",
         "tests",
+        "fixtures/commerce",
+        "web",
         "eval/final-v1",
         "eval/final-v3",
         "deploy",

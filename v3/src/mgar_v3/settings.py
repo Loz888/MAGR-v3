@@ -50,6 +50,7 @@ class Settings(BaseSettings):
     rag_mode: Literal["fixture", "local"] = "fixture"
     data_profile_path: Path = ROOT / ".local/data-reader.json"
     r4_tool_base_url: str | None = None
+    commerce_directory: Path = ROOT / ".local/commerce"
     r4_sql_ttl_seconds: int = Field(default=300, ge=1, le=3600)
 
     @field_validator("r4_tool_base_url")

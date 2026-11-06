@@ -223,6 +223,8 @@ def execute_experts(
         }
 
     def repair_route(state: ExpertState) -> str:
+        if engine.commerce.binding(run_id) and any(f.error_code for f in current_findings(state)):
+            return "intake"
         return (
             "supplement"
             if (
@@ -329,6 +331,9 @@ def execute_experts(
             resolution = resolution.model_copy(update={"complete": False})
         report += b"\n\n## Model interpretation (independent business adjudication required)\n"
         report += analysis.model_dump_json(indent=2).encode()
+    if engine.commerce.binding(run_id):
+        engine.commerce.commit_investigation(run_id, epoch, state, report, resolution, verdict)
+        return None
     content_hash = engine.artifacts.put(report)
     try:
         with engine.transaction() as conn:
@@ -378,9 +383,7 @@ def execute_experts(
                     ),
                 )
             if not verdict.passed or resolution.complete:
-                return engine.commit_report(
-                    run_id, epoch, report, verdict, stored_report_hash=content_hash
-                )
+                return engine.commit_prepared_report(run_id, epoch, report, verdict, content_hash)
             conn.execute(
                 (
                     "UPDATE app.runs SET "

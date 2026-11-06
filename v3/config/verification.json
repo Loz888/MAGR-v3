@@ -361,5 +361,24 @@
       "live": "NOT_RUN_until_exact_new_manifest_authorization",
       "business_history": "original_ABC87_PASS3_FAIL_unmodified"
     }
+  },
+  "V31-P0-IMPLEMENT": {
+    "tests": [
+      "tests/test_p0_commerce.py",
+      "tests/test_p0_live_adapter.py"
+    ],
+    "timeout_seconds": 900,
+    "components": {
+      "postgres": "real_disposable_database_18_migrations",
+      "redis": "real_local_coordination",
+      "sandbox": "real_pinned_Docker_Go_public_28_independent_cases_and_observed_Case_window",
+      "model": "controlled_HTTP_ONLY_in_registered_tests",
+      "publication": "controlled_persistent_stdio_MCP_three_writes_and_readonly_reconciliation",
+      "results": "append_only_case_spec_and_business_results_SQL_only_atomic_commit",
+      "live": "NOT_RUN_pending_exact_frozen_grants_and_complete_Action_review",
+      "historical_results": "unchanged",
+      "prior_full_regression": "404_PASS_at_b0b75e036fd0094fda4a61114ba9df554dfbd62ac052afecef56d73ad2834783",
+      "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery"
+    }
   }
 }

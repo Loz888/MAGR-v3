@@ -12,7 +12,7 @@ from mgar_v3.coordination.engine import Engine
 from mgar_v3.domain import DomainError
 from mgar_v3.graph.checkpoints import checkpoint_saver
 from mgar_v3.repair.domain import PatchReply, Snapshot
-from mgar_v3.repair.hidden import suite
+from mgar_v3.repair.hidden import suite_for_run
 from mgar_v3.repair.sandbox import Sandbox
 from mgar_v3.repair.source import working_files
 from mgar_v3.repair.workspace import apply_diff, fixture_diff, recount_diff
@@ -153,8 +153,12 @@ def builder(
             public = test(f"public:{attempt}", work, snapshot.expected_tests)
             hidden = test(
                 f"hidden:{attempt}",
-                {**work, "zz_mgar_hidden_test.go": suite()},
-                [*snapshot.expected_tests, "TestR5Hidden"],
+                {**work, "zz_mgar_hidden_test.go": suite_for_run(engine, run_id)},
+                [
+                    *snapshot.expected_tests,
+                    "TestR5Hidden",
+                    *(["TestCommerceObservedWindow"] if engine.commerce.binding(run_id) else []),
+                ],
             )
             candidate = store.candidate(
                 run_id, epoch, revision, attempt, candidate_diff, files, public, hidden

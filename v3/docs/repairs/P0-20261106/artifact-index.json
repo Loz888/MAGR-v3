@@ -1,0 +1,65 @@
+[
+  {
+    "source": "evidence/V31-P0-IMPLEMENT/20261106T083824Z-974ed889/result.json",
+    "published": "engineering-full-404.json",
+    "original_sha256": "f57f0994a012e1134b3f1d76ade552b8bd336ba93f7821d6653fab16b8b66336",
+    "published_sha256": "f57f0994a012e1134b3f1d76ade552b8bd336ba93f7821d6653fab16b8b66336",
+    "redacted": false
+  },
+  {
+    "source": "evidence/V31-P0-IMPLEMENT/20261106T083824Z-974ed889/command.log",
+    "published": "engineering-full-404.log",
+    "original_sha256": "abfeeec7c8ca51a1fe4914bdc5e718d085b4aee5f66046123066955d64418c43",
+    "published_sha256": "abfeeec7c8ca51a1fe4914bdc5e718d085b4aee5f66046123066955d64418c43",
+    "redacted": false
+  },
+  {
+    "source": "evidence/V31-P0-IMPLEMENT/20261106T140748Z-6b53129b/result.json",
+    "published": "engineering-final-p0-30.json",
+    "original_sha256": "bc438f3a55ae250ecf1ab88131bd7ce97ed151c6f2a1c0b5417aa2d4c4c8e7a6",
+    "published_sha256": "bc438f3a55ae250ecf1ab88131bd7ce97ed151c6f2a1c0b5417aa2d4c4c8e7a6",
+    "redacted": false
+  },
+  {
+    "source": "evidence/V31-P0-IMPLEMENT/20261106T140748Z-6b53129b/command.log",
+    "published": "engineering-final-p0-30.log",
+    "original_sha256": "91edf5d252da5327108c85ff84dd2a44d14281db0f9ea9ebf3a8f205c3cc9a32",
+    "published_sha256": "91edf5d252da5327108c85ff84dd2a44d14281db0f9ea9ebf3a8f205c3cc9a32",
+    "redacted": false
+  },
+  {
+    "source": "evidence/V31-P0-IMPLEMENT/20261106T080844Z-8d75a9ec/result.json",
+    "published": "failures/initial-source-disk.json",
+    "original_sha256": "78c348233f60e3b29ef41868b7c70b324edbfe7adc9b3de7a1dbb105c18ded38",
+    "published_sha256": "78c348233f60e3b29ef41868b7c70b324edbfe7adc9b3de7a1dbb105c18ded38",
+    "redacted": false
+  },
+  {
+    "source": "evidence/V31-P0-IMPLEMENT/20261106T080844Z-8d75a9ec/command.log",
+    "published": "failures/initial-source-disk.log",
+    "original_sha256": "d283bc24dbe9e81abb1455e7f9315ae87776ebf788c1facc37a1520d4971852d",
+    "published_sha256": "d283bc24dbe9e81abb1455e7f9315ae87776ebf788c1facc37a1520d4971852d",
+    "redacted": false
+  },
+  {
+    "source": ".local/p0-implementation/invalid-patch-business-before.log",
+    "published": "failures/invalid-patch-business-before.log",
+    "original_sha256": "f84e8bf8b33d72ec2a167a8f5763969107a8e881e7af93044fa2b5ea0f1c447f",
+    "published_sha256": "f84e8bf8b33d72ec2a167a8f5763969107a8e881e7af93044fa2b5ea0f1c447f",
+    "redacted": false
+  },
+  {
+    "source": ".local/p0-implementation/invalid-patch-business-after.log",
+    "published": "failures/invalid-patch-business-after.log",
+    "original_sha256": "fbd92219f6590dacbaf3e6aaf4c791fd14b571ed3ec0cf1b17cd34c80dd43aee",
+    "published_sha256": "fbd92219f6590dacbaf3e6aaf4c791fd14b571ed3ec0cf1b17cd34c80dd43aee",
+    "redacted": false
+  },
+  {
+    "source": ".local/p0-implementation/shared-grant-tests.log",
+    "published": "failures/shared-grant-migration.log",
+    "original_sha256": "6ff59d305854a81d64e26ad14f18e2381c34b79692ede9d71157d34d1840fda5",
+    "published_sha256": "6ff59d305854a81d64e26ad14f18e2381c34b79692ede9d71157d34d1840fda5",
+    "redacted": false
+  }
+]

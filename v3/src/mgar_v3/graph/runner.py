@@ -61,6 +61,8 @@ class Runner:
             return self._execute(run_id)
 
     def _execute(self, run_id: UUID) -> UUID | None:
+        if self.engine.commerce.binding(run_id):
+            return self.engine.commerce.execute(self, run_id)
         if self.engine.get_run(run_id)["graph_version"] == "r5-repair-v1":
             from mgar_v3.repair.graph import execute_repair
 

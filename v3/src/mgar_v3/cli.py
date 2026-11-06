@@ -50,6 +50,28 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--api", default="http://127.0.0.1:18080")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("doctor")
+    commands.add_parser("commerce-setup")
+    commands.add_parser("commerce-list")
+    commerce = commands.add_parser("commerce-create")
+    commerce.add_argument(
+        "--template", choices=["duplicate_paid", "status_filter", "refunded_status"], required=True
+    )
+    commerce.add_argument("--issue", type=int, required=True)
+    commerce.add_argument("--start", required=True)
+    commerce.add_argument("--end", required=True)
+    commerce.add_argument("--goal", choices=["report", "draft_pr"], default="report")
+    commerce.add_argument("--execution-mode", choices=["fixture", "live"], default="fixture")
+    commerce.add_argument("--client-request-id")
+    for operation in ["commerce-result", "commerce-repair", "commerce-message"]:
+        sub = commands.add_parser(operation)
+        sub.add_argument("case_id")
+        if operation != "commerce-result":
+            sub.add_argument("--revision", type=int, required=True)
+            sub.add_argument("--client-request-id")
+        if operation == "commerce-repair":
+            sub.add_argument("--result-hash", required=True)
+        if operation == "commerce-message":
+            sub.add_argument("--body", required=True)
     commands.add_parser("tickets")
     commands.add_parser("routing")
     commands.add_parser("recovery-requests")
@@ -118,6 +140,17 @@ def main(argv: list[str] | None = None) -> int:
     settings = Settings()
     if args.command == "doctor":
         return doctor(settings)
+    if args.command == "commerce-setup":
+        from mgar_v3.commerce.setup import setup
+        from mgar_v3.coordination.engine import Engine
+        from mgar_v3.evidence.artifacts import ArtifactStore
+
+        engine = Engine(settings, ArtifactStore(settings.artifact_root))
+        try:
+            print(json.dumps(setup(engine), indent=2))
+        finally:
+            engine.close()
+        return 0
     if args.command == "live-preflight":
         try:
             result = preflight(args.profile, settings, args.authorization)
@@ -136,7 +169,38 @@ def main(argv: list[str] | None = None) -> int:
         timeout=60,
     ) as client:
         try:
-            if args.command == "recovery-requests":
+            if args.command == "commerce-list":
+                response = client.get("/api/v3/commerce/cases")
+            elif args.command == "commerce-create":
+                response = client.post(
+                    "/api/v3/commerce/cases",
+                    json={
+                        "template_id": args.template,
+                        "issue_number": args.issue,
+                        "window": {"start": args.start, "end": args.end},
+                        "goal": args.goal,
+                        "execution_mode": args.execution_mode,
+                        "client_request_id": args.client_request_id or str(uuid4()),
+                    },
+                )
+            elif args.command == "commerce-result":
+                response = client.get(f"/api/v3/commerce/cases/{args.case_id}/result")
+            elif args.command in {"commerce-repair", "commerce-message"}:
+                payload = {
+                    "expected_case_revision": args.revision,
+                    "client_request_id": args.client_request_id or str(uuid4()),
+                }
+                payload.update(
+                    {"investigation_result_hash": args.result_hash}
+                    if args.command == "commerce-repair"
+                    else {"body": args.body}
+                )
+                response = client.post(
+                    f"/api/v3/commerce/cases/{args.case_id}/"
+                    + ("repair" if args.command == "commerce-repair" else "messages"),
+                    json=payload,
+                )
+            elif args.command == "recovery-requests":
                 response = client.get("/api/v3/recovery-requests")
             elif args.command == "recovery-decision":
                 response = client.post(

@@ -47,6 +47,8 @@ class ToolAuthority:
                 )
 
     def bind_context(self, run_id: UUID, epoch: int, revision: int) -> dict[str, Any]:
+        if self.engine.commerce.binding(run_id):
+            return self.engine.commerce.bind_context(run_id, epoch, revision)
         with self.engine.transaction() as conn:
             run = self.engine._run(conn, run_id, epoch)
             if run["status"] != "running":
@@ -307,6 +309,10 @@ class ToolAuthority:
             )
             return result
         if tool == "read_repository":
+            if self.engine.commerce.binding(grant["run_id"]):
+                if arguments:
+                    raise DomainError("TOOL_ARGUMENTS", "Code is fixed by the registered scope")
+                return self.engine.commerce.read_repository(grant)
             if arguments:
                 raise DomainError("TOOL_ARGUMENTS", "Repository source is fixed by the task scope")
             if grant["execution_mode"] == "fixture":
@@ -351,7 +357,7 @@ class ToolAuthority:
                 version,
                 {"kind": "repo", "source_hash": hashlib.sha256(content).hexdigest()},
             )
-        reader = self.reader(grant["actor"])
+        reader = self.engine.commerce.reader_for_run(grant["run_id"]) or self.reader(grant["actor"])
         with self.engine.transaction() as conn:
             fixed = conn.execute(
                 ("SELECT profile FROM app.r4_context WHERE run_id=%s AND input_revision=%s"),
@@ -421,7 +427,7 @@ class ToolAuthority:
                     "EVIDENCE_SOURCE_CHANGED", "Knowledge evidence provenance changed"
                 )
         elif origin and origin["kind"] == "data":
-            reader = self.reader(actor)
+            reader = self.engine.commerce.reader_for_run(evidence["run_id"]) or self.reader(actor)
             if reader.profile["fixture_hash"] != origin["fixture_hash"]:
                 raise DomainError(
                     "EVIDENCE_SOURCE_CHANGED", "Data source version differs from the read evidence"

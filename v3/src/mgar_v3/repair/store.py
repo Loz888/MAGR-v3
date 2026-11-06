@@ -10,7 +10,7 @@ from psycopg.types.json import Jsonb
 
 from mgar_v3.domain import DomainError, TriggerInput, digest
 from mgar_v3.repair.domain import RepairInput, Snapshot, publication_requests
-from mgar_v3.repair.hidden import suite
+from mgar_v3.repair.hidden import suite_for_run
 from mgar_v3.repair.sandbox import local_lock
 from mgar_v3.repair.workspace import fixture_snapshot, recount_diff, workspace_hash
 
@@ -121,7 +121,12 @@ class Repairs:
             )
         return value
 
-    def create(self, request: RepairInput, permit: "LivePermit | None" = None) -> "Row":
+    def prepare_create(
+        self,
+        request: RepairInput,
+        permit: "LivePermit | None" = None,
+        fixture: Snapshot | None = None,
+    ) -> dict[str, Any]:
         from mgar_v3.repair.live import load_snapshot
         from mgar_v3.repair.source import scope_hash as snapshot_scope
 
@@ -132,7 +137,10 @@ class Repairs:
                 )
             snapshot = load_snapshot(permit)
         else:
-            snapshot = fixture_snapshot(self.engine.settings.repository.lower())
+            from mgar_v3.repair.source import verify_snapshot
+
+            snapshot = fixture or fixture_snapshot(self.engine.settings.repository.lower())
+            verify_snapshot(snapshot)
         source = snapshot.model_dump_json().encode()
         snapshot_hash = self.engine.artifacts.put(source)
         scope_hash = snapshot_scope(snapshot)
@@ -145,6 +153,27 @@ class Repairs:
             actor=self.engine.settings.local_actor,
             body="/mgar investigate " + request.question,
             execution_mode=request.execution_mode,
+        )
+        return {
+            "snapshot": snapshot,
+            "source": source,
+            "snapshot_hash": snapshot_hash,
+            "scope_hash": scope_hash,
+            "event": event,
+        }
+
+    def create(self, request: RepairInput, permit: "LivePermit | None" = None) -> "Row":
+        prepared = self.prepare_create(request, permit)
+        return self.commit_create(request, prepared, permit)
+
+    def commit_create(
+        self, request: RepairInput, prepared: dict[str, Any], permit: "LivePermit | None" = None
+    ) -> "Row":
+        source = prepared["source"]
+        snapshot_hash, scope_hash, event = (
+            prepared["snapshot_hash"],
+            prepared["scope_hash"],
+            prepared["event"],
         )
         with self.engine.transaction() as conn:
             receipt = self.engine.ingest(
@@ -315,7 +344,7 @@ class Repairs:
         work = working_files(snapshot, files)
         if public["workspace_hash"] != workspace_hash(work) or hidden[
             "workspace_hash"
-        ] != workspace_hash({**work, "zz_mgar_hidden_test.go": suite()}):
+        ] != workspace_hash({**work, "zz_mgar_hidden_test.go": suite_for_run(self.engine, run_id)}):
             raise DomainError(
                 "TEST_PROOF_CHANGED", "Receipts belong to a different tested workspace"
             )
@@ -349,7 +378,11 @@ class Repairs:
             assert row is not None
             if row["diff_hash"] != diff_hash or row["files_hash"] != files_hash:
                 raise DomainError("CANDIDATE_CHANGED", "Stored attempt cannot change its patch")
-            return row
+        if self.engine.commerce.binding(run_id):
+            from mgar_v3.commerce.results import record_candidate
+
+            record_candidate(self.engine.commerce, run_id, epoch, row)
+        return row
 
     def propose(self, run_id: UUID, epoch: int, revision: int, candidate: "Row") -> UUID:
         from mgar_v3.repair.source import candidate_tree
@@ -365,6 +398,27 @@ class Repairs:
             raise DomainError(
                 "UNVERIFIED_PATCH", "Candidate lacks matching protected test evidence"
             )
+        commerce_result = (
+            self.engine.commerce.require_result(run_id, candidate["diff_hash"])
+            if self.engine.commerce.binding(run_id)
+            else None
+        )
+        body_calls = []
+        if commerce_result:
+            from mgar_v3.repair.body import body_diff
+
+            with self.engine.transaction() as conn:
+                recorded_bodies = conn.execute(
+                    "SELECT * FROM app.usage_calls WHERE run_id=%s "
+                    "AND status='known' AND result ? 'function_body'",
+                    (run_id,),
+                ).fetchall()
+            for call in recorded_bodies:
+                try:
+                    if body_diff(snapshot, call["result"]["function_body"]) == diff:
+                        body_calls.append(call)
+                except DomainError:
+                    continue
         with self.engine.transaction() as conn:
             run = self.engine._run(conn, run_id, epoch)
             if run["status"] != "running" or run["thread_revision"] != revision:
@@ -424,6 +478,10 @@ class Repairs:
                     {"public": candidate["public_receipt"], "hidden": candidate["hidden_receipt"]}
                 ),
             }
+            if commerce_result:
+                current_result = self.engine.commerce.require_result(run_id, candidate["diff_hash"])
+                payload["business_result_hash"] = current_result["result_hash"]
+                payload["spec_hash"] = current_result["spec_hash"]
             if run["execution_mode"] == "live":
                 recorded = conn.execute(
                     "SELECT call_id,run_id,step_key,profile_hash,result->>'diff' AS raw_diff "
@@ -445,7 +503,11 @@ class Repairs:
                     "WHERE run_id=%s AND input_revision=%s",
                     (run_id, revision),
                 ).fetchone()
-                if not calls and (not manual or manual["diff_hash"] != candidate["diff_hash"]):
+                if (
+                    not calls
+                    and not body_calls
+                    and (not manual or manual["diff_hash"] != candidate["diff_hash"])
+                ):
                     raise DomainError(
                         "PATCH_PROVENANCE_REQUIRED",
                         "Live patch needs a recorded model result or user edit",
@@ -462,6 +524,20 @@ class Repairs:
                     }
                     for c in calls
                 ]
+                payload["model_receipts"].extend(
+                    {
+                        "call_id": str(c["call_id"]),
+                        "source_run_id": str(c["run_id"]),
+                        "step_key": c["step_key"],
+                        "profile_hash": c["profile_hash"],
+                        "transformation": "function_body_v1",
+                        "function_body_hash": hashlib.sha256(
+                            c["result"]["function_body"].encode()
+                        ).hexdigest(),
+                        "normalized_diff_hash": candidate["diff_hash"],
+                    }
+                    for c in body_calls
+                )
                 payload["manual_input_hash"] = manual["diff_hash"] if manual else None
             payload_hash = digest(
                 {
@@ -503,6 +579,7 @@ class Repairs:
         """Record one fresh human review, never extend or mutate the original proposal."""
         if actor.lower() not in {a.lower() for a in self.engine.settings.allowed_actors}:
             raise DomainError("ACTOR_DENIED", "Actor cannot renew this review", 403)
+        self.engine.commerce.prepare_action(action_id)
         with self.engine.transaction() as conn:
             action, run = self.engine._action(conn, action_id)
             if action["action_type"] != "draft_pr" or action["payload_hash"] != payload_hash:
@@ -586,7 +663,9 @@ class Repairs:
             or payload["hidden_receipt"] != row["hidden_receipt"]
             or row["public_receipt"]["workspace_hash"] != workspace_hash(work)
             or row["hidden_receipt"]["workspace_hash"]
-            != workspace_hash({**work, "zz_mgar_hidden_test.go": suite()})
+            != workspace_hash(
+                {**work, "zz_mgar_hidden_test.go": suite_for_run(self.engine, run["run_id"])}
+            )
         ):
             raise DomainError(
                 "TEST_PROOF_CHANGED", "Receipt content or independent test suite changed"
@@ -677,6 +756,7 @@ class Repairs:
     def publication_step(
         self, action_id: UUID, lease: UUID, ordinal: int, kind: str, request: dict[str, Any]
     ) -> "Row | None":
+        self.engine.commerce.prepare_action(action_id)
         with self.engine.transaction() as conn:
             action, run = self.engine._action(conn, action_id)
             if (
@@ -726,6 +806,7 @@ class Repairs:
     def continue_publication(self, action_id: UUID, payload_hash: str, actor: str) -> "Row":
         if actor.lower() != self.engine.settings.local_actor.lower():
             raise DomainError("ACTOR_DENIED", "Actor cannot continue publication", 403)
+        self.engine.commerce.prepare_action(action_id)
         with self.engine.transaction() as conn:
             action, run = self.engine._action(conn, action_id)
             if action["action_type"] != "draft_pr" or action["payload_hash"] != payload_hash:

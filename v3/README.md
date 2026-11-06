@@ -2,7 +2,7 @@
 
 [项目首页](../README.md) · [完整技术报告](docs/TECHNICAL_REPORT.md) · [文档导航](docs/README.md) · [两项P0设计](docs/design/p0-commerce-v1/README.md)
 
-本页提供实际运行命令。当前核心实现和限定实测见项目首页；电商工单与统一业务判定仅完成设计，新Case接口/页面/表尚未实施。历史阶段结果位于文末，按记录时间理解。
+本页提供实际运行命令。电商Case工单、独立业务判定、API/CLI与工作台已经实施；工程及真实报告/修复提案验收通过，三份真实Draft PR等待完整内容审批。见[P0运行手册](docs/p0-commerce-runbook.md)与[实施档案](docs/repairs/P0-20261106/README.md)。历史阶段结果按记录时间理解。
 
 仓库地址为`https://github.com/Loz888/MAGR-v3.git`。所有make命令在你本机克隆后的`MAGR-v3/v3/`执行；`/workspace/MAGR-v3/v3`是开发云路径，在你的WSL上不会自动存在。
 

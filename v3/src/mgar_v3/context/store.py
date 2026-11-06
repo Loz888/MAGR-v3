@@ -41,6 +41,25 @@ class ContextStore:
                 "summary": ticket["question"],
                 "run_id": str(ticket["run_id"]),
             }
+        if kind == "evidence":
+            with self.engine.transaction() as conn:
+                row = conn.execute(
+                    "SELECT * FROM app.evidence WHERE evidence_id=%s", (object_id,)
+                ).fetchone()
+                if not row:
+                    raise DomainError("NOT_FOUND", "Evidence reference was not found", 404)
+                run = self.engine._run(conn, row["run_id"])
+                self.engine.routing.owned_ticket(run["ticket_id"], actor=actor)
+            # Evidence verification reads CAS and knowledge bytes outside the business TX.
+            self.engine.tools.check_evidence(object_id, actor)
+            return {
+                "kind": kind,
+                "id": str(object_id),
+                "summary": row["source_uri"],
+                "artifact_hash": row["content_hash"],
+                "locator": {"start_line": row["start_line"], "end_line": row["end_line"]},
+                "source_version": row["source_version"],
+            }
         with self.engine.transaction() as conn:
             if kind == "run":
                 run = self.engine._run(conn, object_id)
@@ -50,23 +69,6 @@ class ContextStore:
                     "id": str(object_id),
                     "summary": run["question"][:512],
                     "report_hash": run["report_hash"],
-                }
-            if kind == "evidence":
-                row = conn.execute(
-                    "SELECT * FROM app.evidence WHERE evidence_id=%s", (object_id,)
-                ).fetchone()
-                if not row:
-                    raise DomainError("NOT_FOUND", "Evidence reference was not found", 404)
-                run = self.engine._run(conn, row["run_id"])
-                self.engine.routing.owned_ticket(run["ticket_id"], actor=actor)
-                self.engine.tools.check_evidence(object_id, actor)
-                return {
-                    "kind": kind,
-                    "id": str(object_id),
-                    "summary": row["source_uri"],
-                    "artifact_hash": row["content_hash"],
-                    "locator": {"start_line": row["start_line"], "end_line": row["end_line"]},
-                    "source_version": row["source_version"],
                 }
             if kind == "chunk":
                 membership = conn.execute(

@@ -1,0 +1,56 @@
+E
+==================================== ERRORS ====================================
+_ ERROR at setup of test_native_live_stage_permits_body_provenance_and_no_repeat _
+
+    @pytest.fixture(scope="session")
+    def database() -> Iterator[str]:
+        base = Settings().database_url.get_secret_value()
+        name = "mgar_v3_test_" + uuid4().hex
+        with psycopg.connect(base, autocommit=True) as conn:
+            conn.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(name)))
+        dsn = make_conninfo(base, dbname=name)
+>       migrate(dsn)
+
+tests/conftest.py:44: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/mgar_v3/store/migrate.py:30: in migrate
+    connection.execute(content.decode(), prepare=False)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <psycopg.Connection [BAD] at 0x7f622693d520>
+query = 'CREATE TABLE app.commerce_templates (\n template_id text NOT NULL,\n project_id text NOT NULL,\n repository text NOT ...NULL,\n stage text NOT NULL,\n profile_hash text NOT NULL,\n UNIQUE(manifest_hash,project_id,issue_number,stage)\n);\n'
+params = None, prepare = False, binary = False
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool = False,
+    ) -> Cursor[Row]:
+        """Execute a query and return a cursor to read its results."""
+        try:
+            cur = self.cursor()
+            if binary:
+                cur.format = BINARY
+    
+            if isinstance(query, Template):
+                if params is not None:
+                    raise TypeError(
+                        "'execute()' with string template query doesn't support parameters"
+                    )
+                return cur.execute(query, prepare=prepare)
+            else:
+                return cur.execute(query, params, prepare=prepare)
+        except e._NO_TRACEBACK as ex:
+>           raise ex.with_traceback(None)
+E           psycopg.errors.SyntaxError: syntax error at or near "authorization"
+E           LINE 101:  authorization jsonb NOT NULL,
+E                      ^
+
+/tmp/mgar-v3-r6-repair-venv/lib/python3.12/site-packages/psycopg/connection.py:304: SyntaxError
+=========================== short test summary info ============================
+ERROR tests/test_p0_live_adapter.py::test_native_live_stage_permits_body_provenance_and_no_repeat
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 error in 0.70s

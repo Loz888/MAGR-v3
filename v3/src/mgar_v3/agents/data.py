@@ -225,7 +225,10 @@ class DataReader:
                     )
                     source = conn.execute(
                         sql.SQL(
-                            "SELECT event_id,order_id,status,amount FROM {}.orders ORDER BY "
+                            "SELECT event_id,order_id,status,amount,created_at FROM {}.orders "
+                            "ORDER BY event_id"
+                            if self.profile.get("include_created_at")
+                            else "SELECT event_id,order_id,status,amount FROM {}.orders ORDER BY "
                             "event_id"
                         ).format(sql.Identifier(self.profile["schema"]))
                     ).fetchmany(1001)
@@ -233,6 +236,11 @@ class DataReader:
                         {"event_id": r[0], "order_id": r[1], "status": r[2], "amount": str(r[3])}
                         for r in source
                     ]
+                    if self.profile.get("include_created_at"):
+                        for value, actual in zip(observed, source, strict=True):
+                            value["created_at"] = (
+                                actual[4].astimezone(UTC).isoformat().replace("+00:00", "Z")
+                            )
                     if len(source) > 1000 or digest(observed) != self.profile["fixture_hash"]:
                         raise DomainError("DATA_SOURCE_CHANGED", "Fixed dataset bytes changed")
                     snap = conn.execute("SELECT pg_current_snapshot()::text").fetchone()
@@ -325,7 +333,7 @@ def provision(
                         row["order_id"],
                         row["status"],
                         row["amount"],
-                        "2026-01-01T00:00:00Z",
+                        row.get("created_at", "2026-01-01T00:00:00Z"),
                     ),
                 )
         role_exists = conn.execute("SELECT 1 FROM pg_roles WHERE rolname=%s", (role,)).fetchone()
@@ -361,7 +369,7 @@ def provision(
         user=role,
         password=password,
     )
-    profile = {
+    profile: dict[str, Any] = {
         "database_url": dsn,
         "reader_role": role,
         "schema": schema,
@@ -371,6 +379,8 @@ def provision(
         "repository": engine.settings.repository,
         "actor": engine.settings.local_actor.lower(),
     }
+    if any("created_at" in r for r in rows):
+        profile["include_created_at"] = True
     path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     path.write_text(json.dumps(profile, indent=2) + "\n")
     path.chmod(0o600)

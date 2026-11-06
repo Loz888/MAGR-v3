@@ -11,6 +11,7 @@ from psycopg.types.json import Jsonb
 
 from mgar_v3.agents.tools import ToolAuthority
 from mgar_v3.benchmark.store import Benchmarks
+from mgar_v3.commerce.store import Commerce
 from mgar_v3.context.store import ContextStore
 from mgar_v3.domain import (
     DomainError,
@@ -69,6 +70,7 @@ class Engine:
         self.recovery = Recovery(self)
         self.proactivity = Proactivity(self)
         self.benchmarks = Benchmarks(self)
+        self.commerce = Commerce(self)
 
     def close(self) -> None:
         with self._mutex:
@@ -791,6 +793,28 @@ class Engine:
             if self.artifacts.read(stored_report_hash) != report:
                 raise DomainError("ARTIFACT_MISMATCH", "Pre-stored report does not match its bytes")
             content_hash = stored_report_hash
+        return self.commit_prepared_report(
+            run_id,
+            epoch,
+            report,
+            verdict,
+            content_hash,
+            reply_kind=reply_kind,
+            in_reply_to_event_id=in_reply_to_event_id,
+        )
+
+    def commit_prepared_report(
+        self,
+        run_id: UUID,
+        epoch: int,
+        report: bytes,
+        verdict: Verification,
+        content_hash: str,
+        *,
+        reply_kind: str = "result",
+        in_reply_to_event_id: UUID | None = None,
+    ) -> UUID | None:
+        # Internal SQL-only commit; trusted callers prepare CAS before their transaction.
         with self.transaction() as conn:
             run = self._run(conn, run_id, epoch)
             dedupe_key = (
@@ -941,8 +965,12 @@ class Engine:
             ).fetchone()
             if row is None:
                 raise DomainError("NOT_FOUND", "Evidence was not found", 404)
-            self.tools.check_evidence(evidence_id)
-            return row
+        self.tools.check_evidence(evidence_id)
+        link = self.commerce.binding(row["run_id"])
+        if link:
+            self.commerce.case(link["case_id"])
+            self.commerce.knowledge_scope(self.commerce.manifest(row["run_id"]))
+        return row
 
     def artifact_bytes(self, content_hash: str) -> bytes:
         with self.transaction() as conn:
@@ -966,7 +994,14 @@ class Engine:
             self.tools.check_evidence(ref["evidence_id"])
         for report in reports:
             self.tools.resolution(report["run_id"])
-        return self.artifacts.read(content_hash)
+        content = self.artifacts.read(content_hash)
+        for report in reports:
+            if self.commerce.binding(report["run_id"]):
+                self.commerce.knowledge_scope(self.commerce.manifest(report["run_id"]))
+        for ref in refs:
+            # Recheck current ACL after artifact IO as well as before it.
+            self.tools.check_evidence(ref["evidence_id"])
+        return content
 
     def events(self, run_id: UUID, after: int = 0) -> list[Row]:
         with self.transaction() as conn:
@@ -977,9 +1012,12 @@ class Engine:
             ).fetchall()
 
     def actions(self, run_id: UUID) -> list[Row]:
+        self.get_run(run_id)
+        self.tools.resolution(run_id)
         with self.transaction() as conn:
             self._run(conn, run_id)
-            self.tools.resolution(run_id)
+            if self.commerce.binding(run_id):
+                self.commerce.knowledge_scope(self.commerce.manifest(run_id))
             return conn.execute(
                 "SELECT a.*,coalesce(v.expires_at,a.expires_at) AS review_expires_at "
                 "FROM app.actions a LEFT JOIN app.action_review_renewals v "
@@ -1012,7 +1050,12 @@ class Engine:
         if readonly and readonly["scope"].get("read_only"):
             raise DomainError("READ_ONLY_RUN", "Read-only investigations cannot publish", 403)
         if action["action_type"] == "draft_pr":
-            self.repairs.validate_action(action, run)
+            if self.commerce.binding(run["run_id"]):
+                from mgar_v3.commerce.guards import guard_action
+
+                guard_action(self.commerce, conn, action, run)
+            else:
+                self.repairs.validate_action(action, run)
         if run["graph_version"] == "r4-experts-v1":
             self.tools.validate_publication(run["run_id"])
         if (
@@ -1074,6 +1117,7 @@ class Engine:
     def approve(self, action_id: UUID, payload_hash: str, actor: str) -> Row:
         if actor.lower() not in {a.lower() for a in self.settings.allowed_actors}:
             raise DomainError("ACTOR_DENIED", "Actor cannot approve this action", 403)
+        self.commerce.prepare_action(action_id)
         with self.transaction() as conn:
             action, run = self._action(conn, action_id)
             if action["payload_hash"] != payload_hash:
@@ -1103,6 +1147,28 @@ class Engine:
         execution_mode: str,
         action_types: tuple[str, ...] = ("issue_comment",),
         profile_hash: str | None = None,
+    ) -> Row | None:
+        # Keep selection stable across preparation without holding a database transaction.
+        with self._mutex:
+            with self.transaction() as conn:
+                reference = conn.execute(
+                    "SELECT o.action_id FROM app.outbox o JOIN app.actions a USING(action_id) "
+                    "JOIN app.runs r USING(run_id) WHERE o.status='ready' AND a.status='ready' "
+                    "AND r.execution_mode=%s AND a.action_type=ANY(%s) AND o.next_retry_at<=now() "
+                    "AND (%s::text IS NULL OR EXISTS (SELECT 1 FROM app.tickets t "
+                    "JOIN app.mandates m USING(mandate_id) WHERE t.ticket_id=r.ticket_id "
+                    "AND m.scope->>'profile_hash'=%s)) ORDER BY o.created_at LIMIT 1",
+                    (execution_mode, list(action_types), profile_hash, profile_hash),
+                ).fetchone()
+            if reference:
+                try:
+                    self.commerce.prepare_action(reference["action_id"])
+                except DomainError:
+                    pass  # SQL-only claim records the exact blocking reason; no write is sent.
+            return self._claim_effect(execution_mode, action_types, profile_hash)
+
+    def _claim_effect(
+        self, execution_mode: str, action_types: tuple[str, ...], profile_hash: str | None
     ) -> Row | None:
         with self.transaction() as conn:
             reference = conn.execute(
@@ -1507,6 +1573,9 @@ class Engine:
                     "BUDGET_EXHAUSTED", "Model call exceeds its remaining budget", 403
                 )
             self.benchmarks.check_global(conn, run["repository"], amount)
+            from mgar_v3.commerce.budget import reserve as reserve_commerce
+
+            reserve_commerce(self.commerce, conn, run_id, amount)
             call_id = uuid4()
             conn.execute(
                 "INSERT INTO app.usage_calls(call_id,run_id,step_key,status,reserved_micros,"

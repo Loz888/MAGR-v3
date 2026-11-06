@@ -1,0 +1,948 @@
+{
+  "schema": "p0-commerce-live-v3-result",
+  "manifest_hash": "7b4b7f46c15c0e19d19276a84df4688aeac76f94d3601ba61b97c42f77ce52fd",
+  "cases": [
+    {
+      "id": "N01",
+      "project_id": "p0-commerce-live-v3-n01",
+      "case_id": "8aa83bd9-4504-490f-8731-8329c56953c9",
+      "run_id": "b1bbbdc4-8ed8-41ad-90d9-d84741c7a4d0",
+      "business": {
+        "facts": {
+          "paid_events": "3",
+          "dedup_amount": "19.50",
+          "event_amount": "32.00",
+          "distinct_orders": "2",
+          "inflation_amount": "12.50"
+        },
+        "stage": "investigation",
+        "checks": {
+          "scope": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "contract": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "evidence": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "acceptance": {
+            "status": "passed",
+            "reason_codes": []
+          }
+        },
+        "run_id": "b1bbbdc4-8ed8-41ad-90d9-d84741c7a4d0",
+        "schema": "commerce-business-result-v1",
+        "case_id": "8aa83bd9-4504-490f-8731-8329c56953c9",
+        "result_id": "ad1d9eb2-7e2b-4807-85f5-871ca2a49c81",
+        "spec_hash": "d19933afa328d5ea7f833a526ad67f3df2d8965f72984aa0b157987903752212",
+        "created_at": "2026-11-06T14:18:09.765967Z",
+        "quote_refs": [
+          {
+            "end_line": 3,
+            "source_id": "feba546d-4f68-4605-85dc-d5cabd6a43eb",
+            "unit_hash": "02dd61e219f03043d242ca1ecc1defa233a5bce1cfac92b5e63432d86cf17551",
+            "unit_kind": "knowledge_line",
+            "start_line": 3,
+            "content_hash": "9c9b1c0c0d084d62c22dc1b7e382687a2861f357c92e462c1d8fc60c44206dd8"
+          },
+          {
+            "end_line": 4,
+            "source_id": "feba546d-4f68-4605-85dc-d5cabd6a43eb",
+            "unit_hash": "61ff4c49136dd034dfcedfb4bafafad8a31aa1d1f3cbb62f510208f44cbbf204",
+            "unit_kind": "knowledge_line",
+            "start_line": 4,
+            "content_hash": "9c9b1c0c0d084d62c22dc1b7e382687a2861f357c92e462c1d8fc60c44206dd8"
+          },
+          {
+            "end_line": 15,
+            "source_id": "add9ddaa-dc5b-41d0-b332-fb799e639f06",
+            "unit_hash": "a23b7b3fabf035d923422889d3855f9c434c6660c5205b4b63ee507f35bafd67",
+            "unit_kind": "code_lines",
+            "start_line": 1,
+            "content_hash": "747c73b7158c380fc3732e8e83eb4e57568cc0057215e7db95110b3651d03e34"
+          }
+        ],
+        "reason_codes": [],
+        "artifact_hash": "3173bdd751065a8d18721795f7efd256f2049ec93f0cfe0c07ceee34edb651b6",
+        "case_revision": 1,
+        "input_revision": 1,
+        "missing_inputs": [],
+        "business_status": "passed",
+        "checker_version": "commerce-checker-v1.0",
+        "execution_epoch": 1,
+        "test_receipt_refs": [],
+        "numeric_receipt_hash": "32fd8a4eecf5922c9d5d0f4dbe3efa712f4f4e6e51354d1010ebe97c457840a0",
+        "parent_investigation_result_hash": null
+      },
+      "result_hash": "93c9e4e71d2fe4598740c77e57fbe2e887ffabd90a309e922226f8b74cb88b5f",
+      "calls": 2,
+      "oracle_passed": true,
+      "repair_run_id": "671c6c4a-496d-4101-9b7d-dce0f116ee63",
+      "repair_result": {
+        "facts": {},
+        "stage": "repair_proposal",
+        "checks": {
+          "scope": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "contract": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "evidence": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "acceptance": {
+            "status": "passed",
+            "reason_codes": []
+          }
+        },
+        "run_id": "671c6c4a-496d-4101-9b7d-dce0f116ee63",
+        "schema": "commerce-business-result-v1",
+        "case_id": "8aa83bd9-4504-490f-8731-8329c56953c9",
+        "result_id": "23503dcd-86cc-4f06-9590-076bb36bd02a",
+        "spec_hash": "d19933afa328d5ea7f833a526ad67f3df2d8965f72984aa0b157987903752212",
+        "created_at": "2026-11-06T14:18:36.848252Z",
+        "quote_refs": [],
+        "reason_codes": [],
+        "artifact_hash": "ef1e56dd498d9aa49b77e1fb4ae0cbf138a49a4afe69b2f64da4f168e0d4fbdd",
+        "case_revision": 1,
+        "input_revision": 2,
+        "missing_inputs": [],
+        "business_status": "passed",
+        "checker_version": "commerce-checker-v1.0",
+        "execution_epoch": 1,
+        "test_receipt_refs": [
+          {
+            "kind": "public",
+            "status": "passed",
+            "skipped": 0,
+            "receipt_hash": "0f4a7ebc67c5d1d50b126b4f6f2c1d2ba4f3dd7a92e0aeaf939d2a026e8c3374"
+          },
+          {
+            "kind": "independent",
+            "status": "passed",
+            "skipped": 0,
+            "receipt_hash": "689a20e685b6b7a3dcc00122d6cd87b71e4aa195f8990744dad49557234bbaab"
+          }
+        ],
+        "numeric_receipt_hash": null,
+        "parent_investigation_result_hash": "93c9e4e71d2fe4598740c77e57fbe2e887ffabd90a309e922226f8b74cb88b5f"
+      },
+      "repair_passed": true,
+      "actions": [
+        {
+          "action_id": "fc9f0463-247e-4ff4-bfa5-46652372d9b3",
+          "run_id": "671c6c4a-496d-4101-9b7d-dce0f116ee63",
+          "action_type": "draft_pr",
+          "target": "github:loz888/magr-v3:draft:p0-commerce-live-v2-n01-base",
+          "payload": {
+            "body": "Validated bounded repair.\n\n--- a/v3/examples/repair-target/orders.go\n+++ b/v3/examples/repair-target/orders.go\n@@ -7,9 +7,13 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n-    total := 0\n-    for _, order := range orders {\n+total := 0\n+seen := make(map[string]bool)\n+for _, order := range orders {\n+    if order.Status == \"paid\" && !seen[order.ID] {\n+        seen[order.ID] = true\n         total += order.Amount\n     }\n-    return total\n }\n+return total\n+}\n\n\n<!-- mgar-action:fc9f0463-247e-4ff4-bfa5-46652372d9b3 -->",
+            "diff": "--- a/v3/examples/repair-target/orders.go\n+++ b/v3/examples/repair-target/orders.go\n@@ -7,9 +7,13 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n-    total := 0\n-    for _, order := range orders {\n+total := 0\n+seen := make(map[string]bool)\n+for _, order := range orders {\n+    if order.Status == \"paid\" && !seen[order.ID] {\n+        seen[order.ID] = true\n         total += order.Amount\n     }\n-    return total\n }\n+return total\n+}\n",
+            "draft": true,
+            "files": [
+              {
+                "path": "v3/examples/repair-target/orders.go",
+                "content": "package orders\n\ntype Order struct {\n    ID string\n    Status string\n    Amount int\n}\n\nfunc PaidRevenueCents(orders []Order) int {\ntotal := 0\nseen := make(map[string]bool)\nfor _, order := range orders {\n    if order.Status == \"paid\" && !seen[order.ID] {\n        seen[order.ID] = true\n        total += order.Amount\n    }\n}\nreturn total\n}\n"
+              }
+            ],
+            "title": "Fix paid order revenue calculation",
+            "branch": "mgar/r5-fc9f0463247e4ff4bfa546652372d9b3",
+            "base_sha": "6669b7d189aa439bd23334d9b59739f8b48f4406",
+            "tree_sha": "101777f8e83c3c2a155f358f7e322c2ec20c68a1",
+            "base_tree": "48c657452b8a4a00da8b8ef792b84a8cded1517a",
+            "diff_hash": "ef1e56dd498d9aa49b77e1fb4ae0cbf138a49a4afe69b2f64da4f168e0d4fbdd",
+            "spec_hash": "d19933afa328d5ea7f833a526ad67f3df2d8965f72984aa0b157987903752212",
+            "test_hash": "5e2c1ad1b183691ee5d98247c46aa41d6304797b4a6ab4b3ff6991ab5faf1ebf",
+            "repository": "loz888/magr-v3",
+            "base_branch": "p0-commerce-live-v2-n01-base",
+            "issue_number": 1,
+            "source_origin": "github_commit",
+            "hidden_receipt": {
+              "tests": [
+                "TestCommerceObservedWindow",
+                "TestPaidRevenueCents",
+                "TestR5Hidden",
+                "TestR5Hidden/v0",
+                "TestR5Hidden/v1",
+                "TestR5Hidden/v10",
+                "TestR5Hidden/v11",
+                "TestR5Hidden/v12",
+                "TestR5Hidden/v13",
+                "TestR5Hidden/v14",
+                "TestR5Hidden/v15",
+                "TestR5Hidden/v16",
+                "TestR5Hidden/v17",
+                "TestR5Hidden/v18",
+                "TestR5Hidden/v19",
+                "TestR5Hidden/v2",
+                "TestR5Hidden/v20",
+                "TestR5Hidden/v21",
+                "TestR5Hidden/v22",
+                "TestR5Hidden/v23",
+                "TestR5Hidden/v24",
+                "TestR5Hidden/v25",
+                "TestR5Hidden/v26",
+                "TestR5Hidden/v27",
+                "TestR5Hidden/v3",
+                "TestR5Hidden/v4",
+                "TestR5Hidden/v5",
+                "TestR5Hidden/v6",
+                "TestR5Hidden/v7",
+                "TestR5Hidden/v8",
+                "TestR5Hidden/v9"
+              ],
+              "passed": true,
+              "policy": {
+                "user": "65532:65532",
+                "mounts": [],
+                "network": "none",
+                "cap_drop": [
+                  "ALL"
+                ],
+                "read_only": true,
+                "pids_limit": 96,
+                "memory_bytes": 536870912,
+                "no_new_privileges": true
+              },
+              "skipped": 0,
+              "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+              "log_hash": "6ab2db7695ab49b96d47313eb52ff4b5e9cdc3f0967b495794aa35a1d7c3507c",
+              "exit_code": 0,
+              "receipt_id": "9f3cd3da-20fc-4d32-aaff-b2ea3c7a770e",
+              "stop_reason": null,
+              "failed_tests": [],
+              "workspace_hash": "e071c2aa33c313e2619535e1be7bb49a1dbab3bfb351421d2765405ca9efd11e"
+            },
+            "model_receipts": [
+              {
+                "call_id": "577794e6-9cf4-49fd-99b4-d4a9be95361c",
+                "step_key": "p0-body:r2:a0",
+                "profile_hash": "47ed01a10f09642b70c9d0e98b31a0502b9cb78a2321bdc37afd8dfe83ffd433",
+                "source_run_id": "671c6c4a-496d-4101-9b7d-dce0f116ee63",
+                "transformation": "function_body_v1",
+                "function_body_hash": "b65d265343e41998927de76f6584b1e155d357cd5a83ed06fa09fefc63656c00",
+                "normalized_diff_hash": "ef1e56dd498d9aa49b77e1fb4ae0cbf138a49a4afe69b2f64da4f168e0d4fbdd"
+              }
+            ],
+            "public_receipt": {
+              "tests": [
+                "TestPaidRevenueCents"
+              ],
+              "passed": true,
+              "policy": {
+                "user": "65532:65532",
+                "mounts": [],
+                "network": "none",
+                "cap_drop": [
+                  "ALL"
+                ],
+                "read_only": true,
+                "pids_limit": 96,
+                "memory_bytes": 536870912,
+                "no_new_privileges": true
+              },
+              "skipped": 0,
+              "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+              "log_hash": "8b5580b83a78da8740b84b1bd61fc0d3713343fa2ac3c18069f07b381a802bb3",
+              "exit_code": 0,
+              "receipt_id": "35301325-826b-417d-8f78-d985fdd6e702",
+              "stop_reason": null,
+              "failed_tests": [],
+              "workspace_hash": "37d667419ad23e9ecf601bfd545b143f279d83f45ffa09db0cade10b6dfd5bc0"
+            },
+            "workspace_hash": "0adec3283393116c0551daefcba04d14bde82b371a4b8cb40dc6604b6b9259c8",
+            "manual_input_hash": null,
+            "business_result_hash": "0a83d6dc12c5f984312890d376f9c1ed4bb2a48465db31793d35e8c6addab128"
+          },
+          "payload_hash": "a7dc957113eee1d3502abb84dc82b435936eb651ddcdefebdfa856bc5b652728",
+          "base_revision": 2,
+          "execution_epoch": 1,
+          "fencing_token": 1,
+          "dedupe_key": "bd4ea1e3-836c-49c8-a139-851816d944b2:draft:r2:g0",
+          "status": "proposed",
+          "expires_at": "2026-11-06 15:18:36.869306+00:00",
+          "external_id": null,
+          "lease_token": null,
+          "reason_code": null,
+          "created_at": "2026-11-06 14:18:36.869306+00:00",
+          "reply_kind": "result",
+          "in_reply_to_event_id": null,
+          "review_expires_at": "2026-11-06 15:18:36.869306+00:00"
+        }
+      ]
+    },
+    {
+      "id": "N02",
+      "project_id": "p0-commerce-live-v3-n02",
+      "case_id": "22317b5a-3234-4c6e-a5aa-af8b486c9326",
+      "run_id": "a7039935-e83f-4cd1-94e9-fac1df1a9ecc",
+      "business": {
+        "facts": {
+          "paid_events": "1",
+          "dedup_amount": "10.00",
+          "event_amount": "10.00",
+          "distinct_orders": "1",
+          "inflation_amount": "0.00"
+        },
+        "stage": "investigation",
+        "checks": {
+          "scope": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "contract": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "evidence": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "acceptance": {
+            "status": "passed",
+            "reason_codes": []
+          }
+        },
+        "run_id": "a7039935-e83f-4cd1-94e9-fac1df1a9ecc",
+        "schema": "commerce-business-result-v1",
+        "case_id": "22317b5a-3234-4c6e-a5aa-af8b486c9326",
+        "result_id": "176139a4-4f81-4b12-ba22-1ff14c1ab9e0",
+        "spec_hash": "65691ce7deb38f5c34b31902a7dca27231bec7eb8799a5e03656937cc84055a1",
+        "created_at": "2026-11-06T14:18:11.979352Z",
+        "quote_refs": [
+          {
+            "end_line": 3,
+            "source_id": "c4e3b1c0-7564-482a-9f15-85f940e69e32",
+            "unit_hash": "02dd61e219f03043d242ca1ecc1defa233a5bce1cfac92b5e63432d86cf17551",
+            "unit_kind": "knowledge_line",
+            "start_line": 3,
+            "content_hash": "9c9b1c0c0d084d62c22dc1b7e382687a2861f357c92e462c1d8fc60c44206dd8"
+          },
+          {
+            "end_line": 5,
+            "source_id": "c4e3b1c0-7564-482a-9f15-85f940e69e32",
+            "unit_hash": "3d0512e7ff784f5707625b0875707ddc1cbf034c6be294dfbc45aa9264c2f103",
+            "unit_kind": "knowledge_line",
+            "start_line": 5,
+            "content_hash": "9c9b1c0c0d084d62c22dc1b7e382687a2861f357c92e462c1d8fc60c44206dd8"
+          },
+          {
+            "end_line": 15,
+            "source_id": "786564c9-ab31-45cb-a28d-9bc5169e1376",
+            "unit_hash": "a23b7b3fabf035d923422889d3855f9c434c6660c5205b4b63ee507f35bafd67",
+            "unit_kind": "code_lines",
+            "start_line": 1,
+            "content_hash": "747c73b7158c380fc3732e8e83eb4e57568cc0057215e7db95110b3651d03e34"
+          }
+        ],
+        "reason_codes": [],
+        "artifact_hash": "8c336ac80b49201caddcef4554b2bb6b14e05e3728b205ff4a51562a8c1bdf69",
+        "case_revision": 1,
+        "input_revision": 1,
+        "missing_inputs": [],
+        "business_status": "passed",
+        "checker_version": "commerce-checker-v1.0",
+        "execution_epoch": 1,
+        "test_receipt_refs": [],
+        "numeric_receipt_hash": "a4420a77402203086f51f0139ee9fa109bf7421df86fb82221f1cb90e93a9e7d",
+        "parent_investigation_result_hash": null
+      },
+      "result_hash": "279e2e7f9c70ba6897f05152ed0390451889af9f0f1462253499eeed5022ce6c",
+      "calls": 2,
+      "oracle_passed": true,
+      "repair_run_id": "11943f69-7667-4d0f-ae06-e9f08f6746fb",
+      "repair_result": {
+        "facts": {},
+        "stage": "repair_proposal",
+        "checks": {
+          "scope": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "contract": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "evidence": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "acceptance": {
+            "status": "passed",
+            "reason_codes": []
+          }
+        },
+        "run_id": "11943f69-7667-4d0f-ae06-e9f08f6746fb",
+        "schema": "commerce-business-result-v1",
+        "case_id": "22317b5a-3234-4c6e-a5aa-af8b486c9326",
+        "result_id": "d71657df-444e-424c-acd0-59208d9e314c",
+        "spec_hash": "65691ce7deb38f5c34b31902a7dca27231bec7eb8799a5e03656937cc84055a1",
+        "created_at": "2026-11-06T14:19:04.033587Z",
+        "quote_refs": [],
+        "reason_codes": [],
+        "artifact_hash": "ef1e56dd498d9aa49b77e1fb4ae0cbf138a49a4afe69b2f64da4f168e0d4fbdd",
+        "case_revision": 1,
+        "input_revision": 2,
+        "missing_inputs": [],
+        "business_status": "passed",
+        "checker_version": "commerce-checker-v1.0",
+        "execution_epoch": 1,
+        "test_receipt_refs": [
+          {
+            "kind": "public",
+            "status": "passed",
+            "skipped": 0,
+            "receipt_hash": "65efa0a008bdb092d06cd741199d3f13056f348a087a7ef726a75f62d56bd3e0"
+          },
+          {
+            "kind": "independent",
+            "status": "passed",
+            "skipped": 0,
+            "receipt_hash": "aaee7e12ca80eb7f33d8246c3156769348bec54e4237d0cd5228fbde901c425c"
+          }
+        ],
+        "numeric_receipt_hash": null,
+        "parent_investigation_result_hash": "279e2e7f9c70ba6897f05152ed0390451889af9f0f1462253499eeed5022ce6c"
+      },
+      "repair_passed": true,
+      "actions": [
+        {
+          "action_id": "a0aec30d-e24b-4254-a999-366665581e96",
+          "run_id": "11943f69-7667-4d0f-ae06-e9f08f6746fb",
+          "action_type": "draft_pr",
+          "target": "github:loz888/magr-v3:draft:p0-commerce-live-v2-n02-base",
+          "payload": {
+            "body": "Validated bounded repair.\n\n--- a/v3/examples/repair-target/orders.go\n+++ b/v3/examples/repair-target/orders.go\n@@ -7,9 +7,13 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n-    total := 0\n-    for _, order := range orders {\n+total := 0\n+seen := make(map[string]bool)\n+for _, order := range orders {\n+    if order.Status == \"paid\" && !seen[order.ID] {\n+        seen[order.ID] = true\n         total += order.Amount\n     }\n-    return total\n }\n+return total\n+}\n\n\n<!-- mgar-action:a0aec30d-e24b-4254-a999-366665581e96 -->",
+            "diff": "--- a/v3/examples/repair-target/orders.go\n+++ b/v3/examples/repair-target/orders.go\n@@ -7,9 +7,13 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n-    total := 0\n-    for _, order := range orders {\n+total := 0\n+seen := make(map[string]bool)\n+for _, order := range orders {\n+    if order.Status == \"paid\" && !seen[order.ID] {\n+        seen[order.ID] = true\n         total += order.Amount\n     }\n-    return total\n }\n+return total\n+}\n",
+            "draft": true,
+            "files": [
+              {
+                "path": "v3/examples/repair-target/orders.go",
+                "content": "package orders\n\ntype Order struct {\n    ID string\n    Status string\n    Amount int\n}\n\nfunc PaidRevenueCents(orders []Order) int {\ntotal := 0\nseen := make(map[string]bool)\nfor _, order := range orders {\n    if order.Status == \"paid\" && !seen[order.ID] {\n        seen[order.ID] = true\n        total += order.Amount\n    }\n}\nreturn total\n}\n"
+              }
+            ],
+            "title": "Fix paid order revenue calculation",
+            "branch": "mgar/r5-a0aec30de24b4254a999366665581e96",
+            "base_sha": "6669b7d189aa439bd23334d9b59739f8b48f4406",
+            "tree_sha": "101777f8e83c3c2a155f358f7e322c2ec20c68a1",
+            "base_tree": "48c657452b8a4a00da8b8ef792b84a8cded1517a",
+            "diff_hash": "ef1e56dd498d9aa49b77e1fb4ae0cbf138a49a4afe69b2f64da4f168e0d4fbdd",
+            "spec_hash": "65691ce7deb38f5c34b31902a7dca27231bec7eb8799a5e03656937cc84055a1",
+            "test_hash": "5887603273f4327bfe9c50448ad6221fd4287bd38d77c59eaf76260e76d4853a",
+            "repository": "loz888/magr-v3",
+            "base_branch": "p0-commerce-live-v2-n02-base",
+            "issue_number": 1,
+            "source_origin": "github_commit",
+            "hidden_receipt": {
+              "tests": [
+                "TestCommerceObservedWindow",
+                "TestPaidRevenueCents",
+                "TestR5Hidden",
+                "TestR5Hidden/v0",
+                "TestR5Hidden/v1",
+                "TestR5Hidden/v10",
+                "TestR5Hidden/v11",
+                "TestR5Hidden/v12",
+                "TestR5Hidden/v13",
+                "TestR5Hidden/v14",
+                "TestR5Hidden/v15",
+                "TestR5Hidden/v16",
+                "TestR5Hidden/v17",
+                "TestR5Hidden/v18",
+                "TestR5Hidden/v19",
+                "TestR5Hidden/v2",
+                "TestR5Hidden/v20",
+                "TestR5Hidden/v21",
+                "TestR5Hidden/v22",
+                "TestR5Hidden/v23",
+                "TestR5Hidden/v24",
+                "TestR5Hidden/v25",
+                "TestR5Hidden/v26",
+                "TestR5Hidden/v27",
+                "TestR5Hidden/v3",
+                "TestR5Hidden/v4",
+                "TestR5Hidden/v5",
+                "TestR5Hidden/v6",
+                "TestR5Hidden/v7",
+                "TestR5Hidden/v8",
+                "TestR5Hidden/v9"
+              ],
+              "passed": true,
+              "policy": {
+                "user": "65532:65532",
+                "mounts": [],
+                "network": "none",
+                "cap_drop": [
+                  "ALL"
+                ],
+                "read_only": true,
+                "pids_limit": 96,
+                "memory_bytes": 536870912,
+                "no_new_privileges": true
+              },
+              "skipped": 0,
+              "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+              "log_hash": "18ca89b1f25bf5213df4b06dbce8fec3d837005437d69159d46f58bf3711b615",
+              "exit_code": 0,
+              "receipt_id": "72536390-c9f4-4025-aece-96fb73e0609c",
+              "stop_reason": null,
+              "failed_tests": [],
+              "workspace_hash": "448c9f937becbd6cbea93dd4002b2bbb331e5e8017bd53717d53af224d4f72ec"
+            },
+            "model_receipts": [
+              {
+                "call_id": "1539c03b-c457-4276-9ef8-39c73c81f4f3",
+                "step_key": "p0-body:r2:a0",
+                "profile_hash": "d5124ec57a7625f16216c5914b6b6c6058968148322cf9b0b257f0b5910325be",
+                "source_run_id": "11943f69-7667-4d0f-ae06-e9f08f6746fb",
+                "transformation": "function_body_v1",
+                "function_body_hash": "b65d265343e41998927de76f6584b1e155d357cd5a83ed06fa09fefc63656c00",
+                "normalized_diff_hash": "ef1e56dd498d9aa49b77e1fb4ae0cbf138a49a4afe69b2f64da4f168e0d4fbdd"
+              }
+            ],
+            "public_receipt": {
+              "tests": [
+                "TestPaidRevenueCents"
+              ],
+              "passed": true,
+              "policy": {
+                "user": "65532:65532",
+                "mounts": [],
+                "network": "none",
+                "cap_drop": [
+                  "ALL"
+                ],
+                "read_only": true,
+                "pids_limit": 96,
+                "memory_bytes": 536870912,
+                "no_new_privileges": true
+              },
+              "skipped": 0,
+              "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+              "log_hash": "9d2b865a0bebc7368b51681c64b2c0c6b7cc56a4f2ba5846011dc9a699d1ffbd",
+              "exit_code": 0,
+              "receipt_id": "a211ccae-447c-4cab-becc-3d36dadae4a3",
+              "stop_reason": null,
+              "failed_tests": [],
+              "workspace_hash": "37d667419ad23e9ecf601bfd545b143f279d83f45ffa09db0cade10b6dfd5bc0"
+            },
+            "workspace_hash": "0adec3283393116c0551daefcba04d14bde82b371a4b8cb40dc6604b6b9259c8",
+            "manual_input_hash": null,
+            "business_result_hash": "2a07dacc793ba8e6f410c26b6c8f84eb7cc01a440c473fa5e7ab9e119483b35f"
+          },
+          "payload_hash": "fe27417b1c5165d06055527f0ed9e1eabcf2cc530909b0ba2f503d60159b1171",
+          "base_revision": 2,
+          "execution_epoch": 1,
+          "fencing_token": 1,
+          "dedupe_key": "c281b50d-eeb3-4486-ba9b-45dfa64da733:draft:r2:g0",
+          "status": "proposed",
+          "expires_at": "2026-11-06 15:19:04.048930+00:00",
+          "external_id": null,
+          "lease_token": null,
+          "reason_code": null,
+          "created_at": "2026-11-06 14:19:04.048930+00:00",
+          "reply_kind": "result",
+          "in_reply_to_event_id": null,
+          "review_expires_at": "2026-11-06 15:19:04.048930+00:00"
+        }
+      ]
+    },
+    {
+      "id": "N03",
+      "project_id": "p0-commerce-live-v3-n03",
+      "case_id": "0d0ef595-1fcb-4cec-b558-5d881e7ea876",
+      "run_id": "381cadb3-4e8d-46e0-b1ee-d6c99b7dae68",
+      "business": {
+        "facts": {
+          "paid_events": "1",
+          "dedup_amount": "20.00",
+          "event_amount": "20.00",
+          "distinct_orders": "1",
+          "inflation_amount": "0.00"
+        },
+        "stage": "investigation",
+        "checks": {
+          "scope": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "contract": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "evidence": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "acceptance": {
+            "status": "passed",
+            "reason_codes": []
+          }
+        },
+        "run_id": "381cadb3-4e8d-46e0-b1ee-d6c99b7dae68",
+        "schema": "commerce-business-result-v1",
+        "case_id": "0d0ef595-1fcb-4cec-b558-5d881e7ea876",
+        "result_id": "db7374f5-e9f4-45f7-a742-4945fa425396",
+        "spec_hash": "3103a85093fd25a5c871021a2582d6d2577c5ae9b5ff5d1efdf61d26ea839bd5",
+        "created_at": "2026-11-06T14:18:13.567997Z",
+        "quote_refs": [
+          {
+            "end_line": 3,
+            "source_id": "1571acab-3de9-4272-9d76-0879aacd0f89",
+            "unit_hash": "02dd61e219f03043d242ca1ecc1defa233a5bce1cfac92b5e63432d86cf17551",
+            "unit_kind": "knowledge_line",
+            "start_line": 3,
+            "content_hash": "9c9b1c0c0d084d62c22dc1b7e382687a2861f357c92e462c1d8fc60c44206dd8"
+          },
+          {
+            "end_line": 4,
+            "source_id": "1571acab-3de9-4272-9d76-0879aacd0f89",
+            "unit_hash": "61ff4c49136dd034dfcedfb4bafafad8a31aa1d1f3cbb62f510208f44cbbf204",
+            "unit_kind": "knowledge_line",
+            "start_line": 4,
+            "content_hash": "9c9b1c0c0d084d62c22dc1b7e382687a2861f357c92e462c1d8fc60c44206dd8"
+          },
+          {
+            "end_line": 15,
+            "source_id": "fd1f9017-ad3b-429f-b1ce-612e753454b5",
+            "unit_hash": "a23b7b3fabf035d923422889d3855f9c434c6660c5205b4b63ee507f35bafd67",
+            "unit_kind": "code_lines",
+            "start_line": 1,
+            "content_hash": "747c73b7158c380fc3732e8e83eb4e57568cc0057215e7db95110b3651d03e34"
+          }
+        ],
+        "reason_codes": [],
+        "artifact_hash": "0272e5197df15307c7c7e4d02b38d9d0b9fc4ece1afa688965621a7c3a495d3f",
+        "case_revision": 1,
+        "input_revision": 1,
+        "missing_inputs": [],
+        "business_status": "passed",
+        "checker_version": "commerce-checker-v1.0",
+        "execution_epoch": 1,
+        "test_receipt_refs": [],
+        "numeric_receipt_hash": "b87901c7f3cee707390ba32ef2c5444dd6a54770d025f1911742e678fd0d3673",
+        "parent_investigation_result_hash": null
+      },
+      "result_hash": "be967cb11035664a821a72abde673d585322dc719acbc232240bd4690a2da8ba",
+      "calls": 2,
+      "oracle_passed": true,
+      "repair_run_id": "01b3b01f-ea76-41e2-a2ba-64694a73fc43",
+      "repair_result": {
+        "facts": {},
+        "stage": "repair_proposal",
+        "checks": {
+          "scope": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "contract": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "evidence": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "acceptance": {
+            "status": "passed",
+            "reason_codes": []
+          }
+        },
+        "run_id": "01b3b01f-ea76-41e2-a2ba-64694a73fc43",
+        "schema": "commerce-business-result-v1",
+        "case_id": "0d0ef595-1fcb-4cec-b558-5d881e7ea876",
+        "result_id": "e5de2710-e677-4e75-84ef-027aa962a2e7",
+        "spec_hash": "3103a85093fd25a5c871021a2582d6d2577c5ae9b5ff5d1efdf61d26ea839bd5",
+        "created_at": "2026-11-06T14:19:31.265328Z",
+        "quote_refs": [],
+        "reason_codes": [],
+        "artifact_hash": "ef1e56dd498d9aa49b77e1fb4ae0cbf138a49a4afe69b2f64da4f168e0d4fbdd",
+        "case_revision": 1,
+        "input_revision": 2,
+        "missing_inputs": [],
+        "business_status": "passed",
+        "checker_version": "commerce-checker-v1.0",
+        "execution_epoch": 1,
+        "test_receipt_refs": [
+          {
+            "kind": "public",
+            "status": "passed",
+            "skipped": 0,
+            "receipt_hash": "d98c554336b37a108146090af18c0d79973ae3249427ecb9bf146746682401c2"
+          },
+          {
+            "kind": "independent",
+            "status": "passed",
+            "skipped": 0,
+            "receipt_hash": "6a8068f894e1bc2938b078b11537b524cbd1d6d940f57aac2a469e88bbbea1c0"
+          }
+        ],
+        "numeric_receipt_hash": null,
+        "parent_investigation_result_hash": "be967cb11035664a821a72abde673d585322dc719acbc232240bd4690a2da8ba"
+      },
+      "repair_passed": true,
+      "actions": [
+        {
+          "action_id": "a32f6b32-eb08-461e-9fb1-7816d54b3709",
+          "run_id": "01b3b01f-ea76-41e2-a2ba-64694a73fc43",
+          "action_type": "draft_pr",
+          "target": "github:loz888/magr-v3:draft:p0-commerce-live-v2-n03-base",
+          "payload": {
+            "body": "Validated bounded repair.\n\n--- a/v3/examples/repair-target/orders.go\n+++ b/v3/examples/repair-target/orders.go\n@@ -7,9 +7,13 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n-    total := 0\n-    for _, order := range orders {\n+total := 0\n+seen := make(map[string]bool)\n+for _, order := range orders {\n+    if order.Status == \"paid\" && !seen[order.ID] {\n+        seen[order.ID] = true\n         total += order.Amount\n     }\n-    return total\n }\n+return total\n+}\n\n\n<!-- mgar-action:a32f6b32-eb08-461e-9fb1-7816d54b3709 -->",
+            "diff": "--- a/v3/examples/repair-target/orders.go\n+++ b/v3/examples/repair-target/orders.go\n@@ -7,9 +7,13 @@\n }\n \n func PaidRevenueCents(orders []Order) int {\n-    total := 0\n-    for _, order := range orders {\n+total := 0\n+seen := make(map[string]bool)\n+for _, order := range orders {\n+    if order.Status == \"paid\" && !seen[order.ID] {\n+        seen[order.ID] = true\n         total += order.Amount\n     }\n-    return total\n }\n+return total\n+}\n",
+            "draft": true,
+            "files": [
+              {
+                "path": "v3/examples/repair-target/orders.go",
+                "content": "package orders\n\ntype Order struct {\n    ID string\n    Status string\n    Amount int\n}\n\nfunc PaidRevenueCents(orders []Order) int {\ntotal := 0\nseen := make(map[string]bool)\nfor _, order := range orders {\n    if order.Status == \"paid\" && !seen[order.ID] {\n        seen[order.ID] = true\n        total += order.Amount\n    }\n}\nreturn total\n}\n"
+              }
+            ],
+            "title": "Fix paid order revenue calculation",
+            "branch": "mgar/r5-a32f6b32eb08461e9fb17816d54b3709",
+            "base_sha": "6669b7d189aa439bd23334d9b59739f8b48f4406",
+            "tree_sha": "101777f8e83c3c2a155f358f7e322c2ec20c68a1",
+            "base_tree": "48c657452b8a4a00da8b8ef792b84a8cded1517a",
+            "diff_hash": "ef1e56dd498d9aa49b77e1fb4ae0cbf138a49a4afe69b2f64da4f168e0d4fbdd",
+            "spec_hash": "3103a85093fd25a5c871021a2582d6d2577c5ae9b5ff5d1efdf61d26ea839bd5",
+            "test_hash": "fa6fe34cb33cc1bfc46afad98b97a9ad1b3e5a78f017724013c37bd957ec5625",
+            "repository": "loz888/magr-v3",
+            "base_branch": "p0-commerce-live-v2-n03-base",
+            "issue_number": 1,
+            "source_origin": "github_commit",
+            "hidden_receipt": {
+              "tests": [
+                "TestCommerceObservedWindow",
+                "TestPaidRevenueCents",
+                "TestR5Hidden",
+                "TestR5Hidden/v0",
+                "TestR5Hidden/v1",
+                "TestR5Hidden/v10",
+                "TestR5Hidden/v11",
+                "TestR5Hidden/v12",
+                "TestR5Hidden/v13",
+                "TestR5Hidden/v14",
+                "TestR5Hidden/v15",
+                "TestR5Hidden/v16",
+                "TestR5Hidden/v17",
+                "TestR5Hidden/v18",
+                "TestR5Hidden/v19",
+                "TestR5Hidden/v2",
+                "TestR5Hidden/v20",
+                "TestR5Hidden/v21",
+                "TestR5Hidden/v22",
+                "TestR5Hidden/v23",
+                "TestR5Hidden/v24",
+                "TestR5Hidden/v25",
+                "TestR5Hidden/v26",
+                "TestR5Hidden/v27",
+                "TestR5Hidden/v3",
+                "TestR5Hidden/v4",
+                "TestR5Hidden/v5",
+                "TestR5Hidden/v6",
+                "TestR5Hidden/v7",
+                "TestR5Hidden/v8",
+                "TestR5Hidden/v9"
+              ],
+              "passed": true,
+              "policy": {
+                "user": "65532:65532",
+                "mounts": [],
+                "network": "none",
+                "cap_drop": [
+                  "ALL"
+                ],
+                "read_only": true,
+                "pids_limit": 96,
+                "memory_bytes": 536870912,
+                "no_new_privileges": true
+              },
+              "skipped": 0,
+              "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+              "log_hash": "ffa9e16e300fb9018e33858b9813de1f1c76ee32008d663c10c5242be3445bff",
+              "exit_code": 0,
+              "receipt_id": "120b508e-6fd2-4535-b34c-45ec830dee46",
+              "stop_reason": null,
+              "failed_tests": [],
+              "workspace_hash": "a69ec3f0e0a1c02c16a22301e4ede55811e45fe7f4072438f5de107c19d49e36"
+            },
+            "model_receipts": [
+              {
+                "call_id": "8e54be16-d222-445c-826c-7ec648fd662e",
+                "step_key": "p0-body:r2:a0",
+                "profile_hash": "89d551a6572f615d90e294c89634b4d9a9729cfbe23f4b53aca64d5bf6a78952",
+                "source_run_id": "01b3b01f-ea76-41e2-a2ba-64694a73fc43",
+                "transformation": "function_body_v1",
+                "function_body_hash": "b65d265343e41998927de76f6584b1e155d357cd5a83ed06fa09fefc63656c00",
+                "normalized_diff_hash": "ef1e56dd498d9aa49b77e1fb4ae0cbf138a49a4afe69b2f64da4f168e0d4fbdd"
+              }
+            ],
+            "public_receipt": {
+              "tests": [
+                "TestPaidRevenueCents"
+              ],
+              "passed": true,
+              "policy": {
+                "user": "65532:65532",
+                "mounts": [],
+                "network": "none",
+                "cap_drop": [
+                  "ALL"
+                ],
+                "read_only": true,
+                "pids_limit": 96,
+                "memory_bytes": 536870912,
+                "no_new_privileges": true
+              },
+              "skipped": 0,
+              "image_id": "sha256:490fa7f5f4660cb9cf5fb24b9baef1b297065469dec4608888f02b091aea351c",
+              "log_hash": "5a9757eb5089e5448127d19f9cdecaf44666d5d2f1fb94dc0d22a26e9c8a2754",
+              "exit_code": 0,
+              "receipt_id": "d215df8b-1b29-409c-8402-f9558a7f38c8",
+              "stop_reason": null,
+              "failed_tests": [],
+              "workspace_hash": "37d667419ad23e9ecf601bfd545b143f279d83f45ffa09db0cade10b6dfd5bc0"
+            },
+            "workspace_hash": "0adec3283393116c0551daefcba04d14bde82b371a4b8cb40dc6604b6b9259c8",
+            "manual_input_hash": null,
+            "business_result_hash": "ce8575286bc10e489dc138d59390e2aa4f582559eede4d62cffcbb9ce4411b12"
+          },
+          "payload_hash": "f93483cd1f77081650dd13bfd34416a06f8faede0e130715b0e9f52af9f88d97",
+          "base_revision": 2,
+          "execution_epoch": 1,
+          "fencing_token": 1,
+          "dedupe_key": "7ea8b910-196d-456a-896e-2935d058fec0:draft:r2:g0",
+          "status": "proposed",
+          "expires_at": "2026-11-06 15:19:31.282988+00:00",
+          "external_id": null,
+          "lease_token": null,
+          "reason_code": null,
+          "created_at": "2026-11-06 14:19:31.282988+00:00",
+          "reply_kind": "result",
+          "in_reply_to_event_id": null,
+          "review_expires_at": "2026-11-06 15:19:31.282988+00:00"
+        }
+      ]
+    },
+    {
+      "id": "N04",
+      "project_id": "p0-commerce-live-v3-n04",
+      "case_id": "30d0dae4-21dc-402f-88ca-b542a9ed93a7",
+      "run_id": "01a7a86c-79c3-4b26-b978-e4c3a4cddd4c",
+      "business": {
+        "facts": {},
+        "stage": "investigation",
+        "checks": {
+          "scope": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "contract": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "evidence": {
+            "status": "not_run",
+            "reason_codes": [
+              "DATA_SOURCE_NOT_CONFIGURED"
+            ]
+          },
+          "acceptance": {
+            "status": "not_run",
+            "reason_codes": []
+          }
+        },
+        "run_id": "01a7a86c-79c3-4b26-b978-e4c3a4cddd4c",
+        "schema": "commerce-business-result-v1",
+        "case_id": "30d0dae4-21dc-402f-88ca-b542a9ed93a7",
+        "result_id": "2f1e93d0-7cd7-4998-b8e2-eda0f2b6c766",
+        "spec_hash": "d6a9f9cd28a6c8e7d35e4c76e6bfeed1090d5a5f18b370eb10b21cc5ad91e318",
+        "created_at": "2026-11-06T14:18:13.611361Z",
+        "quote_refs": [],
+        "reason_codes": [
+          "DATA_SOURCE_NOT_CONFIGURED"
+        ],
+        "artifact_hash": null,
+        "case_revision": 1,
+        "input_revision": 1,
+        "missing_inputs": [
+          "DATA_SOURCE_NOT_CONFIGURED"
+        ],
+        "business_status": "needs_input",
+        "checker_version": "commerce-checker-v1.0",
+        "execution_epoch": 1,
+        "test_receipt_refs": [],
+        "numeric_receipt_hash": null,
+        "parent_investigation_result_hash": null
+      },
+      "result_hash": "56c9928aeb363b0f34ba726cca4c19495a27e09fc4d2b09087624573f76ce29b",
+      "calls": 0,
+      "oracle_passed": true
+    },
+    {
+      "id": "N05",
+      "project_id": "p0-commerce-live-v3-n05",
+      "case_id": "3bf41cbc-65c1-4837-811b-30cac22ff08d",
+      "run_id": "49e81d5a-9828-462d-afbd-6d02c71d7c92",
+      "business": {
+        "facts": {},
+        "stage": "investigation",
+        "checks": {
+          "scope": {
+            "status": "failed",
+            "reason_codes": [
+              "KNOWLEDGE_REVOKED"
+            ]
+          },
+          "contract": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "evidence": {
+            "status": "passed",
+            "reason_codes": []
+          },
+          "acceptance": {
+            "status": "not_run",
+            "reason_codes": []
+          }
+        },
+        "run_id": "49e81d5a-9828-462d-afbd-6d02c71d7c92",
+        "schema": "commerce-business-result-v1",
+        "case_id": "3bf41cbc-65c1-4837-811b-30cac22ff08d",
+        "result_id": "41de40b6-7e4f-483d-ba7a-115ac4030d56",
+        "spec_hash": "6cceb8f561d0be53d28f1a492f5a9bfae15a80e85d5ddd2483a9178ec6cafb0c",
+        "created_at": "2026-11-06T14:18:13.646016Z",
+        "quote_refs": [],
+        "reason_codes": [
+          "KNOWLEDGE_REVOKED"
+        ],
+        "artifact_hash": null,
+        "case_revision": 1,
+        "input_revision": 1,
+        "missing_inputs": [],
+        "business_status": "denied",
+        "checker_version": "commerce-checker-v1.0",
+        "execution_epoch": 1,
+        "test_receipt_refs": [],
+        "numeric_receipt_hash": null,
+        "parent_investigation_result_hash": null
+      },
+      "result_hash": "847b502164489c7970c2a0b7e46e801ff01625427e6d17c009e74a84288f969d",
+      "calls": 0,
+      "oracle_passed": true
+    }
+  ],
+  "repository_cost": {
+    "calls": 759,
+    "cost_micros": "313148",
+    "unknown": 0
+  },
+  "real_delivery": "NOT_RUN_ACCURATE_ACTION_APPROVAL_REQUIRED"
+}

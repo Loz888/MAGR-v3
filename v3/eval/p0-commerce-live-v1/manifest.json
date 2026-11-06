@@ -1,0 +1,74 @@
+{
+  "schema": "p0-commerce-live-v1",
+  "repository": "loz888/magr-v3",
+  "source_ref": "6669b7d189aa439bd23334d9b59739f8b48f4406",
+  "source_tree": "48c657452b8a4a00da8b8ef792b84a8cded1517a",
+  "source_fingerprint": "cebd9069ce4fcc7a3e9820b0a3996bda6563c01f753941ea45c22abaf082d13a",
+  "prior_cost_micros": 311513,
+  "max_new_calls": 18,
+  "max_new_cost_micros": 55296,
+  "profiles": [
+    {
+      "project_id": "p0-commerce-live-v1-n01",
+      "issue_number": 1,
+      "template_id": "duplicate_paid",
+      "stage": "investigation",
+      "profile_hash": "3c5ba658d1851dacca277a8f4381048bb71795487676cc0299a0d206925f6907"
+    },
+    {
+      "project_id": "p0-commerce-live-v1-n01",
+      "issue_number": 1,
+      "template_id": "duplicate_paid",
+      "stage": "repair",
+      "profile_hash": "ba9b599d568ca752e52a55a8913275a56cf519594875f96c75055b3719aacfc7"
+    },
+    {
+      "project_id": "p0-commerce-live-v1-n02",
+      "issue_number": 1,
+      "template_id": "status_filter",
+      "stage": "investigation",
+      "profile_hash": "bdbcf56627b336a2c8af7e8cd54576055d4f1a18101588e85c69ebec1879e4e8"
+    },
+    {
+      "project_id": "p0-commerce-live-v1-n02",
+      "issue_number": 1,
+      "template_id": "status_filter",
+      "stage": "repair",
+      "profile_hash": "d34b58fb95c67561896ac6b1645f18670736b150b727cf66816d5de790e79278"
+    },
+    {
+      "project_id": "p0-commerce-live-v1-n03",
+      "issue_number": 1,
+      "template_id": "refunded_status",
+      "stage": "investigation",
+      "profile_hash": "1cdb00df85d9f83dff7b50fffd6e53451ce896df5a0b6c6c4e5ab57ea2ab04fa"
+    },
+    {
+      "project_id": "p0-commerce-live-v1-n03",
+      "issue_number": 1,
+      "template_id": "refunded_status",
+      "stage": "repair",
+      "profile_hash": "ffa245cc620db9a7db24957571cc65311b9d964dfe05013b2b82325fe572c5eb"
+    },
+    {
+      "project_id": "p0-commerce-live-v1-n04",
+      "issue_number": 1,
+      "template_id": "status_filter",
+      "stage": "investigation",
+      "profile_hash": "62ed3b331358a9143bd33e2cf85401fe773810ec1a878930d06b247d255d6b12"
+    },
+    {
+      "project_id": "p0-commerce-live-v1-n05",
+      "issue_number": 1,
+      "template_id": "duplicate_paid",
+      "stage": "investigation",
+      "profile_hash": "986fcf90f366e85a9e9ffbf51e19fe5bc582f7f228e8aeb36af80d150241563a"
+    }
+  ],
+  "sql_ttl_seconds": 1800,
+  "issue_anchor": 1,
+  "external_writes": "ACCURATE_ACTION_APPROVAL_REQUIRED",
+  "oracle": "docs/design/p0-commerce-v1/acceptance-plan.json",
+  "outbound": "https://api.deepseek.com/v1/chat/completions",
+  "source_acquisition": "native_git_fetch_full_tree_verified_against_owned_local_commit"
+}

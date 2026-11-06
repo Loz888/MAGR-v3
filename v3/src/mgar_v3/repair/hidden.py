@@ -2,6 +2,19 @@
 
 import json
 import random
+from typing import TYPE_CHECKING
+from uuid import UUID
+
+if TYPE_CHECKING:
+    from mgar_v3.coordination.engine import Engine
+
+
+def suite_for_run(engine: "Engine", run_id: UUID) -> str:
+    if not engine.commerce.binding(run_id):
+        return suite()
+    from mgar_v3.commerce.repair import case_suite
+
+    return suite() + case_suite(engine, run_id)
 
 
 def suite() -> str:

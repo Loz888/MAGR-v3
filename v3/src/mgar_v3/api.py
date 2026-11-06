@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
+from mgar_v3.commerce.api import register as register_commerce
 from mgar_v3.coordination.engine import COMMAND, DUPLEX_VERSIONS, Engine
 from mgar_v3.domain import ApprovalInput, DomainError, MessageInput, RunInput, TriggerInput
 from mgar_v3.effects.dispatcher import Dispatcher, Transport
@@ -147,7 +148,11 @@ def create_app(
         async def execute_run(run: dict[str, Any]) -> None:
             runner = Runner(authority)
             try:
-                if run["execution_mode"] == "live" and run["graph_version"] != "r5-repair-v1":
+                if (
+                    run["execution_mode"] == "live"
+                    and run["graph_version"] != "r5-repair-v1"
+                    and not authority.commerce.binding(run["run_id"])
+                ):
                     if live_permit is None:
                         raise DomainError("LIVE_PROFILE_REQUIRED", "Live profile is missing")
                     runner = Runner(
@@ -212,11 +217,17 @@ def create_app(
                         )
                     )
                 if (
-                    selected_transport is not None or selected_draft is not None
+                    selected_transport is not None
+                    or selected_draft is not None
+                    or configuration.allow_external_write
                 ) and effect is None:
 
                     def dispatch_one() -> None:
-                        for outgoing in (selected_transport, selected_draft):
+                        for outgoing in (
+                            selected_transport,
+                            selected_draft,
+                            *authority.commerce.ready_transports(),
+                        ):
                             if (
                                 outgoing is not None
                                 and Dispatcher(authority, outgoing).tick() is not None
@@ -515,6 +526,11 @@ def create_app(
     def message(
         run_id: UUID, body: MessageInput, service: Annotated[Engine, Depends(authority)]
     ) -> Any:
+        if service.commerce.binding(run_id):
+            raise DomainError(
+                "COMMERCE_CASE_MESSAGE_REQUIRED",
+                "Send this message through the versioned Case endpoint",
+            )
         selected = (
             live_repair_permit
             if service.get_run(run_id)["graph_version"] == "r5-repair-v1"
@@ -527,7 +543,13 @@ def create_app(
         run = service.get_run(run_id)
         if not run["report_hash"]:
             raise DomainError("REPORT_NOT_READY", "Report is not available", 404)
-        return Response(service.artifact_bytes(run["report_hash"]), media_type="text/markdown")
+        link = service.commerce.binding(run_id)
+        content = (
+            service.commerce.artifact_bytes(link["case_id"], run["report_hash"])
+            if link
+            else service.artifact_bytes(run["report_hash"])
+        )
+        return Response(content, media_type="text/markdown", headers={"Cache-Control": "no-store"})
 
     @app.get("/api/v3/runs/{run_id}/actions", dependencies=[Depends(authenticated)])
     def actions(run_id: UUID, service: Annotated[Engine, Depends(authority)]) -> Any:
@@ -575,6 +597,10 @@ def create_app(
         if action is None:
             raise DomainError("ACTION_RUN_MISMATCH", "Action does not belong to this Run", 404)
         outgoing = selected_draft if action["action_type"] == "draft_pr" else selected_transport
+        if service.commerce.binding(run_id) and service.get_run(run_id)["execution_mode"] == "live":
+            permit = service.commerce.bound_permit(run_id, read_only=True)
+            assert permit is not None
+            outgoing = LiveDraftMCPTransport(service, permit)
         if outgoing is None:
             raise DomainError(
                 "TRANSPORT_NOT_CONFIGURED", "Reconciliation transport is unavailable", 503
@@ -696,6 +722,7 @@ def create_app(
         )
 
     register(app, authority, authenticated)
+    register_commerce(app, authority, authenticated)
     register_recovery(app, configuration, authority, authenticated)
     register_proactivity(app, authority, authenticated, live_permit)
     return app

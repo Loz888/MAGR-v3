@@ -1,0 +1,240 @@
+{
+  "calls": [
+    {
+      "call_id": "577794e6-9cf4-49fd-99b4-d4a9be95361c",
+      "run_id": "671c6c4a-496d-4101-9b7d-dce0f116ee63",
+      "project_id": "p0-commerce-live-v3-n01",
+      "stage": "repair",
+      "step_key": "p0-body:r2:a0",
+      "status": "known",
+      "reserved_micros": 3072,
+      "settled_micros": 180,
+      "usage": {
+        "total_tokens": 297,
+        "prompt_tokens": 197,
+        "completion_tokens": 100,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 197
+      },
+      "result": {
+        "explanation": "Track paid order IDs in a set so each paid order contributes its integer Amount exactly once; non-paid statuses are ignored, preserving exact cents.",
+        "function_body": "total := 0\nseen := make(map[string]bool)\nfor _, order := range orders {\n    if order.Status == \"paid\" && !seen[order.ID] {\n        seen[order.ID] = true\n        total += order.Amount\n    }\n}\nreturn total"
+      }
+    },
+    {
+      "call_id": "aa6c8d1c-db2f-4c10-9643-ad63c693bf35",
+      "run_id": "b1bbbdc4-8ed8-41ad-90d9-d84741c7a4d0",
+      "project_id": "p0-commerce-live-v3-n01",
+      "stage": "investigation",
+      "step_key": "p0-quotes:r1:0:knowledge",
+      "status": "known",
+      "reserved_micros": 3072,
+      "settled_micros": 219,
+      "usage": {
+        "total_tokens": 494,
+        "prompt_tokens": 416,
+        "completion_tokens": 78,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 416
+      },
+      "result": {
+        "quote_ids": [
+          "q0",
+          "q1"
+        ],
+        "explanation": "These source units describe the paid-only revenue rule and the reporting-window scope, which are the core requirements for verifying paid-only unique-order revenue; the deduplication and units observations are relevant but the question's focus on the registered reporting window and paid-only filtering is best supported by q0 and q1."
+      }
+    },
+    {
+      "call_id": "5121eb9b-71cd-4f21-987d-035e8b933842",
+      "run_id": "b1bbbdc4-8ed8-41ad-90d9-d84741c7a4d0",
+      "project_id": "p0-commerce-live-v3-n01",
+      "stage": "investigation",
+      "step_key": "p0-quotes:r1:0:repo",
+      "status": "known",
+      "reserved_micros": 3072,
+      "settled_micros": 127,
+      "usage": {
+        "total_tokens": 288,
+        "prompt_tokens": 243,
+        "completion_tokens": 45,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 243
+      },
+      "result": {
+        "quote_ids": [
+          "q0"
+        ],
+        "explanation": "The only supplied source unit is the orders package containing PaidRevenueCents, which is the code relevant to verifying paid-only unique-order revenue against policy and code."
+      }
+    },
+    {
+      "call_id": "1539c03b-c457-4276-9ef8-39c73c81f4f3",
+      "run_id": "11943f69-7667-4d0f-ae06-e9f08f6746fb",
+      "project_id": "p0-commerce-live-v3-n02",
+      "stage": "repair",
+      "step_key": "p0-body:r2:a0",
+      "status": "known",
+      "reserved_micros": 3072,
+      "settled_micros": 187,
+      "usage": {
+        "total_tokens": 303,
+        "prompt_tokens": 197,
+        "completion_tokens": 106,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 197
+      },
+      "result": {
+        "explanation": "Tracks paid order IDs in a set to count each unique paid order once, skips non-paid statuses, and sums the integer Amount values directly to preserve exact cents.",
+        "function_body": "total := 0\nseen := make(map[string]bool)\nfor _, order := range orders {\n    if order.Status == \"paid\" && !seen[order.ID] {\n        seen[order.ID] = true\n        total += order.Amount\n    }\n}\nreturn total"
+      }
+    },
+    {
+      "call_id": "f5770833-aec0-4883-ac18-5391be38c607",
+      "run_id": "a7039935-e83f-4cd1-94e9-fac1df1a9ecc",
+      "project_id": "p0-commerce-live-v3-n02",
+      "stage": "investigation",
+      "step_key": "p0-quotes:r1:0:knowledge",
+      "status": "known",
+      "reserved_micros": 3072,
+      "settled_micros": 240,
+      "usage": {
+        "total_tokens": 511,
+        "prompt_tokens": 415,
+        "completion_tokens": 96,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 415
+      },
+      "result": {
+        "quote_ids": [
+          "q0",
+          "q2"
+        ],
+        "explanation": "These units define the registered reporting window (paid-only, timezone-aware half-open) and the unique-order rule (deduplicate paid rows by order_id using the smallest event_id), which are the core of verifying paid-only unique-order revenue against policy and code. q1 and q3 are supporting details on exclusions and amount handling but not the central rules for status_filter and unique-order revenue."
+      }
+    },
+    {
+      "call_id": "3365369c-9a5f-4d16-a4ab-0d697eef4b94",
+      "run_id": "a7039935-e83f-4cd1-94e9-fac1df1a9ecc",
+      "project_id": "p0-commerce-live-v3-n02",
+      "stage": "investigation",
+      "step_key": "p0-quotes:r1:0:repo",
+      "status": "known",
+      "reserved_micros": 3072,
+      "settled_micros": 143,
+      "usage": {
+        "total_tokens": 300,
+        "prompt_tokens": 242,
+        "completion_tokens": 58,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 242
+      },
+      "result": {
+        "quote_ids": [
+          "q0"
+        ],
+        "explanation": "The supplied code defines PaidRevenueCents over all orders without checking Status, so it does not enforce paid-only inclusion; the same quote also contains the Order struct including Status, which is necessary to assess the status_filter concern."
+      }
+    },
+    {
+      "call_id": "8e54be16-d222-445c-826c-7ec648fd662e",
+      "run_id": "01b3b01f-ea76-41e2-a2ba-64694a73fc43",
+      "project_id": "p0-commerce-live-v3-n03",
+      "stage": "repair",
+      "step_key": "p0-body:r2:a0",
+      "status": "known",
+      "reserved_micros": 3072,
+      "settled_micros": 212,
+      "usage": {
+        "total_tokens": 324,
+        "prompt_tokens": 197,
+        "completion_tokens": 127,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 197
+      },
+      "result": {
+        "explanation": "Iterate orders once; for each order with Status \"paid\", include its Amount only if its ID has not been seen before, using a seen map to deduplicate by order ID. Ignore all non-paid statuses and preserve exact integer cents by summing ints directly.",
+        "function_body": "total := 0\nseen := make(map[string]bool)\nfor _, order := range orders {\n    if order.Status == \"paid\" && !seen[order.ID] {\n        seen[order.ID] = true\n        total += order.Amount\n    }\n}\nreturn total"
+      }
+    },
+    {
+      "call_id": "1d1065bb-9f69-468a-aefb-6899cd67326d",
+      "run_id": "381cadb3-4e8d-46e0-b1ee-d6c99b7dae68",
+      "project_id": "p0-commerce-live-v3-n03",
+      "stage": "investigation",
+      "step_key": "p0-quotes:r1:0:knowledge",
+      "status": "known",
+      "reserved_micros": 3072,
+      "settled_micros": 192,
+      "usage": {
+        "total_tokens": 472,
+        "prompt_tokens": 416,
+        "completion_tokens": 56,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 416
+      },
+      "result": {
+        "quote_ids": [
+          "q0",
+          "q1"
+        ],
+        "explanation": "These units directly establish the policy for paid-only unique-order revenue: restricting to paid events inside the timezone-aware half-open reporting window and excluding pending, cancelled, and refunded rows from paid revenue."
+      }
+    },
+    {
+      "call_id": "c70f00ea-d1e2-4ec4-86ff-9559a4f34295",
+      "run_id": "381cadb3-4e8d-46e0-b1ee-d6c99b7dae68",
+      "project_id": "p0-commerce-live-v3-n03",
+      "stage": "investigation",
+      "step_key": "p0-quotes:r1:0:repo",
+      "status": "known",
+      "reserved_micros": 3072,
+      "settled_micros": 135,
+      "usage": {
+        "total_tokens": 294,
+        "prompt_tokens": 243,
+        "completion_tokens": 51,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 243
+      },
+      "result": {
+        "quote_ids": [
+          "q0"
+        ],
+        "explanation": "The source unit is the relevant code: PaidRevenueCents sums every order's Amount without filtering by Status, so it does not compute paid-only unique-order revenue as required by the question."
+      }
+    }
+  ],
+  "new_call_count": 9,
+  "new_upper_cost_micros": 1635,
+  "outstanding_reserved_micros": 0,
+  "unknown": 0,
+  "pricing": "frozen_peak_upper_bound_not_vendor_invoice"
+}

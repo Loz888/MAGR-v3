@@ -10,6 +10,7 @@ async function api(path, body, method) {
 function notice(text) { $("notice").textContent=text; }
 function button(text, fn) { const node=document.createElement("button"); node.textContent=text; node.className="secondary"; node.addEventListener("click",()=>Promise.resolve(fn()).catch(error=>notice(error.message))); return node; }
 async function refresh() {
+  await refreshCommerce();
   const [tickets, status]=await Promise.all([api("/tickets"),api("/router/status")]);
   $("router-status").textContent=`待路由 ${status.pending_events} 条 · Router 实际调用 ${status.physical_router_calls} 次 · ${status.mode === "live" ? "真实模型" : status.mode === "disabled" ? "路由已关闭" : "演示模式"}`;
   $("tickets").replaceChildren();

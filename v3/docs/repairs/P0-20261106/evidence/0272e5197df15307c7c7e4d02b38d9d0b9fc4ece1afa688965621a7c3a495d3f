@@ -1,0 +1,47 @@
+# MGAR investigation
+
+Input revision: 1
+Mechanical evidence verification: PASS
+Execution components: {"data": "local_readonly_postgresql", "experts": "live", "knowledge": [{"dimension": 300, "distance": "cosine", "embedding_mode": "fixture", "embedding_model": "fixture-token-hash-v1:300", "normalization": "l2", "parser": "r4-text-v1", "reranker": "fixture-ranker-v1", "reranker_mode": "fixture", "rrf_k": 60, "tokenizer": "jieba-0.42.1:hmm-off:identifiers-v1"}], "tools": "direct"}
+
+## Verified observations
+- Observation: Count only paid events within the timezone-aware half-open reporting window. [evidence:1571acab-3de9-4272-9d76-0879aacd0f89]
+- Observation: Pending, cancelled and refunded rows are excluded from paid revenue. [evidence:1571acab-3de9-4272-9d76-0879aacd0f89]
+- package orders
+
+type Order struct {
+    ID string
+    Status string
+    Amount int
+}
+
+func PaidRevenueCents(orders []Order) int {
+    total := 0
+    for _, order := range orders {
+        total += order.Amount
+    }
+    return total
+} [evidence:fd1f9017-ad3b-429f-b1ce-612e753454b5]
+- SQL[paid_events] = 1 (OID 20) [evidence:7d4070cd-489a-404c-a052-0e25675af8f1]
+- SQL[distinct_orders] = 1 (OID 20) [evidence:7d4070cd-489a-404c-a052-0e25675af8f1]
+- SQL[event_amount] = "20.00" (OID 1700) [evidence:7d4070cd-489a-404c-a052-0e25675af8f1]
+
+## Hypotheses
+
+## Contradictions
+
+## Missing evidence
+
+## Next steps
+- Review these source observations before drawing a causal conclusion.
+
+Scope: source observations and mechanical checks; causal correctness is not established.
+
+## Independently checked commerce metrics
+{
+  "paid_events": "1",
+  "distinct_orders": "1",
+  "event_amount": "20.00",
+  "dedup_amount": "20.00",
+  "inflation_amount": "0.00"
+}

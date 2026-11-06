@@ -1,0 +1,494 @@
+{
+  "schema": "commerce-status-rules-v1",
+  "implementation_status": "NOT_STARTED",
+  "semantics": "first matching display rule; guards independently AND all conditions; absent server facts deny; no authority granted by client JSON",
+  "rules": [
+    {
+      "code": "permission_denied",
+      "label": "权限拒绝",
+      "when": {
+        "any": [
+          {
+            "path": "current_actor_authorized",
+            "equals": false
+          },
+          {
+            "path": "business.source_access",
+            "equals": "revoked"
+          },
+          {
+            "path": "business.status",
+            "equals": "denied"
+          }
+        ]
+      }
+    },
+    {
+      "code": "unknown_reconciliation",
+      "label": "结果未知，待核对",
+      "when": {
+        "any": [
+          {
+            "path": "uncertainty",
+            "not_equals": "none"
+          },
+          {
+            "path": "business.status",
+            "equals": "unknown"
+          },
+          {
+            "path": "business.source_access",
+            "equals": "unknown"
+          },
+          {
+            "path": "delivery",
+            "equals": "unknown"
+          }
+        ]
+      }
+    },
+    {
+      "code": "result_stale",
+      "label": "结果待更新",
+      "when": {
+        "all": [
+          {
+            "path": "business.status",
+            "not_equals": "not_evaluated"
+          },
+          {
+            "path": "business.applies_to_current_input",
+            "equals": false
+          }
+        ]
+      }
+    },
+    {
+      "code": "cancelled",
+      "label": "已取消或拒绝提案",
+      "when": {
+        "any": [
+          {
+            "path": "execution.status",
+            "equals": "cancelled"
+          },
+          {
+            "path": "delivery",
+            "equals": "cancelled"
+          },
+          {
+            "path": "approval",
+            "equals": "rejected"
+          }
+        ]
+      }
+    },
+    {
+      "code": "execution_failed",
+      "label": "执行失败",
+      "when": {
+        "path": "execution.status",
+        "equals": "failed"
+      }
+    },
+    {
+      "code": "business_failed",
+      "label": "业务校验未通过",
+      "when": {
+        "any": [
+          {
+            "path": "business.status",
+            "equals": "failed"
+          },
+          {
+            "path": "delivery",
+            "equals": "failed"
+          }
+        ]
+      }
+    },
+    {
+      "code": "approval_expired",
+      "label": "审批已过期",
+      "when": {
+        "path": "approval",
+        "equals": "expired"
+      }
+    },
+    {
+      "code": "needs_input",
+      "label": "待补充资料",
+      "when": {
+        "any": [
+          {
+            "path": "business.status",
+            "equals": "needs_input"
+          },
+          {
+            "path": "execution.status",
+            "equals": "waiting_input"
+          }
+        ]
+      }
+    },
+    {
+      "code": "in_progress",
+      "label": "执行中",
+      "when": {
+        "all": [
+          {
+            "path": "execution.status",
+            "in": [
+              "queued",
+              "running"
+            ]
+          },
+          {
+            "path": "delivery",
+            "not_equals": "publishing"
+          }
+        ]
+      }
+    },
+    {
+      "code": "paused",
+      "label": "已暂停",
+      "when": {
+        "path": "execution.status",
+        "equals": "paused"
+      }
+    },
+    {
+      "code": "unverified",
+      "label": "尚未完成业务校验",
+      "when": {
+        "path": "business.status",
+        "equals": "not_evaluated"
+      }
+    },
+    {
+      "code": "report_ready",
+      "label": "调查通过",
+      "when": {
+        "all": [
+          {
+            "path": "goal",
+            "equals": "report"
+          },
+          {
+            "path": "phase",
+            "equals": "investigation"
+          },
+          {
+            "path": "business.status",
+            "equals": "passed"
+          },
+          {
+            "path": "execution.status",
+            "equals": "succeeded"
+          }
+        ]
+      }
+    },
+    {
+      "code": "awaiting_repair",
+      "label": "调查通过，待发起修复",
+      "when": {
+        "all": [
+          {
+            "path": "goal",
+            "equals": "draft_pr"
+          },
+          {
+            "path": "phase",
+            "equals": "investigation"
+          },
+          {
+            "path": "business.status",
+            "equals": "passed"
+          },
+          {
+            "path": "execution.status",
+            "equals": "succeeded"
+          }
+        ]
+      }
+    },
+    {
+      "code": "draft_pr_delivered",
+      "label": "Draft PR已交付",
+      "when": {
+        "all": [
+          {
+            "path": "goal",
+            "equals": "draft_pr"
+          },
+          {
+            "path": "phase",
+            "equals": "repair"
+          },
+          {
+            "path": "business.status",
+            "equals": "passed"
+          },
+          {
+            "path": "approval",
+            "equals": "approved"
+          },
+          {
+            "path": "execution.status",
+            "equals": "succeeded"
+          },
+          {
+            "path": "delivery",
+            "equals": "delivered"
+          }
+        ]
+      }
+    },
+    {
+      "code": "publishing",
+      "label": "发布中",
+      "when": {
+        "all": [
+          {
+            "path": "goal",
+            "equals": "draft_pr"
+          },
+          {
+            "path": "phase",
+            "equals": "repair"
+          },
+          {
+            "path": "business.status",
+            "equals": "passed"
+          },
+          {
+            "path": "approval",
+            "equals": "approved"
+          },
+          {
+            "path": "delivery",
+            "equals": "publishing"
+          },
+          {
+            "path": "execution.status",
+            "in": [
+              "running",
+              "waiting_approval"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "code": "awaiting_approval",
+      "label": "待人工审批",
+      "when": {
+        "all": [
+          {
+            "path": "goal",
+            "equals": "draft_pr"
+          },
+          {
+            "path": "phase",
+            "equals": "repair"
+          },
+          {
+            "path": "business.status",
+            "equals": "passed"
+          },
+          {
+            "path": "approval",
+            "equals": "pending"
+          },
+          {
+            "path": "delivery",
+            "equals": "awaiting_approval"
+          },
+          {
+            "path": "execution.status",
+            "equals": "waiting_approval"
+          }
+        ]
+      }
+    }
+  ],
+  "fallback": {
+    "code": "needs_review",
+    "label": "状态待人工核查"
+  },
+  "guards": {
+    "can_request_repair": {
+      "all": [
+        {
+          "path": "current_actor_authorized",
+          "equals": true
+        },
+        {
+          "path": "business.source_access",
+          "equals": "allowed"
+        },
+        {
+          "path": "business.applies_to_current_input",
+          "equals": true
+        },
+        {
+          "path": "business.status",
+          "equals": "passed"
+        },
+        {
+          "path": "uncertainty",
+          "equals": "none"
+        },
+        {
+          "path": "goal",
+          "equals": "draft_pr"
+        },
+        {
+          "path": "phase",
+          "equals": "investigation"
+        },
+        {
+          "path": "execution.status",
+          "equals": "succeeded"
+        },
+        {
+          "path": "approval",
+          "equals": "not_requested"
+        },
+        {
+          "path": "delivery",
+          "equals": "not_started"
+        },
+        {
+          "path": "eligibility.repair_permit_valid",
+          "equals": true
+        },
+        {
+          "path": "eligibility.stage_primary_available",
+          "equals": true
+        }
+      ]
+    },
+    "can_approve": {
+      "all": [
+        {
+          "path": "current_actor_authorized",
+          "equals": true
+        },
+        {
+          "path": "business.source_access",
+          "equals": "allowed"
+        },
+        {
+          "path": "business.applies_to_current_input",
+          "equals": true
+        },
+        {
+          "path": "business.status",
+          "equals": "passed"
+        },
+        {
+          "path": "uncertainty",
+          "equals": "none"
+        },
+        {
+          "path": "goal",
+          "equals": "draft_pr"
+        },
+        {
+          "path": "phase",
+          "equals": "repair"
+        },
+        {
+          "path": "execution.status",
+          "equals": "waiting_approval"
+        },
+        {
+          "path": "approval",
+          "equals": "pending"
+        },
+        {
+          "path": "delivery",
+          "equals": "awaiting_approval"
+        },
+        {
+          "path": "eligibility.repair_permit_valid",
+          "equals": true
+        },
+        {
+          "path": "eligibility.action_binding_current",
+          "equals": true
+        },
+        {
+          "path": "eligibility.approval_unexpired",
+          "equals": true
+        }
+      ]
+    },
+    "can_dispatch": {
+      "all": [
+        {
+          "path": "current_actor_authorized",
+          "equals": true
+        },
+        {
+          "path": "business.source_access",
+          "equals": "allowed"
+        },
+        {
+          "path": "business.applies_to_current_input",
+          "equals": true
+        },
+        {
+          "path": "business.status",
+          "equals": "passed"
+        },
+        {
+          "path": "uncertainty",
+          "equals": "none"
+        },
+        {
+          "path": "goal",
+          "equals": "draft_pr"
+        },
+        {
+          "path": "phase",
+          "equals": "repair"
+        },
+        {
+          "path": "approval",
+          "equals": "approved"
+        },
+        {
+          "path": "delivery",
+          "equals": "publishing"
+        },
+        {
+          "path": "execution.status",
+          "in": [
+            "running",
+            "waiting_approval"
+          ]
+        },
+        {
+          "path": "eligibility.repair_permit_valid",
+          "equals": true
+        },
+        {
+          "path": "eligibility.action_binding_current",
+          "equals": true
+        },
+        {
+          "path": "eligibility.approval_unexpired",
+          "equals": true
+        },
+        {
+          "path": "eligibility.write_grant_current",
+          "equals": true
+        }
+      ]
+    }
+  }
+}
