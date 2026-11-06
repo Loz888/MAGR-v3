@@ -16,7 +16,10 @@ class CoordinationBudget(Benchmarks):
             grant = conn.execute(
                 "SELECT * FROM app.benchmark_grants WHERE manifest_hash=%s", (manifest_hash,)
             ).fetchone()
-            if not grant or grant["manifest"].get("schema") != "coordination-comparison-v1":
+            if not grant or grant["manifest"].get("schema") not in {
+                "coordination-comparison-v1",
+                "coordination-comparison-v2",
+            }:
                 raise DomainError("COORD_GRANT_REQUIRED", "Exact coordination grant required")
             item = next(
                 (

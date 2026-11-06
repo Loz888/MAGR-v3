@@ -117,7 +117,10 @@ class Journal:
 
     def target(self, event: Event) -> Row | None:
         suffix = f"#issue:{int(self.trial['issue_base']) + event.issue}"
-        return next((r for r in self.targets() if r["external_key"].endswith(suffix)), None)
+        matches = [r for r in self.targets() if r["external_key"].endswith(suffix)]
+        if len(matches) > 1:
+            raise DomainError("COORD_TARGET_AMBIGUOUS", "Multiple issue primaries")
+        return matches[0] if matches else None
 
     def finish(
         self,
@@ -158,16 +161,35 @@ class Journal:
         case_id: str | None,
         expected: dict[str, Any] | None = None,
     ) -> UUID | None:
+        # Nested Engine transactions share its locked connection/savepoints. No remote,
+        # artifact or Redis I/O occurs between the guard and the committed admission.
+        with self.engine.transaction():
+            return self._apply(event, route, permit, manifest_hash, case_id, expected)
+
+    def _apply(
+        self,
+        event: Event,
+        route: Route,
+        permit: LivePermit | None,
+        manifest_hash: str,
+        case_id: str | None,
+        expected: dict[str, Any] | None,
+    ) -> UUID | None:
         current = self.target(event)
         if event.actor != "owner" or route.event_key != event.key:
             raise DomainError("COORD_SCOPE_DENIED", "Route differs from its accepted event")
+        if self.engine.settings.local_actor.lower() not in {
+            actor.lower() for actor in self.engine.settings.allowed_actors
+        }:
+            raise DomainError("ACTOR_DENIED", "Actor authorization changed before admission")
         if route.action == "deliver":
             if not current or current["run_id"] != route.target_run_id:
                 raise DomainError("COORD_TARGET_DENIED", "Run is not this issue's primary")
             if expected and any(
-                str(current[k]) != str(expected[k]) for k in ("run_id", "execution_epoch")
+                str(current[k]) != str(expected[k])
+                for k in ("run_id", "execution_epoch", "revision")
             ):
-                raise DomainError("COORD_TARGET_STALE", "Primary epoch changed during routing")
+                raise DomainError("COORD_TARGET_STALE", "Primary epoch or revision changed")
         elif route.target_run_id is not None:
             raise DomainError("COORD_TARGET_DENIED", "Only delivery may target a Run")
         if route.action == "start":

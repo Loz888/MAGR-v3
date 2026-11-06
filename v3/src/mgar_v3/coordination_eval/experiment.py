@@ -10,6 +10,7 @@ from typing import Any, cast
 
 from mgar_v3.benchmark.domain import EvaluationAuthorization
 from mgar_v3.coordination.engine import Engine
+from mgar_v3.coordination_eval.candidates import SYSTEM
 from mgar_v3.coordination_eval.domain import ROUTER_SYSTEM, WORKER_SYSTEM
 from mgar_v3.coordination_eval.provider import Slots, write_json
 from mgar_v3.coordination_eval.runtime import Coordinator
@@ -28,6 +29,21 @@ PROTECTED = [
     "docs/repairs/R6-20261103/issue-register.json",
 ]
 PRICE_PATH = ROOT / "docs/repairs/R6-HOST-20261105/v2-current-official-pricing.json"
+
+
+def known_response_hash(engine: Engine, call: dict[str, Any]) -> str:
+    with engine.transaction() as conn:
+        response = conn.execute(
+            "SELECT safe_payload FROM app.run_events WHERE run_id=%s "
+            "AND kind='model_response_recorded' AND safe_payload->>'call_id'=%s",
+            (call["run_id"], str(call["call_id"])),
+        ).fetchone()
+    if not response:
+        raise DomainError("MODEL_RESPONSE_MISSING", "Native receipt required")
+    content_hash = str(response["safe_payload"]["content_hash"])
+    if hashlib.sha256(engine.artifacts.read(content_hash)).hexdigest() != content_hash:
+        raise DomainError("MODEL_RESPONSE_CHANGED", "Response CAS hash mismatch")
+    return content_hash
 
 
 def reviewed_price() -> dict[str, Any]:
@@ -68,14 +84,14 @@ def configuration(directory: Path, trial: dict[str, Any], *, paid: bool) -> Sett
 
 
 def manifest_for(
-    name: str, source_ref: str, cfg: Settings, prior: dict[str, int]
+    name: str, source_ref: str, cfg: Settings, prior: dict[str, int], *, repair: bool = False
 ) -> dict[str, Any]:
     rng = random.Random(20261105)
-    prefix = "coord-v1-" + digest(name)[:8]
+    prefix = ("coord-v2-" if repair else "coord-v1-") + digest(name)[:8]
     trials: list[dict[str, Any]] = []
     for repetition in range(2):
         for cache in ("cold", "warm"):
-            arms = ["D", "E", "F"]
+            arms = ["E", "F"] if repair else ["D", "E", "F"]
             rng.shuffle(arms)
             for arm in arms:
                 index = len(trials)
@@ -87,28 +103,33 @@ def manifest_for(
                         "repetition": repetition,
                         "cache": cache,
                         "project_id": "coord-eval-" + digest(trial_id)[:16],
-                        "issue_base": 1900000 + index * 20,
+                        "issue_base": (2000000 + index * 100) if repair else 1900000 + index * 20,
                         "fault_after_known": arm == "F" and repetition == 0 and cache == "cold",
                     }
                 )
     events = json.loads((DATA / "events.json").read_text())["events"]
     profiles = []
     for trial in trials:
-        slots = ["worker:e01", "worker:e02"] + [
-            f"router:{i}" for i in range({"D": 0, "E": 8, "F": 3}[trial["arm"]])
+        trial["routing_protocol"] = "candidate-v2" if repair else "free-plan-v1"
+        router_slots = [
+            f"router:{i}:a{a}" if repair else f"router:{i}"
+            for i in range({"D": 0, "E": 8, "F": 3}[trial["arm"]])
+            for a in range(2 if repair else 1)
         ]
+        slots = ["worker:e01", "worker:e02", *router_slots]
         for slot in slots:
             is_worker = slot.startswith("worker:")
             event: dict[str, Any] = next((e for e in events if "worker:" + e["key"] == slot), {})
             if is_worker:
                 assert event is not None
-            ordinal = int(slot.rsplit(":", 1)[1]) if not is_worker else int(event["issue"])
+            ordinal = int(slot.split(":")[1]) if not is_worker else int(event["issue"])
+            offset = (10 + ordinal * 2 + int(slot[-1])) if repair else 10 + ordinal
             case_id = f"r6-eval:coord:{trial['id']}:{slot}"
             p = LiveProfile(
                 case_id=case_id,
                 project_id=trial["project_id"],
                 repository=cfg.repository.lower(),
-                issue_number=trial["issue_base"] + (ordinal if is_worker else 10 + ordinal),
+                issue_number=trial["issue_base"] + (ordinal if is_worker else offset),
                 actor=cfg.local_actor,
                 question=event["body"].removeprefix("/mgar investigate ")
                 if is_worker
@@ -135,9 +156,12 @@ def manifest_for(
                     "profile_hash": p.profile_hash,
                 }
             )
-    assert len(profiles) == 68
+    assert len(profiles) == (104 if repair else 68)
     return {
-        "schema": "coordination-comparison-v1",
+        "schema": "coordination-comparison-v2" if repair else "coordination-comparison-v1",
+        "routing_protocol": "candidate-v2" if repair else "free-plan-v1",
+        "arms": ["E", "F"] if repair else ["D", "E", "F"],
+        "max_router_attempts": 2 if repair else 1,
         "source_ref": source_ref,
         "repository": cfg.repository.lower(),
         "actor": cfg.local_actor,
@@ -152,7 +176,7 @@ def manifest_for(
         "protected_business_hashes": {
             p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in PROTECTED
         },
-        "prompts": {"router": ROUTER_SYSTEM, "worker": WORKER_SYSTEM},
+        "prompts": {"router": SYSTEM if repair else ROUTER_SYSTEM, "worker": WORKER_SYSTEM},
         "pricing_evidence": {
             "path": str(PRICE_PATH.relative_to(ROOT)),
             "sha256": hashlib.sha256(PRICE_PATH.read_bytes()).hexdigest(),
@@ -182,7 +206,7 @@ def manifest_for(
             "explicit known-only result recovery with zero resend of that request"
         ),
         "acceptance": {
-            "minimum_completed_trials": 12,
+            "minimum_completed_trials": len(trials),
             "maximum_lost_accepted_events": 0,
             "maximum_forbidden_effects": 0,
             "maximum_stale_write_successes": 0,
@@ -195,7 +219,7 @@ def manifest_for(
     }
 
 
-def freeze(directory: Path, source_ref: str) -> dict[str, Any]:
+def freeze(directory: Path, source_ref: str, *, repair: bool = False) -> dict[str, Any]:
     directory.mkdir(mode=0o700, parents=True, exist_ok=False)
     cfg = Settings(allow_paid=False, allow_external_write=False)
     engine = Engine(cfg, ArtifactStore(cfg.artifact_root))
@@ -206,7 +230,7 @@ def freeze(directory: Path, source_ref: str) -> dict[str, Any]:
         engine.close()
     if prior["unknown"]:
         raise DomainError("USAGE_UNKNOWN", "Reconcile existing repository costs before freezing")
-    manifest = manifest_for(directory.name, source_ref, cfg, prior)
+    manifest = manifest_for(directory.name, source_ref, cfg, prior, repair=repair)
     if prior["cost_micros"] + manifest["max_new_cost_micros"] > 2000000:
         raise DomainError("BUDGET_EXHAUSTED", "Original repository USD2 hard cap remains")
     write_json(directory / "manifest.json", manifest)
@@ -238,15 +262,19 @@ def verify(directory: Path) -> dict[str, Any]:
     for p, h in manifest["protected_business_hashes"].items():
         if hashlib.sha256((ROOT / p).read_bytes()).hexdigest() != h:
             raise DomainError("COORD_OLD_RESULT_CHANGED", "Original business outcomes must stay")
-    if len(manifest["profiles"]) != 68 or len(manifest["trials"]) != 12:
+    repair = manifest.get("routing_protocol") == "candidate-v2"
+    if len(manifest["profiles"]) != (104 if repair else 68) or len(manifest["trials"]) != (
+        8 if repair else 12
+    ):
         raise DomainError("COORD_MATRIX_CHANGED", "The frozen paired experiment matrix changed")
     for item in manifest["profiles"]:
         p = LiveProfile.model_validate(item["profile"])
         if p.profile_hash != item["profile_hash"] or p.max_model_calls != 1:
             raise DomainError("COORD_PROFILE_CHANGED", "Profile or call limit changed")
     if (
-        sum(p["profile"]["max_cost_micros"] for p in manifest["profiles"])
-        != manifest["max_new_cost_micros"]
+        manifest["max_new_cost_micros"] != 68 * 3072
+        or manifest["max_new_calls"] != 68
+        or any(p["profile"]["max_cost_micros"] != 3072 for p in manifest["profiles"])
     ):
         raise DomainError("COORD_BUDGET_CHANGED", "Shared cap differs from frozen single calls")
     return cast(dict[str, Any], manifest)
@@ -351,13 +379,14 @@ def execute(directory: Path, authorization: Path, *, paid: bool) -> dict[str, An
                     ).fetchone()
                     if not known:
                         raise DomainError("USAGE_UNKNOWN", "No known response; cannot continue")
+                response_hash = known_response_hash(gate, known)
                 write_json(
                     directory / (trial["id"] + "-continuation-reviewed.json"),
                     {
                         "manifest_hash": digest(manifest),
                         "planned_exit": -9,
                         "original_call_id": str(known["call_id"]),
-                        "original_response_hash": known.get("response_hash"),
+                        "original_response_hash": response_hash,
                         "original_settled_micros": known["settled_micros"],
                         "replay_only_for_original_request": True,
                         "remaining_frozen_trial_calls_still_count_toward_original_grant": True,

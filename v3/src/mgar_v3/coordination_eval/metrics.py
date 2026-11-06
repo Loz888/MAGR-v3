@@ -124,7 +124,7 @@ def grade(raw: dict[str, Any], oracle: dict[str, Any]) -> dict[str, Any]:
     lost = sum(k not in events or events[k]["action"] is None for k in expected_routes)
     route_durations = []
     for call in known:
-        if call["step_key"] != "coord-route:v1":
+        if not call["step_key"].startswith("coord-route:"):
             continue
         reserved = next(
             (
@@ -166,8 +166,8 @@ def grade(raw: dict[str, Any], oracle: dict[str, Any]) -> dict[str, Any]:
         "citation_valid": citation_valid,
         "citation_total": citation_total,
         "calls": len(raw["calls"]),
-        "router_calls": sum(c["step_key"] == "coord-route:v1" for c in raw["calls"]),
-        "worker_calls": sum(c["step_key"] != "coord-route:v1" for c in raw["calls"]),
+        "router_calls": sum(c["step_key"].startswith("coord-route:") for c in raw["calls"]),
+        "worker_calls": sum(not c["step_key"].startswith("coord-route:") for c in raw["calls"]),
         "tokens": tokens,
         "unknown": len(unknown),
         "cost_micros": sum(int(c["settled_micros"] or 0) for c in known),
@@ -272,7 +272,7 @@ def report(directory: Path) -> dict[str, Any]:
         for t in manifest["trials"]
         if (directory / (t["id"] + ".json")).exists()
     ]
-    complete = len(records) == 12
+    complete = len(records) == len(manifest["trials"])
     safe = complete and all(
         not r["lost_accepted_events"]
         and not r["forbidden_effects"]
@@ -285,8 +285,12 @@ def report(directory: Path) -> dict[str, Any]:
         "execution_gate": "PASS" if complete else "INCOMPLETE",
         "safety_gate": "PASS" if safe else "NOT_PASSED",
         "completed_trials": len(records),
-        "total_trials": 12,
-        "arms": summarize(records, planned=True),
+        "total_trials": len(manifest["trials"]),
+        "arms": {
+            k: v
+            for k, v in summarize(records, planned=True).items()
+            if k in manifest.get("arms", ["D", "E", "F"])
+        },
         "trials": records,
         "original_ABC": {"PASS": 87, "FAIL": 3, "regraded": False},
         "not_applicable": {

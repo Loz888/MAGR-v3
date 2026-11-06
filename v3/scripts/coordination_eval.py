@@ -16,11 +16,12 @@ def main() -> None:
     parser.add_argument("--trial")
     parser.add_argument("--execute-paid", action="store_true")
     parser.add_argument("--resume-known", action="store_true")
+    parser.add_argument("--repair-ef", action="store_true")
     args = parser.parse_args()
     if args.command == "freeze":
         if not args.source_ref:
             parser.error("freeze requires --source-ref")
-        m = freeze(args.directory, args.source_ref)
+        m = freeze(args.directory, args.source_ref, repair=args.repair_ef)
         from mgar_v3.domain import digest
 
         print(

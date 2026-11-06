@@ -25,7 +25,11 @@ from mgar_v3.settings import ROOT
 def controlled_response(request):
     body = json.loads(request.content)
     payload = json.loads(body["messages"][1]["content"])
-    if "events" in payload:
+    if "events" in payload and payload["events"] and "candidates" in payload["events"][0]:
+        result = {
+            "choices": [{"event_key": e["key"], "candidate_id": "c0"} for e in payload["events"]]
+        }
+    elif "events" in payload:
         routes = []
         for event in payload["events"]:
             target = next(
@@ -74,7 +78,7 @@ def controlled_response(request):
     )
 
 
-def setup_case(settings, tmp_path, arm, warm=False, fault=False, namespace=None):
+def setup_case(settings, tmp_path, arm, warm=False, fault=False, namespace=None, repair=False):
     cfg = settings.model_copy(
         update={
             "allow_paid": True,
@@ -84,7 +88,11 @@ def setup_case(settings, tmp_path, arm, warm=False, fault=False, namespace=None)
         }
     )
     manifest = manifest_for(
-        namespace or uuid4().hex, "a" * 40, cfg, {"calls": 0, "cost_micros": 0, "unknown": 0}
+        namespace or uuid4().hex,
+        "a" * 40,
+        cfg,
+        {"calls": 0, "cost_micros": 0, "unknown": 0},
+        repair=repair,
     )
     trial = next(
         t
@@ -294,8 +302,9 @@ def test_manifest_and_original_business_outcomes_are_sealed(settings, tmp_path, 
     assert error.value.code == "COORD_FROZEN_SOURCE_CHANGED"
 
 
-def test_real_sigkill_reuses_known_response_and_fences_old_epoch(settings, tmp_path):
-    cfg, manifest, trial, auth = setup_case(settings, tmp_path, "F", fault=True)
+@pytest.mark.parametrize("repair", [False, True])
+def test_real_sigkill_reuses_known_response_and_fences_old_epoch(settings, tmp_path, repair):
+    cfg, manifest, trial, auth = setup_case(settings, tmp_path, "F", fault=True, repair=repair)
     manifest_path = tmp_path / "manifest.json"
     auth_path = tmp_path / "authorization.json"
     manifest_path.write_text(json.dumps(manifest))
@@ -320,7 +329,15 @@ t=next(x for x in m['trials'] if x['fault_after_known'])
 c=Settings(database_url=os.environ['COORD_TEST_DSN'],repository='example/mgar-test',local_actor='owner',allowed_actors=['owner'],project_id=t['project_id'],artifact_root=p/'artifacts',graph_version='r2-mailbox-v1',allow_paid=True,allow_external_write=False,deepseek_api_key=SecretStr('controlled'))
 a=EvaluationAuthorization.model_validate_json((p/'authorization.json').read_text());e=Engine(c,ArtifactStore(c.artifact_root));e.benchmarks.authorize(m,a)
 h=runpy.run_path('tests/test_coordination_eval.py')['controlled_response']
-with httpx.Client(transport=httpx.MockTransport(h)) as client:
+sent=[]
+def response(request):
+ sent.append(request)
+ r=h(request)
+ if m.get('routing_protocol')=='candidate-v2' and len(sent)==1:
+  body=r.json();body['choices'][0]['message']['content']='{"routes":[]}'
+  return httpx.Response(200,json=body)
+ return r
+with httpx.Client(transport=httpx.MockTransport(response)) as client:
  j=Journal(e,t,digest(m));Coordinator(j,Slots(j,m,a,client)).execute()
 """)
     with (tmp_path / "crash.log").open("wb") as log:
@@ -340,16 +357,20 @@ with httpx.Client(transport=httpx.MockTransport(h)) as client:
     try:
         journal = Journal(engine, trial, digest(manifest))
         before = journal.export()["calls"]
-        assert len(before) == 1 and before[0]["status"] == "known"
+        assert len(before) == (2 if repair else 1)
+        assert all(c["status"] == "known" for c in before)
+        from mgar_v3.coordination_eval.experiment import known_response_hash
+
+        assert all(len(known_response_hash(engine, c)) == 64 for c in before)
         with httpx.Client(transport=httpx.MockTransport(controlled_response)) as client:
             raw = Coordinator(
                 journal, Slots(journal, manifest, auth, client), resume=True
             ).execute()
-        assert len(raw["calls"]) == 5
+        assert len(raw["calls"]) == (6 if repair else 5)
         assert len([a for a in raw["audit"] if a["kind"] == "known_router_reused"]) == 1
         assert len([a for a in raw["audit"] if a["kind"] == "old_epoch_fenced"]) == 1
         verdict = grade(raw, json.loads((DATA / "oracle.json").read_text()))
-        assert verdict["normal_passed"] == 2 and verdict["router_calls"] == 3
+        assert verdict["normal_passed"] == 2 and verdict["router_calls"] == (4 if repair else 3)
         assert verdict["duplicates"] == 1 and verdict["physical_deliveries"] == 10
     finally:
         engine.close()

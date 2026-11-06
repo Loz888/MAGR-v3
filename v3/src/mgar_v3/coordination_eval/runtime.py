@@ -9,6 +9,7 @@ from uuid import UUID
 
 from psycopg.types.json import Jsonb
 
+from mgar_v3.coordination_eval.candidates import SYSTEM, Selection, candidates, resolve
 from mgar_v3.coordination_eval.domain import ROUTER_SYSTEM, Event, Plan, Route
 from mgar_v3.coordination_eval.provider import FixedInvestigator, Slots, SourceCache
 from mgar_v3.coordination_eval.store import DATA, Journal
@@ -65,6 +66,8 @@ class Coordinator:
                 )
         if prior and prior["plan"]:
             return Plan.model_validate(prior["plan"]), snapshot["primary_runs"]
+        if self.slots.manifest.get("routing_protocol") == "candidate-v2":
+            return self.candidate_decision(snapshot, ordinal, keys), snapshot["primary_runs"]
         key = f"router:{ordinal}"
         run_id = self.slots.control_run(key)
         run = self.engine.get_run(run_id)
@@ -134,6 +137,136 @@ class Coordinator:
             self.journal.audit("known_router_reused", run_id=str(run_id), new_model_calls=0)
         return plan, snapshot["primary_runs"]
 
+    def candidate_decision(self, snapshot: dict[str, Any], ordinal: int, keys: list[str]) -> Plan:
+        payload, bindings = candidates(snapshot)
+        for attempt in range(2):
+            key = f"router:{ordinal}:a{attempt}"
+            step = f"coord-route:v2:a{attempt}"
+            run_id = self.slots.control_run(key)
+            run = self.engine.get_run(run_id)
+            with self.engine.transaction() as conn:
+                known = conn.execute(
+                    "SELECT * FROM app.usage_calls WHERE run_id=%s AND step_key=%s",
+                    (run_id, step),
+                ).fetchone()
+                rejected = conn.execute(
+                    "SELECT details FROM coordination_eval.audit WHERE trial_id=%s "
+                    "AND kind='candidate_attempt_rejected' AND details->>'slot'=%s",
+                    (self.journal.id, key),
+                ).fetchone()
+            if rejected:
+                if not known or known["status"] != "known" or known["settled_micros"] is None:
+                    raise DomainError("USAGE_UNKNOWN", "Rejected attempt must remain settled")
+                if not self.resume:
+                    raise DomainError("COORD_CONTINUATION_REQUIRED", "Reviewed continuation only")
+                payload["correction"] = (
+                    "Prior output violated selection contract; copy c0 once per event."
+                )
+                continue
+            replay = run["status"] != "queued"
+            if replay:
+                if (
+                    not self.resume
+                    or not known
+                    or known["status"] != "known"
+                    or not known["result"]
+                ):
+                    raise DomainError("USAGE_UNKNOWN", "No valid known selection to replay")
+                old_epoch = run["execution_epoch"]
+                if run["status"] == "running":
+                    self.engine.pause(run_id)
+                self.engine.resume(run_id)
+                try:
+                    self.engine.recovery.heartbeat(run_id, old_epoch)
+                except DomainError as exc:
+                    if exc.code != "FENCED":
+                        raise
+                    self.journal.audit("old_epoch_fenced", run_id=str(run_id), old_epoch=old_epoch)
+                else:
+                    raise AssertionError("Old Router epoch survived recovery")
+            run = self.engine.begin_run(run_id)
+            started = time.perf_counter()
+            try:
+                selection = StructuredModel(
+                    self.engine, self.slots.permit(key), self.slots.client
+                ).complete(run_id, run["execution_epoch"], step, SYSTEM, payload, Selection)
+                plan = resolve(selection, bindings)
+            except DomainError as exc:
+                # Only a settled output-contract failure permits a fresh, separately
+                # charged attempt. Unknown/provider/epoch/budget errors propagate.
+                if exc.code not in {"MODEL_INVALID_RESPONSE", "COORD_SELECTION_INVALID"}:
+                    raise
+                with self.engine.transaction() as conn:
+                    settled = conn.execute(
+                        "SELECT * FROM app.usage_calls WHERE run_id=%s AND step_key=%s",
+                        (run_id, step),
+                    ).fetchone()
+                    if (
+                        not settled
+                        or settled["status"] != "known"
+                        or settled["settled_micros"] is None
+                    ):
+                        raise DomainError(
+                            "USAGE_UNKNOWN", "No retry without settled usage"
+                        ) from exc
+                    self.engine.fail_run(run_id, exc.code)
+                    self.journal.audit(
+                        "candidate_attempt_rejected",
+                        slot=key,
+                        ordinal=ordinal,
+                        attempt=attempt,
+                        run_id=str(run_id),
+                        call_id=str(settled["call_id"]),
+                        code=exc.code,
+                    )
+                if attempt == 1:
+                    raise
+                payload["correction"] = (
+                    "Prior output violated selection contract; copy c0 once per event."
+                )
+                continue
+            elapsed = time.perf_counter() - started
+            self.journal.audit(
+                "candidate_attempt_accepted",
+                slot=key,
+                ordinal=ordinal,
+                attempt=attempt,
+                run_id=str(run_id),
+                replay=replay,
+            )
+            if self.journal.trial.get("fault_after_known") and ordinal == 0 and not self.resume:
+                self.journal.audit(
+                    "known_router_killpoint",
+                    run_id=str(run_id),
+                    epoch=run["execution_epoch"],
+                    attempt=attempt,
+                )
+                os.kill(os.getpid(), signal.SIGKILL)
+            with self.engine.transaction() as conn:
+                conn.execute(
+                    "UPDATE coordination_eval.batches SET control_run_id=%s,plan=%s,"
+                    "completed_at=clock_timestamp(),duration_seconds=%s,replay_seconds=%s "
+                    "WHERE trial_id=%s AND ordinal=%s",
+                    (
+                        run_id,
+                        Jsonb(plan.model_dump(mode="json")),
+                        elapsed,
+                        elapsed if replay else None,
+                        self.journal.id,
+                        ordinal,
+                    ),
+                )
+                after = conn.execute(
+                    "SELECT count(*) AS n FROM app.usage_calls WHERE run_id=%s", (run_id,)
+                ).fetchone()
+                if not after or after["n"] != 1:
+                    raise AssertionError("Candidate slot must have exactly one paid call")
+            self.slots.finish_control(run_id, run["execution_epoch"], plan.model_dump(mode="json"))
+            if replay:
+                self.journal.audit("known_router_reused", run_id=str(run_id), new_model_calls=0)
+            return plan
+        raise DomainError("COORD_SELECTION_INVALID", "Both bounded attempts were rejected")
+
     def apply(self, event: Event, route: Route, expected: dict[str, Any] | None = None) -> None:
         initial = event.key in {"e01", "e02"}
         worker_key = "worker:" + ("e01" if event.issue == 0 else "e02")
@@ -163,6 +296,7 @@ class Coordinator:
                 self.apply(
                     event,
                     Route(event_key=event.key, action="deliver", target_run_id=target["run_id"]),
+                    target,
                 )
                 self.journal.audit("subscription_direct", key=event.key)
             elif (
