@@ -1,0 +1,641 @@
+[
+  {
+    "trial_id": "coord-v1-be0aa754-r0-cold-E",
+    "arm": "E",
+    "cache": "cold",
+    "repetition": 0,
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "9c8b0dea-7682-48fe-9777-adafd047f76f",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented cache TTL is 90 seconds.",
+            "statement": "Observation: The documented cache TTL is 90 seconds.",
+            "evidence_id": "edc80573-d1b0-47f9-9024-d923f6b4b528"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 8.583196,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-cold-E",
+    "arm": "E",
+    "cache": "cold",
+    "repetition": 0,
+    "event_key": "e02",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 2.442539,
+    "terminal_kind": "routing_rejected"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-cold-F",
+    "arm": "F",
+    "cache": "cold",
+    "repetition": 0,
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "aca5689f-e955-49c4-9f28-5e0c93f4a850",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented cache TTL is 90 seconds.",
+            "statement": "Observation: The documented cache TTL is 90 seconds.",
+            "evidence_id": "e952f93b-a9a6-4549-a7e6-52f85a68312c"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 3.133454,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-cold-F",
+    "arm": "F",
+    "cache": "cold",
+    "repetition": 0,
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "d05d4c0a-1a54-4a6e-9185-9d39b645181f",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented retry limit is 2 attempts.",
+            "statement": "Observation: The documented retry limit is 2 attempts.",
+            "evidence_id": "56e74e9d-919f-4ec3-8953-8198cff38c06"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 2.811687,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-cold-D",
+    "arm": "D",
+    "cache": "cold",
+    "repetition": 0,
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "6994d060-290b-40e4-9809-05828838ab57",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented cache TTL is 90 seconds.",
+            "statement": "Observation: The documented cache TTL is 90 seconds.",
+            "evidence_id": "ab2874c9-1112-43fb-b35b-93d2891f264a"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.325216,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-cold-D",
+    "arm": "D",
+    "cache": "cold",
+    "repetition": 0,
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "d99ef80b-a570-4bb3-89fc-f2d320307344",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented retry limit is 2 attempts.",
+            "statement": "Observation: The documented retry limit is 2 attempts.",
+            "evidence_id": "d2d7b1f1-2fac-401e-a6c5-8cfbd890b148"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.257575,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-warm-E",
+    "arm": "E",
+    "cache": "warm",
+    "repetition": 0,
+    "event_key": "e01",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.320269,
+    "terminal_kind": "routing_rejected"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-warm-E",
+    "arm": "E",
+    "cache": "warm",
+    "repetition": 0,
+    "event_key": "e02",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 2.370189,
+    "terminal_kind": "routing_rejected"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-warm-D",
+    "arm": "D",
+    "cache": "warm",
+    "repetition": 0,
+    "event_key": "e01",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "d28e1e10-4979-4bdf-a208-103f3d4e0280",
+    "run_status": "failed",
+    "reason_code": "EVIDENCE_REJECTED",
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented cache TTL is 90 seconds.",
+            "statement": "The documented cache TTL is 90 seconds.",
+            "evidence_id": "db016bc5-fa82-4ca2-a70d-d35ca4c734a6"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [
+      {
+        "event_id": 6230,
+        "run_id": "d28e1e10-4979-4bdf-a208-103f3d4e0280",
+        "kind": "verification_failed",
+        "safe_payload": {
+          "reasons": [
+            "statement_exceeds_mechanically_verified_quote"
+          ]
+        },
+        "created_at": "2026-11-06 00:58:37.888004+00:00"
+      }
+    ],
+    "attempt_to_terminal_seconds": 1.229913,
+    "terminal_kind": "verification_failed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-warm-D",
+    "arm": "D",
+    "cache": "warm",
+    "repetition": 0,
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "10e7e3e6-e545-4948-b63f-053b811bf7b2",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented retry limit is 2 attempts.",
+            "statement": "Observation: The documented retry limit is 2 attempts.",
+            "evidence_id": "fb00c29c-0c36-41cb-b48e-421dbfad453c"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.338013,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-warm-F",
+    "arm": "F",
+    "cache": "warm",
+    "repetition": 0,
+    "event_key": "e01",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.076997,
+    "terminal_kind": "routing_rejected"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r0-warm-F",
+    "arm": "F",
+    "cache": "warm",
+    "repetition": 0,
+    "event_key": "e02",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.076086,
+    "terminal_kind": "routing_rejected"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-cold-F",
+    "arm": "F",
+    "cache": "cold",
+    "repetition": 1,
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "ac02715a-7fdf-40ea-97dc-36d3a2f7793c",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented cache TTL is 90 seconds.",
+            "statement": "Observation: The documented cache TTL is 90 seconds.",
+            "evidence_id": "df405357-3856-47ad-b286-68331ba052a8"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 2.319843,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-cold-F",
+    "arm": "F",
+    "cache": "cold",
+    "repetition": 1,
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "91b58b20-d9b9-4f0c-82c6-f9aab61f9fef",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented retry limit is 2 attempts.",
+            "statement": "Observation: The documented retry limit is 2 attempts.",
+            "evidence_id": "cd247e4e-9581-4ef7-8bb7-76bdf7ab5a1a"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 2.364748,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-cold-D",
+    "arm": "D",
+    "cache": "cold",
+    "repetition": 1,
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "67b31f9e-6cab-4a94-9ba8-fb98171f4720",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented cache TTL is 90 seconds.",
+            "statement": "Observation: The documented cache TTL is 90 seconds.",
+            "evidence_id": "1f05b663-7dd7-4c0a-af05-08615e2a0b6e"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.113089,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-cold-D",
+    "arm": "D",
+    "cache": "cold",
+    "repetition": 1,
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "50fafe8f-7210-42db-8f9f-dea034486c47",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented retry limit is 2 attempts.",
+            "statement": "Observation: The documented retry limit is 2 attempts.",
+            "evidence_id": "5d9e26f1-9b26-48ea-80c2-1a11223dce93"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.511004,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-cold-E",
+    "arm": "E",
+    "cache": "cold",
+    "repetition": 1,
+    "event_key": "e01",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 0.850141,
+    "terminal_kind": "routing_rejected"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-cold-E",
+    "arm": "E",
+    "cache": "cold",
+    "repetition": 1,
+    "event_key": "e02",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.528817,
+    "terminal_kind": "routing_rejected"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-warm-D",
+    "arm": "D",
+    "cache": "warm",
+    "repetition": 1,
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "4ab4314c-1c5f-4d16-87d8-c99eca22c8ca",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented cache TTL is 90 seconds.",
+            "statement": "Observation: The documented cache TTL is 90 seconds.",
+            "evidence_id": "8aeee8ec-3a89-44e2-97ae-10966c64a844"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.338003,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-warm-D",
+    "arm": "D",
+    "cache": "warm",
+    "repetition": 1,
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true,
+    "run_id": "56b3b261-5085-46f3-8f5b-e285c5f0997e",
+    "run_status": "succeeded",
+    "reason_code": null,
+    "actual_worker_results": [
+      {
+        "claims": [
+          {
+            "quote": "Observation: The documented retry limit is 2 attempts.",
+            "statement": "Observation: The documented retry limit is 2 attempts.",
+            "evidence_id": "9cb5ad6a-c66b-4007-848c-c85d0ef9dfc1"
+          }
+        ],
+        "open_questions": []
+      }
+    ],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.100798,
+    "terminal_kind": "readonly_report_completed"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-warm-F",
+    "arm": "F",
+    "cache": "warm",
+    "repetition": 1,
+    "event_key": "e01",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.195114,
+    "terminal_kind": "routing_rejected"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-warm-F",
+    "arm": "F",
+    "cache": "warm",
+    "repetition": 1,
+    "event_key": "e02",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 1.194511,
+    "terminal_kind": "routing_rejected"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-warm-E",
+    "arm": "E",
+    "cache": "warm",
+    "repetition": 1,
+    "event_key": "e01",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 0.834836,
+    "terminal_kind": "routing_rejected"
+  },
+  {
+    "trial_id": "coord-v1-be0aa754-r1-warm-E",
+    "arm": "E",
+    "cache": "warm",
+    "repetition": 1,
+    "event_key": "e02",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [],
+    "all_user_input_consumed": false,
+    "run_id": null,
+    "run_status": "NOT_STARTED_ROUTING_REJECTED",
+    "reason_code": "COORD_TARGET_DENIED",
+    "actual_worker_results": [],
+    "verification_failure_events": [],
+    "attempt_to_terminal_seconds": 2.016211,
+    "terminal_kind": "routing_rejected"
+  }
+]

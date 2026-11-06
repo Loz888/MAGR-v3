@@ -1,6 +1,6 @@
 # V31-R6-COORD · D/E/F 全局协调对照
 
-状态 IN_PROGRESS。用户要求补齐原任务书14.2的D/E/F完整实测报告，保留原87/90与三项失败，不修补、不重评A/B/C。
+状态 DONE（12/12真实运行与完整报告已交付；不代表业务全部通过）。用户要求补齐原任务书14.2的D/E/F完整实测报告，保留原87/90与三项失败，不修补、不重评A/B/C。
 
 固定同一真实LangGraph R2 Worker、同一来源、同一模型/上下文/单调用边界，仅改变协调方式：D按冻结的人工操作表管理Run（不计人的思考时间）；E每条获准且非重复事件先由模型路由；F已订阅事件直达原Engine/Mailbox，冷事件按预定阶段批处理。实验协调适配器与产品Router冷启动提示分开说明，不能把实验协议冒充产品Router原提示。
 
@@ -12,4 +12,6 @@ PostgreSQL与Redis真实，所有业务与实验日志写入均由Engine原持�
 
 检查：make lint、make typecheck、make verify TASK=V31-R6-COORD；冻结后不再改输入或实现。完整报告、原始记录hash、问题过程和GitHub交付必须可核对。
 
-工程80项PASS，lint与110模块类型检查PASS。源码 `8bba1637ddada3129d13b09bfe6d88ec28b2f856`；manifest `9df391cdb86900b4c8e1f83968c211ea3025f3a51e40b2ad855b61a41f9b4d29` 已冻结，真实调用0，待独立精确许可。原633次、US$0.299317、unknown0不变。
+执行前冻结记录（保留）：工程80项PASS，lint与110模块类型检查PASS。源码 `8bba1637ddada3129d13b09bfe6d88ec28b2f856`；manifest `9df391cdb86900b4c8e1f83968c211ea3025f3a51e40b2ad855b61a41f9b4d29` 已冻结，真实调用0，待独立精确许可。原633次、US$0.299317、unknown0不变。
+
+真实结果：D/E/F正常任务7/8、1/8、4/8，负例各12/12；57次调用、保守US$0.006475，累计690次、US$0.305792，unknown/预占0。原87/90与三项失败文件哈希不变。执行完整性/安全记录PASS，业务成功率按实测保留，不宣称Router质量门禁通过。见 [完整实测报告](../../v3/docs/experiments/coordination-v1/README.md)。

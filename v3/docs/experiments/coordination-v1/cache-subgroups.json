@@ -1,0 +1,108 @@
+[
+  {
+    "arm": "D",
+    "cache": "cold",
+    "trials": 2,
+    "normal_passed": 4,
+    "normal_total": 4,
+    "negative_passed": 6,
+    "negative_total": 6,
+    "calls": 4,
+    "cost_micros": 661,
+    "source_cache_reads": 4,
+    "source_cache_hits": 2,
+    "prewarm_seconds": 0,
+    "successful_task_latencies": [
+      1.325216,
+      1.257575,
+      1.113089,
+      1.511004
+    ]
+  },
+  {
+    "arm": "D",
+    "cache": "warm",
+    "trials": 2,
+    "normal_passed": 3,
+    "normal_total": 4,
+    "negative_passed": 6,
+    "negative_total": 6,
+    "calls": 4,
+    "cost_micros": 645,
+    "source_cache_reads": 4,
+    "source_cache_hits": 4,
+    "prewarm_seconds": 0.00029559699999026634,
+    "successful_task_latencies": [
+      1.338013,
+      1.338003,
+      1.100798
+    ]
+  },
+  {
+    "arm": "E",
+    "cache": "cold",
+    "trials": 2,
+    "normal_passed": 1,
+    "normal_total": 4,
+    "negative_passed": 6,
+    "negative_total": 6,
+    "calls": 17,
+    "cost_micros": 1873,
+    "source_cache_reads": 1,
+    "source_cache_hits": 0,
+    "prewarm_seconds": 0,
+    "successful_task_latencies": [
+      8.583196
+    ]
+  },
+  {
+    "arm": "E",
+    "cache": "warm",
+    "trials": 2,
+    "normal_passed": 0,
+    "normal_total": 4,
+    "negative_passed": 6,
+    "negative_total": 6,
+    "calls": 16,
+    "cost_micros": 1360,
+    "source_cache_reads": 0,
+    "source_cache_hits": 0,
+    "prewarm_seconds": 0.00028739500004348884,
+    "successful_task_latencies": []
+  },
+  {
+    "arm": "F",
+    "cache": "cold",
+    "trials": 2,
+    "normal_passed": 4,
+    "normal_total": 4,
+    "negative_passed": 6,
+    "negative_total": 6,
+    "calls": 10,
+    "cost_micros": 1364,
+    "source_cache_reads": 4,
+    "source_cache_hits": 2,
+    "prewarm_seconds": 0,
+    "successful_task_latencies": [
+      3.133454,
+      2.811687,
+      2.319843,
+      2.364748
+    ]
+  },
+  {
+    "arm": "F",
+    "cache": "warm",
+    "trials": 2,
+    "normal_passed": 0,
+    "normal_total": 4,
+    "negative_passed": 6,
+    "negative_total": 6,
+    "calls": 6,
+    "cost_micros": 572,
+    "source_cache_reads": 0,
+    "source_cache_hits": 0,
+    "prewarm_seconds": 0.0002963080000313312,
+    "successful_task_latencies": []
+  }
+]

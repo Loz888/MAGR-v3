@@ -1,0 +1,574 @@
+{
+  "scope": "posthoc_descriptive_request_check_only_no_score_changes",
+  "all57_requests_same_sampling_fields": {
+    "model": "deepseek-flash",
+    "max_tokens": 512,
+    "thinking": {
+      "type": "disabled"
+    },
+    "response_format": {
+      "type": "json_object"
+    },
+    "temperature_explicit": false,
+    "seed_explicit": false
+  },
+  "temperature_and_model_seed_used_service_defaults_not_recorded_as_fixed_values": true,
+  "experiment_seed20261105_only_orders_trials": true,
+  "repeated_router_request_hashes": [
+    {
+      "request_sha256": "23c6b84107db57c85095c79782377c61ca3671e8b4a4fbc05656ace69208e5ae",
+      "occurrences": [
+        {
+          "trial_id": "coord-v1-be0aa754-r0-cold-E",
+          "arm": "E",
+          "call_id": "964b5c12-9f08-4f49-9806-a3f85b566676",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "start",
+                "event_key": "e01",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-E",
+          "arm": "E",
+          "call_id": "5c0398a4-1f5d-4e7b-88c8-6aabbe56a9de",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "deliver",
+                "event_key": "e01",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-cold-E",
+          "arm": "E",
+          "call_id": "62f21df9-7589-4d16-9f85-1ba2f9d7b2df",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "deliver",
+                "event_key": "e01",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-E",
+          "arm": "E",
+          "call_id": "be7c6188-ae42-467c-9103-8efc2573ff8c",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "deliver",
+                "event_key": "e01",
+                "target_run_id": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request_sha256": "0443940da927e3c73528a7a0a85323c8a421fc56c6c46e3d0079a87dd9b991ca",
+      "occurrences": [
+        {
+          "trial_id": "coord-v1-be0aa754-r0-cold-F",
+          "arm": "F",
+          "call_id": "1e86b864-2fdc-4ecf-8542-6c5e8a7456d5",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "start",
+                "event_key": "e01",
+                "target_run_id": null
+              },
+              {
+                "action": "start",
+                "event_key": "e02",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-F",
+          "arm": "F",
+          "call_id": "90245932-6dc9-411f-95b2-895ed38922fc",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "deliver",
+                "event_key": "e01",
+                "target_run_id": null
+              },
+              {
+                "action": "deliver",
+                "event_key": "e02",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-cold-F",
+          "arm": "F",
+          "call_id": "68727c2a-1603-418c-a1c2-3e8c38d5cbdb",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "start",
+                "event_key": "e01",
+                "target_run_id": null
+              },
+              {
+                "action": "start",
+                "event_key": "e02",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-F",
+          "arm": "F",
+          "call_id": "6201f6da-585b-43f1-987e-1fc9adac7613",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "deliver",
+                "event_key": "e01",
+                "target_run_id": null
+              },
+              {
+                "action": "deliver",
+                "event_key": "e02",
+                "target_run_id": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request_sha256": "cf117afb6ec68276516f113a2783e21cbf46ee40ce96093d9f7c5f36d0cac8d7",
+      "occurrences": [
+        {
+          "trial_id": "coord-v1-be0aa754-r0-cold-F",
+          "arm": "F",
+          "call_id": "e7f04457-7cc8-485d-a43f-353d2eff5c5c",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "clarify",
+                "event_key": "e08",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-E",
+          "arm": "E",
+          "call_id": "1d1bbf35-a2a2-4352-8211-057052422cf4",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "clarify",
+                "event_key": "e08",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-F",
+          "arm": "F",
+          "call_id": "ad8be4e5-0fd3-454a-8c8e-a2605fbac806",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "clarify",
+                "event_key": "e08",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-cold-F",
+          "arm": "F",
+          "call_id": "7b92d12f-2b70-4fc2-8d66-f59e9cfbe21b",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "clarify",
+                "event_key": "e08",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-cold-E",
+          "arm": "E",
+          "call_id": "3ab95754-6f40-411f-a0d8-9cb31d160920",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "clarify",
+                "event_key": "e08",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-F",
+          "arm": "F",
+          "call_id": "e871d489-6eef-452b-8e46-eab2266f0d0e",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "clarify",
+                "event_key": "e08",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-E",
+          "arm": "E",
+          "call_id": "b3b2010d-fb99-40f2-b2ec-dac731190523",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "clarify",
+                "event_key": "e08",
+                "target_run_id": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request_sha256": "3fb869225a139ffc7ec1e7e685d426383cf8bb468ee609f11d0ec8183f85b829",
+      "occurrences": [
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-E",
+          "arm": "E",
+          "call_id": "19f1abac-b223-49ae-af3f-73c1bf382992",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e04",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-cold-E",
+          "arm": "E",
+          "call_id": "7286006f-88cd-466d-8b6d-0b384eff94a5",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e04",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-E",
+          "arm": "E",
+          "call_id": "0da7c57c-d9af-45fe-af11-8bdac67524b4",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "clarify",
+                "event_key": "e04",
+                "target_run_id": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request_sha256": "4f31ca5536ad7bd3b5866e7368ecc046016968c935cb742fc4c9678f0b91c9c0",
+      "occurrences": [
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-E",
+          "arm": "E",
+          "call_id": "1ceb73e3-fbde-40e3-bcfa-c26d99b64256",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "deliver",
+                "event_key": "e02",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-cold-E",
+          "arm": "E",
+          "call_id": "b4cfb466-1ebc-458f-86a7-dcdf1a6abfcd",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "deliver",
+                "event_key": "e02",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-E",
+          "arm": "E",
+          "call_id": "36d7c04c-c469-470f-9a21-e208520987ec",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "deliver",
+                "event_key": "e02",
+                "target_run_id": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request_sha256": "046776eafec88c3cc2c91842b6e6a8ccf532155797459e9028876835da6c7035",
+      "occurrences": [
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-E",
+          "arm": "E",
+          "call_id": "36586c73-8c31-47ae-9c60-95b926fa5e63",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e05",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-cold-E",
+          "arm": "E",
+          "call_id": "ca3ccce2-f19f-4dac-9060-08900bfb6fc7",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e05",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-E",
+          "arm": "E",
+          "call_id": "813b5f3e-8e04-432a-893f-b7d9b6ced1f5",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e05",
+                "target_run_id": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request_sha256": "32307bbd60465f0f5ba7339eb0a55eb7a8853dec55d09bc3b1a7a5b49267b334",
+      "occurrences": [
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-E",
+          "arm": "E",
+          "call_id": "91e30cef-1caf-48e7-845b-c25e132a88dd",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e06",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-cold-E",
+          "arm": "E",
+          "call_id": "9e97cb42-2f68-4563-ba36-e4546c523d1a",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "clarify",
+                "event_key": "e06",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-E",
+          "arm": "E",
+          "call_id": "e3eb7fd3-bd85-483e-89f7-c5347a73f0f7",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e06",
+                "target_run_id": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request_sha256": "a6bedb3ac07c3e182f1aff4b4d4586d7b478d9f743544db0d3b1c4191e117c9a",
+      "occurrences": [
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-E",
+          "arm": "E",
+          "call_id": "c4af512d-a0ac-4d1d-9c97-ba86334c7c66",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e03",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-cold-E",
+          "arm": "E",
+          "call_id": "5138b510-8e36-4110-b00b-ae20c2856ff4",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e03",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-E",
+          "arm": "E",
+          "call_id": "240d06eb-33a0-4408-9e42-fd2755a443a7",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e03",
+                "target_run_id": null
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "request_sha256": "09779edc973313341611d043771ee73cc813c0deef2b3b1bca13fb8591a447b9",
+      "occurrences": [
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-E",
+          "arm": "E",
+          "call_id": "fadb14ae-c047-41fb-8772-e8cfd84b004a",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e07",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r0-warm-F",
+          "arm": "F",
+          "call_id": "89a32133-29f8-4d91-93db-a862c17148c7",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e07",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-cold-E",
+          "arm": "E",
+          "call_id": "cfa64285-fe9a-4618-b395-57d710b4f015",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e07",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-F",
+          "arm": "F",
+          "call_id": "204428a0-8943-499d-abb1-77b1da345f01",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e07",
+                "target_run_id": null
+              }
+            ]
+          }
+        },
+        {
+          "trial_id": "coord-v1-be0aa754-r1-warm-E",
+          "arm": "E",
+          "call_id": "43becde2-abbe-40a1-9714-84fb22f9b61a",
+          "actual_plan": {
+            "routes": [
+              {
+                "action": "ignore",
+                "event_key": "e07",
+                "target_run_id": null
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

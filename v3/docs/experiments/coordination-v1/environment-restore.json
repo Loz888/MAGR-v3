@@ -1,0 +1,14 @@
+{
+  "status": "RESTORED_FROM_LOCKFILE",
+  "temporary_storage_reset_observed": true,
+  "python": "3.12.14",
+  "dependency_command": "uv sync --frozen --python python3",
+  "old_database_volumes_preserved": true,
+  "source_fingerprint_verified": true,
+  "pre_call_finance": {
+    "calls": 633,
+    "cost_micros": 299317,
+    "unknown": 0
+  },
+  "generation_calls_during_restore": 0
+}

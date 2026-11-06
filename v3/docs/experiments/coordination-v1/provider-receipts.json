@@ -1,0 +1,1376 @@
+{
+  "calls": 57,
+  "unique_provider_response_ids": 57,
+  "receipts": [
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "10d20aec-b6c3-4114-b414-b1cf69d361d8",
+      "run_id": "a62e2d2d-429b-4a9f-8497-61d883a86fbc",
+      "request_sha256": "d02fbe30aeeee1e86052cd8e144a4472f74701b9b03901cc087d9a0043514205",
+      "response_sha256": "aca7363e84b435a3858af53d2773c39a0625859605ec1ff9c597326f5c968f43",
+      "provider_response_id_sha256": "8772f29247cec9c442883b0cd1868f10b7d3beaf692094e55a3959985b33458b",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 317,
+        "completion_tokens": 44,
+        "total_tokens": 361,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 189
+      },
+      "conservative_cost_micros": 148,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-E",
+      "arm": "E",
+      "role": "worker",
+      "call_id": "1927fec5-5b80-4248-9fa3-4921734dcfd0",
+      "run_id": "9c8b0dea-7682-48fe-9777-adafd047f76f",
+      "request_sha256": "3afc60950a3ce9f59637faa19677f4d7a8ca9c92911f3eb63f28e66b23172439",
+      "response_sha256": "c7d0617054d01453fd0216acb7522ebee8fc75961166823d365ff4b63138ab67",
+      "provider_response_id_sha256": "c13ad3357a1042e298b7fcccf1235fb983392fcbfbe1d5b8b631da2d5feb0268",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 267,
+        "completion_tokens": 68,
+        "total_tokens": 335,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 267
+      },
+      "conservative_cost_micros": 162,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "3693fb83-bc05-439e-9108-40407fdce0f2",
+      "run_id": "5fa23462-4f65-4966-953c-8e9d56bb7558",
+      "request_sha256": "7b30f05923f7cfdfe8ab46d2252f19a5dad82bc1c3a61ad8a6883b0221976941",
+      "response_sha256": "66b76dd14d62ef4b1b8188b207d44d9c59b49320c7dea43c8e8da0ab3357d9c8",
+      "provider_response_id_sha256": "ca60cd6d3c9cbad6b93dd7a261db108f51ed362392717389871ad183eab93498",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 316,
+        "completion_tokens": 44,
+        "total_tokens": 360,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 188
+      },
+      "conservative_cost_micros": 148,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "5d019890-b386-49ff-ba8f-799acf21b298",
+      "run_id": "383879f9-eb1e-4c26-9a93-36aa7f7bf7aa",
+      "request_sha256": "952564a796dff6614769bb9b97a8cb684102f96f251daeb8fb78232f74909ba9",
+      "response_sha256": "f9331c80fc204a229f133d84767b3628ebeecfe437b69782107a66d1e4f03963",
+      "provider_response_id_sha256": "46dd1f9d4a8fd2042a847a719b15649714a1f9d0d151d78f2bff684c6e2a4384",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 317,
+        "completion_tokens": 21,
+        "total_tokens": 338,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 189
+      },
+      "conservative_cost_micros": 121,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "964b5c12-9f08-4f49-9806-a3f85b566676",
+      "run_id": "0fd90ebf-0549-4f77-b698-d1790e1a8822",
+      "request_sha256": "23c6b84107db57c85095c79782377c61ca3671e8b4a4fbc05656ace69208e5ae",
+      "response_sha256": "d55dc7458eaa278c9215238318f7acd14a183a3b058536751758e76527372b80",
+      "provider_response_id_sha256": "d12247af7c16adc884e256bdd49f60d3e7df1a315186626b36dbacd3570c2de5",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 202,
+        "completion_tokens": 21,
+        "total_tokens": 223,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 202
+      },
+      "conservative_cost_micros": 86,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "a0f0f8fa-7083-4d35-a839-0f8c95390f0c",
+      "run_id": "5a6e90d7-34d7-4950-a86d-a44c7544f9ac",
+      "request_sha256": "c6de2c0ecae69c23d04ceb8d8aa0e0b50cba99e14e5255caf168745c96353fca",
+      "response_sha256": "cbd069ee6cfec22cb83c63503b14f7528667af7a7d252853f1d704e1c7604626",
+      "provider_response_id_sha256": "7d3e822de5bc6b3aaba467a0a76d66fefaa328757339eccf6a8b0cc2321da580",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 312,
+        "completion_tokens": 21,
+        "total_tokens": 333,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 184
+      },
+      "conservative_cost_micros": 119,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "b0dfa7a6-d49f-4727-8a0a-92efc9fd4c36",
+      "run_id": "58aea509-76ba-4249-8ea5-83431be3a9ab",
+      "request_sha256": "0d10589aa01f5ee59c981251ec68d4028f457725dbc95b9a407cb1aa009ac5b1",
+      "response_sha256": "47c6a099a20de701a2d84d850c7ec639a9ba97ff8660a3413185b08ffbfebf28",
+      "provider_response_id_sha256": "64c4a256c657c51488327c142ba14865507cd3fb537b6b16fe289d7f5ee5ced0",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 322,
+        "completion_tokens": 44,
+        "total_tokens": 366,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 194
+      },
+      "conservative_cost_micros": 150,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "d707766a-f5d5-482a-bd1f-20e423371982",
+      "run_id": "de9915b2-92e1-449f-adf5-ab476b9a1c78",
+      "request_sha256": "3ea5df4fe9d79c11bc4ea5b18e608d029c6e7c315c41b615ae25b09cb6f9eb0e",
+      "response_sha256": "ecd4ea74d564b8ed98b853c586f1543b21ab404fa933ea92a5a3b371e870682b",
+      "provider_response_id_sha256": "6226a8e6cbf371c515ba9e6bf74c0a4a48f6b49ffea6ec1bd744ebfc9901c65a",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 316,
+        "completion_tokens": 21,
+        "total_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 188
+      },
+      "conservative_cost_micros": 120,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "dc9c5e85-b462-4eb2-b8b6-83f9502a1c86",
+      "run_id": "60a53693-6d2b-4cf9-bb06-912559f15d06",
+      "request_sha256": "d9f8174af0c45bc5ac6b33126331c665b25a74c25ff259930527a8b61d4445a6",
+      "response_sha256": "f9365585f8814ab2dc3ae0f3ac3220a45cea8152307fb001cb7eeccc82c7f91d",
+      "provider_response_id_sha256": "c013f49e749c9361c25f20228791fa9b41ae8d10a7b008acceb33082cee0ad6c",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 310,
+        "completion_tokens": 38,
+        "total_tokens": 348,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 182
+      },
+      "conservative_cost_micros": 139,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "1e86b864-2fdc-4ecf-8542-6c5e8a7456d5",
+      "run_id": "300cf000-8dae-47bb-8c07-81c29c18a305",
+      "request_sha256": "0443940da927e3c73528a7a0a85323c8a421fc56c6c46e3d0079a87dd9b991ca",
+      "response_sha256": "bf20457ce127d253649ee57596d5f6d4718c1656f70069c437fb23911cfb73a7",
+      "provider_response_id_sha256": "3a4ed1f3b4f21b76ec9f19f02e3940cc07dbec6238d68d689131711a29ff251e",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 238,
+        "completion_tokens": 37,
+        "total_tokens": 275,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 238
+      },
+      "conservative_cost_micros": 116,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-F",
+      "arm": "F",
+      "role": "worker",
+      "call_id": "b214d13a-460a-422b-8373-9a25718f1b7e",
+      "run_id": "aca5689f-e955-49c4-9f28-5e0c93f4a850",
+      "request_sha256": "4f1b22a09574ca6713b71982eee84a1eec8a6041f78fb5e3da851692b71ec2c5",
+      "response_sha256": "dac64e293f563fa1ce60cd9db224278b5e718b4b8ed83cab71b05cffff01eafe",
+      "provider_response_id_sha256": "857a7ddee57f0abba02c7733e07a9f6e7726cf9e591d2081ce83dcca051441ce",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 268,
+        "completion_tokens": 69,
+        "total_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "conservative_cost_micros": 164,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "e7f04457-7cc8-485d-a43f-353d2eff5c5c",
+      "run_id": "cdf21148-688a-4999-811e-a4f8eda13551",
+      "request_sha256": "cf117afb6ec68276516f113a2783e21cbf46ee40ce96093d9f7c5f36d0cac8d7",
+      "response_sha256": "5a2862475259369984347ae91bb36034ffb2d11d4ac08a10aa428cd7046942e7",
+      "provider_response_id_sha256": "b3252ba406135048252e8b7cba995121550325bafa7a8c5170fdde83a40b3573",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 190,
+        "completion_tokens": 22,
+        "total_tokens": 212,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 190
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-F",
+      "arm": "F",
+      "role": "worker",
+      "call_id": "f6da1e02-83a5-4f7b-b852-4a1f60e7c8ac",
+      "run_id": "d05d4c0a-1a54-4a6e-9185-9d39b645181f",
+      "request_sha256": "011acb27ad42a3d82c95d99b2a110028efcc3c886579cb50211ccdc6e9cafac0",
+      "response_sha256": "ae29d237394372d1a99fc1fd52ad6d54934e3df06eaf0c5d13c64478498bda47",
+      "provider_response_id_sha256": "9aca246339aed2d5381cc69c267a4e7688ed587c86dd46e08a79a0552bb52542",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 268,
+        "completion_tokens": 69,
+        "total_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "conservative_cost_micros": 164,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "f9f255ee-b6bc-485a-b125-c934f12cc66c",
+      "run_id": "5a2b8ec0-9424-46dc-a1fb-967ab57244d9",
+      "request_sha256": "d73e9329dbf4fd3e50357f56b91f5193ac95c27a24c0a6fe7f8c012eed1da9a7",
+      "response_sha256": "3b423a3f114782e881b0c858d049ad3d64ada62bb4ba24efd53530a23341951b",
+      "provider_response_id_sha256": "8b61a95c49342029f4ca4d5857e038e2abed0afff76fc72149aa7d8b7b62edae",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 440,
+        "completion_tokens": 21,
+        "total_tokens": 461,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 312
+      },
+      "conservative_cost_micros": 158,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-D",
+      "arm": "D",
+      "role": "worker",
+      "call_id": "b3fb7bd0-149c-4dc1-b60a-e197e25e3134",
+      "run_id": "d99ef80b-a570-4bb3-89fc-f2d320307344",
+      "request_sha256": "9cb984a5b90fdaa181c72f574cf57288db9b7e152440151deb09e73b16684595",
+      "response_sha256": "58498e44031dd63437eabd8f6b052746906020249ef6c17cf32e2147dee17665",
+      "provider_response_id_sha256": "ff1b5089acd0dec60cf5bfa02a4b9f6206d6f95d98e8103e7d45843d3cd88769",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 269,
+        "completion_tokens": 70,
+        "total_tokens": 339,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 269
+      },
+      "conservative_cost_micros": 165,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-D",
+      "arm": "D",
+      "role": "worker",
+      "call_id": "c26ae202-d94d-49b1-bcad-b106965e9d79",
+      "run_id": "6994d060-290b-40e4-9809-05828838ab57",
+      "request_sha256": "0b55e8c25bbb00a9469af00fc77393f29049d5b76ea0b169ae41e0edf1596770",
+      "response_sha256": "d16806496cbaa26674e030516dfcc724d9a877edef2ab341954cfecb5fa50aa8",
+      "provider_response_id_sha256": "81d3c9f21be8952b378e9dd34b508cccc242e1a380969e3fcec270666b8ff4c7",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 266,
+        "completion_tokens": 67,
+        "total_tokens": 333,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 266
+      },
+      "conservative_cost_micros": 161,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "19f1abac-b223-49ae-af3f-73c1bf382992",
+      "run_id": "94d1ee95-c989-4328-bcd0-436a4fe325f6",
+      "request_sha256": "3fb869225a139ffc7ec1e7e685d426383cf8bb468ee609f11d0ec8183f85b829",
+      "response_sha256": "e026c0772a4d23b0842506bd26aa19b7c6f8056c743ee443af1535d1edd1b557",
+      "provider_response_id_sha256": "4799274a4b74054307d8f455ab26c3d6c4624c2e5d399491385fec2b8cfc6d5e",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 196,
+        "completion_tokens": 21,
+        "total_tokens": 217,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 196
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "1ceb73e3-fbde-40e3-bcfa-c26d99b64256",
+      "run_id": "5501cbac-a97d-4300-929b-7dcd4eec2c9d",
+      "request_sha256": "4f31ca5536ad7bd3b5866e7368ecc046016968c935cb742fc4c9678f0b91c9c0",
+      "response_sha256": "a8aeba383649e0721a47c5ae0b9acd6bbdd07ab5132b8b7a3aff0d2b3ffb6d53",
+      "provider_response_id_sha256": "5a09bfd76ea772f994992739afae428c429f1ddf6ab18ace15b726740dc11d3c",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 202,
+        "completion_tokens": 22,
+        "total_tokens": 224,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 202
+      },
+      "conservative_cost_micros": 87,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "1d1bbf35-a2a2-4352-8211-057052422cf4",
+      "run_id": "a5c9316d-056d-4e60-8bbe-7feedabe1e49",
+      "request_sha256": "cf117afb6ec68276516f113a2783e21cbf46ee40ce96093d9f7c5f36d0cac8d7",
+      "response_sha256": "2cc15d5a4d3f4b17097d6b3fd536f4e249a8b1d166adbbbc3e05fa84a76089d1",
+      "provider_response_id_sha256": "501c462221f070099c7ee86ea02a09f9b0dd3cb333800f827e59c5d9fe41ff1c",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 190,
+        "completion_tokens": 22,
+        "total_tokens": 212,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 190
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "36586c73-8c31-47ae-9c60-95b926fa5e63",
+      "run_id": "be662b88-e753-4946-be86-2a3fd7cb4a66",
+      "request_sha256": "046776eafec88c3cc2c91842b6e6a8ccf532155797459e9028876835da6c7035",
+      "response_sha256": "9fbd5e383c4a7e7a893ad986b973273bc62fc4b03880db9694404144c9d0ef8e",
+      "provider_response_id_sha256": "5153f0fba2c509838fd23f56fdbfe67124828b3a6277c20c274bbeffe705171d",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 197,
+        "completion_tokens": 21,
+        "total_tokens": 218,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 197
+      },
+      "conservative_cost_micros": 85,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "5c0398a4-1f5d-4e7b-88c8-6aabbe56a9de",
+      "run_id": "a5f5c6be-069d-4e9c-874e-138933811152",
+      "request_sha256": "23c6b84107db57c85095c79782377c61ca3671e8b4a4fbc05656ace69208e5ae",
+      "response_sha256": "5a037b37a5f1b1b9842888d115d186ff80abe3f6e2206189c8746a061e587da9",
+      "provider_response_id_sha256": "7257161576bd33c94e3c35268f1d5d4e75be302bea6c0bb42bad62c0ff7b36e3",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 202,
+        "completion_tokens": 22,
+        "total_tokens": 224,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 202
+      },
+      "conservative_cost_micros": 87,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "91e30cef-1caf-48e7-845b-c25e132a88dd",
+      "run_id": "625097f6-25c5-43ee-ada6-378b16fede02",
+      "request_sha256": "32307bbd60465f0f5ba7339eb0a55eb7a8853dec55d09bc3b1a7a5b49267b334",
+      "response_sha256": "7f1c288313398354153ac8317615dcd9c9ce74853e652acca057153121bed83e",
+      "provider_response_id_sha256": "8ad7780d7ac68028ce64b0de25d2ec422047ec5f3145165fb572f8578dccc50d",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 197,
+        "completion_tokens": 21,
+        "total_tokens": 218,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 197
+      },
+      "conservative_cost_micros": 85,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "c4af512d-a0ac-4d1d-9c97-ba86334c7c66",
+      "run_id": "3c2e15f9-dae6-4e3f-a003-619310229b2b",
+      "request_sha256": "a6bedb3ac07c3e182f1aff4b4d4586d7b478d9f743544db0d3b1c4191e117c9a",
+      "response_sha256": "eb323c8b7a4605074c97fca7fe016ef243ba7933e570c30ac18a2b2f4e774ac0",
+      "provider_response_id_sha256": "a745ea1755500145cd1aa1e984b1abe5e42a9bbae553a671beb111ce53f4276a",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 196,
+        "completion_tokens": 21,
+        "total_tokens": 217,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 196
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "fadb14ae-c047-41fb-8772-e8cfd84b004a",
+      "run_id": "b51b1e36-379a-4f1f-8463-a4741b83f57d",
+      "request_sha256": "09779edc973313341611d043771ee73cc813c0deef2b3b1bca13fb8591a447b9",
+      "response_sha256": "7cf6abc88ec9570952d86c0b2142b2734cca3136e2b6b51e1aff7266246ab40d",
+      "provider_response_id_sha256": "60466d83d40439ae01338e03e504a03c16ccc1f0bc27481a2822b756ca0f839b",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 192,
+        "completion_tokens": 21,
+        "total_tokens": 213,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 192
+      },
+      "conservative_cost_micros": 83,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-D",
+      "arm": "D",
+      "role": "worker",
+      "call_id": "1de20921-06a1-44c2-bf74-ac12fa5f5b47",
+      "run_id": "10e7e3e6-e545-4948-b63f-053b811bf7b2",
+      "request_sha256": "15da3ca17ea69057f735707ea22f5cd6dcfd1b39220d29cff5921c372878834c",
+      "response_sha256": "6e51704aace07f9a891c2dd96e47bd4b4c04d3bd6102d1339d14e47a73771f2f",
+      "provider_response_id_sha256": "55b63462b09aec85572cbe167b3b5facfa8f2186423af3a03a6c41ab62594ee7",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 266,
+        "completion_tokens": 67,
+        "total_tokens": 333,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 266
+      },
+      "conservative_cost_micros": 161,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-D",
+      "arm": "D",
+      "role": "worker",
+      "call_id": "f6973a72-1be4-48ec-877b-3aabb0807e29",
+      "run_id": "d28e1e10-4979-4bdf-a208-103f3d4e0280",
+      "request_sha256": "ca46dd83abfe02e07553cd6ba9e0524d79f5e038cc08093c70b81482cca628df",
+      "response_sha256": "3fc2a5ca37b8148fd050174d27d1f4e170d3931a139cb7e2534371d3b9665ea8",
+      "provider_response_id_sha256": "f42976d78cf0d6199cb4a4ff6b567d490142adaa6a33d90bee0a426f5e5b06cb",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 266,
+        "completion_tokens": 65,
+        "total_tokens": 331,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 266
+      },
+      "conservative_cost_micros": 158,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "89a32133-29f8-4d91-93db-a862c17148c7",
+      "run_id": "971c2020-f336-4e64-a89e-31ca2ab3f98d",
+      "request_sha256": "09779edc973313341611d043771ee73cc813c0deef2b3b1bca13fb8591a447b9",
+      "response_sha256": "4773849df0805427f631732eeaeee488e5bf60e034d82a97efb2832397fafc43",
+      "provider_response_id_sha256": "71814ac604d62cd28e6c31a817a28b151af8a4edc057b6e9f760be3f747c3dd8",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 192,
+        "completion_tokens": 21,
+        "total_tokens": 213,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 192
+      },
+      "conservative_cost_micros": 83,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "90245932-6dc9-411f-95b2-895ed38922fc",
+      "run_id": "c7c6d19b-8ed9-4ad1-9f2b-b6d94d8aafa4",
+      "request_sha256": "0443940da927e3c73528a7a0a85323c8a421fc56c6c46e3d0079a87dd9b991ca",
+      "response_sha256": "0e978d9c2735da5c4736c66b3f9234d6e8db2e7c1641d0ffa0e3e1d63060ecc2",
+      "provider_response_id_sha256": "b26a406c2fc3bbb4c8af8b86730a0b304841ba8060aea53b7d8b6ec2f0b5f58b",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 238,
+        "completion_tokens": 39,
+        "total_tokens": 277,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 238
+      },
+      "conservative_cost_micros": 119,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "ad8be4e5-0fd3-454a-8c8e-a2605fbac806",
+      "run_id": "6bc0b3e1-cd8e-45b5-9797-cc17337208eb",
+      "request_sha256": "cf117afb6ec68276516f113a2783e21cbf46ee40ce96093d9f7c5f36d0cac8d7",
+      "response_sha256": "8bf713feeab6f4b0417f961067d2711dd684b6d2f666ef033fcb7926aa1d7b6c",
+      "provider_response_id_sha256": "eedb5aa8981024195399cd06b79db5a84d05f42d16bf337187165ba03c21dc83",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 190,
+        "completion_tokens": 22,
+        "total_tokens": 212,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 190
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-F",
+      "arm": "F",
+      "role": "worker",
+      "call_id": "3455bde6-88a6-44ee-9b26-fa4dc9ec0f9b",
+      "run_id": "ac02715a-7fdf-40ea-97dc-36d3a2f7793c",
+      "request_sha256": "766aec3ba0f92fd4ad6b6531cc74b04f37a1d7c667da68c1557eb1921aca3c2e",
+      "response_sha256": "146aa3a82d867892d9d71313c78b326315e63f512a91dc9978c81b7af7d3a886",
+      "provider_response_id_sha256": "40173f5ffa24ffe329c06118f78872958e979b41b56a15ef7a337239a9962549",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 262,
+        "completion_tokens": 63,
+        "total_tokens": 325,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 262
+      },
+      "conservative_cost_micros": 155,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "68727c2a-1603-418c-a1c2-3e8c38d5cbdb",
+      "run_id": "6a6b642a-2d05-4232-9f33-22d416d64a6d",
+      "request_sha256": "0443940da927e3c73528a7a0a85323c8a421fc56c6c46e3d0079a87dd9b991ca",
+      "response_sha256": "5753f6e44057140e4de6a5dbbe85197106ea7dea338e8bef4c5843c5f343e5f4",
+      "provider_response_id_sha256": "3376c8c208639a6d27d6fb613f7b8817224e413a9ce0834e5efab45bb7a04bb0",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 238,
+        "completion_tokens": 37,
+        "total_tokens": 275,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 238
+      },
+      "conservative_cost_micros": 116,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-F",
+      "arm": "F",
+      "role": "worker",
+      "call_id": "774f2f6f-2944-4764-84bc-277da9407fef",
+      "run_id": "91b58b20-d9b9-4f0c-82c6-f9aab61f9fef",
+      "request_sha256": "48edaaff559f19ad5d2cb342b2db5b54cae60255720dd9f00eb238065482a03d",
+      "response_sha256": "77d956abfa69b2926e0660bea76ec8e3230edcf0bd6e5c21271fbc4046b7c1b2",
+      "provider_response_id_sha256": "7a0a329e6f25c974bb0b77ff1a33a4befe56a0a31dca399ed4213392f978c4fa",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 270,
+        "completion_tokens": 71,
+        "total_tokens": 341,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 270
+      },
+      "conservative_cost_micros": 167,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "7b92d12f-2b70-4fc2-8d66-f59e9cfbe21b",
+      "run_id": "811a6a1e-c373-4a5d-8d20-3be9c4c9e348",
+      "request_sha256": "cf117afb6ec68276516f113a2783e21cbf46ee40ce96093d9f7c5f36d0cac8d7",
+      "response_sha256": "8d7ec681aa723943fe236bef4c17e83851170104c0ec0929677b4dacf0b384b6",
+      "provider_response_id_sha256": "94f26b42ba0739b19036da598381534a128c508c1264e794a237bb4b3f534828",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 190,
+        "completion_tokens": 22,
+        "total_tokens": 212,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 190
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "903a2bc7-37de-4af4-baa5-863fe2ce011f",
+      "run_id": "55b06e73-771b-40fe-97a0-88662a017de1",
+      "request_sha256": "40c2b22306b6eaec721fc053dc5fa1f659ab3c5967c8ee1500c0c11773f9ff06",
+      "response_sha256": "c68ed7fbae64abbcc1b79d1af3f9452c08abe06044c34588448115a2c0e5e93c",
+      "provider_response_id_sha256": "e744a074c105111f99c53e46b467df4dd5eccced8c13fef8849b7c5602d55ac3",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 434,
+        "completion_tokens": 21,
+        "total_tokens": 455,
+        "prompt_tokens_details": {
+          "cached_tokens": 128
+        },
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 306
+      },
+      "conservative_cost_micros": 156,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-D",
+      "arm": "D",
+      "role": "worker",
+      "call_id": "9ff6c562-997c-4ea1-8e14-3802ad52196a",
+      "run_id": "50fafe8f-7210-42db-8f9f-dea034486c47",
+      "request_sha256": "b72c05d74487a76e9c73bec44a58a226ebe299353eef707ba6f3395fbd9c069e",
+      "response_sha256": "c3f4ea4770e8e27b92c8cf2b26f6faee7f959f0f89c49f515f68005ed1137c89",
+      "provider_response_id_sha256": "8882be18469f44b639459e0eaa96ce3f237646e6372c701d2dc987f0ab04ee3b",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 270,
+        "completion_tokens": 71,
+        "total_tokens": 341,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 270
+      },
+      "conservative_cost_micros": 167,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-D",
+      "arm": "D",
+      "role": "worker",
+      "call_id": "a95e1f22-2587-4b94-89af-e66a76ea65a5",
+      "run_id": "67b31f9e-6cab-4a94-9ba8-fb98171f4720",
+      "request_sha256": "257277b5075f5809abf218f3b5fbf98b86b2deb7b466c47365b0d21b12b6df45",
+      "response_sha256": "e1922a2af6d849c90a7d1af3741f003556bede8f24cdd3c83d953b7d488db3a2",
+      "provider_response_id_sha256": "007c2ebf65c1e3f6432f48faf306ff6271fb8eb17c14eef0c095bd0601437c7d",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 271,
+        "completion_tokens": 72,
+        "total_tokens": 343,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 271
+      },
+      "conservative_cost_micros": 168,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "3ab95754-6f40-411f-a0d8-9cb31d160920",
+      "run_id": "aa0d40ae-e158-4808-80ac-0b97253d18da",
+      "request_sha256": "cf117afb6ec68276516f113a2783e21cbf46ee40ce96093d9f7c5f36d0cac8d7",
+      "response_sha256": "87c8798198d14235f361865308165cbf638783693052dddd635390484808fd40",
+      "provider_response_id_sha256": "61951aa16aae49dd41be6d836305a710cf8476abe86eb42a7cc2c4f990f818c0",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 190,
+        "completion_tokens": 22,
+        "total_tokens": 212,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 190
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "5138b510-8e36-4110-b00b-ae20c2856ff4",
+      "run_id": "5a1240a8-6881-4fda-8cbd-88d3b5ac8e72",
+      "request_sha256": "a6bedb3ac07c3e182f1aff4b4d4586d7b478d9f743544db0d3b1c4191e117c9a",
+      "response_sha256": "0854fd6fb714b1eb9356910d284a871fe0a350df0bfdfb0bbe3271b7180ead15",
+      "provider_response_id_sha256": "f11409dea7c9cba4e64324a011490281332c8ba1ce46947b68b8d374bd581fce",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 196,
+        "completion_tokens": 21,
+        "total_tokens": 217,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 196
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "62f21df9-7589-4d16-9f85-1ba2f9d7b2df",
+      "run_id": "62fb704a-2201-4faa-a773-ccf9b3bf12ee",
+      "request_sha256": "23c6b84107db57c85095c79782377c61ca3671e8b4a4fbc05656ace69208e5ae",
+      "response_sha256": "8b260b4f3b735766117501375e1e798e3e0956f657e36ed3bc821e938edcb97e",
+      "provider_response_id_sha256": "ea6c6abffad4e99d3768bc61753a89e8e239c04530b34abbffbe51c45df9be16",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 202,
+        "completion_tokens": 22,
+        "total_tokens": 224,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 202
+      },
+      "conservative_cost_micros": 87,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "7286006f-88cd-466d-8b6d-0b384eff94a5",
+      "run_id": "3373be3e-2af7-4e30-a069-d2de651c26a0",
+      "request_sha256": "3fb869225a139ffc7ec1e7e685d426383cf8bb468ee609f11d0ec8183f85b829",
+      "response_sha256": "f61098b2c9263b45096f586bc426a45885256b22576b40b3e43896ccc469e02c",
+      "provider_response_id_sha256": "1de7bcbfa21f2854c7920ae51f8a27a43be41bd4520785a56ef0a0536eacf65b",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 196,
+        "completion_tokens": 21,
+        "total_tokens": 217,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 196
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "9e97cb42-2f68-4563-ba36-e4546c523d1a",
+      "run_id": "e137999b-e838-4d74-bd48-8de1489104c7",
+      "request_sha256": "32307bbd60465f0f5ba7339eb0a55eb7a8853dec55d09bc3b1a7a5b49267b334",
+      "response_sha256": "a71be7dc1fbb013b6ea46a7a541b98a34abfce40809c6c2c37587681b3e0108c",
+      "provider_response_id_sha256": "06630286649a9e9db7e0a33820aaf4da7d51210cedacff4c96216f93a7fdd34d",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 197,
+        "completion_tokens": 22,
+        "total_tokens": 219,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 197
+      },
+      "conservative_cost_micros": 86,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "b4cfb466-1ebc-458f-86a7-dcdf1a6abfcd",
+      "run_id": "4eeb1143-0de3-4f59-b691-f01175560796",
+      "request_sha256": "4f31ca5536ad7bd3b5866e7368ecc046016968c935cb742fc4c9678f0b91c9c0",
+      "response_sha256": "0bb3ae6881d08765dc61f8c54b5ddeed9d35dab6793248c6caffa6aa44b13b9e",
+      "provider_response_id_sha256": "28baa723da15d61bfae4a2cf04259b195d65c8c56d6f23572859aaafc1ecf35d",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 202,
+        "completion_tokens": 22,
+        "total_tokens": 224,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 202
+      },
+      "conservative_cost_micros": 87,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "ca3ccce2-f19f-4dac-9060-08900bfb6fc7",
+      "run_id": "08e87c7f-b579-4500-80b9-17ff59ab7989",
+      "request_sha256": "046776eafec88c3cc2c91842b6e6a8ccf532155797459e9028876835da6c7035",
+      "response_sha256": "de2910d02e126deff1d3501648f89799fbcaf35652ff0ccf52a32e14ca5a135f",
+      "provider_response_id_sha256": "916a82ab91a83834a5ebf7004e1625bb231c1c63fab250334378d99c73a82132",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 197,
+        "completion_tokens": 21,
+        "total_tokens": 218,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 197
+      },
+      "conservative_cost_micros": 85,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "cfa64285-fe9a-4618-b395-57d710b4f015",
+      "run_id": "2056a1a9-8fdd-42ab-a10b-acfe264a0146",
+      "request_sha256": "09779edc973313341611d043771ee73cc813c0deef2b3b1bca13fb8591a447b9",
+      "response_sha256": "8d971a60ca923ac85d96e75e72335be6475bd9a4dd169f4e326fba174c8b4303",
+      "provider_response_id_sha256": "b8d44eb85c27691381f542a02b64ad65a3f2b5082978da1135ddf76b88312161",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 192,
+        "completion_tokens": 21,
+        "total_tokens": 213,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 192
+      },
+      "conservative_cost_micros": 83,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-D",
+      "arm": "D",
+      "role": "worker",
+      "call_id": "4960bdba-6baf-47f9-a0e6-9d87a376c80a",
+      "run_id": "4ab4314c-1c5f-4d16-87d8-c99eca22c8ca",
+      "request_sha256": "9cb3496d4e1681600fcc7d38f7c8866cf3b6ed43f7359ef57dd386b80d15cbf1",
+      "response_sha256": "6c5e040c64f4731c32c6818024329c35b08b1f056a5219df707110da358d36b3",
+      "provider_response_id_sha256": "fc22b06305af51ffe132d4707c892f67ff0eab879d820f19184f41dd16f9a11b",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 267,
+        "completion_tokens": 68,
+        "total_tokens": 335,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 267
+      },
+      "conservative_cost_micros": 162,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-D",
+      "arm": "D",
+      "role": "worker",
+      "call_id": "c4093540-bb44-4406-8079-acaa9ff52f2b",
+      "run_id": "56b3b261-5085-46f3-8f5b-e285c5f0997e",
+      "request_sha256": "bb445fb04189b5af64713f1a5fb2ba4e21fdf4d30af6064c4bac8d79d7172c4f",
+      "response_sha256": "e373deca3e3f6cc700c3d8e8b4c6b6cbd807064060bbf7b8fd49a039ae8390c3",
+      "provider_response_id_sha256": "997ebada3b058a83a89a0ac91aee8dfeab7e29d81bbf884521b4f7a2556794d1",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 268,
+        "completion_tokens": 69,
+        "total_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "conservative_cost_micros": 164,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "204428a0-8943-499d-abb1-77b1da345f01",
+      "run_id": "32a1cc2b-9253-4239-8d1b-8664085afcee",
+      "request_sha256": "09779edc973313341611d043771ee73cc813c0deef2b3b1bca13fb8591a447b9",
+      "response_sha256": "841d19b9634549c4c871b879b2826cae3f13b3cd278481de872efd380b126512",
+      "provider_response_id_sha256": "adc7961af7512e1ffa28f07e5104991d6ffcd5262539e154b85197496d18fb7d",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 192,
+        "completion_tokens": 21,
+        "total_tokens": 213,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 192
+      },
+      "conservative_cost_micros": 83,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "6201f6da-585b-43f1-987e-1fc9adac7613",
+      "run_id": "2cdec83f-0aba-457b-b9cd-9d6d9e226a69",
+      "request_sha256": "0443940da927e3c73528a7a0a85323c8a421fc56c6c46e3d0079a87dd9b991ca",
+      "response_sha256": "0faf79e99f5feb3cfae31b4842e82e7660c278f2ee9ba85d3168175355e4972a",
+      "provider_response_id_sha256": "86aae4050a729bf61fec171bd6a73decb650befe93fde7c467044c9f41f45f12",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 238,
+        "completion_tokens": 39,
+        "total_tokens": 277,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 238
+      },
+      "conservative_cost_micros": 119,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-F",
+      "arm": "F",
+      "role": "router",
+      "call_id": "e871d489-6eef-452b-8e46-eab2266f0d0e",
+      "run_id": "e4075682-28fa-4503-9b79-63dc717bb702",
+      "request_sha256": "cf117afb6ec68276516f113a2783e21cbf46ee40ce96093d9f7c5f36d0cac8d7",
+      "response_sha256": "05c92a5c896765b9d8905195c84889a458c1c209e78732c6c1b72a9d0f6c98e3",
+      "provider_response_id_sha256": "5c7ac1977aca9075e7c0bd14a35ab1939340294d8442a47390a12f40c6b9f1d0",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 190,
+        "completion_tokens": 22,
+        "total_tokens": 212,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 190
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "0da7c57c-d9af-45fe-af11-8bdac67524b4",
+      "run_id": "590f2744-4b9c-468e-8bf5-42c9b156799b",
+      "request_sha256": "3fb869225a139ffc7ec1e7e685d426383cf8bb468ee609f11d0ec8183f85b829",
+      "response_sha256": "9b18c1a13488696c9f046fec9a11712ef170f62b51e1bd960f38fedfa745ecb0",
+      "provider_response_id_sha256": "7b648751b3c37449617d2b47eb9c61b75fb9230c76c09673057ebbca5ee8573d",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 196,
+        "completion_tokens": 22,
+        "total_tokens": 218,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 196
+      },
+      "conservative_cost_micros": 86,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "240d06eb-33a0-4408-9e42-fd2755a443a7",
+      "run_id": "f8ec25ec-54b7-4e45-b3bd-b85d1c3538fd",
+      "request_sha256": "a6bedb3ac07c3e182f1aff4b4d4586d7b478d9f743544db0d3b1c4191e117c9a",
+      "response_sha256": "9844c9c11d8c52fbcbd8a25fbc218974858366cc3f922c2a3300b47d849d1d33",
+      "provider_response_id_sha256": "500377540e42f0c6246f2171b180b1aedc237e3decf3b4cad070b26d0fb4baec",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 196,
+        "completion_tokens": 21,
+        "total_tokens": 217,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 196
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "36d7c04c-c469-470f-9a21-e208520987ec",
+      "run_id": "6b82e972-c08f-40cc-b734-2615d8a5c3ab",
+      "request_sha256": "4f31ca5536ad7bd3b5866e7368ecc046016968c935cb742fc4c9678f0b91c9c0",
+      "response_sha256": "482306650e9924d8f02bb82f70982264df75e72a6f3cacc9e9d1b8155a1b2920",
+      "provider_response_id_sha256": "627818dd4ee66a1e539ce47cccd7e481bd673147c4a7b31579e0db8ac1fd4b11",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 202,
+        "completion_tokens": 22,
+        "total_tokens": 224,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 202
+      },
+      "conservative_cost_micros": 87,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "43becde2-abbe-40a1-9714-84fb22f9b61a",
+      "run_id": "44760563-7f7c-4a2e-acbc-2103f7e12d78",
+      "request_sha256": "09779edc973313341611d043771ee73cc813c0deef2b3b1bca13fb8591a447b9",
+      "response_sha256": "002e088935d98946b1ca6889f86508c3d8e44b12dd935206e42dbd4c01deafbf",
+      "provider_response_id_sha256": "65f480115371752381cc631e68b2ed5f7706baa765546389360562ec0185326d",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 192,
+        "completion_tokens": 21,
+        "total_tokens": 213,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 192
+      },
+      "conservative_cost_micros": 83,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "813b5f3e-8e04-432a-893f-b7d9b6ced1f5",
+      "run_id": "5fd972b4-57fb-4594-aabd-00fcc3356562",
+      "request_sha256": "046776eafec88c3cc2c91842b6e6a8ccf532155797459e9028876835da6c7035",
+      "response_sha256": "6a2eeabdae6cc5dd5938cfeb63da93516464322a5e8b5698919bef850924eb27",
+      "provider_response_id_sha256": "3c383135be01f85a646da4099fc1e6d3cbf5c7e22709580e690364501cd8f791",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 197,
+        "completion_tokens": 21,
+        "total_tokens": 218,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 197
+      },
+      "conservative_cost_micros": 85,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "b3b2010d-fb99-40f2-b2ec-dac731190523",
+      "run_id": "ae649ad4-83ca-4c9e-ad95-3039abbadf6b",
+      "request_sha256": "cf117afb6ec68276516f113a2783e21cbf46ee40ce96093d9f7c5f36d0cac8d7",
+      "response_sha256": "148d3a38b5d7c4aa9593165d2c4b354633bf21350d8c3f8a049d18f2cdbefb9a",
+      "provider_response_id_sha256": "0a3902aa496dd785fcc14389407f2cd30649d0fae5b2ab0cd6ca3ef3534b3f5c",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 190,
+        "completion_tokens": 22,
+        "total_tokens": 212,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 190
+      },
+      "conservative_cost_micros": 84,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "be7c6188-ae42-467c-9103-8efc2573ff8c",
+      "run_id": "bf910976-2673-4f38-b079-a135e898d04e",
+      "request_sha256": "23c6b84107db57c85095c79782377c61ca3671e8b4a4fbc05656ace69208e5ae",
+      "response_sha256": "1193289e8038a0a5cd4ee08b71c246ff2a8b3c4425647b6b52998f2bcc24aeaf",
+      "provider_response_id_sha256": "b17f594c69996b73470054d0f1b6972c913f84d57988e335242bc8581b972756",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 202,
+        "completion_tokens": 22,
+        "total_tokens": 224,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 202
+      },
+      "conservative_cost_micros": 87,
+      "one_response_and_one_recorded_input": true
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-E",
+      "arm": "E",
+      "role": "router",
+      "call_id": "e3eb7fd3-bd85-483e-89f7-c5347a73f0f7",
+      "run_id": "57ed037e-59c4-4df9-95c2-71fc701bc529",
+      "request_sha256": "32307bbd60465f0f5ba7339eb0a55eb7a8853dec55d09bc3b1a7a5b49267b334",
+      "response_sha256": "2c5d0a756c0ae859ea07630446891e4269f9b1f50d6614d92e6a6da96f02526b",
+      "provider_response_id_sha256": "7528a359817301af5fbe82932ed880a589b9a9f5e5ea97a446705521dcf5b91e",
+      "http_status": 200,
+      "model": "deepseek-flash",
+      "usage": {
+        "prompt_tokens": 197,
+        "completion_tokens": 21,
+        "total_tokens": 218,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 197
+      },
+      "conservative_cost_micros": 85,
+      "one_response_and_one_recorded_input": true
+    }
+  ],
+  "raw_provider_bodies_private": true,
+  "no_oracle_operator_or_secret_payloads_sent": true
+}

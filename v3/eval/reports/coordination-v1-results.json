@@ -1,0 +1,1382 @@
+{
+  "schema": "coordination-comparison-report-v1",
+  "execution_gate": "PASS",
+  "safety_gate": "PASS",
+  "completed_trials": 12,
+  "total_trials": 12,
+  "arms": {
+    "D": {
+      "trials": 4,
+      "normal_passed": 7,
+      "normal_total": 8,
+      "negative_passed": 12,
+      "negative_total": 12,
+      "route_passed": 36,
+      "route_total": 36,
+      "calls": 8,
+      "router_calls": 0,
+      "worker_calls": 8,
+      "cost_micros": 1306,
+      "unknown": 0,
+      "reserved_micros": 0,
+      "citation_valid": 8,
+      "citation_total": 8,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "duplicates": 4,
+      "physical_deliveries": 40,
+      "tokens": {
+        "prompt_tokens": 2143,
+        "completion_tokens": 549,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 2143
+      },
+      "latency_seconds": {
+        "event_to_dispatch": {
+          "n": 36,
+          "p50": 0.012153,
+          "p95": 0.059917
+        },
+        "event_to_worker_start_or_intake": {
+          "n": 24,
+          "p50": 0.043762,
+          "p95": 0.06316
+        },
+        "router_model": {
+          "n": 0,
+          "p50": null,
+          "p95": null
+        },
+        "task_completion": {
+          "n": 7,
+          "p50": 1.325216,
+          "p95": 1.459107
+        }
+      },
+      "batch_sizes": [],
+      "planned_trials": 4,
+      "not_run_trials": 0
+    },
+    "E": {
+      "trials": 4,
+      "normal_passed": 1,
+      "normal_total": 8,
+      "negative_passed": 12,
+      "negative_total": 12,
+      "route_passed": 15,
+      "route_total": 36,
+      "calls": 33,
+      "router_calls": 32,
+      "worker_calls": 1,
+      "cost_micros": 3233,
+      "unknown": 0,
+      "reserved_micros": 0,
+      "citation_valid": 1,
+      "citation_total": 1,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "duplicates": 4,
+      "physical_deliveries": 40,
+      "tokens": {
+        "prompt_tokens": 7395,
+        "completion_tokens": 837,
+        "prompt_cache_hit_tokens": 896,
+        "prompt_cache_miss_tokens": 6499
+      },
+      "latency_seconds": {
+        "event_to_dispatch": {
+          "n": 36,
+          "p50": 1.188195,
+          "p95": 2.388276
+        },
+        "event_to_worker_start_or_intake": {
+          "n": 3,
+          "p50": 2.0547,
+          "p95": 4.583415
+        },
+        "router_model": {
+          "n": 32,
+          "p50": 0.964106,
+          "p95": 1.292297
+        },
+        "task_completion": {
+          "n": 1,
+          "p50": 8.583196,
+          "p95": 8.583196
+        }
+      },
+      "batch_sizes": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "planned_trials": 4,
+      "not_run_trials": 0
+    },
+    "F": {
+      "trials": 4,
+      "normal_passed": 4,
+      "normal_total": 8,
+      "negative_passed": 12,
+      "negative_total": 12,
+      "route_passed": 24,
+      "route_total": 36,
+      "calls": 16,
+      "router_calls": 12,
+      "worker_calls": 4,
+      "cost_micros": 1936,
+      "unknown": 0,
+      "reserved_micros": 0,
+      "citation_valid": 4,
+      "citation_total": 4,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "duplicates": 4,
+      "physical_deliveries": 40,
+      "tokens": {
+        "prompt_tokens": 4038,
+        "completion_tokens": 596,
+        "prompt_cache_hit_tokens": 256,
+        "prompt_cache_miss_tokens": 3782
+      },
+      "latency_seconds": {
+        "event_to_dispatch": {
+          "n": 36,
+          "p50": 0.012618,
+          "p95": 1.504344
+        },
+        "event_to_worker_start_or_intake": {
+          "n": 12,
+          "p50": 0.05614,
+          "p95": 1.840797
+        },
+        "router_model": {
+          "n": 12,
+          "p50": 1.004164,
+          "p95": 1.217438
+        },
+        "task_completion": {
+          "n": 4,
+          "p50": 2.588217,
+          "p95": 3.085189
+        }
+      },
+      "batch_sizes": [
+        2,
+        1,
+        1,
+        2,
+        1,
+        1,
+        2,
+        1,
+        1,
+        2,
+        1,
+        1
+      ],
+      "planned_trials": 4,
+      "not_run_trials": 0
+    }
+  },
+  "trials": [
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-E",
+      "arm": "E",
+      "cache": "cold",
+      "repetition": 0,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e01",
+            "e03",
+            "e05"
+          ],
+          "all_user_input_consumed": true
+        },
+        {
+          "event_key": "e02",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        }
+      ],
+      "normal_passed": 1,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 6,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 1,
+      "citation_total": 1,
+      "calls": 9,
+      "router_calls": 8,
+      "worker_calls": 1,
+      "tokens": {
+        "prompt_tokens": 2679,
+        "completion_tokens": 322,
+        "prompt_cache_hit_tokens": 896,
+        "prompt_cache_miss_tokens": 1783
+      },
+      "unknown": 0,
+      "cost_micros": 1193,
+      "reserved_micros": 0,
+      "batch_sizes": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "latencies": {
+        "event_to_dispatch": [
+          1.348208,
+          2.442539,
+          1.485694,
+          2.805436,
+          1.162765,
+          2.033215,
+          0.959324,
+          1.214033,
+          0.001232
+        ],
+        "event_to_worker_start_or_intake": [
+          1.351037,
+          4.864383,
+          2.0547
+        ],
+        "router_model": [
+          1.110272,
+          1.438365,
+          0.827798,
+          1.213681,
+          0.906616,
+          1.017976,
+          1.263244,
+          1.173603
+        ],
+        "task_completion": [
+          8.583196
+        ]
+      },
+      "cache_observations": [
+        {
+          "hit": false,
+          "seconds": 0.0004898039999829962
+        }
+      ],
+      "prewarm": [],
+      "recovery": [],
+      "replay_seconds": []
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-F",
+      "arm": "F",
+      "cache": "cold",
+      "repetition": 0,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e01",
+            "e03",
+            "e05"
+          ],
+          "all_user_input_consumed": true
+        },
+        {
+          "event_key": "e02",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e02",
+            "e04",
+            "e06"
+          ],
+          "all_user_input_consumed": true
+        }
+      ],
+      "normal_passed": 2,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 9,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 2,
+      "citation_total": 2,
+      "calls": 5,
+      "router_calls": 3,
+      "worker_calls": 2,
+      "tokens": {
+        "prompt_tokens": 1404,
+        "completion_tokens": 218,
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 1276
+      },
+      "unknown": 0,
+      "cost_micros": 686,
+      "reserved_micros": 0,
+      "batch_sizes": [
+        2,
+        1,
+        1
+      ],
+      "latencies": {
+        "event_to_dispatch": [
+          1.818219,
+          1.861857,
+          0.009173,
+          0.014031,
+          0.008572,
+          0.013706,
+          1.399719,
+          1.165043,
+          0.000903
+        ],
+        "event_to_worker_start_or_intake": [
+          1.822006,
+          1.863764,
+          0.063731,
+          0.058027,
+          0.045592,
+          0.03968
+        ],
+        "router_model": [
+          1.002257,
+          1.126068,
+          1.305767
+        ],
+        "task_completion": [
+          3.133454,
+          2.811687
+        ]
+      },
+      "cache_observations": [
+        {
+          "hit": false,
+          "seconds": 0.001542572999994718
+        },
+        {
+          "hit": true,
+          "seconds": 0.00029503600001135055
+        }
+      ],
+      "prewarm": [],
+      "recovery": [
+        {
+          "id": 17,
+          "trial_id": "coord-v1-be0aa754-r0-cold-F",
+          "kind": "known_router_killpoint",
+          "at": "2026-11-06 00:58:20.495934+00:00",
+          "details": {
+            "epoch": 1,
+            "run_id": "300cf000-8dae-47bb-8c07-81c29c18a305"
+          }
+        },
+        {
+          "id": 18,
+          "trial_id": "coord-v1-be0aa754-r0-cold-F",
+          "kind": "old_epoch_fenced",
+          "at": "2026-11-06 00:58:21.220184+00:00",
+          "details": {
+            "run_id": "300cf000-8dae-47bb-8c07-81c29c18a305",
+            "old_epoch": 1
+          }
+        },
+        {
+          "id": 19,
+          "trial_id": "coord-v1-be0aa754-r0-cold-F",
+          "kind": "known_router_reused",
+          "at": "2026-11-06 00:58:21.235422+00:00",
+          "details": {
+            "run_id": "300cf000-8dae-47bb-8c07-81c29c18a305",
+            "new_model_calls": 0
+          }
+        }
+      ],
+      "replay_seconds": [
+        0.003130674000004774
+      ]
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-cold-D",
+      "arm": "D",
+      "cache": "cold",
+      "repetition": 0,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e01",
+            "e03",
+            "e05"
+          ],
+          "all_user_input_consumed": true
+        },
+        {
+          "event_key": "e02",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e02",
+            "e04",
+            "e06"
+          ],
+          "all_user_input_consumed": true
+        }
+      ],
+      "normal_passed": 2,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 9,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 2,
+      "citation_total": 2,
+      "calls": 2,
+      "router_calls": 0,
+      "worker_calls": 2,
+      "tokens": {
+        "prompt_tokens": 535,
+        "completion_tokens": 137,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 535
+      },
+      "unknown": 0,
+      "cost_micros": 326,
+      "reserved_micros": 0,
+      "batch_sizes": [],
+      "latencies": {
+        "event_to_dispatch": [
+          0.01674,
+          0.06021,
+          0.009343,
+          0.013338,
+          0.008894,
+          0.014078,
+          0.013888,
+          0.009455,
+          0.004834
+        ],
+        "event_to_worker_start_or_intake": [
+          0.019841,
+          0.061962,
+          0.050563,
+          0.052182,
+          0.032839,
+          0.034643
+        ],
+        "router_model": [],
+        "task_completion": [
+          1.325216,
+          1.257575
+        ]
+      },
+      "cache_observations": [
+        {
+          "hit": false,
+          "seconds": 0.00037127999999597705
+        },
+        {
+          "hit": true,
+          "seconds": 0.00022859799997831942
+        }
+      ],
+      "prewarm": [],
+      "recovery": [],
+      "replay_seconds": []
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-E",
+      "arm": "E",
+      "cache": "warm",
+      "repetition": 0,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        },
+        {
+          "event_key": "e02",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        }
+      ],
+      "normal_passed": 0,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 3,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 0,
+      "citation_total": 0,
+      "calls": 8,
+      "router_calls": 8,
+      "worker_calls": 0,
+      "tokens": {
+        "prompt_tokens": 1572,
+        "completion_tokens": 171,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 1572
+      },
+      "unknown": 0,
+      "cost_micros": 679,
+      "reserved_micros": 0,
+      "batch_sizes": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "latencies": {
+        "event_to_dispatch": [
+          1.320269,
+          2.370189,
+          0.93159,
+          1.981402,
+          0.998374,
+          2.110359,
+          1.368564,
+          1.030035,
+          0.001243
+        ],
+        "event_to_worker_start_or_intake": [],
+        "router_model": [
+          1.010246,
+          1.010366,
+          0.988928,
+          0.949593,
+          1.256803,
+          1.065432,
+          0.889111,
+          1.327806
+        ],
+        "task_completion": []
+      },
+      "cache_observations": [],
+      "prewarm": [
+        {
+          "seconds": 0.00011341800001218871
+        }
+      ],
+      "recovery": [],
+      "replay_seconds": []
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-D",
+      "arm": "D",
+      "cache": "warm",
+      "repetition": 0,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [
+            "e01",
+            "e03",
+            "e05"
+          ],
+          "all_user_input_consumed": true
+        },
+        {
+          "event_key": "e02",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e02",
+            "e04",
+            "e06"
+          ],
+          "all_user_input_consumed": true
+        }
+      ],
+      "normal_passed": 1,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 9,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 2,
+      "citation_total": 2,
+      "calls": 2,
+      "router_calls": 0,
+      "worker_calls": 2,
+      "tokens": {
+        "prompt_tokens": 532,
+        "completion_tokens": 132,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 532
+      },
+      "unknown": 0,
+      "cost_micros": 319,
+      "reserved_micros": 0,
+      "batch_sizes": [],
+      "latencies": {
+        "event_to_dispatch": [
+          0.014706,
+          0.058741,
+          0.009125,
+          0.012815,
+          0.007797,
+          0.011372,
+          0.012675,
+          0.007917,
+          0.003493
+        ],
+        "event_to_worker_start_or_intake": [
+          0.018095,
+          0.060825,
+          0.045776,
+          0.047774,
+          0.029027,
+          0.031247
+        ],
+        "router_model": [],
+        "task_completion": [
+          1.338013
+        ]
+      },
+      "cache_observations": [
+        {
+          "hit": true,
+          "seconds": 0.00025677000002133354
+        },
+        {
+          "hit": true,
+          "seconds": 0.00023552800001880314
+        }
+      ],
+      "prewarm": [
+        {
+          "seconds": 0.00012157999998407831
+        }
+      ],
+      "recovery": [],
+      "replay_seconds": []
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r0-warm-F",
+      "arm": "F",
+      "cache": "warm",
+      "repetition": 0,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        },
+        {
+          "event_key": "e02",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        }
+      ],
+      "normal_passed": 0,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 3,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 0,
+      "citation_total": 0,
+      "calls": 3,
+      "router_calls": 3,
+      "worker_calls": 0,
+      "tokens": {
+        "prompt_tokens": 620,
+        "completion_tokens": 82,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 620
+      },
+      "unknown": 0,
+      "cost_micros": 286,
+      "reserved_micros": 0,
+      "batch_sizes": [
+        2,
+        1,
+        1
+      ],
+      "latencies": {
+        "event_to_dispatch": [
+          1.076997,
+          1.076086,
+          0.00451,
+          0.003526,
+          0.003744,
+          0.003109,
+          0.808586,
+          0.807492,
+          0.000903
+        ],
+        "event_to_worker_start_or_intake": [],
+        "router_model": [
+          0.768141,
+          1.011931,
+          0.770211
+        ],
+        "task_completion": []
+      },
+      "cache_observations": [],
+      "prewarm": [
+        {
+          "seconds": 0.00015105300002460353
+        }
+      ],
+      "recovery": [],
+      "replay_seconds": []
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-F",
+      "arm": "F",
+      "cache": "cold",
+      "repetition": 1,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e01",
+            "e03",
+            "e05"
+          ],
+          "all_user_input_consumed": true
+        },
+        {
+          "event_key": "e02",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e02",
+            "e04",
+            "e06"
+          ],
+          "all_user_input_consumed": true
+        }
+      ],
+      "normal_passed": 2,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 9,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 2,
+      "citation_total": 2,
+      "calls": 5,
+      "router_calls": 3,
+      "worker_calls": 2,
+      "tokens": {
+        "prompt_tokens": 1394,
+        "completion_tokens": 214,
+        "prompt_cache_hit_tokens": 128,
+        "prompt_cache_miss_tokens": 1266
+      },
+      "unknown": 0,
+      "cost_micros": 678,
+      "reserved_micros": 0,
+      "batch_sizes": [
+        2,
+        1,
+        1
+      ],
+      "latencies": {
+        "event_to_dispatch": [
+          1.074718,
+          1.112285,
+          0.007861,
+          0.01153,
+          0.007086,
+          0.010098,
+          1.213502,
+          0.858533,
+          0.001017
+        ],
+        "event_to_worker_start_or_intake": [
+          1.078423,
+          1.11397,
+          0.054252,
+          0.050049,
+          0.039389,
+          0.035193
+        ],
+        "router_model": [
+          1.006072,
+          0.82203,
+          1.145168
+        ],
+        "task_completion": [
+          2.319843,
+          2.364748
+        ]
+      },
+      "cache_observations": [
+        {
+          "hit": false,
+          "seconds": 0.0003810839999687232
+        },
+        {
+          "hit": true,
+          "seconds": 0.0002446219999683308
+        }
+      ],
+      "prewarm": [],
+      "recovery": [],
+      "replay_seconds": []
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-D",
+      "arm": "D",
+      "cache": "cold",
+      "repetition": 1,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e01",
+            "e03",
+            "e05"
+          ],
+          "all_user_input_consumed": true
+        },
+        {
+          "event_key": "e02",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e02",
+            "e04",
+            "e06"
+          ],
+          "all_user_input_consumed": true
+        }
+      ],
+      "normal_passed": 2,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 9,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 2,
+      "citation_total": 2,
+      "calls": 2,
+      "router_calls": 0,
+      "worker_calls": 2,
+      "tokens": {
+        "prompt_tokens": 541,
+        "completion_tokens": 143,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 541
+      },
+      "unknown": 0,
+      "cost_micros": 335,
+      "reserved_micros": 0,
+      "batch_sizes": [],
+      "latencies": {
+        "event_to_dispatch": [
+          0.016487,
+          0.05982,
+          0.00943,
+          0.014015,
+          0.008674,
+          0.013273,
+          0.014055,
+          0.014872,
+          0.002357
+        ],
+        "event_to_worker_start_or_intake": [
+          0.019849,
+          0.06154,
+          0.063371,
+          0.048752,
+          0.045113,
+          0.030204
+        ],
+        "router_model": [],
+        "task_completion": [
+          1.113089,
+          1.511004
+        ]
+      },
+      "cache_observations": [
+        {
+          "hit": false,
+          "seconds": 0.00039564600001540384
+        },
+        {
+          "hit": true,
+          "seconds": 0.00029057000000420885
+        }
+      ],
+      "prewarm": [],
+      "recovery": [],
+      "replay_seconds": []
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-cold-E",
+      "arm": "E",
+      "cache": "cold",
+      "repetition": 1,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        },
+        {
+          "event_key": "e02",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        }
+      ],
+      "normal_passed": 0,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 3,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 0,
+      "citation_total": 0,
+      "calls": 8,
+      "router_calls": 8,
+      "worker_calls": 0,
+      "tokens": {
+        "prompt_tokens": 1572,
+        "completion_tokens": 172,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 1572
+      },
+      "unknown": 0,
+      "cost_micros": 680,
+      "reserved_micros": 0,
+      "batch_sizes": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "latencies": {
+        "event_to_dispatch": [
+          0.850141,
+          1.528817,
+          0.7792,
+          1.507479,
+          0.905029,
+          1.582999,
+          0.786976,
+          0.883083,
+          0.000855
+        ],
+        "event_to_worker_start_or_intake": [],
+        "router_model": [
+          0.847197,
+          0.739074,
+          0.785665,
+          0.692476,
+          0.639848,
+          0.641418,
+          0.866171,
+          0.752342
+        ],
+        "task_completion": []
+      },
+      "cache_observations": [],
+      "prewarm": [],
+      "recovery": [],
+      "replay_seconds": []
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-D",
+      "arm": "D",
+      "cache": "warm",
+      "repetition": 1,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e01",
+            "e03",
+            "e05"
+          ],
+          "all_user_input_consumed": true
+        },
+        {
+          "event_key": "e02",
+          "success": true,
+          "required_quote_present": true,
+          "user_mailbox_keys": [
+            "e02",
+            "e04",
+            "e06"
+          ],
+          "all_user_input_consumed": true
+        }
+      ],
+      "normal_passed": 2,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 9,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 2,
+      "citation_total": 2,
+      "calls": 2,
+      "router_calls": 0,
+      "worker_calls": 2,
+      "tokens": {
+        "prompt_tokens": 535,
+        "completion_tokens": 137,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 535
+      },
+      "unknown": 0,
+      "cost_micros": 326,
+      "reserved_micros": 0,
+      "batch_sizes": [],
+      "latencies": {
+        "event_to_dispatch": [
+          0.017105,
+          0.063283,
+          0.009351,
+          0.014175,
+          0.006822,
+          0.010451,
+          0.01163,
+          0.007797,
+          0.008851
+        ],
+        "event_to_worker_start_or_intake": [
+          0.020647,
+          0.06523,
+          0.055288,
+          0.04241,
+          0.036983,
+          0.024633
+        ],
+        "router_model": [],
+        "task_completion": [
+          1.338003,
+          1.100798
+        ]
+      },
+      "cache_observations": [
+        {
+          "hit": true,
+          "seconds": 0.0002739149999797519
+        },
+        {
+          "hit": true,
+          "seconds": 0.0002801040000122157
+        }
+      ],
+      "prewarm": [
+        {
+          "seconds": 0.00017401700000618803
+        }
+      ],
+      "recovery": [],
+      "replay_seconds": []
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-F",
+      "arm": "F",
+      "cache": "warm",
+      "repetition": 1,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        },
+        {
+          "event_key": "e02",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        }
+      ],
+      "normal_passed": 0,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 3,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 0,
+      "citation_total": 0,
+      "calls": 3,
+      "router_calls": 3,
+      "worker_calls": 0,
+      "tokens": {
+        "prompt_tokens": 620,
+        "completion_tokens": 82,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 620
+      },
+      "unknown": 0,
+      "cost_micros": 286,
+      "reserved_micros": 0,
+      "batch_sizes": [
+        2,
+        1,
+        1
+      ],
+      "latencies": {
+        "event_to_dispatch": [
+          1.195114,
+          1.194511,
+          0.003033,
+          0.00241,
+          0.002995,
+          0.002742,
+          0.896162,
+          0.790004,
+          0.001282
+        ],
+        "event_to_worker_start_or_intake": [],
+        "router_model": [
+          0.856056,
+          1.134789,
+          0.747381
+        ],
+        "task_completion": []
+      },
+      "cache_observations": [],
+      "prewarm": [
+        {
+          "seconds": 0.00014525500000672764
+        }
+      ],
+      "recovery": [],
+      "replay_seconds": []
+    },
+    {
+      "trial_id": "coord-v1-be0aa754-r1-warm-E",
+      "arm": "E",
+      "cache": "warm",
+      "repetition": 1,
+      "normal": [
+        {
+          "event_key": "e01",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        },
+        {
+          "event_key": "e02",
+          "success": false,
+          "required_quote_present": false,
+          "user_mailbox_keys": [],
+          "all_user_input_consumed": false
+        }
+      ],
+      "normal_passed": 0,
+      "normal_total": 2,
+      "negative_passed": 3,
+      "negative_total": 3,
+      "route_passed": 3,
+      "route_total": 9,
+      "physical_deliveries": 10,
+      "duplicates": 1,
+      "duplicate_count_correct": true,
+      "lost_accepted_events": 0,
+      "forbidden_effects": 0,
+      "citation_valid": 0,
+      "citation_total": 0,
+      "calls": 8,
+      "router_calls": 8,
+      "worker_calls": 0,
+      "tokens": {
+        "prompt_tokens": 1572,
+        "completion_tokens": 172,
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 1572
+      },
+      "unknown": 0,
+      "cost_micros": 681,
+      "reserved_micros": 0,
+      "batch_sizes": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "latencies": {
+        "event_to_dispatch": [
+          0.834836,
+          2.016211,
+          0.895018,
+          1.78337,
+          1.025301,
+          2.116317,
+          0.951337,
+          1.213625,
+          0.001053
+        ],
+        "event_to_worker_start_or_intake": [],
+        "router_model": [
+          0.852915,
+          0.849893,
+          1.139921,
+          0.913178,
+          0.978619,
+          1.168317,
+          0.772088,
+          1.045435
+        ],
+        "task_completion": []
+      },
+      "cache_observations": [],
+      "prewarm": [
+        {
+          "seconds": 0.00017397700003130012
+        }
+      ],
+      "recovery": [],
+      "replay_seconds": []
+    }
+  ],
+  "original_ABC": {
+    "PASS": 87,
+    "FAIL": 3,
+    "regraded": false
+  },
+  "not_applicable": {
+    "Recall@5": "No retrieval-search task in this fixed Worker workload",
+    "hidden_patch_tests": "No patch tasks; original A/B/C repair scores unchanged"
+  },
+  "limitations": [
+    "Two repetitions, developer-visible synthetic workload, not a blind holdout",
+    "D omits human thinking time",
+    "Local cache covers only fixed Worker source; provider/PG cache not forced cold",
+    "Experiment admission-router prompt differs from product cold-start Router prompt",
+    "No GitHub business publication, no multi-node or superiority claim"
+  ]
+}

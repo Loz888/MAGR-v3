@@ -1,0 +1,32 @@
+{
+  "manifest_hash": "9df391cdb86900b4c8e1f83968c211ea3025f3a51e40b2ad855b61a41f9b4d29",
+  "approved_max_new_calls": 68,
+  "approved_max_new_cost_micros": 208896,
+  "new_calls": 57,
+  "new_cost_micros": 6475,
+  "new_unknown": 0,
+  "new_reserved_micros": 0,
+  "unused_calls_not_automatically_retried": 11,
+  "original_finance": {
+    "calls": 633,
+    "cost_micros": 299317,
+    "unknown": 0
+  },
+  "cumulative": {
+    "calls": 690,
+    "cost_micros": 305792,
+    "unknown": 0
+  },
+  "budget": {
+    "budget_hash": "ccd934b07b1bf07214a8ee91f0f187557205479b5a8bbd30573c8eb20781f219",
+    "limit_micros": 208896,
+    "call_limit": 68,
+    "used_calls": 57,
+    "reserved_micros": 0,
+    "settled_micros": 6475
+  },
+  "accounting": "Per-call ceiling at frozen peak cache-miss rates; not exact provider invoice",
+  "original_ABC_bindings_for_this_manifest": 0,
+  "separate_DEF_bindings": 57,
+  "external_business_actions": 0
+}

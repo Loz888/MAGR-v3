@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "mode": "supplemental_controlled_real_PostgreSQL_concurrent_fencing",
+  "not_part_of_12_frozen_trials": true,
+  "old_epoch": 1,
+  "replacement_epoch": 3,
+  "old_commit_result": "FENCED",
+  "new_commit_result": "COMMITTED",
+  "old_business_write_attempts": 1,
+  "old_business_write_successes": 0,
+  "new_business_write_successes": 1,
+  "single_engine_locked_connection": true,
+  "paid_requests": 0,
+  "external_actions": 0,
+  "business_evidence_verifier": "PASS",
+  "original_database_faulted": false,
+  "original_ABC_modified": false
+}

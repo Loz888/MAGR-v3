@@ -6,9 +6,71 @@
       "status": "FIXED_CONTROLLED_80_PASS",
       "fix": "Separate DEF binding table and experiment-only budget adapter, original immutable grants and same Engine transaction/settlement retained. Old ABC constraint/results are untouched.",
       "original_log_sha256": "7c6b3d796f11335aa061863966c39dd15649f5e3ac47defe6181995beeb9d817"
+    },
+    {
+      "id": "COORD-002",
+      "status": "RESTORED_80_TESTS_PASS",
+      "problem": "Resumed environment cleared temporary storage: venv link and default uv-cache link no longer resolved.",
+      "process": "Before any model request, restored the exact uv.lock environment with Python3.12.14 and task-specific /tmp cache; original data volumes and633-call ledger verified; reran80registered checks.",
+      "evidence": [
+        "environment-restore.json",
+        "engineering-restored-environment.json"
+      ]
+    },
+    {
+      "id": "COORD-003",
+      "status": "OPEN_MEASURED_MODEL_FAILURE",
+      "problem": "E issued7invalid cold-start proposals:1cross-issue target and6deliver-with-null-target proposals.",
+      "process": "Original scope guard refused all7before work creation.14subsequent follow-ups had no Run and were ignored12times or clarified2times. Preserve the actual model plans; no fallback, retry or regrading.",
+      "evidence": [
+        "event-outcomes.json",
+        "normal-task-outcomes.json",
+        "trials/coord-v1-be0aa754-r0-cold-E.json"
+      ]
+    },
+    {
+      "id": "COORD-004",
+      "status": "OPEN_MEASURED_MODEL_FAILURE",
+      "problem": "F two warm-labelled blocks proposed deliver/null for all4initial tasks despite no primary Run.",
+      "process": "Guard rejected4starts;8dependent follow-ups recorded blocked. Successful cold-labelled blocks retained2/2each. Worker source warmup never entered on failed blocks; no cache causality claim.",
+      "evidence": [
+        "event-outcomes.json",
+        "cache-subgroups.json"
+      ]
+    },
+    {
+      "id": "COORD-005",
+      "status": "OPEN_MEASURED_WORKER_CONTRACT_FAILURE",
+      "problem": "D one cache-TTL answer supplied statement without Observation: prefix while quote included it.",
+      "process": "Existing Verifier requires statement==quote and returned statement_exceeds_mechanically_verified_quote. Citation bytes were valid, but the report failed. Preserve FAIL; no coercion or posthoc replacement.",
+      "evidence": [
+        "normal-task-outcomes.json",
+        "trials/coord-v1-be0aa754-r0-warm-D.json"
+      ]
+    },
+    {
+      "id": "COORD-006",
+      "status": "REPORT_RECEIPT_SUPPLEMENTED_NO_MODEL_REPLAY",
+      "problem": "Original continuation receipt read a non-existent usage_calls.response_hash field and recorded null.",
+      "process": "Retain original receipt; supplement from native model_response_recorded and model_input_recorded events, validate CAS bytes and unique provider response. Original call has one request/response and116microUSD charge; replay0requests/0cost.",
+      "evidence": [
+        "recovery.json",
+        "provider-receipts.json"
+      ]
+    },
+    {
+      "id": "COORD-007",
+      "status": "CONTROLLED_PROBE_PASS_CLEANUP_RECOVERED",
+      "problem": "Supplemental old/new epoch commit race passed, but cleanup length guard expected51instead of52characters.",
+      "process": "Retain original failure log hash; verify exact owned-name regex, matching controlled run/report hash and zero model calls, then remove only that disposable database. No original database touched.",
+      "evidence": [
+        "supplemental-epoch-probe.json",
+        "supplemental-epoch-cleanup.json",
+        "private-evidence-index.json"
+      ]
     }
   ],
-  "real_model_gate": "NOT_RUN",
+  "real_model_gate": "EXECUTED_ALL12",
   "original_ABC": {
     "PASS": 87,
     "FAIL": 3,

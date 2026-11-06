@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "original_review_receipt": {
+    "manifest_hash": "9df391cdb86900b4c8e1f83968c211ea3025f3a51e40b2ad855b61a41f9b4d29",
+    "planned_exit": -9,
+    "original_call_id": "1e86b864-2fdc-4ecf-8542-6c5e8a7456d5",
+    "original_response_hash": null,
+    "original_settled_micros": 116,
+    "replay_only_for_original_request": true,
+    "remaining_frozen_trial_calls_still_count_toward_original_grant": true
+  },
+  "original_review_receipt_sha256": "bee53a70782e2aa59e4456868ae232a60524fe328dbfbef52afdb30ad3edff3c",
+  "response_hash_metadata_correction": "Original receipt read a non-existent usage_calls.response_hash and recorded null. Native model_response_recorded event supplies the verified hash below; original receipt is preserved.",
+  "original_verified_response_sha256": "bf20457ce127d253649ee57596d5f6d4718c1656f70069c437fb23911cfb73a7",
+  "original_verified_request_sha256": "0443940da927e3c73528a7a0a85323c8a421fc56c6c46e3d0079a87dd9b991ca",
+  "original_call_rows": 1,
+  "original_response_receipts": 1,
+  "original_input_records": 1,
+  "replay_new_requests": 0,
+  "replay_new_cost_micros": 0,
+  "replay_seconds": 0.003130674000004774,
+  "live_recovery_audit": [
+    {
+      "id": 17,
+      "trial_id": "coord-v1-be0aa754-r0-cold-F",
+      "kind": "known_router_killpoint",
+      "at": "2026-11-06 00:58:20.495934+00:00",
+      "details": {
+        "epoch": 1,
+        "run_id": "300cf000-8dae-47bb-8c07-81c29c18a305"
+      }
+    },
+    {
+      "id": 18,
+      "trial_id": "coord-v1-be0aa754-r0-cold-F",
+      "kind": "old_epoch_fenced",
+      "at": "2026-11-06 00:58:21.220184+00:00",
+      "details": {
+        "run_id": "300cf000-8dae-47bb-8c07-81c29c18a305",
+        "old_epoch": 1
+      }
+    },
+    {
+      "id": 19,
+      "trial_id": "coord-v1-be0aa754-r0-cold-F",
+      "kind": "known_router_reused",
+      "at": "2026-11-06 00:58:21.235422+00:00",
+      "details": {
+        "run_id": "300cf000-8dae-47bb-8c07-81c29c18a305",
+        "new_model_calls": 0
+      }
+    }
+  ],
+  "remaining_frozen_calls_in_continuation": 4,
+  "old_epoch_heartbeat_attempts": 1,
+  "old_epoch_heartbeat_denied": 1,
+  "controlled_old_vs_new_commit_probe": "supplemental-epoch-probe.json",
+  "original_ABC_modified": false
+}

@@ -1,0 +1,10 @@
+{
+  "recorded_at": "2026-11-06T00:56:48.923325+00:00",
+  "user_instruction": "允许增加调用和预算，继续真实实测",
+  "applies_to_manifest": "9df391cdb86900b4c8e1f83968c211ea3025f3a51e40b2ad855b61a41f9b4d29",
+  "max_new_calls": 68,
+  "max_new_cost_micros": 208896,
+  "data_and_destination": "Frozen synthetic events/source/rules/test Run identifiers to official DeepSeek completion endpoint, as proposed in preceding approval question",
+  "external_business_writes": false,
+  "original_ABC_failures_preserved": true
+}

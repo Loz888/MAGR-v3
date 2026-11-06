@@ -1,0 +1,50 @@
+[
+  {
+    "arm": "D",
+    "role": "router",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "conservative_cost_micros": 0
+  },
+  {
+    "arm": "D",
+    "role": "worker",
+    "calls": 8,
+    "input_tokens": 2143,
+    "output_tokens": 549,
+    "conservative_cost_micros": 1306
+  },
+  {
+    "arm": "E",
+    "role": "router",
+    "calls": 32,
+    "input_tokens": 7128,
+    "output_tokens": 769,
+    "conservative_cost_micros": 3071
+  },
+  {
+    "arm": "E",
+    "role": "worker",
+    "calls": 1,
+    "input_tokens": 267,
+    "output_tokens": 68,
+    "conservative_cost_micros": 162
+  },
+  {
+    "arm": "F",
+    "role": "router",
+    "calls": 12,
+    "input_tokens": 2970,
+    "output_tokens": 324,
+    "conservative_cost_micros": 1286
+  },
+  {
+    "arm": "F",
+    "role": "worker",
+    "calls": 4,
+    "input_tokens": 1068,
+    "output_tokens": 272,
+    "conservative_cost_micros": 650
+  }
+]

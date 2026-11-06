@@ -1,0 +1,23 @@
+[
+  {
+    "arm": "D",
+    "all_normal_attempts_n": 8,
+    "p50_seconds": 1.291396,
+    "p95_seconds": 1.450457,
+    "meaning": "Initial event to successful internal report, verification failure or initial routing rejection; not successful-completion latency."
+  },
+  {
+    "arm": "E",
+    "all_normal_attempts_n": 8,
+    "p50_seconds": 1.772514,
+    "p95_seconds": 6.433966,
+    "meaning": "Initial event to successful internal report, verification failure or initial routing rejection; not successful-completion latency."
+  },
+  {
+    "arm": "F",
+    "all_normal_attempts_n": 8,
+    "p50_seconds": 1.757478,
+    "p95_seconds": 3.020836,
+    "meaning": "Initial event to successful internal report, verification failure or initial routing rejection; not successful-completion latency."
+  }
+]
