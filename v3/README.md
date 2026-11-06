@@ -1,23 +1,14 @@
-# V3.1 本地执行
+# V3.1 本地运行与验证
 
-2026-11-06 E/F路由修复复验：8/8次真实运行完整，路由各36/36，正常E7/8、F8/8，负例各12/12；98项工程通过。新增60次、保守US$0.005721，累计750次、US$0.311513，未知/预占0。E一项固定Worker漏完整行前缀仍为FAIL；旧D/E/F和原A/B/C三项失败全部保留。[修复档案](docs/repairs/COORD-20261106/README.md) · [完整复验](docs/experiments/coordination-v2/README.md)。
+[项目首页](../README.md) · [完整技术报告](docs/TECHNICAL_REPORT.md) · [文档导航](docs/README.md) · [两项P0设计](docs/design/p0-commerce-v1/README.md)
 
-D/E/F协调补验已完成：12/12次真实运行，正常任务D7/8、E1/8、F4/8，负例各12/12；57次调用、保守US$0.006475，累计690次、US$0.305792，未确认/预占0。原87/90及三项失败保持不变。执行完成不代表Router业务全部通过。[完整结果与恢复证据](docs/experiments/coordination-v1/README.md)。
+本页提供实际运行命令。当前核心实现和限定实测见项目首页；电商工单与统一业务判定仅完成设计，新Case接口/页面/表尚未实施。历史阶段结果位于文末，按记录时间理解。
 
-2026-11-05 最新验收：R6 在用户批准的独立 Linux/systemd 测试虚拟机范围内 DONE。V2 价格检查工程门禁、实际 systemd 部署、整虚拟节点断电/重启及备份恢复均 PASS。v6 真实模型成绩保持 87/90，A/B/C 为 30/28/29；C 正常 24/25、负例 5/5，质量门槛 PASS。累计 633 次、保守 US$0.299317，本次新增模型调用 0；原始失败全部保留。此结论不覆盖用户生产宿主、物理存储掉电或多节点 HA。 [三项门禁与完整修复过程](docs/repairs/R6-HOST-20261105/README.md)。 [完整档案](docs/repairs/R6-20261103/README.md)
+仓库地址为`https://github.com/Loz888/MAGR-v3.git`。所有make命令在你本机克隆后的`MAGR-v3/v3/`执行；`/workspace/MAGR-v3/v3`是开发云路径，在你的WSL上不会自动存在。
 
-仓库地址为 `https://github.com/Loz888/MAGR-v3.git`。运行命令需要在你本机克隆后的 `MAGR-v3/v3/` 目录执行。
-`/workspace/MAGR-v3/v3` 是开发云环境中的路径，在你的 Windows/WSL 上不会自动存在。
-本地 `.env`、`.local`、依赖环境与凭据不进入 Git；提交与推送状态以 Git 历史和最新验收记录为准。
+依次执行`make setup`、`make deps-up`、`make migrate`、`make doctor`和`make dev`。工作台为`http://127.0.0.1:18080`，API文档为`/docs`。令牌从本机`.env`读取，页面仅在内存使用；不要公开密钥或令牌。setup仅生成缺失的0600配置，不覆盖既有值。
 
-R0/R1 验收时 88 个 V3 测试通过；R2 改造后 112 项通过，R3 改造后完整回归 150 项通过，0 失败、0 跳过。V2 原有 682 个 Go 和 453 个 Python 测试复验通过，V2 源码保持不变。
-R1 真实模型与 GitHub 结果评论验收 PASS：2 次真实调用，保守计费 USD 0.001745，一条结果评论。首个结构错误响应未发布；第二次成功，并通过模型落库及远程回执两个 SIGKILL 恢复实验。详情见 `docs/acceptance/r1-live-20261102.json`。完整 V3.1 仍为 ENGINEERING_INCOMPLETE。
-
-在本目录执行 `make setup`、`make deps-up`、`make migrate`、`make doctor`，再运行 `make dev`。
-应用监听 `http://127.0.0.1:18080`；开发 API 文档位于 `/docs`。
-该地址现在提供本地任务工作台，Web、CLI、GitHub 共用工单视图；访问令牌取自本机 `.env` 的 `MGAR_V3_LOCAL_TOKEN`，页面只在内存中使用令牌。
-`make setup` 只生成缺失的本地 `.env`（权限 0600）；不会覆盖已有配置或显示凭据。
-数据库调试端口 55433，Redis 调试端口 56379，均仅绑定回环。停止依赖用 `make deps-stop`，保留数据卷。
+默认fixture模式不调用付费模型或向GitHub发布业务内容。PG端口55433、Redis端口56379仅绑定回环；停止依赖用`make deps-stop`，保留数据卷。真实执行必须具有匹配的有效profile、预算和许可。
 
 ## WSL2 首次启动
 
@@ -124,7 +115,7 @@ make verify TASK=V31-R2
 
 verify 在本地 v3/evidence/ 保存原始输出、真实退出码、JUnit 与源代码摘要；这些原始文件不纳入公开推送，公开验收摘要见 docs/。未知任务、缺失测试、零收集、跳过和超时均不会通过。
 工程测试使用真实 PostgreSQL、Redis、LangGraph checkpoint 和跨进程 MCP；聊天模型和外部 GitHub 业务使用明确标记的替身。
-R1 真实闭环通过后依次实施并验证 R2、R3 工程，R2 摘要见 `docs/acceptance/r2-engineering-20261102.json`。R2 未额外做真实付费业务评测，R3 仅限定真实 Router 验收；R4 工程已继续实施，范围与门禁见下方；R5/R6 保持 TODO，不声明生产就绪。
+R1 真实闭环通过后依次实施并验证 R2、R3 工程，R2 摘要见 `docs/acceptance/r2-engineering-20261102.json`。R2 未额外做真实付费业务评测，R3 仅限定真实 Router 验收；当时R4工程继续实施，R5/R6尚未开始；当前结果见项目首页。此段为历史阶段范围，不是最新状态。
 
 ## R3 Router 与统一工单
 
@@ -178,7 +169,7 @@ R4 完整回归 187 项、专项验收 103 项通过，0 失败、0 跳过。新
 
 原始三次模型输出均在 diff 格式/定位检查失败，原始成绩保留 FAIL。仅规范化第一份结果的 hunk 行数后，在独立 Run 重放已结算输出，通过公开及 28 个独立隐藏子案例；没有新增调用或延长原 Run。用户对完整提案的批准及显式同哈希续签均保留。累计 29 次、保守 USD 0.028549。见 [真实报告](docs/r5-live-report.md)、[机器摘要](docs/acceptance/r5-live-20261103.json) 和 [运行说明](docs/r5-runbook.md)。
 
-## R6 首轮结果（保留）
+## R6 首轮结果（历史保留）
 
 监控、有限主动性、独立只读预算和三臂评测已实现。真实 90 项全部执行：A 15/30、B 15/30、C 16/30，质量门槛 FAIL；不能标 LIVE_READY。本轮 195 次调用、保守 US$0.087980，累计 224 次、US$0.116529，无未知预占。原始失败、进程中断和账单核对均保留。
 

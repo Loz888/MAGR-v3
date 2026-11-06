@@ -1,0 +1,9 @@
+{
+  "source_md_sha256": "ea3f69841d086ae922514e78bbcdac2ba7ccdd80ae1d177fcdafb949489b4417",
+  "html_sha256": "96073f10d3897abe622e948ac758a38127cff982af65b14e8a7c3a56621e12ef",
+  "pdf_sha256": "179f21d49c21aefda8bb0e3a6525689e46e63016345d7af0d393ee0927739138",
+  "pdf_pages": 23,
+  "pdf_text_characters": 19886,
+  "renderer": "local Chromium via Playwright; network requests aborted; embedded SVG",
+  "new_model_calls": 0
+}

@@ -1,0 +1,270 @@
+{
+  "schema": "project-technical-report-facts-v1",
+  "report_version": "2026-11-06-public-v1",
+  "content_baseline_commit": "2155556cb1c1288f08b5b3abebe55f2a7112253d",
+  "timezone": "Asia/Shanghai",
+  "source_hashes": {
+    "v3/uv.lock": "d96c823ff9588c1136a117a3dd4980485f0d7e6aae2ef90cd43e38ad7de98d49",
+    "v3/pyproject.toml": "d77c3d4522e66dda9757d63624906a14035e52fea0fef3526e652205beec2118",
+    "v3/docs/versions.md": "825c553273de7c87f7c191c686e7c0e016da87e8d107b806abe456081f9935f8",
+    "v3/config/github-mcp-lock.json": "2fb0cf552e0ef86bf161765993d596d7359b812e02024d8f672ebe0126b977c8",
+    "v3/config/rag-model-lock.json": "4d26c782867fecd6dda6e8430d3c074e67e0c4db1473f0c3246d71985f3d8434",
+    "v3/docs/r4-live-report.md": "7fa824297f1b21ba2c88bf2ea89c4be299c49d7c7918e563dfec46b2e1b974e2",
+    "v3/docs/r5-live-report.md": "d8f0c96ba31f8e1cb38c9d85955bfe4081f6e8418853006cdccec7ab876e99c0",
+    "v3/docs/adr/0001-v31-boundaries.md": "ca0d326e5f9ab745223171b7edb10302e791dafa09b42f7c7c7de6dc2a59397f",
+    "v3/docs/adr/0002-r2-mailbox.md": "955f44b6b114e8f7b323469c74225684965cdae9dcfeb38ea881889f5c254c5b",
+    "v3/docs/adr/0003-r3-router.md": "fc8df29b8c39d7d41c1bea9353fbcdd952b9980e4e202f7da1ae37de969e029f",
+    "v3/docs/adr/0005-r4-investigation.md": "4182b45f9df404852f03e66e155b13f8c86095e516d2b8e81cd02e9264279900",
+    "v3/docs/adr/0012-r6-monitoring-proactivity-evaluation.md": "37b0a19e9975575bbd2bb5a808b3948ffc19cb4f034f131fd56d0eaf79d49cca",
+    "v3/eval/reports/final-v6-summary.json": "dec35d15f5f8196b8e272d54bfa31e5349ad15d27fa30274729efcb336cbf9b1",
+    "v3/eval/reports/final-v6-failure-analysis.json": "65ec5c6a4ee0ce9e6af610b320297e751aa612a7e094a6191888e9692b3e2947",
+    "v3/eval/reports/final-v6-manifest.json": "75774ed08b3a5702da1e5101c1b998f5ef22c4f37bbbb63fcf813741d5539983",
+    "v3/docs/repairs/R6-20261103/issue-register.json": "552398a7c3719f376bcbbf1cfdbbf50a40cdb820e16178dbc174b35ea15dee1c",
+    "v3/docs/repairs/R6-20261103/README.md": "b014e70a330cb9e53015741bcfd5fe10482938b2006247d3ff4e8a2c2b4df247",
+    "v3/docs/repairs/R6-20261103/json-mode-incident.md": "b0ee0f11d2996bebff6227b724049f561cd09aeabae10ef9fd10d905925773e5",
+    "v3/docs/repairs/R6-HOST-20261105/README.md": "04720b50d1ebbcfee72ce7484d4b323e38813db35dd5d0050a6f6ac26914bbd9",
+    "v3/docs/repairs/R6-HOST-20261105/failure-history.json": "8e966d732dade6a899db3846b6ce1791b883c71f2fa4e7fad1483f0f61ce3d21",
+    "v3/docs/repairs/COORD-20261106/engineering.json": "ea093a2eb663baa33bd757bc65b6865904c258b590681f61194d05b3d9fcb3ee",
+    "v3/docs/repairs/COORD-20261106/issue-register.json": "be0688ab4b1e98b3bdc0aa4acdfa5a1ad54b000e5345990ddc30068ba1f23e47",
+    "v3/docs/experiments/coordination-v1/results.json": "356ea2d29c083fc6a9d22d4122f0e63f2688289b5d45711032882fa540375398",
+    "v3/docs/experiments/coordination-v1/finance.json": "3455f02ed2e51709c84d99bac0781b01a7db5bd76246885d7e962144c0040223",
+    "v3/docs/experiments/coordination-v2/results.json": "51ed0db3fec3264c689ad390696804bfbc490e216e9b54044437e6993a2c2123",
+    "v3/docs/experiments/coordination-v2/finance.json": "980b88b7d0b3cdf7f41197e8eb71a601aab2531e0a3033c911c8b02e78c7392a",
+    "v3/docs/experiments/coordination-v2/recovery.json": "6ef3e3c61b8795b1d4791444df6f04bb916a255214d60bb79a017d9b2e13a334",
+    "v3/docs/design/p0-commerce-v1/README.md": "a2ebb23284d3b35b37e91cfbb68b29462108bb1fa19f399987536e6e02ac9095",
+    "v3/docs/design/p0-commerce-v1/design-review.json": "a8f362061536315fa06bed1a83bb14e77b888a9089b6221144cff3edb4d0d973",
+    "v3/src/mgar_v3/coordination/engine.py": "280aa6249fd41d9e6d6cd3c48ea92de47583f538af6ba3cf8f5bc40508f00189",
+    "v3/src/mgar_v3/repair/sandbox.py": "6513c16b8a7fde8268eec7edd16f1a4dc3c2d78ab63a09d9ac3b3cb652dcdeb4",
+    "v3/src/mgar_v3/agents/data.py": "1049a94efb59afc9d0e303dd370ea7d847df16bd3f3a0e380ab1cde42ce9df7d"
+  },
+  "versions_from_uv_lock": {
+    "fastapi": "0.162.0",
+    "jieba": "0.42.1",
+    "langchain": "1.4.7",
+    "langgraph": "1.2.19",
+    "langgraph-checkpoint-postgres": "3.2.0",
+    "mcp": "1.30.0",
+    "mypy": "1.20.2",
+    "psycopg": "3.3.6",
+    "pydantic": "2.14.2",
+    "pypdf": "6.21.4",
+    "pytest": "9.2.0",
+    "redis": "7.4.1",
+    "ruff": "0.17.3",
+    "sqlglot": "27.14.0",
+    "uvicorn": "0.54.0"
+  },
+  "abc_v6": {
+    "unique_tasks": 30,
+    "assignments": 90,
+    "passed": 87,
+    "failed": 3,
+    "arms": {
+      "A": {
+        "success": 30,
+        "total": 30,
+        "normal_success": 25,
+        "normal_total": 25,
+        "negative_success": 5,
+        "negative_total": 5,
+        "repair_passed": 5,
+        "repair_total": 5,
+        "model_calls": 27,
+        "cost_micros": 13151,
+        "p50_seconds": 1.6828,
+        "p95_seconds": 27.8045,
+        "citation_validity": 1.0,
+        "recall_at5": 0.9565217391304348,
+        "recall_denominator": 23
+      },
+      "B": {
+        "success": 28,
+        "total": 30,
+        "normal_success": 23,
+        "normal_total": 25,
+        "negative_success": 5,
+        "negative_total": 5,
+        "repair_passed": 3,
+        "repair_total": 5,
+        "model_calls": 75,
+        "cost_micros": 25058,
+        "p50_seconds": 3.681,
+        "p95_seconds": 29.4982,
+        "citation_validity": 1.0,
+        "recall_at5": 0.9565217391304348,
+        "recall_denominator": 23
+      },
+      "C": {
+        "success": 29,
+        "total": 30,
+        "normal_success": 24,
+        "normal_total": 25,
+        "negative_success": 5,
+        "negative_total": 5,
+        "repair_passed": 5,
+        "repair_total": 5,
+        "model_calls": 60,
+        "cost_micros": 22678,
+        "p50_seconds": 3.6626,
+        "p95_seconds": 29.8061,
+        "citation_validity": 1.0,
+        "recall_at5": 0.9565217391304348,
+        "recall_denominator": 23
+      }
+    },
+    "multi_agent_advantage": "NOT_ESTABLISHED",
+    "ablations": "NOT_RUN"
+  },
+  "coordination_v1": {
+    "trials": 12,
+    "arms": {
+      "D": {
+        "normal_passed": 7,
+        "normal_total": 8,
+        "negative_passed": 12,
+        "negative_total": 12,
+        "route_passed": 36,
+        "route_total": 36,
+        "router_calls": 0,
+        "worker_calls": 8,
+        "calls": 8,
+        "cost_micros": 1306
+      },
+      "E": {
+        "normal_passed": 1,
+        "normal_total": 8,
+        "negative_passed": 12,
+        "negative_total": 12,
+        "route_passed": 15,
+        "route_total": 36,
+        "router_calls": 32,
+        "worker_calls": 1,
+        "calls": 33,
+        "cost_micros": 3233
+      },
+      "F": {
+        "normal_passed": 4,
+        "normal_total": 8,
+        "negative_passed": 12,
+        "negative_total": 12,
+        "route_passed": 24,
+        "route_total": 36,
+        "router_calls": 12,
+        "worker_calls": 4,
+        "calls": 16,
+        "cost_micros": 1936
+      }
+    }
+  },
+  "coordination_v2": {
+    "trials": 8,
+    "arms": {
+      "E": {
+        "normal_passed": 7,
+        "normal_total": 8,
+        "negative_passed": 12,
+        "negative_total": 12,
+        "route_passed": 36,
+        "route_total": 36,
+        "router_calls": 32,
+        "worker_calls": 8,
+        "calls": 40,
+        "cost_micros": 3494
+      },
+      "F": {
+        "normal_passed": 8,
+        "normal_total": 8,
+        "negative_passed": 12,
+        "negative_total": 12,
+        "route_passed": 36,
+        "route_total": 36,
+        "router_calls": 12,
+        "worker_calls": 8,
+        "calls": 20,
+        "cost_micros": 2227
+      }
+    },
+    "router_call_reduction_fraction": 0.625,
+    "reduction_decomposition": {
+      "subscription_direct": 16,
+      "batching": 4
+    },
+    "D_rerun": false,
+    "one_legal_candidate_per_event": true,
+    "worker_residual_failures": 1
+  },
+  "latest_controlled_engineering": {
+    "tests": 98,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "p0_design": {
+    "schema": "p0-design-review-v1",
+    "design_status": "DESIGN_COMPLETE",
+    "checks": "PASS",
+    "schemas_valid": 3,
+    "valid_task_examples": 4,
+    "valid_result_examples": 9,
+    "valid_view_examples": 20,
+    "independent_display_and_button_expectations": 20,
+    "malformed_examples_rejected": 11,
+    "fixture_arithmetic_verified": 3,
+    "local_links_verified": 43,
+    "protected_runtime_and_historical_files_unchanged": 424,
+    "scope": "Only two P0 designs; no P1/P2 implementation or experiments",
+    "implementation": "NOT_STARTED",
+    "engineering_gate": "NOT_RUN",
+    "live_gate": "NOT_RUN",
+    "new_model_calls": 0,
+    "new_cost_micros": 0,
+    "github_business_operations": 0,
+    "baseline_commit": "4e0374e90733ce018201db862ab117e08424378d",
+    "checked_at": "2026-11-06T06:04:11.535245+00:00"
+  },
+  "latest_closed_finance": {
+    "manifest_hash": "0d727c2d62b6310b131d5ab0d2a7235ba03734497c260b230c2fc21e969b7fa0",
+    "new_calls": 60,
+    "new_upper_cost_micros": 5721,
+    "new_shared_cap_calls": 68,
+    "new_shared_cap_micros": 208896,
+    "budget": {
+      "budget_hash": "82fa964ed0d37ab39775acaf161d2ae2a6600fddb932b1e4f0cf36af298d8eb5",
+      "limit_micros": 208896,
+      "call_limit": 68,
+      "used_calls": 60,
+      "reserved_micros": 0,
+      "settled_micros": 5721
+    },
+    "prior": {
+      "calls": 690,
+      "cost_micros": 305792,
+      "unknown": 0
+    },
+    "cumulative": {
+      "calls": 750,
+      "cost_micros": 311513,
+      "unknown": 0
+    },
+    "unknown": 0,
+    "reserved_micros": 0,
+    "old_grant_unused_calls_transferred": 0,
+    "unused_new_calls_not_automatically_retried": 8,
+    "old_ABC_bindings": 0,
+    "separate_coordination_bindings": 60,
+    "accounting": "Per-call ceiling at frozen peak cache-miss rates, not exact provider invoice"
+  },
+  "reporting_round": {
+    "scope": "documentation_and_GitHub_presentation_only",
+    "new_model_calls": 0,
+    "new_cost_micros": 0,
+    "runtime_changes": false,
+    "new_business_issue_comment_pr_merge_or_deployment": false
+  },
+  "known_failure_preservation": {
+    "abc_v6_original_failures": 3,
+    "ef_v2_worker": 1,
+    "v1_D_worker_retained": true,
+    "older_failed_rounds_retained": true
+  }
+}

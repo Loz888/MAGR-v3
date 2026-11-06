@@ -1,5 +1,7 @@
 # V3.1 增量任务队列
 
+2026-11-06：整理GitHub主页、文档导航与完整技术报告，含技术选型、架构、评测、失败修复和两项P0设计边界；本轮只做文档，无新模型/业务发布/部署。[技术报告](../v3/docs/TECHNICAL_REPORT.md) · [文档导航](../v3/docs/README.md)。原始实验与失败不改。
+
 2026-11-06：按用户范围，仅完成两项P0设计（电商工单闭环、统一业务结果判定），实施与真实验收未启动；其余改进不开展。[设计入口](../v3/docs/design/p0-commerce-v1/README.md)。本轮新增模型/费用/GitHub业务操作均为0，原历史验收保持原样。
 
 2026-11-06 E/F路由修复复验：8/8次真实运行完整，路由各36/36，正常E7/8、F8/8，负例各12/12；98项工程通过。新增60次、保守US$0.005721，累计750次、US$0.311513，未知/预占0。E一项固定Worker漏完整行前缀仍为FAIL；旧D/E/F和原A/B/C三项失败全部保留。[修复档案](../v3/docs/repairs/COORD-20261106/README.md) · [完整复验](../v3/docs/experiments/coordination-v2/README.md)。
@@ -30,6 +32,7 @@ D/E/F协调补验已完成12/12次：正常D7/8、E1/8、F4/8，负例各12/12�
 | V31-R6-COORD-REPAIR | E/F候选契约与状态重核 | DONE（路由修复；固定Worker1项FAIL保留） | PASS（98项） | EXECUTED（E7/8、F8/8；路由各36/36） |
 | V31-P0-COMMERCE-DESIGN | 电商工单闭环设计 | DESIGN_COMPLETE（未实施） | NOT_RUN | NOT_RUN |
 | V31-P0-RESULT-DESIGN | 统一业务结果设计 | DESIGN_COMPLETE（未实施） | NOT_RUN | NOT_RUN |
+| V31-DOCS-REPORT | GitHub页面与完整技术报告 | DONE（文档交付） | 文档检查另列；未重跑运行门禁 | NOT_RUN（本轮无实验） |
 
 2026-11-02 用户授权真实调用与 GitHub 推送；沿用最多 3 次物理调用、累计 USD 2 的限制。R0 与 R1 工程复验通过，R1 真实闭环 PASS 后才启动 R2。实际调用 2 次，保守计费 USD 0.001745，结果评论一条；模型落库与远程写回执两个 SIGKILL 恢复点通过。
 
