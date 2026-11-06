@@ -1,0 +1,32 @@
+{
+  "manifest_hash": "0d727c2d62b6310b131d5ab0d2a7235ba03734497c260b230c2fc21e969b7fa0",
+  "new_calls": 60,
+  "new_upper_cost_micros": 5721,
+  "new_shared_cap_calls": 68,
+  "new_shared_cap_micros": 208896,
+  "budget": {
+    "budget_hash": "82fa964ed0d37ab39775acaf161d2ae2a6600fddb932b1e4f0cf36af298d8eb5",
+    "limit_micros": 208896,
+    "call_limit": 68,
+    "used_calls": 60,
+    "reserved_micros": 0,
+    "settled_micros": 5721
+  },
+  "prior": {
+    "calls": 690,
+    "cost_micros": 305792,
+    "unknown": 0
+  },
+  "cumulative": {
+    "calls": 750,
+    "cost_micros": 311513,
+    "unknown": 0
+  },
+  "unknown": 0,
+  "reserved_micros": 0,
+  "old_grant_unused_calls_transferred": 0,
+  "unused_new_calls_not_automatically_retried": 8,
+  "old_ABC_bindings": 0,
+  "separate_coordination_bindings": 60,
+  "accounting": "Per-call ceiling at frozen peak cache-miss rates, not exact provider invoice"
+}

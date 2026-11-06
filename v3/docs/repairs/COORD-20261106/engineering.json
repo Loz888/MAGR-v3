@@ -1,0 +1,47 @@
+{
+  "task": "V31-R6-COORD-REPAIR",
+  "status": "PASS",
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "reason": null,
+  "argv": [
+    "/workspace/MAGR-v3/v3/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_coordination_candidates.py",
+    "tests/test_coordination_eval.py",
+    "tests/test_router_model.py",
+    "tests/test_routing.py",
+    "tests/test_duplex.py",
+    "tests/test_environment.py",
+    "tests/test_verification.py",
+    "--junitxml=/workspace/MAGR-v3/v3/evidence/V31-R6-COORD-REPAIR/20261106T022233Z-71854780/junit.xml"
+  ],
+  "cwd": "/workspace/MAGR-v3/v3",
+  "started_at": "2026-11-06T02:22:33.514408+00:00",
+  "finished_at": "2026-11-06T02:23:08.832738+00:00",
+  "duration_seconds": 35.303,
+  "command_exit_code": 0,
+  "exit_code": 0,
+  "counts": {
+    "tests": 98,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "components": {
+    "postgres": "real_17_original_migrations_and_separate_DEF_schema",
+    "redis": "real_source_cache_trial_namespace_only",
+    "worker": "same_real_LangGraph_R2_and_production_Verifier",
+    "model": "controlled_HTTP_ONLY_in_registered_tests",
+    "recovery": "real_SIGKILL_known_response_reuse_epoch_fencing_unknown_no_resend",
+    "live": "NOT_RUN_until_exact_new_manifest_authorization",
+    "business_history": "original_ABC87_PASS3_FAIL_unmodified"
+  },
+  "git_commit": "4618216eeff73d9085c8fa9e61ba29249c76f3bb",
+  "source_sha256": "2fc55ce7a9980ae1613318394f75a25d2acf576433813f9f07b48892e7ef96b1",
+  "finished_source_sha256": "2fc55ce7a9980ae1613318394f75a25d2acf576433813f9f07b48892e7ef96b1",
+  "log_path": "evidence/V31-R6-COORD-REPAIR/20261106T022233Z-71854780/command.log",
+  "attempt_path": "evidence/V31-R6-COORD-REPAIR/20261106T022233Z-71854780"
+}

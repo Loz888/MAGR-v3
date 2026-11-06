@@ -12,4 +12,4 @@
 
 检查：make lint、make typecheck、make verify TASK=V31-R6-COORD-REPAIR。必须保留 v1 全部原始报告、11项初始错误与22项级联路由失败，以及原 A/B/C 87/90 与三项失败的逐文件哈希。真实复测另记，不替换旧成绩。公开材料采用显式文件清单与递归脱敏扫描；授权不包括 GitHub 业务评论/PR/合并。
 
-状态：实施；新版本冻结及实测结果见后续修复档案。
+状态：DONE（E/F路由修复与真实复验；共享Worker残余1项FAIL保留）。稳定工程98项、lint、类型检查PASS；新manifest `0d727c2d…69b7fa0`，8/8运行完整，路由各36/36，正常E7/8、F8/8。60次、US$0.005721，累计750次、US$0.311513，unknown/预占0。完整过程、历史失败保护和剩余Worker问题见 [修复档案](../../v3/docs/repairs/COORD-20261106/README.md)。

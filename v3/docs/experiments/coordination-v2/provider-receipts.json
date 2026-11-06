@@ -1,0 +1,1446 @@
+{
+  "receipts": [
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-F",
+      "arm": "F",
+      "role": "Worker",
+      "call_id": "481f61d0-3e07-4bbf-a3be-cb649b3ae6dd",
+      "run_id": "9839655d-d113-4555-bbc0-0fd3fe0514f4",
+      "provider_response_id": "58fab53c-da78-4a9a-8c0b-1ae652a31d7f",
+      "model": "deepseek-flash",
+      "request_sha256": "b023c89874873b59908c1ef81e3528d639f7917f47fa644428ca7ebb138e9a15",
+      "response_sha256": "d81451fe87a256183d9a96e427c36d966a1c3d6cc1b2d9740d58f64dfc4c796d",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 265,
+        "completion_tokens": 66,
+        "total_tokens": 331,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 265
+      },
+      "settled_upper_micros": 159,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "abea67ed-35b8-4667-b29d-b68e8e394de7",
+      "run_id": "883f0b53-e6e1-47bb-90ed-c08504d5c1a2",
+      "provider_response_id": "4f63b2ee-5d9f-41c1-afe6-310a39913ba2",
+      "model": "deepseek-flash",
+      "request_sha256": "bc8e9b52feb57e5c6f2f95ad814c5e0693b5ee41b2423b639759d724c801719b",
+      "response_sha256": "e56470f1916c2245252d3959f7baad88982bdd95462edabad706b3c6fdc27f8c",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 146,
+        "completion_tokens": 19,
+        "total_tokens": 165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 146
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-F",
+      "arm": "F",
+      "role": "Worker",
+      "call_id": "aedc89a7-ddbd-49eb-94f3-23d4f78f67fe",
+      "run_id": "3d989adf-7bf5-40f9-85e2-d99ab92c2cb6",
+      "provider_response_id": "7545e0b3-fcfc-4726-b03b-3991df77e424",
+      "model": "deepseek-flash",
+      "request_sha256": "210923904ce5f1dd4514e9b3d07d0f1f8cbb73c1250244407f4ed874ec89c9cc",
+      "response_sha256": "afa242af8a3fd3bb0bebe6ad3c0f815c3a99c0c017fc0da56916bb431118b3b7",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 268,
+        "completion_tokens": 69,
+        "total_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "settled_upper_micros": 164,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "b6ec65f9-1d72-4bd4-9984-bbd16dd037e4",
+      "run_id": "7f0b6a80-6617-426c-be1a-b30ac884b1e7",
+      "provider_response_id": "578ec311-1031-4ba2-8794-2bea7dd3d35b",
+      "model": "deepseek-flash",
+      "request_sha256": "924e9da4dc69cfb079551c32415437580890eab89f43da5ba5ab0818ef9b9b9c",
+      "response_sha256": "bf8d83fd77c180730a804bf90379df91f6f467c363e6cd4c7d683df8224977c3",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 145,
+        "completion_tokens": 19,
+        "total_tokens": 164,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 145
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "c455e82b-df80-4f35-ba37-f33189a45ecf",
+      "run_id": "89090f4c-9714-4673-9712-43c2282184d5",
+      "provider_response_id": "20b28afa-6130-4e6b-8a55-aadf3cee0950",
+      "model": "deepseek-flash",
+      "request_sha256": "5173035a67923fd1b3ca57d6cf054af33f21e019cb753b671d34b28104900090",
+      "response_sha256": "9daac737e5c735033f46e8849bf60c6de14bd22ead51268561723add7ed3dedb",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 201,
+        "completion_tokens": 33,
+        "total_tokens": 234,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 201
+      },
+      "settled_upper_micros": 100,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-E",
+      "arm": "E",
+      "role": "Worker",
+      "call_id": "218a6e6f-0402-4000-8687-0353d7788fe0",
+      "run_id": "f2959943-3ff2-4455-9a35-e54384b0a40b",
+      "provider_response_id": "08e1ca26-736d-4897-9245-977f429a7851",
+      "model": "deepseek-flash",
+      "request_sha256": "455185a1e92c4c5fe7da06f2b57598b890dea112dec2220172f655998fb2f637",
+      "response_sha256": "6574a63d1a0c400b804a5a25ed153f7ee400d7225132dffbd212d4743c92cce2",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 264,
+        "completion_tokens": 65,
+        "total_tokens": 329,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 264
+      },
+      "settled_upper_micros": 158,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "2a0a5e2d-ce17-4db0-8749-41cd2b8e41ee",
+      "run_id": "8e58087f-8913-4a8a-a626-1e203cc7b575",
+      "provider_response_id": "54109af7-415b-4fbc-9c15-a8d23589fa84",
+      "model": "deepseek-flash",
+      "request_sha256": "766398cccf22386369f580fcff73b4287ef2445dfb959fef52d6a166224bc3a3",
+      "response_sha256": "7834c015557ede2adb942e73c664e05d7e8627e713efbf13a79a6931b38f0a94",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 156,
+        "completion_tokens": 19,
+        "total_tokens": 175,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 156
+      },
+      "settled_upper_micros": 70,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "634f03d7-a90d-482b-81c5-5a8139aaa998",
+      "run_id": "d4de8c83-979f-4790-9ba5-93b9f2b08329",
+      "provider_response_id": "fd1f85d4-96af-47de-a7d6-ed9b64f69865",
+      "model": "deepseek-flash",
+      "request_sha256": "5ab0efaf23b2d2d39b43fa5b76de35ce2acd5867b2607e812b97978bdc032d67",
+      "response_sha256": "11ba7a17078aaea7b27b089e1a28d639ccaaace0bd9455bdb98d2af0cb9acf1a",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 152,
+        "completion_tokens": 19,
+        "total_tokens": 171,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 152
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "86519727-7a69-4de1-8729-f5d4ac60e803",
+      "run_id": "48ebc1ce-da1c-4a88-bdd5-c936b5ae6f66",
+      "provider_response_id": "e73e91b0-5e09-43c4-8cb8-667f6d07c204",
+      "model": "deepseek-flash",
+      "request_sha256": "fbc19e0ad1a63c85026ab8f54924ecf0842890fe980ac4766fe3a3b17c8579e1",
+      "response_sha256": "add09e4c8eb8cc2e14d550cf7d3ffa870a0821b4777dfd16aed75bddadecbdcd",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 156,
+        "completion_tokens": 19,
+        "total_tokens": 175,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 156
+      },
+      "settled_upper_micros": 70,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "8c2ae912-4e65-4446-9024-893399250e81",
+      "run_id": "6d4c0394-d86d-4ee7-af73-3c3ce78b6429",
+      "provider_response_id": "ecfa2313-5dee-4af5-923f-f1894629283b",
+      "model": "deepseek-flash",
+      "request_sha256": "974ae83539539a6080e98751c874beb9cb598f27b3ccfdcfd4f52134c45eb83c",
+      "response_sha256": "e4952b99fcbd3b4dee5a6df3e7ed04ed0614607f2c9c3e50269dba8cb1a864ef",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 152,
+        "completion_tokens": 19,
+        "total_tokens": 171,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 152
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "8f0bdfa0-7a6b-4fa3-8c6a-7e3cd872254d",
+      "run_id": "eecb6688-a675-452f-a209-c78bab60f228",
+      "provider_response_id": "3ee2b434-cec7-4e4a-b330-125604bd35a8",
+      "model": "deepseek-flash",
+      "request_sha256": "906f0757da03874ac526472172c5acfc8579eddea26551b1b182be072fe5f608",
+      "response_sha256": "7353dab0aea006c5939ae661524fdc8f21f6645a9e1fe848ff1c1aaf04d97e05",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 151,
+        "completion_tokens": 19,
+        "total_tokens": 170,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 151
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "a91046cf-e782-4db4-8bd8-0a54a4306b02",
+      "run_id": "e73e5493-93bf-4dd8-b65e-3cbb6883b788",
+      "provider_response_id": "38c0aa4d-2db5-443a-a60b-b043d17f9b9a",
+      "model": "deepseek-flash",
+      "request_sha256": "b9e90e6b429116e6c8dfaa4dd99e8cf2d7f0d62b90493f6832af75685ea54f96",
+      "response_sha256": "a0457d6b42b62921128621024ac33db381641b579b47762c11bc03fce55a067a",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 151,
+        "completion_tokens": 19,
+        "total_tokens": 170,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 151
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-E",
+      "arm": "E",
+      "role": "Worker",
+      "call_id": "c393ce73-6e06-48d7-a55a-3fde0bdb0c7b",
+      "run_id": "4755802d-39b3-4394-a401-84d15454d769",
+      "provider_response_id": "24628714-2cd1-4e87-9ffa-a3fc3ab477d4",
+      "model": "deepseek-flash",
+      "request_sha256": "a2162282d1f88f350908e39524491f4f13acf529b16c033890de34d5fe030f02",
+      "response_sha256": "95089b2aa1205039ca9c90bec54de0005861906b8ffc96a6db9858d08ba16eb1",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 268,
+        "completion_tokens": 69,
+        "total_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "settled_upper_micros": 164,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "de8bf56c-32e4-49c7-94db-bbed601553c6",
+      "run_id": "652332dd-8cbe-4750-9723-a2f53bd4a93c",
+      "provider_response_id": "5a20b7a5-74f0-43c4-918a-487518f64b3f",
+      "model": "deepseek-flash",
+      "request_sha256": "924e9da4dc69cfb079551c32415437580890eab89f43da5ba5ab0818ef9b9b9c",
+      "response_sha256": "903ae1adbec30447097c2041d6068230c3612277f82bd56a8ebe78de57345ba7",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 145,
+        "completion_tokens": 19,
+        "total_tokens": 164,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 145
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "f5f983cc-e19f-404c-9a1a-f850844ed146",
+      "run_id": "92082c11-a322-4f66-8554-6331cc56860e",
+      "provider_response_id": "2384dee6-478e-4f79-ad7b-b7d1834da278",
+      "model": "deepseek-flash",
+      "request_sha256": "bc8e9b52feb57e5c6f2f95ad814c5e0693b5ee41b2423b639759d724c801719b",
+      "response_sha256": "cdf7bfc9b9069dfaa40f8a1ecce5cbe0199bed032ede4ace42856feb69abb59e",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 146,
+        "completion_tokens": 19,
+        "total_tokens": 165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 146
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "1425815a-cce9-4866-88ee-a99cbe0ff025",
+      "run_id": "d7cac4a9-08cf-4877-bd9d-912b0b2bba80",
+      "provider_response_id": "7d8078ef-5524-44d2-b455-d1a7809f6e56",
+      "model": "deepseek-flash",
+      "request_sha256": "924e9da4dc69cfb079551c32415437580890eab89f43da5ba5ab0818ef9b9b9c",
+      "response_sha256": "efbecdf5875fe6ca8ca39c4542db0fc7c4a71bfb4032e4ba188f901d4ec3a828",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 145,
+        "completion_tokens": 19,
+        "total_tokens": 164,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 145
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-F",
+      "arm": "F",
+      "role": "Worker",
+      "call_id": "25aa02e4-23a6-4164-a24c-a45c566dd4b0",
+      "run_id": "a1dbad2e-5fcc-4244-b6f6-cf68ed1193e6",
+      "provider_response_id": "a5bf22d6-da78-4117-9a41-39152e873e1c",
+      "model": "deepseek-flash",
+      "request_sha256": "e13092fa3b261ebcba803b8ad2222b0a2ef84d744ebdce96d284e7bda96eb752",
+      "response_sha256": "5d7343d30972c6a320dbeddcd889b7591024a998b4ed86a7d45450cb406489fe",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 268,
+        "completion_tokens": 69,
+        "total_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "settled_upper_micros": 164,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "6d2662dc-3e7a-479b-b194-0612dfb204e8",
+      "run_id": "89a47d72-62bb-44dc-bfb6-498fd8c86b59",
+      "provider_response_id": "41e41e94-7a25-4b20-93ae-671491853108",
+      "model": "deepseek-flash",
+      "request_sha256": "bc8e9b52feb57e5c6f2f95ad814c5e0693b5ee41b2423b639759d724c801719b",
+      "response_sha256": "98ab51bffa4a13d0b1d6818c32a51290dd2cfe9cc761a9593797fb16f9778534",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 146,
+        "completion_tokens": 19,
+        "total_tokens": 165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 146
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-F",
+      "arm": "F",
+      "role": "Worker",
+      "call_id": "876e8e63-9a39-4e64-9195-b02963900c29",
+      "run_id": "ed845357-b51a-4416-86b4-9832033af275",
+      "provider_response_id": "a0ca820b-33a5-44be-b7fe-67f36af74a51",
+      "model": "deepseek-flash",
+      "request_sha256": "650198a5d5fd08671c0e71a51a1ae55ac18d419ed29d12d19ce5ed86b5c15ce8",
+      "response_sha256": "f7a04a5dbe4dfa9a2ee22cfcb3710095621b6c74dd52861e2e72e6ccb6f84ec1",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 267,
+        "completion_tokens": 68,
+        "total_tokens": 335,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 267
+      },
+      "settled_upper_micros": 162,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "a5a5d06c-6265-40de-bf85-c070f707be03",
+      "run_id": "289a9006-30cf-4a74-a208-e408393a8d1c",
+      "provider_response_id": "e95361f3-e7bb-4451-b123-6cf4b778f215",
+      "model": "deepseek-flash",
+      "request_sha256": "5173035a67923fd1b3ca57d6cf054af33f21e019cb753b671d34b28104900090",
+      "response_sha256": "352f2e25a7606bb4e0c22e3d003c6bec473657ab5cf868e1944937bf10ee2495",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 201,
+        "completion_tokens": 33,
+        "total_tokens": 234,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 201
+      },
+      "settled_upper_micros": 100,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "08be17b2-4258-486c-9733-7b9a0f88bdff",
+      "run_id": "1ca844dc-2a33-45d0-aebb-4d3282288870",
+      "provider_response_id": "c74f3072-a02b-4e48-8e6e-9d53fe19d4cb",
+      "model": "deepseek-flash",
+      "request_sha256": "bc8e9b52feb57e5c6f2f95ad814c5e0693b5ee41b2423b639759d724c801719b",
+      "response_sha256": "e2c6da82946915ebb9d498ee7be4387796601b0417bf7e108f2806d019ff825d",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 146,
+        "completion_tokens": 19,
+        "total_tokens": 165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 146
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "39a7681a-dc70-4142-a194-12f672f2c7da",
+      "run_id": "a6bb1832-9899-465f-804e-e6cd9fb47833",
+      "provider_response_id": "5951f78f-bcd9-4dc5-9b4a-2e04e4b05234",
+      "model": "deepseek-flash",
+      "request_sha256": "fbc19e0ad1a63c85026ab8f54924ecf0842890fe980ac4766fe3a3b17c8579e1",
+      "response_sha256": "6ecac34686503b5757122513af18155bb998c3b8d7e374f3c5059d5f9b686cb5",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 156,
+        "completion_tokens": 19,
+        "total_tokens": 175,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 156
+      },
+      "settled_upper_micros": 70,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "role": "Worker",
+      "call_id": "4d328556-40c0-48ea-ab0a-ff94a41c6e95",
+      "run_id": "694e5f11-f11e-4276-8c11-fc292c4d0056",
+      "provider_response_id": "af65455f-da13-47a7-8403-ae44e200bfa8",
+      "model": "deepseek-flash",
+      "request_sha256": "7ad41efb4f5a38cd524a593f0275f305f8973ab392f9500227b8b726604f801b",
+      "response_sha256": "27eb9b7a7f649730442e16c646ec3c53df9329b4f1ef9132fb1442525130dc6e",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 268,
+        "completion_tokens": 65,
+        "total_tokens": 333,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "settled_upper_micros": 159,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "role": "Worker",
+      "call_id": "77cfbfb4-fd4c-4f55-a742-f652519f39d3",
+      "run_id": "3a2a0235-6625-44e6-a0c0-69569ef77075",
+      "provider_response_id": "ff1864aa-df7b-4d0d-bf41-98ced5744154",
+      "model": "deepseek-flash",
+      "request_sha256": "e78ae2f0a856a96d49dbd4c361fd0bcc2c7763b2e7e1d7ba5d243222acb631a2",
+      "response_sha256": "22dc5b4ddfd4a13fee91f477958cca634d8c562837904c6ef759d28e234c6029",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 267,
+        "completion_tokens": 68,
+        "total_tokens": 335,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 267
+      },
+      "settled_upper_micros": 162,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "8adf9be5-e33b-4735-a276-84a13309bd96",
+      "run_id": "6730e5e8-a5e7-4e4b-b6a6-00f8fd223127",
+      "provider_response_id": "4623e97b-fb58-4f86-9fa6-119ff10d97cb",
+      "model": "deepseek-flash",
+      "request_sha256": "766398cccf22386369f580fcff73b4287ef2445dfb959fef52d6a166224bc3a3",
+      "response_sha256": "5ab3a9223d01dbcdaf54833f0b31271c7f69c400b691161f830d144bf6e77d0d",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 156,
+        "completion_tokens": 19,
+        "total_tokens": 175,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 156
+      },
+      "settled_upper_micros": 70,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "993f2e50-e4a2-4938-81b5-7f5ae301e1a9",
+      "run_id": "af138bf3-30bf-43f0-8fe9-b90bd3ec2554",
+      "provider_response_id": "4096659e-4141-4647-80a6-3e57b55598b3",
+      "model": "deepseek-flash",
+      "request_sha256": "5ab0efaf23b2d2d39b43fa5b76de35ce2acd5867b2607e812b97978bdc032d67",
+      "response_sha256": "03b5d6a21ad2cfa4ddacfd1557dae9045715a73360fd28946dd36636da7da82e",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 152,
+        "completion_tokens": 19,
+        "total_tokens": 171,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 152
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "b6497787-3970-49b7-874e-b09fbe7091f4",
+      "run_id": "7dd3e459-90f8-4e12-b161-dba7888b3390",
+      "provider_response_id": "bb9b5a94-2be7-469a-a1b2-c119c3f971b5",
+      "model": "deepseek-flash",
+      "request_sha256": "974ae83539539a6080e98751c874beb9cb598f27b3ccfdcfd4f52134c45eb83c",
+      "response_sha256": "d233e8221b9d3dd1184bf8967905cdb486e47d7e6a8c57aa44aac6e0a611656c",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 152,
+        "completion_tokens": 19,
+        "total_tokens": 171,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 152
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "c848a594-786c-4acf-8668-1e5535eb6080",
+      "run_id": "cded6b01-6d42-454a-b400-2818eef152e9",
+      "provider_response_id": "c1ac19c9-8aa1-4975-bc7b-7354319baa0a",
+      "model": "deepseek-flash",
+      "request_sha256": "924e9da4dc69cfb079551c32415437580890eab89f43da5ba5ab0818ef9b9b9c",
+      "response_sha256": "af28ae081d63e344cb7764165d58eee8b8df6926146e64309fe70fa4bcd1059a",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 145,
+        "completion_tokens": 19,
+        "total_tokens": 164,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 145
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "d0d5f55d-f4fa-4d4a-8088-c0287c30c706",
+      "run_id": "6942e586-42c4-46e8-80e0-31837b5f6aff",
+      "provider_response_id": "956500d7-f913-4af2-b5e5-e6c556f839df",
+      "model": "deepseek-flash",
+      "request_sha256": "906f0757da03874ac526472172c5acfc8579eddea26551b1b182be072fe5f608",
+      "response_sha256": "8390449377646ce291333218f98a969bf7d807fc1a249485b51a32ffca65b191",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 151,
+        "completion_tokens": 19,
+        "total_tokens": 170,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 151
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "e02d1d16-d13f-4b57-98ac-741b1e746ea6",
+      "run_id": "74cd11b6-85f7-410e-ba01-edad2b2c681e",
+      "provider_response_id": "1b4dbb24-0aa3-4070-a4dd-af7af0b149e6",
+      "model": "deepseek-flash",
+      "request_sha256": "b9e90e6b429116e6c8dfaa4dd99e8cf2d7f0d62b90493f6832af75685ea54f96",
+      "response_sha256": "469de910d22c28a9bd2c6a17d4a56024421e55c4ac04aa038df274aa4650fed4",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 151,
+        "completion_tokens": 19,
+        "total_tokens": 170,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 151
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "098917c9-94c4-4604-938e-c3ea77cc02e7",
+      "run_id": "05310e71-6f06-4407-a2f6-df64550e55b9",
+      "provider_response_id": "b3a92ea3-64e1-4ae2-81b9-21aca56263e8",
+      "model": "deepseek-flash",
+      "request_sha256": "bc8e9b52feb57e5c6f2f95ad814c5e0693b5ee41b2423b639759d724c801719b",
+      "response_sha256": "0627c9a3053d7e83c261460a3afc266f503c4c0943162735f8fec21539c96d2f",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 146,
+        "completion_tokens": 19,
+        "total_tokens": 165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 146
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-F",
+      "arm": "F",
+      "role": "Worker",
+      "call_id": "1050a111-9799-488d-921d-5571dd2de0be",
+      "run_id": "71af76bf-f096-4662-b394-0ef80aac7039",
+      "provider_response_id": "20fc231d-10be-4cb9-9958-d093c4826306",
+      "model": "deepseek-flash",
+      "request_sha256": "94125504a44646f054034683c0bbe32ec0f1bf651eaa31d60dd87b591dae579d",
+      "response_sha256": "bab02d965a3f5c0dded65dd95e506269620be026d3fe55e236d06da246635358",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 262,
+        "completion_tokens": 63,
+        "total_tokens": 325,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 262
+      },
+      "settled_upper_micros": 155,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-F",
+      "arm": "F",
+      "role": "Worker",
+      "call_id": "942f570c-672e-4678-a4c8-4fecc36d7190",
+      "run_id": "e5bf4a5e-2328-4900-ae7e-866608e5fc66",
+      "provider_response_id": "9f5439a0-939b-44ca-aa7d-763dcb466c75",
+      "model": "deepseek-flash",
+      "request_sha256": "00030e469d64eea7e90ff12d823514a0ac27bb2570dbe9cb768cdbe3a4df7deb",
+      "response_sha256": "da60f1d84fbcf71d654a853476b96a6b08a87cc2fc91bfc98b4394322c22d58f",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 268,
+        "completion_tokens": 69,
+        "total_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "settled_upper_micros": 164,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "9d42d3bd-8981-4524-8180-a9a39b94fbca",
+      "run_id": "7ffc7cd6-5b8e-48d1-b516-5b01e17b9ba0",
+      "provider_response_id": "5882c1db-1f98-44a1-944f-8e25ed5cfa25",
+      "model": "deepseek-flash",
+      "request_sha256": "924e9da4dc69cfb079551c32415437580890eab89f43da5ba5ab0818ef9b9b9c",
+      "response_sha256": "1f04664f2e772591b6dcab877b3508175ab93e2b7f49b156cb44fd24a8057dde",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 145,
+        "completion_tokens": 19,
+        "total_tokens": 164,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 145
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "dad9bde4-afc6-4e39-8f1d-3a4b6fd31140",
+      "run_id": "096b9317-2bac-40f1-a470-6c6d5c58afe0",
+      "provider_response_id": "574a3a44-c83e-4395-bd4e-ec9213e5fdcc",
+      "model": "deepseek-flash",
+      "request_sha256": "5173035a67923fd1b3ca57d6cf054af33f21e019cb753b671d34b28104900090",
+      "response_sha256": "98e6da97674e2c6c8b3d92889eb91446cf3c31e50798bcaa29c9187e0b40de51",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 201,
+        "completion_tokens": 33,
+        "total_tokens": 234,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 201
+      },
+      "settled_upper_micros": 100,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "1460feb2-e9ac-498d-8598-5702459d5ab2",
+      "run_id": "284ba042-b5a0-4fe2-b90e-08aee49d11c8",
+      "provider_response_id": "e6165df5-f78c-4d4a-80b5-0b2c0c7373fb",
+      "model": "deepseek-flash",
+      "request_sha256": "5ab0efaf23b2d2d39b43fa5b76de35ce2acd5867b2607e812b97978bdc032d67",
+      "response_sha256": "5e400cdaf93f886b839eb12d2607050e31e086b867fe14765bb0e46d9b140a6b",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 152,
+        "completion_tokens": 19,
+        "total_tokens": 171,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 152
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-E",
+      "arm": "E",
+      "role": "Worker",
+      "call_id": "3caa90bd-c49c-4fed-9bf5-17daf9368770",
+      "run_id": "51a93c11-82f9-41f2-a29e-9a510de95d9b",
+      "provider_response_id": "e3cceb28-c49d-4fe2-93a8-1e16bc3b46ae",
+      "model": "deepseek-flash",
+      "request_sha256": "a6c5964fce9f939998f3d45d7ca2b00a3b9b0366fe7fed4c6ed7d979602d1b57",
+      "response_sha256": "3c0446dff88080c5153a72991d69aa5691f404286c65202a6aa96f1ef493b864",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 266,
+        "completion_tokens": 67,
+        "total_tokens": 333,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 266
+      },
+      "settled_upper_micros": 161,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "61a8481f-718f-4160-9ccc-4da653e0a0e0",
+      "run_id": "a559fda8-ccfd-4040-a580-50eb244e8ad3",
+      "provider_response_id": "d60cb992-a091-4b43-a0fd-08636bd48905",
+      "model": "deepseek-flash",
+      "request_sha256": "fbc19e0ad1a63c85026ab8f54924ecf0842890fe980ac4766fe3a3b17c8579e1",
+      "response_sha256": "9e4798a0943fd6d5fe3c4358d4ab2353db74d5f7797eb207df1c99c85be2ccf0",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 156,
+        "completion_tokens": 19,
+        "total_tokens": 175,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 156
+      },
+      "settled_upper_micros": 70,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "6fbee1ab-cfd7-4dcb-979e-be338b9b52c1",
+      "run_id": "148d838a-a0d1-4c6c-bff5-a07214e564b9",
+      "provider_response_id": "69d7d4c5-dbe6-4f91-86ed-c254905e96e1",
+      "model": "deepseek-flash",
+      "request_sha256": "766398cccf22386369f580fcff73b4287ef2445dfb959fef52d6a166224bc3a3",
+      "response_sha256": "50143cc7b9dbdb92747313b6e3e89d3c777fbd2b04d328999cdf4d286dc92aca",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 156,
+        "completion_tokens": 19,
+        "total_tokens": 175,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 156
+      },
+      "settled_upper_micros": 70,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-E",
+      "arm": "E",
+      "role": "Worker",
+      "call_id": "7cc12dd5-3326-45a6-9639-12582c35237f",
+      "run_id": "67d47fef-aea9-42e5-bc2c-b55d5915f382",
+      "provider_response_id": "2fa78d87-0c5d-4716-b216-89a0003d4205",
+      "model": "deepseek-flash",
+      "request_sha256": "a26040da98d2d9e85223738661a94a5d8363c941740d09515f373c1f7c846f78",
+      "response_sha256": "45aa7eabec1f9afa6b5c92a66cab4c809a4f0440ff76aadf87d4786f487932c6",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 268,
+        "completion_tokens": 69,
+        "total_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "settled_upper_micros": 164,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "7f95522e-d621-4f54-b806-d666d53d308d",
+      "run_id": "3afa1d1f-1905-48ca-9353-c6bd978cbb35",
+      "provider_response_id": "4af56690-f57b-4c35-9f31-ab4e7f740214",
+      "model": "deepseek-flash",
+      "request_sha256": "906f0757da03874ac526472172c5acfc8579eddea26551b1b182be072fe5f608",
+      "response_sha256": "811f4728f88c15df5ff8f2d385df8889fbf2ea0200d5422155859488878ac8eb",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 151,
+        "completion_tokens": 19,
+        "total_tokens": 170,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 151
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "860d08e3-ca35-4c48-95cc-7dd93eef2eff",
+      "run_id": "75848a0a-1fcb-44e2-b1f4-58c9e884c0a9",
+      "provider_response_id": "51629263-980d-4c6d-ab38-3f14f043a1d6",
+      "model": "deepseek-flash",
+      "request_sha256": "b9e90e6b429116e6c8dfaa4dd99e8cf2d7f0d62b90493f6832af75685ea54f96",
+      "response_sha256": "e7a23431782517f8fbec455ba2756851c09503f363f5da3697b7423272a60b34",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 151,
+        "completion_tokens": 19,
+        "total_tokens": 170,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 151
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "8b9ac49c-f6d4-4a18-8f1c-77e0cc35aa28",
+      "run_id": "6e9856f8-19bb-49fe-aa0e-0e7c5bd4dc7d",
+      "provider_response_id": "5df1f7b6-fc6f-4a0c-957d-a186c0985770",
+      "model": "deepseek-flash",
+      "request_sha256": "bc8e9b52feb57e5c6f2f95ad814c5e0693b5ee41b2423b639759d724c801719b",
+      "response_sha256": "6980ed4524b5e096cea4052bc9444b0353cba67d9a22042880169aef23377f91",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 146,
+        "completion_tokens": 19,
+        "total_tokens": 165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 146
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "bd32ae7b-1cc9-4167-9b8b-321fed25ebf8",
+      "run_id": "f9c65316-94ef-4c39-92a6-75caf271a3da",
+      "provider_response_id": "062c76d4-bd7e-4f78-9edf-0649f8fe4b5b",
+      "model": "deepseek-flash",
+      "request_sha256": "974ae83539539a6080e98751c874beb9cb598f27b3ccfdcfd4f52134c45eb83c",
+      "response_sha256": "3a1ac8d46f64a771f892a5d23debc73cfeeca2cb88bfbe21c22198317e9dda9a",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 152,
+        "completion_tokens": 19,
+        "total_tokens": 171,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 152
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-cold-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "eef11208-5040-45b6-8703-952a94653990",
+      "run_id": "2176089b-8534-49cd-aa03-fafa8eb78cd6",
+      "provider_response_id": "380e00b0-f8c4-4e37-890e-14862e296ef1",
+      "model": "deepseek-flash",
+      "request_sha256": "924e9da4dc69cfb079551c32415437580890eab89f43da5ba5ab0818ef9b9b9c",
+      "response_sha256": "286717b589228de21de0f24ffed4cb16a96f666f46db2c9817f867b75ef1244a",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 145,
+        "completion_tokens": 19,
+        "total_tokens": 164,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 145
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "061bb7d0-f797-416a-ab1f-a47aa2fbca3c",
+      "run_id": "3ca51204-472a-4613-af1a-3f564cba1349",
+      "provider_response_id": "886d5c01-664f-4947-9d67-efe0df90c70a",
+      "model": "deepseek-flash",
+      "request_sha256": "b9e90e6b429116e6c8dfaa4dd99e8cf2d7f0d62b90493f6832af75685ea54f96",
+      "response_sha256": "24cd9f95b745ee9e3fa7e99281f80530dd0d9d88f4562b6f945048c77748c132",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 151,
+        "completion_tokens": 19,
+        "total_tokens": 170,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 151
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "1910a646-91dc-45cf-b90b-d8732033ec5c",
+      "run_id": "229ed2cb-9f42-431a-8172-e5b46fdc582b",
+      "provider_response_id": "2e7d762b-0be6-4037-8eb6-dd9bcf57a14f",
+      "model": "deepseek-flash",
+      "request_sha256": "bc8e9b52feb57e5c6f2f95ad814c5e0693b5ee41b2423b639759d724c801719b",
+      "response_sha256": "6dd1889b5f9cc402f0d59f775c09026e23b226c2eb40aaaadfe0af46fb4fc747",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 146,
+        "completion_tokens": 19,
+        "total_tokens": 165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 146
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "407e4a82-dbfb-4c9e-905d-9ae3c6f96c9a",
+      "run_id": "c535a4aa-4a58-4ed7-9b15-ce31299a1434",
+      "provider_response_id": "4ded9431-8bae-479d-85cb-1fbb7c481ad8",
+      "model": "deepseek-flash",
+      "request_sha256": "5ab0efaf23b2d2d39b43fa5b76de35ce2acd5867b2607e812b97978bdc032d67",
+      "response_sha256": "d51ce569147bbc31ce84611ff5073c3d9ed2e8847b1b239dc5dbbcecc6148357",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 152,
+        "completion_tokens": 19,
+        "total_tokens": 171,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 152
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "716b8163-5b3f-48c9-b995-2652edb7086c",
+      "run_id": "9f1e45d2-6e6f-4c7c-a990-7e8ec1173a92",
+      "provider_response_id": "08b3a3c8-1b0a-44ac-b24e-2de2261abcf9",
+      "model": "deepseek-flash",
+      "request_sha256": "766398cccf22386369f580fcff73b4287ef2445dfb959fef52d6a166224bc3a3",
+      "response_sha256": "b4e02bacbe17bbe4167b0e56430ad65fd058881884131b4a23201de53965802e",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 156,
+        "completion_tokens": 19,
+        "total_tokens": 175,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 156
+      },
+      "settled_upper_micros": 70,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-E",
+      "arm": "E",
+      "role": "Worker",
+      "call_id": "7e9e78be-6a06-452f-b2ed-9a6e8a0e0ff5",
+      "run_id": "f02f3683-e746-4d2e-9ae4-f326be95fbbb",
+      "provider_response_id": "02d71299-1d0e-4181-875a-f2a5a4fe42d0",
+      "model": "deepseek-flash",
+      "request_sha256": "959bbc1cb943b11642ddaccb1a878c5098964acc8a306985153040ff40c86c59",
+      "response_sha256": "4d708a887cc48beb215d21b7cac8bcc0399ebd621f2f03f62124d0ffac2b2ced",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 268,
+        "completion_tokens": 69,
+        "total_tokens": 337,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "settled_upper_micros": 164,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "de686856-0881-4aa4-8fdd-2beba363cb0f",
+      "run_id": "b0fe653c-444a-4955-9b20-0d7fe2a58f4f",
+      "provider_response_id": "86688fc5-fd11-47df-b15a-8fead28754a0",
+      "model": "deepseek-flash",
+      "request_sha256": "974ae83539539a6080e98751c874beb9cb598f27b3ccfdcfd4f52134c45eb83c",
+      "response_sha256": "a0b5e7652be34a82f23e718725fcc9feb741952ff92521d7f48498bb2a6a7dc4",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 152,
+        "completion_tokens": 19,
+        "total_tokens": 171,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 152
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-E",
+      "arm": "E",
+      "role": "Worker",
+      "call_id": "e19b0d17-49d2-45de-96d2-74d3d2a3bf99",
+      "run_id": "ca8c2469-515e-46ad-8d18-7ff0eeb89671",
+      "provider_response_id": "c619d881-39a9-4842-8048-96098e8b5b9e",
+      "model": "deepseek-flash",
+      "request_sha256": "4e38a0acdd7a106e22ae0fab0738bab9fc769cf1c991b4316501641283d37ff7",
+      "response_sha256": "4916f9856aa9df40225bf67953b26b903a6f5603f59ee76e4b835a7b9f509226",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 267,
+        "completion_tokens": 68,
+        "total_tokens": 335,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 267
+      },
+      "settled_upper_micros": 162,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "eab2ef3b-49d6-432e-8151-7455bc890dd3",
+      "run_id": "c2ae6bde-d9a0-4d21-8f13-811a0d258a7c",
+      "provider_response_id": "1f2216ab-0ddd-4758-bf4b-ad806c80b33a",
+      "model": "deepseek-flash",
+      "request_sha256": "924e9da4dc69cfb079551c32415437580890eab89f43da5ba5ab0818ef9b9b9c",
+      "response_sha256": "30b88402e9ea610f55f0ae4a247917ead3649ff175c0bbc8f72aa172ec656a0b",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 145,
+        "completion_tokens": 19,
+        "total_tokens": 164,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 145
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "fed006b1-fd7e-4356-b657-da6661fad118",
+      "run_id": "6ed2d2ce-8b01-4f70-98ca-25211db4f390",
+      "provider_response_id": "8340ed93-eb0a-4876-a67a-4942c997d9a9",
+      "model": "deepseek-flash",
+      "request_sha256": "906f0757da03874ac526472172c5acfc8579eddea26551b1b182be072fe5f608",
+      "response_sha256": "fff447dddd84237b23c020785b6aafe387d7039b8e36609355b6ee2936b22e27",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 151,
+        "completion_tokens": 19,
+        "total_tokens": 170,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 151
+      },
+      "settled_upper_micros": 69,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-E",
+      "arm": "E",
+      "role": "Router",
+      "call_id": "ff39ed56-3e51-4c25-8095-c74311af0888",
+      "run_id": "9b7e7225-be8e-4689-b682-d61e8b84c927",
+      "provider_response_id": "da1d6d58-e423-4aee-acfc-e0f773389d5d",
+      "model": "deepseek-flash",
+      "request_sha256": "fbc19e0ad1a63c85026ab8f54924ecf0842890fe980ac4766fe3a3b17c8579e1",
+      "response_sha256": "31f229156be531a844b8f046e27725c8076d4a87146c0a3623b3a76f122be18b",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 156,
+        "completion_tokens": 19,
+        "total_tokens": 175,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 156
+      },
+      "settled_upper_micros": 70,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "5721730e-3920-4f16-ba0b-1d81352083ff",
+      "run_id": "962bf5a1-fca4-4d5f-a1fc-1d45634a6130",
+      "provider_response_id": "2a3465bc-bc90-4a4e-a8db-eb0b355beeaa",
+      "model": "deepseek-flash",
+      "request_sha256": "5173035a67923fd1b3ca57d6cf054af33f21e019cb753b671d34b28104900090",
+      "response_sha256": "32a8f119ab61fb2f1faf92522e8c87ed6d295c83db6dc77152ec5b0a23d0d389",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 201,
+        "completion_tokens": 33,
+        "total_tokens": 234,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 201
+      },
+      "settled_upper_micros": 100,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "6c5b55c8-278b-43ea-89d1-651011b15011",
+      "run_id": "b0e11f18-7ef2-4942-967e-443afad338db",
+      "provider_response_id": "b128d681-ba42-4ffa-9c75-daa3727cd9c8",
+      "model": "deepseek-flash",
+      "request_sha256": "924e9da4dc69cfb079551c32415437580890eab89f43da5ba5ab0818ef9b9b9c",
+      "response_sha256": "2e41244ab22d99d4b4dd58ee5173e34940d167561349438b1dbde5968a162d7b",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 145,
+        "completion_tokens": 19,
+        "total_tokens": 164,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 145
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-F",
+      "arm": "F",
+      "role": "Worker",
+      "call_id": "6dbd3340-8fe1-48dc-8e07-8f7007fbee86",
+      "run_id": "c947ad01-c3e8-437b-bdcb-2d4cdb8a3c5a",
+      "provider_response_id": "2354b899-b23d-4822-a1b6-405b788d3635",
+      "model": "deepseek-flash",
+      "request_sha256": "710b71f77306f893d35d19b52ad8fa34e115fede92dc44fbfdb9e6c71032b17c",
+      "response_sha256": "afa64e54e90dc1f17a1c5125853692ef2e8a5a80f7bcb79edd0b856d99dd792d",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 266,
+        "completion_tokens": 67,
+        "total_tokens": 333,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 266
+      },
+      "settled_upper_micros": 161,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-F",
+      "arm": "F",
+      "role": "Router",
+      "call_id": "cb40087f-1d9e-46a1-a826-868a0f58577a",
+      "run_id": "643d0c1e-9be9-4959-b596-411035794c3f",
+      "provider_response_id": "756af6c8-06a5-41e9-9543-998021ebca52",
+      "model": "deepseek-flash",
+      "request_sha256": "bc8e9b52feb57e5c6f2f95ad814c5e0693b5ee41b2423b639759d724c801719b",
+      "response_sha256": "e9563fdbfb368faccab4ef58535ef8df9eb961cd390cf55e2f23374a49c27825",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 146,
+        "completion_tokens": 19,
+        "total_tokens": 165,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 146
+      },
+      "settled_upper_micros": 67,
+      "finish_reason": "stop"
+    },
+    {
+      "trial_id": "coord-v2-d493a994-r1-warm-F",
+      "arm": "F",
+      "role": "Worker",
+      "call_id": "fd94666a-13de-4733-bd23-c32fb6881a56",
+      "run_id": "9c95646a-821f-4c95-88d6-9856bb35b83f",
+      "provider_response_id": "d8cd0347-adca-44ca-aaa6-5f01672e74d4",
+      "model": "deepseek-flash",
+      "request_sha256": "18ab244a6bc659fd5c995baf58afb0331b042a1051512017e3d722a52605d7dc",
+      "response_sha256": "2d0f24f4254ad63285450e8592a5d3c09e93431fe83253cd4c661d446d201d77",
+      "http_status": 200,
+      "usage": {
+        "prompt_tokens": 267,
+        "completion_tokens": 68,
+        "total_tokens": 335,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 267
+      },
+      "settled_upper_micros": 162,
+      "finish_reason": "stop"
+    }
+  ],
+  "unique_provider_response_ids": 60,
+  "raw_provider_bodies_private": true
+}

@@ -1,0 +1,26 @@
+{
+  "F:Worker": {
+    "calls": 8,
+    "cost_micros": 1291,
+    "input": 2131,
+    "output": 539
+  },
+  "F:Router": {
+    "calls": 12,
+    "cost_micros": 936,
+    "input": 1968,
+    "output": 284
+  },
+  "E:Worker": {
+    "calls": 8,
+    "cost_micros": 1294,
+    "input": 2136,
+    "output": 540
+  },
+  "E:Router": {
+    "calls": 32,
+    "cost_micros": 2200,
+    "input": 4836,
+    "output": 608
+  }
+}

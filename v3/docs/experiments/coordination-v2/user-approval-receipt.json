@@ -1,0 +1,19 @@
+{
+  "manifest_hash": "0d727c2d62b6310b131d5ab0d2a7235ba03734497c260b230c2fc21e969b7fa0",
+  "runtime_source_commit": "ff6353d5a3b3d21bf10f36c9edeb7026d58e3c97",
+  "authorization_basis": [
+    "允许增加调用和预算，继续真实实测",
+    "请再次修复e和f的代码并给出修复档案，修复结束后允许公开推送上述报告及脱敏证据"
+  ],
+  "scope_interpretation": "Current E/F repair and necessary bounded real verification under continuing increased-call/budget authorization; exact conservative cap selected by assistant, not a new exact-hash user reply.",
+  "new_shared_cap_calls": 68,
+  "new_shared_cap_micros": 208896,
+  "repository_hard_cap_micros": 2000000,
+  "old_grant_unused_calls_transferred": 0,
+  "independent_new_grant": true,
+  "approved_model_destination": "https://api.deepseek.com/v1/chat/completions",
+  "outbound_data": "Frozen synthetic events and public legal candidates; unchanged synthetic Worker source and generated evidence UUIDs; no credentials, billing, oracle or operator answers.",
+  "public_report_destination": "https://github.com/Loz888/MAGR-v3",
+  "public_report_scope": "User explicitly permits public push of previous full report and desensitized evidence after E/F repair; includes new repair dossier and retest evidence.",
+  "github_business_comments_pr_merge": false
+}

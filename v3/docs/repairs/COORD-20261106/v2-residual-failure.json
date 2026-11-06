@@ -1,0 +1,95 @@
+[
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "event": {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "event_key": "e01",
+      "payload": {
+        "key": "e01",
+        "body": "/mgar investigate State the documented cache TTL using an exact source quote.",
+        "actor": "owner",
+        "issue": 0,
+        "source": "cli"
+      },
+      "payload_hash": "7bf65063cb4ae37e6bf2449547b8c1c274ef973bb4721f8dfef2332726c76caf",
+      "received_at": "2026-11-06 02:24:29.191333+00:00",
+      "action": "start",
+      "event_id": "978d64b0-c6db-43e4-bd9d-9b56607f3322",
+      "run_id": "694e5f11-f11e-4276-8c11-fc292c4d0056",
+      "completed_at": "2026-11-06 02:24:30.201058+00:00",
+      "reason": null
+    },
+    "run": {
+      "run_id": "694e5f11-f11e-4276-8c11-fc292c4d0056",
+      "ticket_id": "60304ce0-e191-439e-ba09-d333c6e87a46",
+      "attempt_no": 1,
+      "execution_epoch": 1,
+      "graph_version": "r2-mailbox-v1",
+      "execution_mode": "live",
+      "status": "succeeded",
+      "outcome": "internal_report",
+      "reason_code": null,
+      "question": "State the documented cache TTL using an exact source quote.",
+      "report_hash": "30b996f55a9dcdb1f4a826f7568387d50db31a7f3a09e68178fcdf3daf974548",
+      "created_at": "2026-11-06 02:24:30.193993+00:00",
+      "input_revision": 3,
+      "mailbox_cursor": 4,
+      "proposal_generation": 0,
+      "initial_event_ids": [],
+      "r4_requested_snapshots": []
+    },
+    "call": {
+      "call_id": "4d328556-40c0-48ea-ab0a-ff94a41c6e95",
+      "run_id": "694e5f11-f11e-4276-8c11-fc292c4d0056",
+      "step_key": "investigate:r3",
+      "status": "known",
+      "reserved_micros": 3072,
+      "settled_micros": 159,
+      "profile_hash": "9e0a7a669a8c0203d6339dd308485eaaa9c82be554618d088e98cba709edbd9b",
+      "usage": {
+        "total_tokens": 333,
+        "prompt_tokens": 268,
+        "completion_tokens": 65,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "prompt_cache_hit_tokens": 0,
+        "prompt_cache_miss_tokens": 268
+      },
+      "result": {
+        "claims": [
+          {
+            "quote": "The documented cache TTL is 90 seconds.",
+            "statement": "The documented cache TTL is 90 seconds.",
+            "evidence_id": "5bb494f9-27a1-47a0-8074-5c32256f4259"
+          }
+        ],
+        "open_questions": []
+      },
+      "trial_budget_hash": null,
+      "final_budget_hash": "82fa964ed0d37ab39775acaf161d2ae2a6600fddb932b1e4f0cf36af298d8eb5"
+    },
+    "independent_verdict": {
+      "event_key": "e01",
+      "success": false,
+      "required_quote_present": false,
+      "user_mailbox_keys": [
+        "e01",
+        "e03",
+        "e05"
+      ],
+      "all_user_input_consumed": true
+    },
+    "expected_exact_line": "Observation: The documented cache TTL is 90 seconds.",
+    "actual_claim": {
+      "quote": "The documented cache TTL is 90 seconds.",
+      "statement": "The documented cache TTL is 90 seconds.",
+      "evidence_id": "5bb494f9-27a1-47a0-8074-5c32256f4259"
+    },
+    "engine_report_markdown": "# MGAR investigation\n\nExecution mode: live\n\nInput revision: 3\n\nMechanical evidence verification: PASS\n\n## Source observations\n\n- The documented cache TTL is 90 seconds. [evidence:5bb494f9-27a1-47a0-8074-5c32256f4259]\n\n## Open questions\n\nVerifier scope: source reads, hashes, locators and exact quotations.",
+    "classification": "Fixed Worker omitted Observation: prefix in both statement and quote. Native verifier accepts exact source substring; unchanged independent oracle requires complete line. Route and mailbox consumption correct; business FAIL retained.",
+    "retry_paid_calls": 0,
+    "source_worker_oracle_modified": false
+  }
+]

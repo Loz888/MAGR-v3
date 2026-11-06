@@ -1,0 +1,52 @@
+{
+  "manifest_hash": "0d727c2d62b6310b131d5ab0d2a7235ba03734497c260b230c2fc21e969b7fa0",
+  "processes": [
+    {
+      "trial": "coord-v2-d493a994-r0-cold-F",
+      "pid": 108834,
+      "exit": -9
+    },
+    {
+      "trial": "coord-v2-d493a994-r0-cold-F",
+      "pid": 108875,
+      "exit": 0,
+      "continuation": "planned_known_result_only"
+    },
+    {
+      "trial": "coord-v2-d493a994-r0-cold-E",
+      "pid": 108971,
+      "exit": 0
+    },
+    {
+      "trial": "coord-v2-d493a994-r0-warm-F",
+      "pid": 109183,
+      "exit": 0
+    },
+    {
+      "trial": "coord-v2-d493a994-r0-warm-E",
+      "pid": 109288,
+      "exit": 0
+    },
+    {
+      "trial": "coord-v2-d493a994-r1-cold-F",
+      "pid": 109506,
+      "exit": 0
+    },
+    {
+      "trial": "coord-v2-d493a994-r1-cold-E",
+      "pid": 109601,
+      "exit": 0
+    },
+    {
+      "trial": "coord-v2-d493a994-r1-warm-E",
+      "pid": 109774,
+      "exit": 0
+    },
+    {
+      "trial": "coord-v2-d493a994-r1-warm-F",
+      "pid": 110090,
+      "exit": 0
+    }
+  ],
+  "status": "EXECUTED"
+}

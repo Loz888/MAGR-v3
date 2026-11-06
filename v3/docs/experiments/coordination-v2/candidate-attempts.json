@@ -1,0 +1,632 @@
+[
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 222,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:10.159232+00:00",
+    "details": {
+      "slot": "router:0:a0",
+      "replay": false,
+      "run_id": "89090f4c-9714-4673-9712-43c2282184d5",
+      "attempt": 0,
+      "ordinal": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 225,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:10.943705+00:00",
+    "details": {
+      "slot": "router:0:a0",
+      "replay": true,
+      "run_id": "89090f4c-9714-4673-9712-43c2282184d5",
+      "attempt": 0,
+      "ordinal": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 240,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:12.266878+00:00",
+    "details": {
+      "slot": "router:1:a0",
+      "replay": false,
+      "run_id": "883f0b53-e6e1-47bb-90ed-c08504d5c1a2",
+      "attempt": 0,
+      "ordinal": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 242,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:13.507292+00:00",
+    "details": {
+      "slot": "router:2:a0",
+      "replay": false,
+      "run_id": "7f0b6a80-6617-426c-be1a-b30ac884b1e7",
+      "attempt": 0,
+      "ordinal": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 249,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:15.378636+00:00",
+    "details": {
+      "slot": "router:0:a0",
+      "replay": false,
+      "run_id": "8e58087f-8913-4a8a-a626-1e203cc7b575",
+      "attempt": 0,
+      "ordinal": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 251,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:17.192235+00:00",
+    "details": {
+      "slot": "router:1:a0",
+      "replay": false,
+      "run_id": "48ebc1ce-da1c-4a88-bdd5-c936b5ae6f66",
+      "attempt": 0,
+      "ordinal": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 255,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:18.640936+00:00",
+    "details": {
+      "slot": "router:2:a0",
+      "replay": false,
+      "run_id": "eecb6688-a675-452f-a209-c78bab60f228",
+      "attempt": 0,
+      "ordinal": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 256,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:20.126023+00:00",
+    "details": {
+      "slot": "router:3:a0",
+      "replay": false,
+      "run_id": "e73e5493-93bf-4dd8-b65e-3cbb6883b788",
+      "attempt": 0,
+      "ordinal": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 259,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:21.137554+00:00",
+    "details": {
+      "slot": "router:4:a0",
+      "replay": false,
+      "run_id": "d4de8c83-979f-4790-9ba5-93b9f2b08329",
+      "attempt": 0,
+      "ordinal": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 260,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:22.379343+00:00",
+    "details": {
+      "slot": "router:5:a0",
+      "replay": false,
+      "run_id": "6d4c0394-d86d-4ee7-af73-3c3ce78b6429",
+      "attempt": 0,
+      "ordinal": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 264,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:23.802959+00:00",
+    "details": {
+      "slot": "router:6:a0",
+      "replay": false,
+      "run_id": "92082c11-a322-4f66-8554-6331cc56860e",
+      "attempt": 0,
+      "ordinal": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 266,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:24.515336+00:00",
+    "details": {
+      "slot": "router:7:a0",
+      "replay": false,
+      "run_id": "652332dd-8cbe-4750-9723-a2f53bd4a93c",
+      "attempt": 0,
+      "ordinal": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 274,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:26.400472+00:00",
+    "details": {
+      "slot": "router:0:a0",
+      "replay": false,
+      "run_id": "289a9006-30cf-4a74-a208-e408393a8d1c",
+      "attempt": 0,
+      "ordinal": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 288,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:27.421557+00:00",
+    "details": {
+      "slot": "router:1:a0",
+      "replay": false,
+      "run_id": "89a47d72-62bb-44dc-bfb6-498fd8c86b59",
+      "attempt": 0,
+      "ordinal": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 290,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:28.267102+00:00",
+    "details": {
+      "slot": "router:2:a0",
+      "replay": false,
+      "run_id": "d7cac4a9-08cf-4877-bd9d-912b0b2bba80",
+      "attempt": 0,
+      "ordinal": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 298,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:30.188938+00:00",
+    "details": {
+      "slot": "router:0:a0",
+      "replay": false,
+      "run_id": "6730e5e8-a5e7-4e4b-b6a6-00f8fd223127",
+      "attempt": 0,
+      "ordinal": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 300,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:31.144116+00:00",
+    "details": {
+      "slot": "router:1:a0",
+      "replay": false,
+      "run_id": "a6bb1832-9899-465f-804e-e6cd9fb47833",
+      "attempt": 0,
+      "ordinal": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 304,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:32.213236+00:00",
+    "details": {
+      "slot": "router:2:a0",
+      "replay": false,
+      "run_id": "6942e586-42c4-46e8-80e0-31837b5f6aff",
+      "attempt": 0,
+      "ordinal": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 305,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:33.490551+00:00",
+    "details": {
+      "slot": "router:3:a0",
+      "replay": false,
+      "run_id": "74cd11b6-85f7-410e-ba01-edad2b2c681e",
+      "attempt": 0,
+      "ordinal": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 308,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:34.876975+00:00",
+    "details": {
+      "slot": "router:4:a0",
+      "replay": false,
+      "run_id": "af138bf3-30bf-43f0-8fe9-b90bd3ec2554",
+      "attempt": 0,
+      "ordinal": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 309,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:36.025743+00:00",
+    "details": {
+      "slot": "router:5:a0",
+      "replay": false,
+      "run_id": "7dd3e459-90f8-4e12-b161-dba7888b3390",
+      "attempt": 0,
+      "ordinal": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 313,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:37.244470+00:00",
+    "details": {
+      "slot": "router:6:a0",
+      "replay": false,
+      "run_id": "1ca844dc-2a33-45d0-aebb-4d3282288870",
+      "attempt": 0,
+      "ordinal": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 315,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:38.201960+00:00",
+    "details": {
+      "slot": "router:7:a0",
+      "replay": false,
+      "run_id": "cded6b01-6d42-454a-b400-2818eef152e9",
+      "attempt": 0,
+      "ordinal": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 322,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:40.108298+00:00",
+    "details": {
+      "slot": "router:0:a0",
+      "replay": false,
+      "run_id": "096b9317-2bac-40f1-a470-6c6d5c58afe0",
+      "attempt": 0,
+      "ordinal": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 336,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:41.236957+00:00",
+    "details": {
+      "slot": "router:1:a0",
+      "replay": false,
+      "run_id": "05310e71-6f06-4407-a2f6-df64550e55b9",
+      "attempt": 0,
+      "ordinal": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 338,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:42.034557+00:00",
+    "details": {
+      "slot": "router:2:a0",
+      "replay": false,
+      "run_id": "7ffc7cd6-5b8e-48d1-b516-5b01e17b9ba0",
+      "attempt": 0,
+      "ordinal": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 345,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:44.156093+00:00",
+    "details": {
+      "slot": "router:0:a0",
+      "replay": false,
+      "run_id": "148d838a-a0d1-4c6c-bff5-a07214e564b9",
+      "attempt": 0,
+      "ordinal": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 347,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:45.217464+00:00",
+    "details": {
+      "slot": "router:1:a0",
+      "replay": false,
+      "run_id": "a559fda8-ccfd-4040-a580-50eb244e8ad3",
+      "attempt": 0,
+      "ordinal": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 351,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:45.937241+00:00",
+    "details": {
+      "slot": "router:2:a0",
+      "replay": false,
+      "run_id": "3afa1d1f-1905-48ca-9353-c6bd978cbb35",
+      "attempt": 0,
+      "ordinal": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 352,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:46.909780+00:00",
+    "details": {
+      "slot": "router:3:a0",
+      "replay": false,
+      "run_id": "75848a0a-1fcb-44e2-b1f4-58c9e884c0a9",
+      "attempt": 0,
+      "ordinal": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 355,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:48.164128+00:00",
+    "details": {
+      "slot": "router:4:a0",
+      "replay": false,
+      "run_id": "284ba042-b5a0-4fe2-b90e-08aee49d11c8",
+      "attempt": 0,
+      "ordinal": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 356,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:49.024537+00:00",
+    "details": {
+      "slot": "router:5:a0",
+      "replay": false,
+      "run_id": "f9c65316-94ef-4c39-92a6-75caf271a3da",
+      "attempt": 0,
+      "ordinal": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 360,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:50.163941+00:00",
+    "details": {
+      "slot": "router:6:a0",
+      "replay": false,
+      "run_id": "6e9856f8-19bb-49fe-aa0e-0e7c5bd4dc7d",
+      "attempt": 0,
+      "ordinal": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 362,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:51.509627+00:00",
+    "details": {
+      "slot": "router:7:a0",
+      "replay": false,
+      "run_id": "2176089b-8534-49cd-aa03-fafa8eb78cd6",
+      "attempt": 0,
+      "ordinal": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 370,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:53.449555+00:00",
+    "details": {
+      "slot": "router:0:a0",
+      "replay": false,
+      "run_id": "9f1e45d2-6e6f-4c7c-a990-7e8ec1173a92",
+      "attempt": 0,
+      "ordinal": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 372,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:54.715077+00:00",
+    "details": {
+      "slot": "router:1:a0",
+      "replay": false,
+      "run_id": "9b7e7225-be8e-4689-b682-d61e8b84c927",
+      "attempt": 0,
+      "ordinal": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 376,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:55.818162+00:00",
+    "details": {
+      "slot": "router:2:a0",
+      "replay": false,
+      "run_id": "6ed2d2ce-8b01-4f70-98ca-25211db4f390",
+      "attempt": 0,
+      "ordinal": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 377,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:56.890203+00:00",
+    "details": {
+      "slot": "router:3:a0",
+      "replay": false,
+      "run_id": "3ca51204-472a-4613-af1a-3f564cba1349",
+      "attempt": 0,
+      "ordinal": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 380,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:58.322406+00:00",
+    "details": {
+      "slot": "router:4:a0",
+      "replay": false,
+      "run_id": "c535a4aa-4a58-4ed7-9b15-ce31299a1434",
+      "attempt": 0,
+      "ordinal": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 381,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:24:59.280183+00:00",
+    "details": {
+      "slot": "router:5:a0",
+      "replay": false,
+      "run_id": "b0fe653c-444a-4955-9b20-0d7fe2a58f4f",
+      "attempt": 0,
+      "ordinal": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 385,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:25:05.494287+00:00",
+    "details": {
+      "slot": "router:6:a0",
+      "replay": false,
+      "run_id": "229ed2cb-9f42-431a-8172-e5b46fdc582b",
+      "attempt": 0,
+      "ordinal": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 387,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:25:06.557487+00:00",
+    "details": {
+      "slot": "router:7:a0",
+      "replay": false,
+      "run_id": "c2ae6bde-d9a0-4d21-8f13-811a0d258a7c",
+      "attempt": 0,
+      "ordinal": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 395,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:25:08.442430+00:00",
+    "details": {
+      "slot": "router:0:a0",
+      "replay": false,
+      "run_id": "962bf5a1-fca4-4d5f-a1fc-1d45634a6130",
+      "attempt": 0,
+      "ordinal": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 409,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:25:09.626390+00:00",
+    "details": {
+      "slot": "router:1:a0",
+      "replay": false,
+      "run_id": "643d0c1e-9be9-4959-b596-411035794c3f",
+      "attempt": 0,
+      "ordinal": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 411,
+    "kind": "candidate_attempt_accepted",
+    "at": "2026-11-06 02:25:10.641903+00:00",
+    "details": {
+      "slot": "router:2:a0",
+      "replay": false,
+      "run_id": "b0e11f18-7ef2-4942-967e-443afad338db",
+      "attempt": 0,
+      "ordinal": 2
+    }
+  }
+]

@@ -1,0 +1,97 @@
+{
+  "original_v1_normal": {
+    "D": [
+      7,
+      8
+    ],
+    "E": [
+      1,
+      8
+    ],
+    "F": [
+      4,
+      8
+    ]
+  },
+  "original_ABC": {
+    "PASS": 87,
+    "FAIL": 3,
+    "regraded": false
+  },
+  "issues": [
+    {
+      "id": "EF-01",
+      "observed": "11 invalid initial proposals: E7/F4",
+      "cause": "Free action/UUID generation permits deliver/null and cross-issue targets",
+      "fix": "Strict candidate selection DTO; server-bound targets",
+      "evidence": "98-test regression includes all 11 old bad proposal shapes; live v2 separate",
+      "status": "ROUTING_RETEST_PASS"
+    },
+    {
+      "id": "EF-02",
+      "observed": "22 cascading follow-up mismatches after rejected starts",
+      "cause": "No primary exists after invalid start",
+      "fix": "Constrain initial legal start; preserve missing-primary failure if still occurs",
+      "evidence": "All 72 v2 event outcomes retained",
+      "status": "ROUTING_RETEST_PASS"
+    },
+    {
+      "id": "EF-03",
+      "observed": "Structural guard/ingest transaction gap; no stale success claimed in v1",
+      "fix": "One SQL-only outer transaction; epoch/revision/current actor checks; rollback regression",
+      "status": "ENGINEERING_PASS"
+    },
+    {
+      "id": "EF-04",
+      "observed": "Known invalid output had no bounded correction",
+      "fix": "Two separately billed slots maximum, only known contract failures; unknown/provider/budget/fencing never retried",
+      "evidence": "Controlled schema/candidate/two-fail/unknown-first/unknown-second/budget tests; real attempts published",
+      "status": "ENGINEERING_PASS_REAL_CORRECTION_NOT_TRIGGERED"
+    },
+    {
+      "id": "EF-05",
+      "observed": "v1 continuation receipt response hash null because usage_calls has no such column",
+      "fix": "Read original native response event hash and verify CAS outside transaction",
+      "evidence": "v2 real recovery receipt; v1 original null receipt retained",
+      "status": "REAL_RECOVERY_PASS"
+    },
+    {
+      "id": "EF-06",
+      "observed": "First verification ran 97 passing tests but source changed during verification; gate correctly FAIL",
+      "fix": "Freeze source then rerun 98 tests; invalid first attempt retained",
+      "evidence": "engineering-invalidated-first-attempt.json and engineering.json",
+      "status": "ENGINEERING_RETEST_PASS"
+    },
+    {
+      "id": "EF-07",
+      "status": "OPEN_SHARED_WORKER_CONTRACT",
+      "observed": "v2 E r0/warm e01: Worker omitted Observation: prefix; native run succeeded but independent task FAIL",
+      "scope": "Routing fix complete; shared Worker unchanged to preserve comparison",
+      "evidence": "v2-residual-failure.json",
+      "remediation_not_executed": "Separate Worker quote-catalog/full-line protocol with new frozen cross-arm validation; do not regrade this trial."
+    },
+    {
+      "id": "EF-08",
+      "status": "RESOLVED_LOCAL_EVIDENCE_ONLY",
+      "observed": "Dossier builder used passed instead of success; a supplemental reader also assumed Markdown report was JSON",
+      "fix": "Correct evidence readers; no execution source changes, model calls or regrading; first failed builder log retained"
+    }
+  ],
+  "v2_real_rejected_attempts": [],
+  "remaining_normal_failures": [
+    {
+      "trial_id": "coord-v2-d493a994-r0-warm-E",
+      "arm": "E",
+      "event_key": "e01",
+      "success": false,
+      "required_quote_present": false,
+      "user_mailbox_keys": [
+        "e01",
+        "e03",
+        "e05"
+      ],
+      "all_user_input_consumed": true
+    }
+  ],
+  "d_worker_quote_mismatch_unmodified": true
+}

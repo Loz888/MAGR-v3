@@ -1,0 +1,882 @@
+[
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 220,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:08.933412+00:00",
+    "details": {
+      "key": "e01",
+      "position": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 221,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:08.936081+00:00",
+    "details": {
+      "key": "e02",
+      "position": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 229,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:11.038891+00:00",
+    "details": {
+      "key": "e03",
+      "position": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 230,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:11.040536+00:00",
+    "details": {
+      "key": "e04",
+      "position": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 233,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:11.053993+00:00",
+    "details": {
+      "key": "e05",
+      "position": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 234,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:11.055789+00:00",
+    "details": {
+      "key": "e06",
+      "position": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 237,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:11.069738+00:00",
+    "details": {
+      "key": "e07",
+      "position": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 241,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:12.275809+00:00",
+    "details": {
+      "key": "e08",
+      "position": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 243,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:13.514078+00:00",
+    "details": {
+      "key": "e09",
+      "position": 8
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "id": 244,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:13.516183+00:00",
+    "details": {
+      "key": "e01",
+      "position": 9
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 247,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:14.396387+00:00",
+    "details": {
+      "key": "e01",
+      "position": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 248,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:14.398983+00:00",
+    "details": {
+      "key": "e02",
+      "position": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 253,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:17.236312+00:00",
+    "details": {
+      "key": "e03",
+      "position": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 254,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:17.238124+00:00",
+    "details": {
+      "key": "e04",
+      "position": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 257,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:20.141593+00:00",
+    "details": {
+      "key": "e05",
+      "position": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 258,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:20.144396+00:00",
+    "details": {
+      "key": "e06",
+      "position": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 261,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:22.389732+00:00",
+    "details": {
+      "key": "e07",
+      "position": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 265,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:23.809568+00:00",
+    "details": {
+      "key": "e08",
+      "position": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 267,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:24.520680+00:00",
+    "details": {
+      "key": "e09",
+      "position": 8
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "id": 268,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:24.522835+00:00",
+    "details": {
+      "key": "e01",
+      "position": 9
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 272,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:25.400451+00:00",
+    "details": {
+      "key": "e01",
+      "position": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 273,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:25.402149+00:00",
+    "details": {
+      "key": "e02",
+      "position": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 277,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:26.483173+00:00",
+    "details": {
+      "key": "e03",
+      "position": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 278,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:26.485009+00:00",
+    "details": {
+      "key": "e04",
+      "position": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 281,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:26.497825+00:00",
+    "details": {
+      "key": "e05",
+      "position": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 282,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:26.499757+00:00",
+    "details": {
+      "key": "e06",
+      "position": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 285,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:26.511945+00:00",
+    "details": {
+      "key": "e07",
+      "position": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 289,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:27.430867+00:00",
+    "details": {
+      "key": "e08",
+      "position": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 291,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:28.273123+00:00",
+    "details": {
+      "key": "e09",
+      "position": 8
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "id": 292,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:28.275678+00:00",
+    "details": {
+      "key": "e01",
+      "position": 9
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 296,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:29.190969+00:00",
+    "details": {
+      "key": "e01",
+      "position": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 297,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:29.193211+00:00",
+    "details": {
+      "key": "e02",
+      "position": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 302,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:31.191182+00:00",
+    "details": {
+      "key": "e03",
+      "position": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 303,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:31.193534+00:00",
+    "details": {
+      "key": "e04",
+      "position": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 306,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:33.502028+00:00",
+    "details": {
+      "key": "e05",
+      "position": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 307,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:33.503712+00:00",
+    "details": {
+      "key": "e06",
+      "position": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 310,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:36.036649+00:00",
+    "details": {
+      "key": "e07",
+      "position": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 314,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:37.250149+00:00",
+    "details": {
+      "key": "e08",
+      "position": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 316,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:38.207768+00:00",
+    "details": {
+      "key": "e09",
+      "position": 8
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "id": 317,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:38.209909+00:00",
+    "details": {
+      "key": "e01",
+      "position": 9
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 320,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:39.141336+00:00",
+    "details": {
+      "key": "e01",
+      "position": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 321,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:39.143984+00:00",
+    "details": {
+      "key": "e02",
+      "position": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 325,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:40.191870+00:00",
+    "details": {
+      "key": "e03",
+      "position": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 326,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:40.193825+00:00",
+    "details": {
+      "key": "e04",
+      "position": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 329,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:40.208103+00:00",
+    "details": {
+      "key": "e05",
+      "position": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 330,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:40.210889+00:00",
+    "details": {
+      "key": "e06",
+      "position": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 333,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:40.228770+00:00",
+    "details": {
+      "key": "e07",
+      "position": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 337,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:41.243452+00:00",
+    "details": {
+      "key": "e08",
+      "position": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 339,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:42.041729+00:00",
+    "details": {
+      "key": "e09",
+      "position": 8
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "id": 340,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:42.044335+00:00",
+    "details": {
+      "key": "e01",
+      "position": 9
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 343,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:42.957477+00:00",
+    "details": {
+      "key": "e01",
+      "position": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 344,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:42.960183+00:00",
+    "details": {
+      "key": "e02",
+      "position": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 349,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:45.268296+00:00",
+    "details": {
+      "key": "e03",
+      "position": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 350,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:45.272686+00:00",
+    "details": {
+      "key": "e04",
+      "position": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 353,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:46.920236+00:00",
+    "details": {
+      "key": "e05",
+      "position": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 354,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:46.921858+00:00",
+    "details": {
+      "key": "e06",
+      "position": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 357,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:49.034717+00:00",
+    "details": {
+      "key": "e07",
+      "position": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 361,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:50.169783+00:00",
+    "details": {
+      "key": "e08",
+      "position": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 363,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:51.515828+00:00",
+    "details": {
+      "key": "e09",
+      "position": 8
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "id": 364,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:51.517931+00:00",
+    "details": {
+      "key": "e01",
+      "position": 9
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 368,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:52.399966+00:00",
+    "details": {
+      "key": "e01",
+      "position": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 369,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:52.402337+00:00",
+    "details": {
+      "key": "e02",
+      "position": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 374,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:54.756924+00:00",
+    "details": {
+      "key": "e03",
+      "position": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 375,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:54.759080+00:00",
+    "details": {
+      "key": "e04",
+      "position": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 378,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:56.901350+00:00",
+    "details": {
+      "key": "e05",
+      "position": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 379,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:56.903051+00:00",
+    "details": {
+      "key": "e06",
+      "position": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 382,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:24:59.295007+00:00",
+    "details": {
+      "key": "e07",
+      "position": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 386,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:05.499589+00:00",
+    "details": {
+      "key": "e08",
+      "position": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 388,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:06.562739+00:00",
+    "details": {
+      "key": "e09",
+      "position": 8
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "id": 389,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:06.564887+00:00",
+    "details": {
+      "key": "e01",
+      "position": 9
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 393,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:07.453984+00:00",
+    "details": {
+      "key": "e01",
+      "position": 0
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 394,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:07.456088+00:00",
+    "details": {
+      "key": "e02",
+      "position": 1
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 398,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:08.540038+00:00",
+    "details": {
+      "key": "e03",
+      "position": 2
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 399,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:08.541834+00:00",
+    "details": {
+      "key": "e04",
+      "position": 3
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 402,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:08.557307+00:00",
+    "details": {
+      "key": "e05",
+      "position": 4
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 403,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:08.559174+00:00",
+    "details": {
+      "key": "e06",
+      "position": 5
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 406,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:08.574588+00:00",
+    "details": {
+      "key": "e07",
+      "position": 6
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 410,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:09.632931+00:00",
+    "details": {
+      "key": "e08",
+      "position": 7
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 412,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:10.648468+00:00",
+    "details": {
+      "key": "e09",
+      "position": 8
+    }
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "id": 413,
+    "kind": "physical_delivery",
+    "at": "2026-11-06 02:25:10.650967+00:00",
+    "details": {
+      "key": "e01",
+      "position": 9
+    }
+  }
+]

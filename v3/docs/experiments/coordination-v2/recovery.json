@@ -1,0 +1,75 @@
+{
+  "status": "PASS",
+  "continuation_receipt": {
+    "manifest_hash": "0d727c2d62b6310b131d5ab0d2a7235ba03734497c260b230c2fc21e969b7fa0",
+    "planned_exit": -9,
+    "original_call_id": "c455e82b-df80-4f35-ba37-f33189a45ecf",
+    "original_response_hash": "9daac737e5c735033f46e8849bf60c6de14bd22ead51268561723add7ed3dedb",
+    "original_settled_micros": 100,
+    "replay_only_for_original_request": true,
+    "remaining_frozen_trial_calls_still_count_toward_original_grant": true
+  },
+  "native_receipt": {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "role": "Router",
+    "call_id": "c455e82b-df80-4f35-ba37-f33189a45ecf",
+    "run_id": "89090f4c-9714-4673-9712-43c2282184d5",
+    "provider_response_id": "20b28afa-6130-4e6b-8a55-aadf3cee0950",
+    "model": "deepseek-flash",
+    "request_sha256": "5173035a67923fd1b3ca57d6cf054af33f21e019cb753b671d34b28104900090",
+    "response_sha256": "9daac737e5c735033f46e8849bf60c6de14bd22ead51268561723add7ed3dedb",
+    "http_status": 200,
+    "usage": {
+      "prompt_tokens": 201,
+      "completion_tokens": 33,
+      "total_tokens": 234,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 201
+    },
+    "settled_upper_micros": 100,
+    "finish_reason": "stop"
+  },
+  "actual_processes": [
+    {
+      "trial": "coord-v2-d493a994-r0-cold-F",
+      "pid": 108834,
+      "exit": -9
+    },
+    {
+      "trial": "coord-v2-d493a994-r0-cold-F",
+      "pid": 108875,
+      "exit": 0,
+      "continuation": "planned_known_result_only"
+    }
+  ],
+  "audit": [
+    {
+      "id": 226,
+      "trial_id": "coord-v2-d493a994-r0-cold-F",
+      "kind": "known_router_reused",
+      "at": "2026-11-06 02:24:10.951656+00:00",
+      "details": {
+        "run_id": "89090f4c-9714-4673-9712-43c2282184d5",
+        "new_model_calls": 0
+      }
+    },
+    {
+      "id": 224,
+      "trial_id": "coord-v2-d493a994-r0-cold-F",
+      "kind": "old_epoch_fenced",
+      "at": "2026-11-06 02:24:10.938194+00:00",
+      "details": {
+        "run_id": "89090f4c-9714-4673-9712-43c2282184d5",
+        "old_epoch": 1
+      }
+    }
+  ],
+  "replay_new_calls": 0,
+  "replay_new_cost_micros": 0,
+  "controlled_second_attempt_sigkill_test_also_passed": true,
+  "real_second_attempt_sigkill_claimed": false
+}

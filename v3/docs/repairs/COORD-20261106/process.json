@@ -1,0 +1,17 @@
+{
+  "started_from_commit": "4618216eeff73d9085c8fa9e61ba29249c76f3bb",
+  "runtime_source_commit": "ff6353d5a3b3d21bf10f36c9edeb7026d58e3c97",
+  "manifest_hash": "0d727c2d62b6310b131d5ab0d2a7235ba03734497c260b230c2fc21e969b7fa0",
+  "steps": [
+    "Snapshot historical reports and original ABC hashes",
+    "Reproduce all 11 illegal initial route proposals",
+    "Implement candidate DTO and atomic recheck",
+    "Add separately bounded known-output correction and second-attempt SIGKILL regression",
+    "Retain invalid first engineering attempt; stable rerun 98 PASS, lint/typecheck PASS",
+    "Commit runtime; freeze new manifest and independent grant",
+    "Execute eight real E/F trials and planned SIGKILL known-only recovery",
+    "Independent original oracle grades unchanged Worker; reconcile original PG finance",
+    "Publish new dossier and unchanged previous reports only after scan and authorized GitHub push"
+  ],
+  "completed_at_utc": "2026-11-06T02:26:57.361051+00:00"
+}

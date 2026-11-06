@@ -1,0 +1,210 @@
+[
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-F",
+    "arm": "F",
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-cold-E",
+    "arm": "E",
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-F",
+    "arm": "F",
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "event_key": "e01",
+    "success": false,
+    "required_quote_present": false,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r0-warm-E",
+    "arm": "E",
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-F",
+    "arm": "F",
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-cold-E",
+    "arm": "E",
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-E",
+    "arm": "E",
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "event_key": "e01",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e01",
+      "e03",
+      "e05"
+    ],
+    "all_user_input_consumed": true
+  },
+  {
+    "trial_id": "coord-v2-d493a994-r1-warm-F",
+    "arm": "F",
+    "event_key": "e02",
+    "success": true,
+    "required_quote_present": true,
+    "user_mailbox_keys": [
+      "e02",
+      "e04",
+      "e06"
+    ],
+    "all_user_input_consumed": true
+  }
+]

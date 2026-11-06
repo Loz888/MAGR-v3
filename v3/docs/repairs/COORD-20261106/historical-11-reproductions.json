@@ -1,0 +1,398 @@
+[
+  {
+    "historical_trial": "coord-v1-be0aa754-r0-cold-E",
+    "event_key": "e02",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e02",
+      "target_run_id": "9c8b0dea-7682-48fe-9777-adafd047f76f"
+    },
+    "public_snapshot_sha256": "8bea2333eea2a4324fe9015a04c81b7ae535c7fff159620f3aa0f4f0270ca66c",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e02",
+          "issue": 1,
+          "body": "/mgar investigate State the documented retry limit using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e02",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  },
+  {
+    "historical_trial": "coord-v1-be0aa754-r0-warm-F",
+    "event_key": "e01",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e01",
+      "target_run_id": null
+    },
+    "public_snapshot_sha256": "69d55e80193918955ad585d31b05d326ffcbb13f19a65590b91503d443b987f4",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e01",
+          "issue": 0,
+          "body": "/mgar investigate State the documented cache TTL using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        },
+        {
+          "key": "e02",
+          "issue": 1,
+          "body": "/mgar investigate State the documented retry limit using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e01",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  },
+  {
+    "historical_trial": "coord-v1-be0aa754-r0-warm-F",
+    "event_key": "e02",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e02",
+      "target_run_id": null
+    },
+    "public_snapshot_sha256": "69d55e80193918955ad585d31b05d326ffcbb13f19a65590b91503d443b987f4",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e01",
+          "issue": 0,
+          "body": "/mgar investigate State the documented cache TTL using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        },
+        {
+          "key": "e02",
+          "issue": 1,
+          "body": "/mgar investigate State the documented retry limit using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e02",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  },
+  {
+    "historical_trial": "coord-v1-be0aa754-r1-warm-F",
+    "event_key": "e01",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e01",
+      "target_run_id": null
+    },
+    "public_snapshot_sha256": "69d55e80193918955ad585d31b05d326ffcbb13f19a65590b91503d443b987f4",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e01",
+          "issue": 0,
+          "body": "/mgar investigate State the documented cache TTL using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        },
+        {
+          "key": "e02",
+          "issue": 1,
+          "body": "/mgar investigate State the documented retry limit using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e01",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  },
+  {
+    "historical_trial": "coord-v1-be0aa754-r1-warm-F",
+    "event_key": "e02",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e02",
+      "target_run_id": null
+    },
+    "public_snapshot_sha256": "69d55e80193918955ad585d31b05d326ffcbb13f19a65590b91503d443b987f4",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e01",
+          "issue": 0,
+          "body": "/mgar investigate State the documented cache TTL using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        },
+        {
+          "key": "e02",
+          "issue": 1,
+          "body": "/mgar investigate State the documented retry limit using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e02",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  },
+  {
+    "historical_trial": "coord-v1-be0aa754-r1-warm-E",
+    "event_key": "e01",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e01",
+      "target_run_id": null
+    },
+    "public_snapshot_sha256": "fdb176d6dfdf4d9c156b567b80054b272937e677ce661ba7ba8534e36fd593e8",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e01",
+          "issue": 0,
+          "body": "/mgar investigate State the documented cache TTL using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e01",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  },
+  {
+    "historical_trial": "coord-v1-be0aa754-r1-warm-E",
+    "event_key": "e02",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e02",
+      "target_run_id": null
+    },
+    "public_snapshot_sha256": "a082bb2918d4ec710578966cf55ff7d4d168e044335803eafbe27bb54bb01ffd",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e02",
+          "issue": 1,
+          "body": "/mgar investigate State the documented retry limit using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e02",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  },
+  {
+    "historical_trial": "coord-v1-be0aa754-r1-cold-E",
+    "event_key": "e01",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e01",
+      "target_run_id": null
+    },
+    "public_snapshot_sha256": "fdb176d6dfdf4d9c156b567b80054b272937e677ce661ba7ba8534e36fd593e8",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e01",
+          "issue": 0,
+          "body": "/mgar investigate State the documented cache TTL using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e01",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  },
+  {
+    "historical_trial": "coord-v1-be0aa754-r1-cold-E",
+    "event_key": "e02",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e02",
+      "target_run_id": null
+    },
+    "public_snapshot_sha256": "a082bb2918d4ec710578966cf55ff7d4d168e044335803eafbe27bb54bb01ffd",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e02",
+          "issue": 1,
+          "body": "/mgar investigate State the documented retry limit using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e02",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  },
+  {
+    "historical_trial": "coord-v1-be0aa754-r0-warm-E",
+    "event_key": "e01",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e01",
+      "target_run_id": null
+    },
+    "public_snapshot_sha256": "fdb176d6dfdf4d9c156b567b80054b272937e677ce661ba7ba8534e36fd593e8",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e01",
+          "issue": 0,
+          "body": "/mgar investigate State the documented cache TTL using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e01",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  },
+  {
+    "historical_trial": "coord-v1-be0aa754-r0-warm-E",
+    "event_key": "e02",
+    "old_model_proposal": {
+      "action": "deliver",
+      "event_key": "e02",
+      "target_run_id": null
+    },
+    "public_snapshot_sha256": "a082bb2918d4ec710578966cf55ff7d4d168e044335803eafbe27bb54bb01ffd",
+    "new_legal_candidates": {
+      "events": [
+        {
+          "key": "e02",
+          "issue": 1,
+          "body": "/mgar investigate State the documented retry limit using an exact source quote.",
+          "candidates": [
+            {
+              "candidate_id": "c0",
+              "action": "start"
+            }
+          ]
+        }
+      ]
+    },
+    "controlled_valid_selection_resolved_route": {
+      "event_key": "e02",
+      "action": "start",
+      "target_run_id": null
+    },
+    "paid_calls": 0,
+    "historical_result_changed": false
+  }
+]
