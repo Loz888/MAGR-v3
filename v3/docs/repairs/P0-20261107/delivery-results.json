@@ -1,0 +1,395 @@
+{
+  "schema": "p0-exact-proposal-delivery-v1",
+  "cases": [
+    {
+      "case": "N01",
+      "status": "PASS",
+      "action_id": "fc9f0463-247e-4ff4-bfa5-46652372d9b3",
+      "payload_hash": "a7dc957113eee1d3502abb84dc82b435936eb651ddcdefebdfa856bc5b652728",
+      "original_payload_unchanged": true,
+      "original_result_hash": "0a83d6dc12c5f984312890d376f9c1ed4bb2a48465db31793d35e8c6addab128",
+      "review_certificate": {
+        "check_id": "a1db242b-a75a-45f0-9331-4f89a211b4a6",
+        "action_id": "fc9f0463-247e-4ff4-bfa5-46652372d9b3",
+        "payload_hash": "a7dc957113eee1d3502abb84dc82b435936eb651ddcdefebdfa856bc5b652728",
+        "result_id": "23503dcd-86cc-4f06-9590-076bb36bd02a",
+        "certificate_hash": "2d632ee040f34b759867d3a0b2b916e29dc4919e7205ef931bfadfed609ef83e",
+        "status": "passed",
+        "actor": "loz888",
+        "case_revision": 1,
+        "input_revision": 2,
+        "execution_epoch": 1,
+        "fresh_until": "2026-11-07 05:59:17.810043+00:00",
+        "created_at": "2026-11-07 05:29:34.122571+00:00"
+      },
+      "pr": {
+        "number": 3,
+        "url": "https://github.com/Loz888/MAGR-v3/pull/3",
+        "draft": true,
+        "state": "open",
+        "merged": false,
+        "title": "Fix paid order revenue calculation",
+        "body_sha256": "2c4c6ba4c0eb227224b4b587099708fb10b9068902aa0a204b704cfc9cfea85f",
+        "head": {
+          "ref": "mgar/r5-fc9f0463247e4ff4bfa546652372d9b3",
+          "sha": "af7523d946ab8b042ede0ff8a6f5f54caa0c75e2"
+        },
+        "base": {
+          "ref": "p0-commerce-live-v2-n01-base",
+          "sha": "6669b7d189aa439bd23334d9b59739f8b48f4406"
+        }
+      },
+      "commit": {
+        "sha": "af7523d946ab8b042ede0ff8a6f5f54caa0c75e2",
+        "files": [
+          {
+            "sha": "ca2b3edc6c6857f8d23884e26c2dca8481eb96e3",
+            "filename": "v3/examples/repair-target/orders.go"
+          }
+        ],
+        "commit": {
+          "tree": {
+            "sha": "101777f8e83c3c2a155f358f7e322c2ec20c68a1"
+          }
+        },
+        "parents": [
+          {
+            "sha": "6669b7d189aa439bd23334d9b59739f8b48f4406"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "ordinal": 0,
+          "kind": "branch",
+          "status": "succeeded",
+          "request_hash": "c74d81817625b9340ea787d0db91108f1f487cd6b9ae72044ebd3827b2a4be43"
+        },
+        {
+          "ordinal": 1,
+          "kind": "commit",
+          "status": "succeeded",
+          "request_hash": "fae5f72e7a22467d7235f5b14457b90f35c8793db6b7803e32deeeb0af7dfe4d"
+        },
+        {
+          "ordinal": 2,
+          "kind": "pull_request",
+          "status": "succeeded",
+          "request_hash": "2e34efd5ffc3c9d8d94c46154a16baa073d2746d06fbacf7a4d8a6c66e6d0e6a"
+        }
+      ],
+      "case_view_at_delivery": {
+        "schema": "commerce-case-view-v1",
+        "case_id": "8aa83bd9-4504-490f-8731-8329c56953c9",
+        "case_revision": 1,
+        "current_spec_hash": "d19933afa328d5ea7f833a526ad67f3df2d8965f72984aa0b157987903752212",
+        "as_of": "2026-11-07T05:29:57.576454+00:00",
+        "goal": "draft_pr",
+        "phase": "repair",
+        "execution": {
+          "run_id": "671c6c4a-496d-4101-9b7d-dce0f116ee63",
+          "status": "succeeded",
+          "input_revision": 2,
+          "epoch": 1
+        },
+        "business": {
+          "status": "passed",
+          "result_id": "23503dcd-86cc-4f06-9590-076bb36bd02a",
+          "spec_hash": "d19933afa328d5ea7f833a526ad67f3df2d8965f72984aa0b157987903752212",
+          "applies_to_current_input": true,
+          "source_access": "allowed",
+          "review_certificate_hash": "2d632ee040f34b759867d3a0b2b916e29dc4919e7205ef931bfadfed609ef83e"
+        },
+        "approval": "approved",
+        "delivery": "delivered",
+        "uncertainty": "none",
+        "current_actor_authorized": true,
+        "eligibility": {
+          "repair_permit_valid": true,
+          "action_binding_current": true,
+          "approval_unexpired": true,
+          "stage_primary_available": true,
+          "write_grant_current": false
+        },
+        "rendered": {
+          "status": "draft_pr_delivered",
+          "can_request_repair": false,
+          "can_approve": false,
+          "can_dispatch": false
+        }
+      },
+      "new_model_calls": 0,
+      "cost_before": {
+        "calls": 759,
+        "cost_micros": "313148",
+        "unknown": 0
+      },
+      "cost_after": {
+        "calls": 759,
+        "cost_micros": "313148",
+        "unknown": 0
+      },
+      "completed_at": "2026-11-07T05:29:57.576533+00:00"
+    },
+    {
+      "case": "N02",
+      "status": "PASS",
+      "action_id": "a0aec30d-e24b-4254-a999-366665581e96",
+      "payload_hash": "fe27417b1c5165d06055527f0ed9e1eabcf2cc530909b0ba2f503d60159b1171",
+      "original_payload_unchanged": true,
+      "original_result_hash": "2a07dacc793ba8e6f410c26b6c8f84eb7cc01a440c473fa5e7ab9e119483b35f",
+      "review_certificate": {
+        "check_id": "98ac7878-ecaa-456f-ac9b-3ae0d10b1a41",
+        "action_id": "a0aec30d-e24b-4254-a999-366665581e96",
+        "payload_hash": "fe27417b1c5165d06055527f0ed9e1eabcf2cc530909b0ba2f503d60159b1171",
+        "result_id": "d71657df-444e-424c-acd0-59208d9e314c",
+        "certificate_hash": "3fd7974193dc08f257d92a82b2d3127dee01aa7d8563f92b16987025019e6255",
+        "status": "passed",
+        "actor": "loz888",
+        "case_revision": 1,
+        "input_revision": 2,
+        "execution_epoch": 1,
+        "fresh_until": "2026-11-07 06:00:13.126225+00:00",
+        "created_at": "2026-11-07 05:30:28.281737+00:00"
+      },
+      "pr": {
+        "number": 4,
+        "url": "https://github.com/Loz888/MAGR-v3/pull/4",
+        "draft": true,
+        "state": "open",
+        "merged": false,
+        "title": "Fix paid order revenue calculation",
+        "body_sha256": "536cf3c2f671f76b86efc11d3cb1b8a21883e7f3f908fdf4f27d4c684d97d617",
+        "head": {
+          "ref": "mgar/r5-a0aec30de24b4254a999366665581e96",
+          "sha": "3f6d31debb78b263dd3312fcf1d79fa39c7ba5be"
+        },
+        "base": {
+          "ref": "p0-commerce-live-v2-n02-base",
+          "sha": "6669b7d189aa439bd23334d9b59739f8b48f4406"
+        }
+      },
+      "commit": {
+        "sha": "3f6d31debb78b263dd3312fcf1d79fa39c7ba5be",
+        "files": [
+          {
+            "sha": "ca2b3edc6c6857f8d23884e26c2dca8481eb96e3",
+            "filename": "v3/examples/repair-target/orders.go"
+          }
+        ],
+        "commit": {
+          "tree": {
+            "sha": "101777f8e83c3c2a155f358f7e322c2ec20c68a1"
+          }
+        },
+        "parents": [
+          {
+            "sha": "6669b7d189aa439bd23334d9b59739f8b48f4406"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "ordinal": 0,
+          "kind": "branch",
+          "status": "succeeded",
+          "request_hash": "16a8dcc049722bb3867df06651be2f4b116dac9f205bb603a75739c518e62709"
+        },
+        {
+          "ordinal": 1,
+          "kind": "commit",
+          "status": "succeeded",
+          "request_hash": "4bfd8ed0b640932b0edd801c175ae77ef910a92f327b6ef0d9115f015c21b888"
+        },
+        {
+          "ordinal": 2,
+          "kind": "pull_request",
+          "status": "succeeded",
+          "request_hash": "7452d13c60573dd77dff22ed7d234243e39b55888db602d40425f44a71d1c436"
+        }
+      ],
+      "case_view_at_delivery": {
+        "schema": "commerce-case-view-v1",
+        "case_id": "22317b5a-3234-4c6e-a5aa-af8b486c9326",
+        "case_revision": 1,
+        "current_spec_hash": "65691ce7deb38f5c34b31902a7dca27231bec7eb8799a5e03656937cc84055a1",
+        "as_of": "2026-11-07T05:30:50.228135+00:00",
+        "goal": "draft_pr",
+        "phase": "repair",
+        "execution": {
+          "run_id": "11943f69-7667-4d0f-ae06-e9f08f6746fb",
+          "status": "succeeded",
+          "input_revision": 2,
+          "epoch": 1
+        },
+        "business": {
+          "status": "passed",
+          "result_id": "d71657df-444e-424c-acd0-59208d9e314c",
+          "spec_hash": "65691ce7deb38f5c34b31902a7dca27231bec7eb8799a5e03656937cc84055a1",
+          "applies_to_current_input": true,
+          "source_access": "allowed",
+          "review_certificate_hash": "3fd7974193dc08f257d92a82b2d3127dee01aa7d8563f92b16987025019e6255"
+        },
+        "approval": "approved",
+        "delivery": "delivered",
+        "uncertainty": "none",
+        "current_actor_authorized": true,
+        "eligibility": {
+          "repair_permit_valid": true,
+          "action_binding_current": true,
+          "approval_unexpired": true,
+          "stage_primary_available": true,
+          "write_grant_current": false
+        },
+        "rendered": {
+          "status": "draft_pr_delivered",
+          "can_request_repair": false,
+          "can_approve": false,
+          "can_dispatch": false
+        }
+      },
+      "new_model_calls": 0,
+      "cost_before": {
+        "calls": 759,
+        "cost_micros": "313148",
+        "unknown": 0
+      },
+      "cost_after": {
+        "calls": 759,
+        "cost_micros": "313148",
+        "unknown": 0
+      },
+      "completed_at": "2026-11-07T05:30:50.228199+00:00"
+    },
+    {
+      "case": "N03",
+      "status": "PASS",
+      "action_id": "a32f6b32-eb08-461e-9fb1-7816d54b3709",
+      "payload_hash": "f93483cd1f77081650dd13bfd34416a06f8faede0e130715b0e9f52af9f88d97",
+      "original_payload_unchanged": true,
+      "original_result_hash": "ce8575286bc10e489dc138d59390e2aa4f582559eede4d62cffcbb9ce4411b12",
+      "review_certificate": {
+        "check_id": "58905992-7da9-4e8b-8c0d-0604a97576cb",
+        "action_id": "a32f6b32-eb08-461e-9fb1-7816d54b3709",
+        "payload_hash": "f93483cd1f77081650dd13bfd34416a06f8faede0e130715b0e9f52af9f88d97",
+        "result_id": "e5de2710-e677-4e75-84ef-027aa962a2e7",
+        "certificate_hash": "de7d06396726920fd9062b7c4c9906519aaaf1ad580ff74ede7bcfec799e804e",
+        "status": "passed",
+        "actor": "loz888",
+        "case_revision": 1,
+        "input_revision": 2,
+        "execution_epoch": 1,
+        "fresh_until": "2026-11-07 06:01:02.560783+00:00",
+        "created_at": "2026-11-07 05:31:17.789005+00:00"
+      },
+      "pr": {
+        "number": 5,
+        "url": "https://github.com/Loz888/MAGR-v3/pull/5",
+        "draft": true,
+        "state": "open",
+        "merged": false,
+        "title": "Fix paid order revenue calculation",
+        "body_sha256": "70f21e48de3378f5e39f4ebeaa293bf5949f542239937f732ba679f396309e8a",
+        "head": {
+          "ref": "mgar/r5-a32f6b32eb08461e9fb17816d54b3709",
+          "sha": "007edb9cd2c2f7b07cdaaa4ec91c4a97cd7fd3af"
+        },
+        "base": {
+          "ref": "p0-commerce-live-v2-n03-base",
+          "sha": "6669b7d189aa439bd23334d9b59739f8b48f4406"
+        }
+      },
+      "commit": {
+        "sha": "007edb9cd2c2f7b07cdaaa4ec91c4a97cd7fd3af",
+        "files": [
+          {
+            "sha": "ca2b3edc6c6857f8d23884e26c2dca8481eb96e3",
+            "filename": "v3/examples/repair-target/orders.go"
+          }
+        ],
+        "commit": {
+          "tree": {
+            "sha": "101777f8e83c3c2a155f358f7e322c2ec20c68a1"
+          }
+        },
+        "parents": [
+          {
+            "sha": "6669b7d189aa439bd23334d9b59739f8b48f4406"
+          }
+        ]
+      },
+      "steps": [
+        {
+          "ordinal": 0,
+          "kind": "branch",
+          "status": "succeeded",
+          "request_hash": "362096acd26fca6de0cd93e3df976fc72bea2ac2184d06081951999dc59f9352"
+        },
+        {
+          "ordinal": 1,
+          "kind": "commit",
+          "status": "succeeded",
+          "request_hash": "446ac5461e18f961cb9a813dd237c1e358b045132650d89db1cc6fb0d3f24202"
+        },
+        {
+          "ordinal": 2,
+          "kind": "pull_request",
+          "status": "succeeded",
+          "request_hash": "2d82f92e71b4a07d3703860bf99102867849f0142e1df58e541ec051914c8ecf"
+        }
+      ],
+      "case_view_at_delivery": {
+        "schema": "commerce-case-view-v1",
+        "case_id": "0d0ef595-1fcb-4cec-b558-5d881e7ea876",
+        "case_revision": 1,
+        "current_spec_hash": "3103a85093fd25a5c871021a2582d6d2577c5ae9b5ff5d1efdf61d26ea839bd5",
+        "as_of": "2026-11-07T05:31:39.724580+00:00",
+        "goal": "draft_pr",
+        "phase": "repair",
+        "execution": {
+          "run_id": "01b3b01f-ea76-41e2-a2ba-64694a73fc43",
+          "status": "succeeded",
+          "input_revision": 2,
+          "epoch": 1
+        },
+        "business": {
+          "status": "passed",
+          "result_id": "e5de2710-e677-4e75-84ef-027aa962a2e7",
+          "spec_hash": "3103a85093fd25a5c871021a2582d6d2577c5ae9b5ff5d1efdf61d26ea839bd5",
+          "applies_to_current_input": true,
+          "source_access": "allowed",
+          "review_certificate_hash": "de7d06396726920fd9062b7c4c9906519aaaf1ad580ff74ede7bcfec799e804e"
+        },
+        "approval": "approved",
+        "delivery": "delivered",
+        "uncertainty": "none",
+        "current_actor_authorized": true,
+        "eligibility": {
+          "repair_permit_valid": true,
+          "action_binding_current": true,
+          "approval_unexpired": true,
+          "stage_primary_available": true,
+          "write_grant_current": false
+        },
+        "rendered": {
+          "status": "draft_pr_delivered",
+          "can_request_repair": false,
+          "can_approve": false,
+          "can_dispatch": false
+        }
+      },
+      "new_model_calls": 0,
+      "cost_before": {
+        "calls": 759,
+        "cost_micros": "313148",
+        "unknown": 0
+      },
+      "cost_after": {
+        "calls": 759,
+        "cost_micros": "313148",
+        "unknown": 0
+      },
+      "completed_at": "2026-11-07T05:31:39.724645+00:00"
+    }
+  ]
+}

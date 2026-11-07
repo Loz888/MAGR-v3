@@ -1,0 +1,129 @@
+{"sandbox_toolchain":"go version go1.27.3 linux/amd64"}
+{"Time":"2026-11-07T05:30:27.874325841Z","Action":"start","Package":"example.invalid/mgar-v3/orders"}
+{"Time":"2026-11-07T05:30:27.876074078Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestPaidRevenueCents"}
+{"Time":"2026-11-07T05:30:27.876114327Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestPaidRevenueCents","Output":"=== RUN   TestPaidRevenueCents\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876131733Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestPaidRevenueCents","Output":"--- PASS: TestPaidRevenueCents (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876135548Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestPaidRevenueCents","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876141257Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden"}
+{"Time":"2026-11-07T05:30:27.87614364Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden","Output":"=== RUN   TestR5Hidden\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876149309Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v0"}
+{"Time":"2026-11-07T05:30:27.876153385Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v0","Output":"=== RUN   TestR5Hidden/v0\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.87615684Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v0","Output":"--- PASS: TestR5Hidden/v0 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876160866Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v0","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876163269Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v1"}
+{"Time":"2026-11-07T05:30:27.876165543Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v1","Output":"=== RUN   TestR5Hidden/v1\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876168858Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v1","Output":"--- PASS: TestR5Hidden/v1 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876171592Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v1","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876174216Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v2"}
+{"Time":"2026-11-07T05:30:27.876176409Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v2","Output":"=== RUN   TestR5Hidden/v2\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876179734Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v2","Output":"--- PASS: TestR5Hidden/v2 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876182418Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v2","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876184551Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v3"}
+{"Time":"2026-11-07T05:30:27.876186644Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v3","Output":"=== RUN   TestR5Hidden/v3\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876189859Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v3","Output":"--- PASS: TestR5Hidden/v3 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876192152Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v3","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876194416Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v4"}
+{"Time":"2026-11-07T05:30:27.876196569Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v4","Output":"=== RUN   TestR5Hidden/v4\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876199633Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v4","Output":"--- PASS: TestR5Hidden/v4 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876202347Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v4","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876205462Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v5"}
+{"Time":"2026-11-07T05:30:27.876207675Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v5","Output":"=== RUN   TestR5Hidden/v5\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876211921Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v5","Output":"--- PASS: TestR5Hidden/v5 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876214746Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v5","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.8762174Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v6"}
+{"Time":"2026-11-07T05:30:27.876220094Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v6","Output":"=== RUN   TestR5Hidden/v6\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876223088Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v6","Output":"--- PASS: TestR5Hidden/v6 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876225952Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v6","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876228426Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v7"}
+{"Time":"2026-11-07T05:30:27.876230479Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v7","Output":"=== RUN   TestR5Hidden/v7\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876234234Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v7","Output":"--- PASS: TestR5Hidden/v7 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876236728Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v7","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876238861Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v8"}
+{"Time":"2026-11-07T05:30:27.876240824Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v8","Output":"=== RUN   TestR5Hidden/v8\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876245611Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v8","Output":"--- PASS: TestR5Hidden/v8 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876248526Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v8","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876250889Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v9"}
+{"Time":"2026-11-07T05:30:27.876252982Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v9","Output":"=== RUN   TestR5Hidden/v9\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876256137Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v9","Output":"--- PASS: TestR5Hidden/v9 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876259011Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v9","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876261335Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v10"}
+{"Time":"2026-11-07T05:30:27.876263668Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v10","Output":"=== RUN   TestR5Hidden/v10\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876266973Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v10","Output":"--- PASS: TestR5Hidden/v10 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876270037Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v10","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876272601Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v11"}
+{"Time":"2026-11-07T05:30:27.876275796Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v11","Output":"=== RUN   TestR5Hidden/v11\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876279832Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v11","Output":"--- PASS: TestR5Hidden/v11 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876282406Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v11","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876284769Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v12"}
+{"Time":"2026-11-07T05:30:27.876287343Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v12","Output":"=== RUN   TestR5Hidden/v12\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876290428Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v12","Output":"--- PASS: TestR5Hidden/v12 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876292861Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v12","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876295215Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v13"}
+{"Time":"2026-11-07T05:30:27.876297718Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v13","Output":"=== RUN   TestR5Hidden/v13\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876300823Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v13","Output":"--- PASS: TestR5Hidden/v13 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876303437Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v13","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.87630563Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v14"}
+{"Time":"2026-11-07T05:30:27.876307743Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v14","Output":"=== RUN   TestR5Hidden/v14\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876311168Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v14","Output":"--- PASS: TestR5Hidden/v14 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876313592Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v14","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.87632563Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v15"}
+{"Time":"2026-11-07T05:30:27.876328013Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v15","Output":"=== RUN   TestR5Hidden/v15\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876331108Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v15","Output":"--- PASS: TestR5Hidden/v15 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876333662Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v15","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876336255Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v16"}
+{"Time":"2026-11-07T05:30:27.876338769Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v16","Output":"=== RUN   TestR5Hidden/v16\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876342214Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v16","Output":"--- PASS: TestR5Hidden/v16 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876345219Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v16","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876353821Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v17"}
+{"Time":"2026-11-07T05:30:27.876356515Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v17","Output":"=== RUN   TestR5Hidden/v17\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876361042Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v17","Output":"--- PASS: TestR5Hidden/v17 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876365008Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v17","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876367752Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v18"}
+{"Time":"2026-11-07T05:30:27.876369815Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v18","Output":"=== RUN   TestR5Hidden/v18\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876373721Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v18","Output":"--- PASS: TestR5Hidden/v18 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876376485Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v18","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876379049Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v19"}
+{"Time":"2026-11-07T05:30:27.876381903Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v19","Output":"=== RUN   TestR5Hidden/v19\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876396214Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v19","Output":"--- PASS: TestR5Hidden/v19 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876443334Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v19","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876446488Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v20"}
+{"Time":"2026-11-07T05:30:27.876448001Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v20","Output":"=== RUN   TestR5Hidden/v20\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876450474Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v20","Output":"--- PASS: TestR5Hidden/v20 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876452117Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v20","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876453529Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v21"}
+{"Time":"2026-11-07T05:30:27.876455261Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v21","Output":"=== RUN   TestR5Hidden/v21\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876457194Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v21","Output":"--- PASS: TestR5Hidden/v21 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876459107Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v21","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.87646112Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v22"}
+{"Time":"2026-11-07T05:30:27.876462592Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v22","Output":"=== RUN   TestR5Hidden/v22\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876464826Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v22","Output":"--- PASS: TestR5Hidden/v22 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876467069Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v22","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876468671Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v23"}
+{"Time":"2026-11-07T05:30:27.876470204Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v23","Output":"=== RUN   TestR5Hidden/v23\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876472096Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v23","Output":"--- PASS: TestR5Hidden/v23 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876473999Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v23","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876475571Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v24"}
+{"Time":"2026-11-07T05:30:27.876477224Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v24","Output":"=== RUN   TestR5Hidden/v24\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876479137Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v24","Output":"--- PASS: TestR5Hidden/v24 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876480869Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v24","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876482712Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v25"}
+{"Time":"2026-11-07T05:30:27.876484314Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v25","Output":"=== RUN   TestR5Hidden/v25\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876552605Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v25","Output":"--- PASS: TestR5Hidden/v25 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876561799Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v25","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876563421Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v26"}
+{"Time":"2026-11-07T05:30:27.876564583Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v26","Output":"=== RUN   TestR5Hidden/v26\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876566506Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v26","Output":"--- PASS: TestR5Hidden/v26 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876568158Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v26","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.87656956Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v27"}
+{"Time":"2026-11-07T05:30:27.876570702Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v27","Output":"=== RUN   TestR5Hidden/v27\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876574338Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v27","Output":"--- PASS: TestR5Hidden/v27 (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876588388Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden/v27","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876591723Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden","Output":"--- PASS: TestR5Hidden (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876595248Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestR5Hidden","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.876607647Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestCommerceObservedWindow"}
+{"Time":"2026-11-07T05:30:27.87661008Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestCommerceObservedWindow","Output":"=== RUN   TestCommerceObservedWindow\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876736888Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestCommerceObservedWindow","Output":"--- PASS: TestCommerceObservedWindow (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.876753703Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestCommerceObservedWindow","Elapsed":0}
+{"Time":"2026-11-07T05:30:27.87684606Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Output":"PASS\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:30:27.877245144Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Output":"ok  \texample.invalid/mgar-v3/orders\t0.002s\n"}
+{"Time":"2026-11-07T05:30:27.877298353Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Elapsed":0.003}

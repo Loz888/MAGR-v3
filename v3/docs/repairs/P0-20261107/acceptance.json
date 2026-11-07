@@ -1,0 +1,57 @@
+{
+  "schema": "p0-delivery-acceptance-v1",
+  "as_of": "2026-11-07T05:31:50.786429+00:00",
+  "P0_overall": "DONE_WITHIN_REGISTERED_SYNTHETIC_SCOPE",
+  "engineering_gate": "PASS",
+  "engineering": [
+    {
+      "task": "V31-P0-REVIEW",
+      "counts": {
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "receipt": "engineering-review-13.json"
+    },
+    {
+      "task": "V31-P0-IMPLEMENT",
+      "counts": {
+        "tests": 30,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "receipt": "engineering-p0-30.json"
+    }
+  ],
+  "code_sha256": "510ea02781763ded239b5ddef6c81f7bad3127ca38d2a07d33bd2d2be0618fdf",
+  "live": {
+    "normal_investigation": "3/3_prior_real_model",
+    "normal_repair_proposal": "3/3_prior_real_model",
+    "negative_cases": "2/2_prior_zero_model_calls",
+    "fresh_source_and_Go_rechecks": "3/3",
+    "real_Draft_PR_delivery": "3/3",
+    "merged": 0,
+    "Issue_comments": 0
+  },
+  "new_model_calls": 0,
+  "new_cost_micros": 0,
+  "repository_cost": {
+    "calls": 759,
+    "cost_micros": "313148",
+    "unknown": 0
+  },
+  "unknown": 0,
+  "reserved": 0,
+  "shared_paid_grants": [
+    {
+      "manifest_hash": "7b4b7f46c15c0e19d19276a84df4688aeac76f94d3601ba61b97c42f77ce52fd",
+      "expires_at": "2026-11-06 18:14:32.923411+00:00",
+      "still_expired": true
+    }
+  ],
+  "original_ABC_and_DEF_failures": "unchanged",
+  "prior_full_404_scope": "original_source_fingerprint_only",
+  "legacy_P0_component_label": "old registry says 18 migrations; actual fresh fixture applies 19, asserted by review environment tests"
+}

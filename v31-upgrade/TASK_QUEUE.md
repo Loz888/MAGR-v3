@@ -1,5 +1,7 @@
 # V3.1 增量任务队列
 
+2026-11-07 P0最终交付：用户批准三份完整原提案后，追加不可变证书重核来源和原补丁测试，再经原Action/Outbox完成Draft PR [#3](https://github.com/Loz888/MAGR-v3/pull/3)、[#4](https://github.com/Loz888/MAGR-v3/pull/4)、[#5](https://github.com/Loz888/MAGR-v3/pull/5)，均未合并。最新专项13项及原P0回归30项通过，源码指纹一致；新增模型/费用0，累计759次/US$0.313148，unknown/预占0。两项P0在固定合成场景与受限Go函数范围内DONE；原ABC/DEF失败保留，其余P1/P2不开展。[最终修复与交付档案](../v3/docs/repairs/P0-20261107/README.md) · [复验卡](tasks/V31-P0-REVIEW.md)。
+
 2026-11-06 P0实施：Case/原R4-R5交接、不可变业务结果、独立数值/引用/测试判定、四维API/CLI/工作台与共享冻结预算落地。完整回归404项通过；最后两处P0修补后专项30项通过。真实正常调查/修复提案各3/3，缺SQL/撤权负例2/2且0模型调用。新增9次、US$0.001635，累计759次、US$0.313148，unknown/预占0。三份完整Draft PR待准确审批，P0整体保持IN_PROGRESS，不提前记交付PASS；原ABC/DEF失败保留。[实施档案](../v3/docs/repairs/P0-20261106/README.md) · [任务卡](tasks/V31-P0-IMPLEMENT.md)。
 
 2026-11-06：整理GitHub主页、文档导航与完整技术报告，含技术选型、架构、评测、失败修复和两项P0设计边界；本轮只做文档，无新模型/业务发布/部署。[技术报告](../v3/docs/TECHNICAL_REPORT.md) · [文档导航](../v3/docs/README.md)。原始实验与失败不改。
@@ -35,6 +37,8 @@ D/E/F协调补验已完成12/12次：正常D7/8、E1/8、F4/8，负例各12/12�
 | V31-P0-COMMERCE-DESIGN | 电商工单闭环设计 | DESIGN_COMPLETE（未实施） | NOT_RUN | NOT_RUN |
 | V31-P0-RESULT-DESIGN | 统一业务结果设计 | DESIGN_COMPLETE（未实施） | NOT_RUN | NOT_RUN |
 | V31-DOCS-REPORT | GitHub页面与完整技术报告 | DONE（文档交付） | 文档检查另列；未重跑运行门禁 | NOT_RUN（本轮无实验） |
+| V31-P0-IMPLEMENT | 两项P0实施与固定场景整合 | DONE（固定范围） | PASS（最新专项13项、P0回归30项） | PASS（3调查/3提案/2负例/3个Draft PR） |
+| V31-P0-REVIEW | 原获批提案复验与真实交付 | DONE | PASS（13项专项，原P0回归30项） | PASS（#3/#4/#5准确远端核对，新增调用0） |
 
 2026-11-02 用户授权真实调用与 GitHub 推送；沿用最多 3 次物理调用、累计 USD 2 的限制。R0 与 R1 工程复验通过，R1 真实闭环 PASS 后才启动 R2。实际调用 2 次，保守计费 USD 0.001745，结果评论一条；模型落库与远程写回执两个 SIGKILL 恢复点通过。
 

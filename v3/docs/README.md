@@ -1,6 +1,6 @@
 # 文档导航
 
-项目是事件驱动持续研发Agent研究原型。电商“研巡”的两项P0已经实施，真实报告与修复提案验收通过；当前交付审批状态见[实施档案](repairs/P0-20261106/README.md)。原技术报告/PDF保留P0实施前快照，新增技术与验证单列附录。
+项目是事件驱动持续研发Agent研究原型。电商“研巡”的两项P0已完成固定场景内的实施、真实报告/修复提案与三份Draft PR交付；见[最终复验/交付](repairs/P0-20261107/README.md)及[原实施档案](repairs/P0-20261106/README.md)。原技术报告/PDF保留P0实施前快照，新增技术与验证单列附录。
 
 | 阅读目的 | 入口 |
 |---|---|
@@ -9,7 +9,7 @@
 | 本机启动和演示 | [应用README](../README.md) · [已验证版本](versions.md) |
 | 核对报告数字和证据 | [报告事实索引](reports/20261106/report-data.json) · [文档检查](reports/20261106/review.json) |
 | 了解两项P0设计 | [设计入口](design/p0-commerce-v1/README.md) · [闭环](design/p0-commerce-v1/01-commerce-workflow.md) · [统一结果](design/p0-commerce-v1/02-business-result.md) |
-| 使用电商工单、核对最新实测 | [运行手册](p0-commerce-runbook.md) · [实施/修复档案](repairs/P0-20261106/README.md) · [完整提案](repairs/P0-20261106/draft-pr-review.md) |
+| 使用电商工单、核对最新实测 | [运行手册](p0-commerce-runbook.md) · [最终复验/交付](repairs/P0-20261107/README.md) · [原实施档案](repairs/P0-20261106/README.md) · [获批原提案](repairs/P0-20261106/draft-pr-review.md) |
 | 查看任务阶段及边界 | [任务队列](../../v31-upgrade/TASK_QUEUE.md) · [ADR目录](adr/) |
 
 ## 运行与架构
@@ -23,7 +23,7 @@
 | R5 受限修复 | [修复边界](adr/0007-r5-repair-boundaries.md) · [真实适配](adr/0008-r5-native-adapters.md) | [运行](r5-runbook.md) · [真实PR恢复](r5-live-report.md) |
 | R6 监控/有限主动性 | [恢复请求](adr/0011-observe-only-watchdog.md) · [评测](adr/0012-r6-monitoring-proactivity-evaluation.md) | [运行](r6-runbook.md) · [故障矩阵](r6-failure-matrix.md) |
 | 协调补验与修复 | [D/E/F设计](adr/0014-coordination-comparison.md) · [候选契约](adr/0015-coordination-candidate-contract.md) | [v1报告](experiments/coordination-v1/README.md) · [v2报告](experiments/coordination-v2/README.md) |
-| 两项P0 | [冻结设计](adr/0016-p0-commerce-and-business-results-design.md) · [实施ADR0017](adr/0017-p0-commerce-implementation.md) | [工程/真实验收](repairs/P0-20261106/acceptance.json) · [运行](p0-commerce-runbook.md) |
+| 两项P0 | [冻结设计](adr/0016-p0-commerce-and-business-results-design.md) · [实施ADR0017](adr/0017-p0-commerce-implementation.md) · [复验ADR0018](adr/0018-exact-proposal-review.md) | [最终验收](repairs/P0-20261107/acceptance.json) · [原实验](repairs/P0-20261106/acceptance.json) · [运行](p0-commerce-runbook.md) |
 
 ## 结果与问题档案
 

@@ -1,0 +1,40 @@
+{
+  "task": "V31-P0-REVIEW",
+  "status": "PASS",
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "reason": null,
+  "argv": [
+    "/tmp/mgar-v3-r6-repair-venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_p0_review.py",
+    "tests/test_environment.py",
+    "--junitxml=/workspace/MAGR-v3/v3/evidence/V31-P0-REVIEW/20261107T052001Z-a2777147/junit.xml"
+  ],
+  "cwd": "/workspace/MAGR-v3/v3",
+  "started_at": "2026-11-07T05:20:01.272823+00:00",
+  "finished_at": "2026-11-07T05:24:44.509101+00:00",
+  "duration_seconds": 283.212,
+  "command_exit_code": 0,
+  "exit_code": 0,
+  "counts": {
+    "tests": 13,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "components": {
+    "postgres": "real_disposable_database_19_migrations",
+    "sandbox": "real_pinned_Docker_Go_public_independent_and_observed_window",
+    "models": "none",
+    "publication": "controlled_stdio_MCP_exact_approved_payload",
+    "history": "original_business_results_and_actions_immutable"
+  },
+  "git_commit": "34f1c7c39808c3ffe729e8e746fa1e8391b087c1",
+  "source_sha256": "510ea02781763ded239b5ddef6c81f7bad3127ca38d2a07d33bd2d2be0618fdf",
+  "finished_source_sha256": "510ea02781763ded239b5ddef6c81f7bad3127ca38d2a07d33bd2d2be0618fdf",
+  "log_path": "evidence/V31-P0-REVIEW/20261107T052001Z-a2777147/command.log",
+  "attempt_path": "evidence/V31-P0-REVIEW/20261107T052001Z-a2777147"
+}

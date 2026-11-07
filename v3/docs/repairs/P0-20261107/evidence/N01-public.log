@@ -1,0 +1,9 @@
+{"sandbox_toolchain":"go version go1.27.3 linux/amd64"}
+{"Time":"2026-11-07T05:29:25.485702883Z","Action":"start","Package":"example.invalid/mgar-v3/orders"}
+{"Time":"2026-11-07T05:29:25.487739726Z","Action":"run","Package":"example.invalid/mgar-v3/orders","Test":"TestPaidRevenueCents"}
+{"Time":"2026-11-07T05:29:25.487770532Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestPaidRevenueCents","Output":"=== RUN   TestPaidRevenueCents\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:29:25.487782079Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Test":"TestPaidRevenueCents","Output":"--- PASS: TestPaidRevenueCents (0.00s)\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:29:25.487784763Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Test":"TestPaidRevenueCents","Elapsed":0}
+{"Time":"2026-11-07T05:29:25.487790241Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Output":"PASS\n","OutputType":"frame"}
+{"Time":"2026-11-07T05:29:25.488135541Z","Action":"output","Package":"example.invalid/mgar-v3/orders","Output":"ok  \texample.invalid/mgar-v3/orders\t0.002s\n"}
+{"Time":"2026-11-07T05:29:25.488187508Z","Action":"pass","Package":"example.invalid/mgar-v3/orders","Elapsed":0.002}

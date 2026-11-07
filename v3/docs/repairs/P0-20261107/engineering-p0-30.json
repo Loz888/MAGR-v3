@@ -1,0 +1,45 @@
+{
+  "task": "V31-P0-IMPLEMENT",
+  "status": "PASS",
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "reason": null,
+  "argv": [
+    "/tmp/mgar-v3-r6-repair-venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_p0_commerce.py",
+    "tests/test_p0_live_adapter.py",
+    "--junitxml=/workspace/MAGR-v3/v3/evidence/V31-P0-IMPLEMENT/20261107T052454Z-4db139a5/junit.xml"
+  ],
+  "cwd": "/workspace/MAGR-v3/v3",
+  "started_at": "2026-11-07T05:24:54.479348+00:00",
+  "finished_at": "2026-11-07T05:29:03.280812+00:00",
+  "duration_seconds": 248.785,
+  "command_exit_code": 0,
+  "exit_code": 0,
+  "counts": {
+    "tests": 30,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "components": {
+    "postgres": "real_disposable_database_18_migrations",
+    "redis": "real_local_coordination",
+    "sandbox": "real_pinned_Docker_Go_public_28_independent_cases_and_observed_Case_window",
+    "model": "controlled_HTTP_ONLY_in_registered_tests",
+    "publication": "controlled_persistent_stdio_MCP_three_writes_and_readonly_reconciliation",
+    "results": "append_only_case_spec_and_business_results_SQL_only_atomic_commit",
+    "live": "NOT_RUN_pending_exact_frozen_grants_and_complete_Action_review",
+    "historical_results": "unchanged",
+    "prior_full_regression": "404_PASS_at_b0b75e036fd0094fda4a61114ba9df554dfbd62ac052afecef56d73ad2834783",
+    "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery"
+  },
+  "git_commit": "34f1c7c39808c3ffe729e8e746fa1e8391b087c1",
+  "source_sha256": "510ea02781763ded239b5ddef6c81f7bad3127ca38d2a07d33bd2d2be0618fdf",
+  "finished_source_sha256": "510ea02781763ded239b5ddef6c81f7bad3127ca38d2a07d33bd2d2be0618fdf",
+  "log_path": "evidence/V31-P0-IMPLEMENT/20261107T052454Z-4db139a5/command.log",
+  "attempt_path": "evidence/V31-P0-IMPLEMENT/20261107T052454Z-4db139a5"
+}

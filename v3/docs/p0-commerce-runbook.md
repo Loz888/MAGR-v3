@@ -71,3 +71,13 @@ make verify TASK=V31-P0-IMPLEMENT
 ```
 
 注册工程测试使用真实PostgreSQL、Redis、Go/Docker，模型HTTP及GitHub发布为受控服务。只有单列的真实模型与GitHub回执才能证明真实业务验收。此切片不扩展通用SQL、多文件修复、团队登录、开放规划、额外检索/盲测/负载或生产HA。
+
+## 审批到达时原证据已过期
+
+用户已审阅并批准同一完整payload时，可信操作者可显式调用`commerce.review.recheck(engine.commerce, action_id, approved_payload_hash, actor)`。仅接受完全未发送的当前提案；重新读取知识/SQL/GitHub来源并运行原补丁的公开、独立和Case窗口Go测试。通过后保存不可变证书，沿用新SQL观察的TTL；原业务结果、Action和旧有效期均保留。证书仅适用于该Action，不能续用旧调查启动新修复。
+
+之后仍调用原`engine.repairs.renew_review(...)`、`engine.approve(...)`和匹配原许可的Dispatcher。任一payload、来源内容、输入、epoch或权限变化都拒绝复用；已开始的发布继续按原unknown只读对账规则处理。该操作没有模型调用，也不续期共享付费grant。见[ADR0018](adr/0018-exact-proposal-review.md)及[复验/交付档案](repairs/P0-20261107/README.md)。
+
+```bash
+make verify TASK=V31-P0-REVIEW
+```

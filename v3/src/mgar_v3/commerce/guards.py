@@ -18,7 +18,7 @@ def prepare_action(store: "Commerce", action_id: UUID) -> None:
         if not store.binding(run["run_id"]):
             return
         conn.execute("DELETE FROM app.commerce_action_validations WHERE action_id=%s", (action_id,))
-    store.require_result(run["run_id"], action["payload"].get("diff_hash"))
+    store.require_result(run["run_id"], action["payload"].get("diff_hash"), action_id=action_id)
     store.bound_permit(run["run_id"], external_write=True)
     store.snapshot(run["run_id"])
     reader = store.reader_for_run(run["run_id"])
@@ -54,7 +54,9 @@ def guard_action(
 ) -> None:
     link = store.binding(run["run_id"])
     assert link is not None
-    result = store.require_result(run["run_id"], action["payload"].get("diff_hash"))
+    result = store.require_result(
+        run["run_id"], action["payload"].get("diff_hash"), action_id=action["action_id"]
+    )
     if (
         link["stage"] != "repair_proposal"
         or action["payload"].get("business_result_hash") != result["result_hash"]

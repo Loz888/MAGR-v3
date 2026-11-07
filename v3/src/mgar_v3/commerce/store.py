@@ -522,7 +522,11 @@ class Commerce:
             )
         return {"case_id": str(case_id), "run_id": str(receipt.run_id), "duplicate": False}
 
-    def require_result(self, run_id: UUID, artifact_hash: str | None = None) -> "Row":
+    def require_result(
+        self, run_id: UUID, artifact_hash: str | None = None, *, action_id: UUID | None = None
+    ) -> "Row":
+        from mgar_v3.commerce.review import fresh
+
         link = self.binding(run_id)
         if not link:
             raise DomainError("COMMERCE_RUN_REQUIRED", "No case binding")
@@ -537,7 +541,7 @@ class Commerce:
             or result["input_revision"] != run["thread_revision"]
             or result["input_revision"] != run["input_revision"]
             or result["execution_epoch"] != run["execution_epoch"]
-            or result["fresh_until"] <= datetime.now(UTC)
+            or not fresh(self, result, action_id, now=datetime.now(UTC))
             or (artifact_hash is not None and result["artifact_hash"] != artifact_hash)
         ):
             raise DomainError(

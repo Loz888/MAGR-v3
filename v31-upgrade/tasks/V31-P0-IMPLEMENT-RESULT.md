@@ -1,6 +1,8 @@
 # V31-P0-IMPLEMENT RESULT
 
-实施代码与受控工程PASS，真实报告/修复提案PASS，真实交付AWAITING_APPROVAL，整体IN_PROGRESS。
+2026-11-07最终结果：实施代码与工程PASS，真实报告/修复提案PASS，真实Draft PR交付3/3 PASS，整体DONE（固定合成业务与受限Go函数范围）。最新源码指纹`510ea02781763ded239b5ddef6c81f7bad3127ca38d2a07d33bd2d2be0618fdf`，复验专项13项及原P0回归30项通过；新增模型调用/费用0。见[最终复验/交付档案](../../v3/docs/repairs/P0-20261107/README.md)。
+
+以下保留2026-11-06阶段结果，彼时交付等待审批；原工程与真实模型证据不覆盖改写。
 
 - 新增迁移0018，Case/来源注册/版本、原R4-R5阶段交接、不可变业务结果和独立共享grant。
 - 实际typed SQL行、Decimal、完整引用单元、AST/Go/独立及Case窗口测试组成业务判定；四维API/CLI/工作台不从原Run成功推断业务PASS。

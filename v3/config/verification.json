@@ -380,5 +380,19 @@
       "prior_full_regression": "404_PASS_at_b0b75e036fd0094fda4a61114ba9df554dfbd62ac052afecef56d73ad2834783",
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery"
     }
+  },
+  "V31-P0-REVIEW": {
+    "tests": [
+      "tests/test_p0_review.py",
+      "tests/test_environment.py"
+    ],
+    "timeout_seconds": 900,
+    "components": {
+      "postgres": "real_disposable_database_19_migrations",
+      "sandbox": "real_pinned_Docker_Go_public_independent_and_observed_window",
+      "models": "none",
+      "publication": "controlled_stdio_MCP_exact_approved_payload",
+      "history": "original_business_results_and_actions_immutable"
+    }
   }
 }

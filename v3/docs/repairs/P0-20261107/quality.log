@@ -1,0 +1,4 @@
+uv run --frozen ruff check src tests scripts
+All checks passed!
+uv run --frozen mypy
+Success: no issues found in 126 source files

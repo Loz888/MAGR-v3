@@ -4,6 +4,7 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
+from mgar_v3.commerce.review import certificate, fresh
 from mgar_v3.commerce.view import render
 from mgar_v3.domain import DomainError
 
@@ -88,7 +89,7 @@ def result_view(store: "Commerce", case_id: UUID) -> dict[str, Any]:
         and result["spec_hash"] == case["spec_hash"]
         and result["input_revision"] == run["input_revision"] == run["thread_revision"]
         and result["execution_epoch"] == run["execution_epoch"]
-        and result["fresh_until"] > datetime.now(UTC)
+        and fresh(store, result, action["action_id"] if action else None, now=datetime.now(UTC))
         and access == "allowed"
     )
     permit_valid = False
@@ -133,6 +134,7 @@ def result_view(store: "Commerce", case_id: UUID) -> dict[str, Any]:
         "rejected": "cancelled",
         "expired": "not_started",
     }.get(status or "", "not_requested")
+    review = certificate(store, action["action_id"], result) if action and result else None
     view = {
         "schema": "commerce-case-view-v1",
         "case_id": str(case_id),
@@ -153,6 +155,7 @@ def result_view(store: "Commerce", case_id: UUID) -> dict[str, Any]:
             "spec_hash": result["spec_hash"] if result else None,
             "applies_to_current_input": applicable,
             "source_access": access,
+            "review_certificate_hash": review["certificate_hash"] if review else None,
         },
         "approval": approval,
         "delivery": "not_started"
