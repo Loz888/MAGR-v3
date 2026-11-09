@@ -1,0 +1,203 @@
+{
+  "card": "R05",
+  "title": "Generic Draft PR Publication",
+  "commit": "f0ed43ad96a6648fad29daa084295b590e9b4201",
+  "commit_note": "单次本地提交：repair/pr_delivery.py（ReviewBundle、内容寻址审批、读写传输分离、三步发布与回执、未知结果只读对账、Draft-only、Episodic Memory）、tests/test_v34_pr_delivery.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "e31ac9768fae22e6b6807b9b5cad6c5e90b51568",
+  "accepted_at": "2026-11-09T10:50:55Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (new pr_delivery.py)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "docker": "NOT_USED by R05 tests (R01-R04 regression reuses fixed image mgar-v3-sandbox-r03:local)",
+    "github": "controlled stdio MCP fixture server (mgar_v3.repair.fixture_server); no network; two independent client configurations model read/write token separation",
+    "model": "not_used",
+    "network": "NOT_USED",
+    "postgres": "NOT_USED",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as f0ed43a. Evidence directory is gitignored; this accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/repair/pr_delivery.py",
+        "tests/test_v34_pr_delivery.py"
+      ],
+      "secondary_argv": ["/tmp/mgar-v3-venv/bin/mypy", "src/mgar_v3/repair/pr_delivery.py"],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）零告警；mypy strict 覆盖新增 pr_delivery.py",
+      "log": "evidence/R05/20261109T104830Z-R05/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "R05"],
+      "exit_code": 0,
+      "duration_seconds": 27.287,
+      "purpose": "R05 统一验收：完整 diff 审查、审批绑定与失效、base 复检、只读回退、三步回执、未知结果对账、Draft-only 与 Memory",
+      "counts": {
+        "tests": 11,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "3a2c1cf18fd89c347436d3595fd45bf12c9cd4b322d7484b61059d6dcaaa7dda",
+      "finished_source_sha256": "3a2c1cf18fd89c347436d3595fd45bf12c9cd4b322d7484b61059d6dcaaa7dda",
+      "git_commit": "f0ed43ad96a6648fad29daa084295b590e9b4201",
+      "attempt": "evidence/R05/20261109T104835Z-f8b2bd55",
+      "log": "evidence/R05/20261109T104835Z-f8b2bd55/command.log",
+      "junit": "evidence/R05/20261109T104835Z-f8b2bd55/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "regression",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_v34_repair_handoff.py",
+        "tests/test_v34_patch_workspace.py",
+        "tests/test_v34_sandbox_executor.py",
+        "tests/test_v34_repair_agent.py",
+        "-q"
+      ],
+      "counts": {
+        "tests": 35,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration_seconds": 94.2,
+      "purpose": "R01/R02/R03/R04 回归；确认新增发布层未改变交接、补丁编辑、沙箱执行与修复循环行为",
+      "log": "evidence/R05/20261109T104830Z-R05/07-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "container-residue",
+      "argv": ["docker", "ps", "-aq", "--filter", "label=mgar.v3.r03.sandbox"],
+      "exit_code": 0,
+      "purpose": "确认回归结束后没有残留沙箱容器",
+      "result": "0 containers",
+      "log": "evidence/R05/20261109T104830Z-R05/09-containers.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean（实现已提交为 f0ed43a）",
+      "log": "evidence/R05/20261109T104830Z-R05/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 verify / 测试未修改源工作区",
+      "log": "evidence/R05/20261109T104830Z-R05/08-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "live_gate_note": "R05 在真实 stdio MCP 协议 fixture 上创建真实 Draft PR 对象，但未连接 github.com，也未使用 GitHub 写令牌；真实仓库发布需要单独的 R5 write profile、写权限凭据与人工授权。",
+  "must_pass": [
+    {
+      "item": "审查完整 diff",
+      "result": "PASS",
+      "evidence": "DraftPRPublisher.review 要求 diff 中包含每个变更文件的 b/<path> 段，否则 DELIVERY_DIFF_INCOMPLETE；ReviewReceipt 记录 diff SHA-256、文件列表、字节数与增删行数，测试 test_review_requires_the_complete_diff... 验证。"
+    },
+    {
+      "item": "审批绑定 repository + base_commit + tested_tree + payload_hash",
+      "result": "PASS",
+      "evidence": "PublicationApproval.grant 的 approval_id 对 actor、repository、base_sha、tree_hash、payload_hash、diff_sha256、approved_at 做 SHA-256；_authorize 同时校验字段与重算摘要。"
+    },
+    {
+      "item": "diff 或输入版本变化后旧审批失效",
+      "result": "PASS",
+      "evidence": "test_any_change_after_approval_invalidates_the_approval 对 diff、tree_hash、base_sha 三种变化断言 APPROVAL_STALE（409），且发生在任何传输调用之前，writer.writes 为空。"
+    },
+    {
+      "item": "GitHub 写权限与只读令牌分离",
+      "result": "PASS",
+      "evidence": "MCPReadTransport 协议不含写方法，MCPWriteTransport 必须显式 scope='write'；测试为读、写构造两个独立 ReadOnlyGitHubMCP 配置，并断言只读实例没有 create_branch/push_files/create_draft_pull_request。"
+    },
+    {
+      "item": "权限不足时输出 patch 或明确拒绝",
+      "result": "PASS",
+      "evidence": "writer.scope != 'write' 时返回 write_permission_required，outcome.patch 等于完整 bundle.diff，且不调用任何写方法；未声明写 scope 的 MCPWriteTransport 构造即抛 GITHUB_WRITE_SCOPE_REQUIRED（403）。"
+    },
+    {
+      "item": "发布前再次校验 base 版本",
+      "result": "PASS",
+      "evidence": "publish 在首次写入前读取 base 分支 SHA 并与审批的 base_sha 比较；test_base_branch_is_rechecked_before_the_first_write 断言返回 base_changed 且零写入。"
+    },
+    {
+      "item": "分步执行并记录回执（branch → commit → Draft PR）",
+      "result": "PASS",
+      "evidence": "每一步独立执行、读回校验并生成 PublicationStep；test_approved_repair_creates... 断言三步 ordinal/kind/status 依次为 succeeded，fixture writes 顺序为 branch、commit、pull_request。"
+    },
+    {
+      "item": "GitHub 结果未知时对账，不重复写入",
+      "result": "PASS",
+      "evidence": "fixture 在 branch / pull_request 写后丢弃响应时 publish 返回 outcome_unknown；reconcile 仅使用读工具，pull_request 丢失时可恢复 published，branch 丢失时保持 outcome_unknown，两次写入列表完全一致。"
+    },
+    {
+      "item": "只创建 Draft PR，不自动合并",
+      "result": "PASS",
+      "evidence": "create_draft_pull_request 固定 draft=True、maintainer_can_modify=False；发布后读回并断言 pull_request.draft 为 True；模块不导出任何 merge 操作，测试断言 dir(pr_delivery) 不含 merge。"
+    },
+    {
+      "item": "PR 成功后结果写入 Memory，失败原因也写入 Memory",
+      "result": "PASS",
+      "evidence": "publish/reconcile 的每个出口都写入 PublicationEpisode；测试断言 published、write_permission_required、base_changed、outcome_unknown 四类状态与原因均被记录，成功 episode 附 PR 编号与 draft=True。"
+    },
+    {
+      "item": "测试仓库中经人工批准的修复可以创建真实 Draft PR",
+      "result": "PASS",
+      "evidence": "test_approved_repair_creates_and_reconciles_a_real_draft_pr 在真实 stdio MCP fixture 仓库中经 PublicationApproval 批准后创建 Draft PR，读回标题、正文、head/base 引用与 SHA 全部匹配，并能只读对账。"
+    },
+    {
+      "item": "既有 R01/R02/R03/R04 行为不回归",
+      "result": "PASS",
+      "evidence": "R01 8 项 + R02 8 项 + R03 10 项 + R04 9 项 = 35 passed，0 failed，0 skipped；无残留沙箱容器。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "自动化验收未对真实 github.com 写入",
+      "handling": "R05 通过真实 stdio MCP 协议 fixture 创建真实 Draft PR 对象，验证完整写入、回执与对账语义；真实仓库发布需要单独 write profile、写令牌与人工授权，避免离线验收伪造外部写入。"
+    },
+    {
+      "issue": "只读与写令牌在测试中由两个独立客户端配置建模",
+      "handling": "发布层只依赖注入的 ReadTransport/WriteTransport；生产接线使用 settings.github_read_token 与 settings.github_write_token 构造两个客户端，R05 不在模块内读取环境变量。"
+    },
+    {
+      "issue": "不支持文件删除、重命名检测与二进制内容",
+      "handling": "ReviewBundle 只接受 1-16 个仓库相对文本文件；删除与重命名需要新的契约与审批语义，留待后续卡片。"
+    },
+    {
+      "issue": "Episodic Memory 默认使用进程内 MemoryPublicationLog",
+      "handling": "DeliveryMemorySink 协议隔离存储；生产接线把 PublicationEpisode 交给 M02 MemoryWriter，不改变发布路径。"
+    },
+    {
+      "issue": "真实 GitHub 提交超过 100 个文件时 get_commit 需要分页",
+      "handling": "R05 限制单次发布最多 16 个文件，blob 校验在单页内完成；更大批次应扩展提交读取分页后再开放。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/repair/pr_delivery.py",
+    "tests/test_v34_pr_delivery.py",
+    "docs/v33/R05-pr-delivery.md",
+    "config/verification.json（R05 条目）",
+    "docs/v33/accept/R05/accept.json"
+  ],
+  "next_card": "R06"
+}
