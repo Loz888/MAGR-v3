@@ -1,0 +1,289 @@
+{
+  "arms": {
+    "A": {
+      "arm": "A",
+      "case_count": 18,
+      "cost_per_completed_case_micros": {
+        "denominator": 0,
+        "numerator": 0,
+        "scope": "sum(cost_micros) of eligible cases divided by eligible case count",
+        "value": null
+      },
+      "failure_kinds": {},
+      "failure_rate": {
+        "denominator": 0,
+        "interval95": null,
+        "numerator": 0,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": null
+      },
+      "latency_by_cache": {},
+      "not_run_reasons": {
+        "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made": 18
+      },
+      "records": 18,
+      "status_counts": {
+        "fail": 0,
+        "not_run": 18,
+        "pass": 0,
+        "unknown": 0
+      },
+      "success_rate": {
+        "denominator": 0,
+        "interval95": null,
+        "numerator": 0,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": null
+      },
+      "totals": {
+        "completion_tokens": 0,
+        "cost_micros": 0,
+        "model_calls": 0,
+        "prompt_tokens": 0
+      },
+      "usage_sources": {
+        "not_applicable": 18
+      }
+    },
+    "B": {
+      "arm": "B",
+      "case_count": 18,
+      "cost_per_completed_case_micros": {
+        "denominator": 0,
+        "numerator": 0,
+        "scope": "sum(cost_micros) of eligible cases divided by eligible case count",
+        "value": null
+      },
+      "failure_kinds": {},
+      "failure_rate": {
+        "denominator": 0,
+        "interval95": null,
+        "numerator": 0,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": null
+      },
+      "latency_by_cache": {},
+      "not_run_reasons": {
+        "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made": 18
+      },
+      "records": 18,
+      "status_counts": {
+        "fail": 0,
+        "not_run": 18,
+        "pass": 0,
+        "unknown": 0
+      },
+      "success_rate": {
+        "denominator": 0,
+        "interval95": null,
+        "numerator": 0,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": null
+      },
+      "totals": {
+        "completion_tokens": 0,
+        "cost_micros": 0,
+        "model_calls": 0,
+        "prompt_tokens": 0
+      },
+      "usage_sources": {
+        "not_applicable": 18
+      }
+    },
+    "C": {
+      "arm": "C",
+      "case_count": 18,
+      "cost_per_completed_case_micros": {
+        "denominator": 0,
+        "numerator": 0,
+        "scope": "sum(cost_micros) of eligible cases divided by eligible case count",
+        "value": null
+      },
+      "failure_kinds": {},
+      "failure_rate": {
+        "denominator": 0,
+        "interval95": null,
+        "numerator": 0,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": null
+      },
+      "latency_by_cache": {},
+      "not_run_reasons": {
+        "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made": 18
+      },
+      "records": 18,
+      "status_counts": {
+        "fail": 0,
+        "not_run": 18,
+        "pass": 0,
+        "unknown": 0
+      },
+      "success_rate": {
+        "denominator": 0,
+        "interval95": null,
+        "numerator": 0,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": null
+      },
+      "totals": {
+        "completion_tokens": 0,
+        "cost_micros": 0,
+        "model_calls": 0,
+        "prompt_tokens": 0
+      },
+      "usage_sources": {
+        "not_applicable": 18
+      }
+    }
+  },
+  "case_count": 18,
+  "config_hash": "62119c069fca7f17ad8afb3f5aa52affac0f2ab9a19edebcabe78d5ff1cd9c32",
+  "dataset_hash": "29b14ee695cb6c5d9bc8254744cdd1fec6d78deffd7ae2161750601bdd2230ee",
+  "experiment_id": "v34-audit-repair",
+  "method": {
+    "bootstrap_iterations": 10000,
+    "bootstrap_seed": 20261108,
+    "excluded_from_denominator": [
+      "NOT_RUN",
+      "UNKNOWN"
+    ],
+    "interval": "wilson_95",
+    "percentile": "linear_interpolation"
+  },
+  "not_run_records": 54,
+  "record_count": 54,
+  "schema": "mgar-quality-eval-summary-v1",
+  "summary_sha256": "f8d0a2feaa35410861f2db040c0caf0f6e620da490b73abf280ca8ef7fa82775",
+  "unknown_records": 0,
+  "v34": {
+    "authorization": {
+      "external_writes": false,
+      "paid_models": false,
+      "production_actions": false
+    },
+    "dataset": {
+      "dev_tasks": 15,
+      "holdout_tasks": 3,
+      "kinds": {
+        "negative": 3,
+        "repair": 3,
+        "review": 12
+      },
+      "languages": {
+        "go": 6,
+        "python": 12
+      },
+      "repositories": 4,
+      "tasks": 18
+    },
+    "harness_selftest": {
+      "executed": 15,
+      "fail": 0,
+      "pass": 15,
+      "scope": "harness_conformance_not_model_capability"
+    },
+    "holdout": {
+      "ids": [
+        "pflag-ipv4-mask-ipv6",
+        "pflag-negative-no-unsafe",
+        "requests-encode-files-getattr"
+      ],
+      "used_in_development": false
+    },
+    "live_arms": {
+      "reason": "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made",
+      "records": {
+        "A": {
+          "fail": 0,
+          "not_run": 18,
+          "pass": 0,
+          "records": 18
+        },
+        "B": {
+          "fail": 0,
+          "not_run": 18,
+          "pass": 0,
+          "records": 18
+        },
+        "C": {
+          "fail": 0,
+          "not_run": 18,
+          "pass": 0,
+          "records": 18
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    "metrics_not_run": [
+      "finding_precision_at_k",
+      "recall_at_budget",
+      "unverified_false_positives",
+      "source_citation_validity",
+      "call_chain_correctness",
+      "bug_reproduction_success",
+      "patch_validation_success",
+      "independent_test_pass",
+      "regression_failures",
+      "draft_pr_correctness",
+      "memory_recall_at_k",
+      "stale_rejection",
+      "contamination_rate",
+      "token_reduction",
+      "repeated_tool_call_reduction",
+      "correctness_with_memory",
+      "correctness_without_memory",
+      "retrieval_cost"
+    ],
+    "repository_sources": [
+      {
+        "commits": [
+          "3cbcf9b11546f4cf10b36d3e2e531733ba6fe001",
+          "4295457ddc7b5ca9a733d59ca40d9651b02b9b1d",
+          "6d5bac5c712195cbfa9666ba0ecbf0573cdea356",
+          "8abb77a8432e03ed14a95f972b44f905279415a7",
+          "8c1a0a7abbc1c36f70d1f65f3604acc46c5ce6ab",
+          "b67832c2167e5b0ff6764a8c04a0a9087e697b5a",
+          "bb695aaecdef95832d167fc1d508921745aa824e",
+          "f67c2bb6c2f055c1c7a57cd46c3697fc26a7742e"
+        ],
+        "language": "python",
+        "license": "BSD-3-Clause",
+        "repo_id": "click",
+        "url": "https://github.com/pallets/click"
+      },
+      {
+        "commits": [
+          "7a4eec550fb2aaa1904ddcbc4eeaa9f4d995791f"
+        ],
+        "language": "go",
+        "license": "BSD-3-Clause",
+        "repo_id": "goexample",
+        "url": "https://github.com/golang/example"
+      },
+      {
+        "commits": [
+          "2084408437188b1fbf46984a53a56136a5f30f99",
+          "c966cfef47379dcb01e7929504d66d94b540945b",
+          "d26a4dcd30a3c17923a2083b48bd6233aada9d47",
+          "f8a990678a6d44385313e9b19e40737f889f9b14"
+        ],
+        "language": "go",
+        "license": "BSD-3-Clause",
+        "repo_id": "pflag",
+        "url": "https://github.com/spf13/pflag"
+      },
+      {
+        "commits": [
+          "1b40fdd004bfc8ba5301bcf8a6908264e9b6b877",
+          "661970d171d9c3e12e4c789c4768db647d8c4da0",
+          "bc7dd0fc4d56e808bcdd85ac2d797b3107c89259"
+        ],
+        "language": "python",
+        "license": "Apache-2.0",
+        "repo_id": "requests",
+        "url": "https://github.com/psf/requests"
+      }
+    ],
+    "schema": "mgar-v34-summary-v1"
+  }
+}

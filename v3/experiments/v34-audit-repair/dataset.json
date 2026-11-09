@@ -1,0 +1,58 @@
+{
+  "card": "E01",
+  "case_ids": [
+    "click-help-name-collision",
+    "click-help-name-repair",
+    "click-negative-no-subprocess",
+    "click-sentinel-identity",
+    "click-sentinel-repair",
+    "click-short-help-abbreviation",
+    "click-short-help-repair",
+    "click-show-envvar-sequence",
+    "goexample-weave-newline",
+    "pflag-count-preserve-on-error",
+    "pflag-ipv4-mask-ipv6",
+    "pflag-native-int-overflow",
+    "pflag-negative-no-unsafe",
+    "pflag-unknown-flag-non-interspersed",
+    "requests-content-type-parameter",
+    "requests-encode-files-getattr",
+    "requests-negative-no-dynamic-eval",
+    "requests-netrc-empty-default"
+  ],
+  "experiment_id": "v34-audit-repair",
+  "grading_contract": "v3.4 Finding Precision@K, Recall@Budget, citation validity, call-chain equality, repair binary gates",
+  "holdout": {
+    "count": 3,
+    "file": "holdout/tasks.jsonl",
+    "sha256": "44652f262f387040405b71ad197940e88f6a62d07b1ba438db3268592c3fbc5b"
+  },
+  "holdout_case_ids": [
+    "pflag-ipv4-mask-ipv6",
+    "pflag-negative-no-unsafe",
+    "requests-encode-files-getattr"
+  ],
+  "live_authorization": {
+    "authorization": {
+      "external_writes": false,
+      "paid_models": false,
+      "production_actions": false
+    },
+    "granted": false,
+    "records_status": "NOT_RUN"
+  },
+  "repositories": {
+    "file": "repositories.json",
+    "sha256": "b877f15998c1c3031b81d6ff51b4fdaad67132c74fa14b83ff250f0efdc54921"
+  },
+  "schema": "mgar-v34-dataset-v1",
+  "selftest": {
+    "file": "harness-selftest.json",
+    "sha256": "46abd87062fa90b796532255cd62f5fe9f132a92cfa8e91597753f809500710b"
+  },
+  "tasks": {
+    "count": 18,
+    "file": "tasks.jsonl",
+    "sha256": "29bdd15b912bd8747c00612c925f53bcf6b76c7464068fe018c3a325be836774"
+  }
+}

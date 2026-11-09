@@ -14,11 +14,13 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any
 
-from mgar_v3.quality_eval import stats, validate
+from mgar_v3.quality_eval import stats, v34, validate
 from mgar_v3.quality_eval.manifest import verify_manifest
+from mgar_v3.quality_eval.record import canonical_digest
 
 
 def _read_json(path: Path) -> Any:
@@ -53,6 +55,8 @@ def load_experiment(
     records = validate.load_jsonl(directory / "cases.jsonl")
     problems = validate.validate_records(records)
     problems.extend(validate.check_manifest_consistency(manifest, records))
+    if isinstance(manifest.get("v34"), Mapping):
+        problems.extend(v34.validate_bundle(directory, manifest, check_files=check_files))
     if check_files:
         file_result = verify_manifest(manifest, root=root, check_files=True)
         problems.extend(file_result["errors"])
@@ -63,7 +67,7 @@ def load_experiment(
 
 def _manifest_view(manifest: Mapping[str, Any], file_checks: Mapping[str, str]) -> dict[str, Any]:
     dataset = manifest["dataset"]
-    return {
+    view = {
         "schema": manifest["schema"],
         "manifest_sha256": manifest["manifest_sha256"],
         "experiment_id": manifest["experiment_id"],
@@ -77,6 +81,16 @@ def _manifest_view(manifest: Mapping[str, Any], file_checks: Mapping[str, str]) 
         "pairing_key": manifest["pairing_key"],
         "file_checks": dict(file_checks),
     }
+    if isinstance(manifest.get("v34"), Mapping):
+        source = manifest["v34"]
+        view["v34"] = {
+            "tasks_file": source.get("tasks_file"),
+            "holdout_file": source.get("holdout_file"),
+            "repositories_file": source.get("repositories_file"),
+            "holdout_ids": list(source.get("holdout_ids", [])),
+            "not_run_reason": source.get("not_run_reason"),
+        }
+    return view
 
 
 def _status_counts(records: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, int]]:
@@ -176,8 +190,51 @@ def _summary_markdown(summary: Mapping[str, Any], manifest: Mapping[str, Any]) -
             f"| {totals['completion_tokens']} | {totals['cost_micros']} "
             f"| {cost['numerator']}/{cost['denominator']} = {_fmt(cost['value'], 1)} |"
         )
+    if isinstance(summary.get("v34"), Mapping):
+        lines.extend(_v34_markdown(summary["v34"]))
     lines.append("")
     return "\n".join(lines)
+
+
+def _v34_markdown(section: Mapping[str, Any]) -> list[str]:
+    dataset = section["dataset"]
+    kinds = dataset["kinds"]
+    languages = dataset["languages"]
+    selftest = section.get("harness_selftest") or {}
+    lines = [
+        "",
+        "## V3.4 真实公开仓库数据集（E01）",
+        "",
+        f"- 仓库数：{dataset['repositories']}；任务数：{dataset['tasks']}"
+        f"（dev {dataset['dev_tasks']} / holdout {dataset['holdout_tasks']}）",
+        f"- 任务类型：review {kinds['review']}，repair {kinds['repair']}，"
+        f"negative {kinds['negative']}",
+        f"- 语言覆盖：python {languages['python']}，go {languages['go']}",
+        f"- Holdout 未参与开发：{', '.join(section['holdout']['ids'])}"
+        f"（used_in_development={section['holdout']['used_in_development']}）",
+        f"- 实时臂状态：`{section['live_arms']['status']}`；原因：{section['live_arms']['reason']}",
+        "",
+        "| 臂 | 记录数 | NOT_RUN | PASS | FAIL |",
+        "|---|---:|---:|---:|---:|",
+    ]
+    for arm, counts in section["live_arms"]["records"].items():
+        lines.append(
+            f"| {arm} | {counts['records']} | {counts['not_run']} | {counts['pass']} "
+            f"| {counts['fail']} |"
+        )
+    if selftest:
+        lines.extend(
+            [
+                "",
+                f"- 离线 Harness 自检（scope={selftest['scope']}）："
+                f"执行 {selftest['executed']}，PASS {selftest['pass']}，FAIL {selftest['fail']}",
+                "- 该自检只证明判定管线与固定答案一致，不是模型能力成绩，也不计入 A/B/C 成功率。",
+            ]
+        )
+    lines.extend(["", "未执行的指标：", ""])
+    for name in section["metrics_not_run"]:
+        lines.append(f"- `{name}`")
+    return lines
 
 
 def _comparison_markdown(comparison: Mapping[str, Any]) -> str:
@@ -209,7 +266,8 @@ def _comparison_markdown(comparison: Mapping[str, Any]) -> str:
     lines.extend(
         [
             "",
-            f"- 成功率差：{_fmt(success['difference_pp'], 2)} 个百分点（{candidate} 减 {baseline}）",
+            f"- 成功率差：{_fmt(success['difference_pp'], 2)} 个百分点"
+            f"（{candidate} 减 {baseline}）",
             f"- 仅 {baseline} 成功：{success[f'only_{baseline}']}",
             f"- 仅 {candidate} 成功：{success[f'only_{candidate}']}",
             f"- 两臂均成功：{success['both_pass']}",
@@ -233,7 +291,8 @@ def _comparison_markdown(comparison: Mapping[str, Any]) -> str:
     lines.extend(
         [
             "",
-            f"- 缓存状态不一致的配对数（不参与延迟比较）：{comparison['cache_state_mismatch_pairs']}",
+            f"- 缓存状态不一致的配对数（不参与延迟比较）："
+            f"{comparison['cache_state_mismatch_pairs']}",
             f"- 每用例成本差（{candidate} 减 {baseline}）：{_fmt(cost['mean_difference'], 1)} "
             f"micros，95% CI "
             f"{'n/a' if cost_ci is None else f'[{cost_ci[0]:.1f}, {cost_ci[1]:.1f}]'}",
@@ -257,7 +316,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     summarize_parser = sub.add_parser("summarize", help="生成分臂统计")
     summarize_parser.add_argument("--experiment", type=Path, required=True)
     summarize_parser.add_argument("--out", type=Path)
-    summarize_parser.add_argument("--bootstrap-iterations", type=int, default=stats.BOOTSTRAP_ITERATIONS)
+    summarize_parser.add_argument(
+        "--bootstrap-iterations", type=int, default=stats.BOOTSTRAP_ITERATIONS
+    )
     summarize_parser.add_argument("--seed", type=int, default=stats.BOOTSTRAP_SEED)
 
     compare_parser = sub.add_parser("compare", help="生成配对比较")
@@ -265,7 +326,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     compare_parser.add_argument("--baseline", required=True)
     compare_parser.add_argument("--candidate", required=True)
     compare_parser.add_argument("--out", type=Path)
-    compare_parser.add_argument("--bootstrap-iterations", type=int, default=stats.BOOTSTRAP_ITERATIONS)
+    compare_parser.add_argument(
+        "--bootstrap-iterations", type=int, default=stats.BOOTSTRAP_ITERATIONS
+    )
     compare_parser.add_argument("--seed", type=int, default=stats.BOOTSTRAP_SEED)
 
     args = parser.parse_args(argv)
@@ -277,7 +340,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             check_files=getattr(args, "check_files", False),
         )
     except validate.ValidationError as error:
-        print(json.dumps({"status": "FAIL", "errors": error.problems}, ensure_ascii=False, indent=2))
+        print(
+            json.dumps({"status": "FAIL", "errors": error.problems}, ensure_ascii=False, indent=2)
+        )
         return 2
 
     if args.command == "validate":
@@ -302,8 +367,16 @@ def main(argv: Sequence[str] | None = None) -> int:
                 records, iterations=args.bootstrap_iterations, seed=args.seed
             )
         except validate.ValidationError as error:
-            print(json.dumps({"status": "FAIL", "errors": error.problems}, ensure_ascii=False, indent=2))
+            print(
+                json.dumps(
+                    {"status": "FAIL", "errors": error.problems}, ensure_ascii=False, indent=2
+                )
+            )
             return 2
+        if isinstance(manifest.get("v34"), Mapping):
+            summary["v34"] = v34.summarize_bundle(args.experiment, manifest, records)
+            body = {key: value for key, value in summary.items() if key != "summary_sha256"}
+            summary["summary_sha256"] = canonical_digest(body)
         out = args.out or args.experiment
         _write_json(out / "summary.json", summary)
         _write_text(out / "summary.md", _summary_markdown(summary, manifest))
@@ -319,7 +392,9 @@ def main(argv: Sequence[str] | None = None) -> int:
             seed=args.seed,
         )
     except validate.ValidationError as error:
-        print(json.dumps({"status": "FAIL", "errors": error.problems}, ensure_ascii=False, indent=2))
+        print(
+            json.dumps({"status": "FAIL", "errors": error.problems}, ensure_ascii=False, indent=2)
+        )
         return 2
     out = args.out or args.experiment
     _write_json(out / "comparison.json", comparison)

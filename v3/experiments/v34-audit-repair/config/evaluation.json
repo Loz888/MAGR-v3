@@ -1,0 +1,100 @@
+{
+  "arms": {
+    "A": {
+      "compression": "disabled",
+      "label": "no_cross_task_memory",
+      "memory": "disabled"
+    },
+    "B": {
+      "compression": "disabled",
+      "label": "retrieval_without_compression",
+      "memory": "retrieval_only"
+    },
+    "C": {
+      "compression": "enabled",
+      "label": "full_memory_and_compression",
+      "memory": "retrieval_plus_writes"
+    }
+  },
+  "authorization": {
+    "external_writes": false,
+    "live_arms_allowed": false,
+    "paid_models": false,
+    "production_actions": false,
+    "required_for_live": [
+      "paid_model_calls",
+      "github_draft_pr_writes"
+    ]
+  },
+  "budget_per_task": {
+    "max_cost_micros": 200000,
+    "max_latency_ms": 600000,
+    "max_model_calls": 24,
+    "max_tool_calls": 40
+  },
+  "card": "E01",
+  "determinism": {
+    "repeat_index": 0,
+    "seed": 20261109,
+    "temperature": 0.0
+  },
+  "experiment_id": "v34-audit-repair",
+  "grading": {
+    "negative": {
+      "passed": "zero findings, or every finding is backed by a valid quote"
+    },
+    "repair": {
+      "passed": "reproduction and patch validation succeed, independent test passes, zero regression failures"
+    },
+    "review": {
+      "passed": "recall@budget=1, unverified_false_positives=0, citation validity=1, call chain=1, scan coverage=1, findings<=budget",
+      "precision_denominator": "actual top-k findings",
+      "recall_denominator": "gold findings"
+    }
+  },
+  "metrics": [
+    "finding_precision_at_k",
+    "recall_at_budget",
+    "unverified_false_positives",
+    "scan_coverage",
+    "source_citation_validity",
+    "call_chain_correctness",
+    "bug_reproduction_success",
+    "patch_validation_success",
+    "independent_test_pass",
+    "regression_failures",
+    "draft_pr_correctness",
+    "model_calls",
+    "prompt_tokens",
+    "completion_tokens",
+    "cost_micros",
+    "latency_ms",
+    "tool_calls",
+    "memory_recall_at_k",
+    "stale_rejection",
+    "contamination_rate",
+    "token_reduction",
+    "repeated_tool_call_reduction",
+    "correctness_with_memory",
+    "correctness_without_memory",
+    "retrieval_cost"
+  ],
+  "model": {
+    "max_output_tokens": 8192,
+    "provider": "not_selected_without_authorization",
+    "temperature": 0.0
+  },
+  "not_run_reason": "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made",
+  "pairing": {
+    "pairing_key": [
+      "case_id",
+      "repeat_index"
+    ],
+    "same_budget": true,
+    "same_grader": true,
+    "same_model": true,
+    "same_pinned_commit": true,
+    "same_task": true
+  },
+  "schema": "mgar-v34-evaluation-config-v1"
+}

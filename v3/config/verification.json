@@ -237,6 +237,22 @@
     ],
     "timeout_seconds": 300
   },
+  "E01": {
+    "components": {
+      "arms": "A_B_C_paired_same_task_commit_model_budget_and_grader",
+      "coverage": "four_public_repositories_python_and_go_at_pinned_commits",
+      "honesty": "live_arms_NOT_RUN_without_paid_model_and_github_write_authorization",
+      "holdout": "three_tasks_withheld_from_development_and_from_the_offline_selftest",
+      "metrics": "precision_at_k_recall_at_budget_citation_call_chain_repair_gates_and_memory_metrics",
+      "offline_harness": "fifteen_dev_tasks_verified_against_real_upstream_fix_patches",
+      "tasks": "ten_review_three_repair_two_negative_dev_plus_three_holdout",
+      "tests": "offline_grading_math_patch_traversal_guard_and_holdout_isolation"
+    },
+    "tests": [
+      "tests/test_v34_evaluation.py"
+    ],
+    "timeout_seconds": 600
+  },
   "R05": {
     "components": {
       "approval": "binds_repository_base_commit_tested_tree_and_payload_hash",

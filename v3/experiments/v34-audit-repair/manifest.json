@@ -1,0 +1,96 @@
+{
+  "arms": [
+    "A",
+    "B",
+    "C"
+  ],
+  "authorization": {
+    "external_writes": false,
+    "paid_models": false,
+    "production_actions": false
+  },
+  "baseline_commit": "b4f7e24726bf2fef9552a66f24f0c64dc81f73cc",
+  "candidate_commit": "b4f7e24726bf2fef9552a66f24f0c64dc81f73cc",
+  "card": "E01",
+  "config": {
+    "file": "experiments/v34-audit-repair/config/evaluation.json",
+    "file_sha256": "62119c069fca7f17ad8afb3f5aa52affac0f2ab9a19edebcabe78d5ff1cd9c32",
+    "hash": "62119c069fca7f17ad8afb3f5aa52affac0f2ab9a19edebcabe78d5ff1cd9c32"
+  },
+  "created_at": "2026-11-09T00:00:00+00:00",
+  "dataset": {
+    "case_ids": [
+      "click-help-name-collision",
+      "click-help-name-repair",
+      "click-negative-no-subprocess",
+      "click-sentinel-identity",
+      "click-sentinel-repair",
+      "click-short-help-abbreviation",
+      "click-short-help-repair",
+      "click-show-envvar-sequence",
+      "goexample-weave-newline",
+      "pflag-count-preserve-on-error",
+      "pflag-ipv4-mask-ipv6",
+      "pflag-native-int-overflow",
+      "pflag-negative-no-unsafe",
+      "pflag-unknown-flag-non-interspersed",
+      "requests-content-type-parameter",
+      "requests-encode-files-getattr",
+      "requests-negative-no-dynamic-eval",
+      "requests-netrc-empty-default"
+    ],
+    "case_ids_sha256": "e16c4d974d3f732aab1e07303b27dc69f80a34894e15b6028930babf5076cfa6",
+    "count": 18,
+    "file": "experiments/v34-audit-repair/dataset.json",
+    "file_sha256": "29b14ee695cb6c5d9bc8254744cdd1fec6d78deffd7ae2161750601bdd2230ee",
+    "hash": "29b14ee695cb6c5d9bc8254744cdd1fec6d78deffd7ae2161750601bdd2230ee"
+  },
+  "environment": {
+    "offline": true,
+    "paid_model_calls": 0,
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+    "python_requires": ">=3.12,<3.13",
+    "python_requires_deviation": null,
+    "python_version": "3.12.16"
+  },
+  "experiment_id": "v34-audit-repair",
+  "manifest_sha256": "c63c439943db0b2e4e4498e84c6da70c4ed8a2bfddbf8446cca8317c3dd876f2",
+  "mode": "real_model_live",
+  "notes": "E01 real-repository evaluation. Dataset and offline harness are complete; the live A/B/C arms were not executed because paid-model and GitHub write authorization were not granted. Nothing here is a model capability score.",
+  "pairing_key": [
+    "case_id",
+    "repeat_index"
+  ],
+  "provenance": {
+    "card": "E01",
+    "dataset": "pinned public GitHub commits copied verbatim",
+    "live_authorization": "not granted; A/B/C recorded as NOT_RUN",
+    "upstream_repositories": [
+      "https://github.com/pallets/click",
+      "https://github.com/psf/requests",
+      "https://github.com/spf13/pflag",
+      "https://github.com/golang/example"
+    ]
+  },
+  "schema": "mgar-quality-eval-manifest-v1",
+  "seed": 20261109,
+  "v34": {
+    "authorization_required": [
+      "paid_model_calls",
+      "github_draft_pr_writes"
+    ],
+    "holdout_file": "holdout/tasks.jsonl",
+    "holdout_file_sha256": "44652f262f387040405b71ad197940e88f6a62d07b1ba438db3268592c3fbc5b",
+    "holdout_ids": [
+      "pflag-ipv4-mask-ipv6",
+      "pflag-negative-no-unsafe",
+      "requests-encode-files-getattr"
+    ],
+    "not_run_reason": "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made",
+    "repositories_file": "repositories.json",
+    "repositories_file_sha256": "b877f15998c1c3031b81d6ff51b4fdaad67132c74fa14b83ff250f0efdc54921",
+    "selftest_file": "harness-selftest.json",
+    "tasks_file": "tasks.jsonl",
+    "tasks_file_sha256": "29bdd15b912bd8747c00612c925f53bcf6b76c7464068fe018c3a325be836774"
+  }
+}

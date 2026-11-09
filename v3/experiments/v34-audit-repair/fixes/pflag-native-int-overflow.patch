@@ -1,0 +1,26 @@
+diff --git a/int.go b/int.go
+index d48704a..45e83bf 100644
+--- a/int.go
++++ b/int.go
+@@ -14,7 +14,7 @@ func newIntValue(val int, p *int) *intValue {
+ }
+ 
+ func (i *intValue) Set(s string) error {
+-	v, err := strconv.ParseInt(s, 0, 64)
++	v, err := strconv.ParseInt(s, 0, 0)
+ 	if err != nil {
+ 		return errors.New("must be an integer")
+ 	}
+diff --git a/uint.go b/uint.go
+index 64bd966..802df0b 100644
+--- a/uint.go
++++ b/uint.go
+@@ -14,7 +14,7 @@ func newUintValue(val uint, p *uint) *uintValue {
+ }
+ 
+ func (i *uintValue) Set(s string) error {
+-	v, err := strconv.ParseUint(s, 0, 64)
++	v, err := strconv.ParseUint(s, 0, 0)
+ 	if err != nil {
+ 		return errors.New("must be a non-negative integer")
+ 	}
