@@ -75,6 +75,22 @@
     ],
     "timeout_seconds": 300
   },
+  "M01": {
+    "components": {
+      "evidence": "real_evidence_and_artifact_references_scope_checked",
+      "legacy": "knowledge_memories_read_through_and_explicit_import_without_rewrite",
+      "lifecycle": "append_only_content_supersede_revoke_stale_enforced_by_schema_triggers_and_store",
+      "model": "not_used",
+      "network": "not_used",
+      "postgres": "real_disposable_database_0021_migration",
+      "redis": "not_used",
+      "scope": "project_repository_commit_and_actor_checked_on_every_read_and_write"
+    },
+    "tests": [
+      "tests/test_v33_memory_schema.py"
+    ],
+    "timeout_seconds": 300
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
