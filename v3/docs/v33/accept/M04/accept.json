@@ -1,0 +1,192 @@
+{
+  "card": "M04",
+  "title": "Context Builder & Compression",
+  "commit": "a704a0ab27065261128eb3a660b6266a938cecd2",
+  "commit_note": "单次本地提交：context/builder.py（ContextBundle、固定段、Token 预算分配、近期窗口、Evidence 固定、一致性校验）、context/compactor.py（去重、长文件分段引用、结构化摘要、Artifact 分页、权限/Evidence/Artifact 不变量）、agent.py 接入（替换按长度丢最旧历史）、tools.py TOOL_NAMES、tests/test_v33_context_compaction.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "a56866bcc6b0886d07e73748521a18dbcf80c314",
+  "accepted_at": "2026-11-09T09:19:40Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "git": "2.43.0",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (new context modules only)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "model": "NOT_USED",
+    "network": "NOT_USED",
+    "docker": "NOT_USED",
+    "postgres": "NOT_USED",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as a704a0a. This accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "engineering-verify",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/verify.py",
+        "--task",
+        "M04"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 8.41,
+      "purpose": "M04 统一验收：预算内继续、约束/Evidence 不丢失、Artifact 不变、无权限升级；并回归仓库分析 fixture 流程",
+      "counts": {
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "ffec85c9a27885ff1cf0cafa4acba307dee1e5cabeca290a0f7f97fefe3ddb46",
+      "finished_source_sha256": "ffec85c9a27885ff1cf0cafa4acba307dee1e5cabeca290a0f7f97fefe3ddb46",
+      "git_commit": "a704a0ab27065261128eb3a660b6266a938cecd2",
+      "attempt": "evidence/M04/20261109T091943Z-07c10f8c",
+      "log": "evidence/M04/20261109T091943Z-07c10f8c/command.log",
+      "junit": "evidence/M04/20261109T091943Z-07c10f8c/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/context/builder.py",
+        "src/mgar_v3/context/compactor.py",
+        "src/mgar_v3/repository_analysis/agent.py",
+        "tests/test_v33_context_compaction.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/mypy",
+        "src/mgar_v3/context/builder.py",
+        "src/mgar_v3/context/compactor.py"
+      ],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）零告警；新增 context 模块 mypy strict 零告警",
+      "log": "evidence/M04/20261109T091940Z-M04/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean（实现已提交为 a704a0a）",
+      "log": "evidence/M04/20261109T091940Z-M04/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 verify / 测试未修改源工作区",
+      "log": "evidence/M04/20261109T091940Z-M04/07-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "M04 是本地上下文构造与压缩卡：不调用模型、不访问网络、不写远端。verify 记录中的 live_gate=NOT_RUN 与本节一致；模型接线与真实长任务 live 验证属于后续卡。",
+  "must_pass": [
+    {
+      "item": "长任务在限制内能够继续",
+      "result": "PASS",
+      "evidence": "test_long_task_keeps_running_inside_the_token_limit 用 60 条、每条约 6000 字符的观察在 max_tokens=3000 下成功构造 bundle，estimated_tokens <= 3000，最新观察仍可按 reference 定位，摘要记录省略数量。ContextBuilder 在整体超限时按溢出量重分配预算并重建（最多 3 次）。"
+    },
+    {
+      "item": "关键约束与 Evidence ID 不丢失",
+      "result": "PASS",
+      "evidence": "test_constraints_failures_questions_and_evidence_survive_compaction 在 40 条长观察、max_tokens=3000 下断言 constraints 原样保留、全部 Evidence ID 存在于 invariants、failed_attempts/pending_approvals/open_questions 全部保留，且 diff_invariants(request_invariants, bundle.invariants) == []。CompactionSummary.evidence_ids 收集全部观察的 Evidence ID（含被去重和被省略的观察）。"
+    },
+    {
+      "item": "原始 Artifact 不变",
+      "result": "PASS",
+      "evidence": "test_artifact_pagination_round_trip_and_backtracking 分页拼接等于原始字节且 store.read 前后一致；test_artifact_mutation_is_detected 篡改 CAS 文件后 verify_artifacts 抛 ARTIFACT_CORRUPTED。ArtifactPaginator 每次读取重新校验 SHA-256，游标绑定内容哈希。"
+    },
+    {
+      "item": "不存在由压缩造成的权限升级",
+      "result": "PASS",
+      "evidence": "test_compaction_cannot_widen_permissions_or_tools 篡改 after 快照，validate_compaction 抛 CONTEXT_INVARIANT_VIOLATED 并报告 permission_escalation:read_only / tool / budget 与 tool_escalation。ContextBuilder.build() 每次调用 validate_compaction；权限快照与工具集合原样复制，预算只减不增。"
+    },
+    {
+      "item": "每次模型调用前构造包含固定段的 ContextBundle",
+      "result": "PASS",
+      "evidence": "ContextBundle 含 system_instructions、task、constraints、repository、commit、current_plan、recent_observations、verified_evidence、relevant_memories、failed_attempts、open_questions、pending_approvals、permissions、available_tools、remaining_budget、compaction 与 budget。test_bundle_carries_every_fixed_section_and_recent_window 逐项断言。"
+    },
+    {
+      "item": "Token 预算分配与近期执行窗口",
+      "result": "PASS",
+      "evidence": "ContextBuilder 先估算固定段，超限即 CONTEXT_BUDGET_EXCEEDED（不删约束），剩余按 plan 10% / memories 15% / observations 75% 分配；ContextBudgetAllocation 记录分配结果并在测试中断言 sum <= max_tokens。recent_window 默认 4，agent 使用 6，最新观察优先保留。"
+    },
+    {
+      "item": "历史工具观察压缩、重复观察去重、长文件分段引用",
+      "result": "PASS",
+      "evidence": "compact_observations 以 tool+reference+content+error_code 的 SHA-256 去重并保留最后一条；超 400 字符观察替换为 SegmentRef（reference、locator、artifact_hash、total_chars、truncated=True）。test_duplicate_observations_merge_without_losing_evidence_ids 验证 5 条重复合并为 1 条且 5 个 Evidence ID 保留；test_long_observation_becomes_a_segment_reference 验证分段引用保留原始总字符数与行号。"
+    },
+    {
+      "item": "结构化压缩摘要不抹掉权限、失败尝试、待审批动作与未解决问题",
+      "result": "PASS",
+      "evidence": "CompactionSummary 显式携带 failed_attempts、pending_approvals、open_questions、evidence_ids、artifact_hashes、permission_digest；agent 工具错误观察新增 error_code，失败识别不再依赖文本猜测。test_bundle_carries_every_fixed_section_and_recent_window 与 test_constraints_failures_questions_and_evidence_survive_compaction 断言保留。"
+    },
+    {
+      "item": "Artifact 分页回溯",
+      "result": "PASS",
+      "evidence": "ArtifactPaginator 支持 continuation/previous 双游标，游标绑定内容哈希；跨源游标与非法游标返回 CONTEXT_CURSOR_INVALID。test_artifact_pagination_round_trip_and_backtracking 验证向前拼接、最后一页回溯偏移与内容切片一致。"
+    },
+    {
+      "item": "压缩前后状态一致性验证",
+      "result": "PASS",
+      "evidence": "diff_invariants 覆盖权限作用域、只读、工具、预算、失败尝试、待审批、未解决问题、Evidence ID、Artifact 哈希九类不变量；validate_compaction 在任一违规时失败关闭。test_compaction_rejects_lost_failures_questions_and_evidence 覆盖丢失路径。"
+    },
+    {
+      "item": "替换按长度删除旧历史的裁剪策略",
+      "result": "PASS",
+      "evidence": "agent.py 的 _payload() 不再执行 history = history[1:]，改为 Observation 映射 + ContextRequest + ContextBuilder.build()；历史以去重/分段/摘要形式进入 prompt，payload 中 history 键保留以兼容既有模型协议。test_agent_payload_is_compacted_without_losing_evidence 用 30 条长历史断言 history 缩短、首条为分段引用、全部 Evidence ID 保留，且整体编码不超过 max_input_tokens。"
+    },
+    {
+      "item": "Relevant Memories 段接入 M03 检索结果",
+      "result": "PASS",
+      "evidence": "MemoryNote.from_hit 消费 MemoryHitLike（memory_id、subject_key、version_status、requires_reverification、confidence、evidence_ids、source_uris）；bundle.to_payload 输出 relevant_memories。test_bundle_carries_every_fixed_section_and_recent_window 断言 historical + requires_reverification 语义原样保留。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "任务书固定段未列出 Pending Approvals，但要求压缩摘要不能抹掉待审批动作",
+      "handling": "ContextBundle 增加 pending_approvals 固定段，并纳入 ContextInvariants 的丢失检查；该字段只增不减。"
+    },
+    {
+      "issue": "prior_report 不属于 12 个固定段，但仓库分析恢复运行时仍会注入",
+      "handling": "agent 在构造 builder 预算时先从剩余 token 中扣除 prior_report 与协议开销，再交给压缩；prior_report 本身的 8000 字符截断行为保持不变。"
+    },
+    {
+      "issue": "压缩摘要只作用于当前模型调用，不做跨轮持久化",
+      "handling": "跨轮安全事实仍来自 agent state 的完整 history/evidence；builder 每轮重新构造并校验，避免把一次压缩结果当作长期事实。"
+    },
+    {
+      "issue": "M04 verify 注册包含 test_v32_repository_analysis.py",
+      "handling": "该文件是 agent 接入的 fixture 回归（13 tests），用于证明替换裁剪策略未破坏既有 Reason/Tool/Observation 流程；卡内主测试仍为 test_v33_context_compaction.py（10 tests），两者合计 23 tests、0 skipped。"
+    },
+    {
+      "issue": "agent.py 存在与本卡无关的历史 mypy 告警（TOOL_ADAPTER 类型参数、run_sync 的 Any 返回、嵌套函数缺少注解）",
+      "handling": "按 A02–M03 惯例 mypy 只覆盖本卡新增 context 模块（零告警）；agent.py 仅做必要接入并保持既有语义，Ruff 对本卡修改文件零告警。tools.py 仅新增 TOOL_NAMES 常量，其既有长行 E501 未改动，因此未纳入本卡 Ruff 检查。"
+    },
+    {
+      "issue": "全仓 Ruff / mypy 存在与本卡无关的历史告警",
+      "handling": "只对本卡新增/修改文件执行 Ruff 与 mypy strict，二者零告警；未改动既有无关文件。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/context/builder.py",
+    "src/mgar_v3/context/compactor.py",
+    "src/mgar_v3/repository_analysis/agent.py",
+    "src/mgar_v3/repository_analysis/tools.py（TOOL_NAMES）",
+    "tests/test_v33_context_compaction.py",
+    "docs/v33/M04-context-compaction.md",
+    "config/verification.json（M04 条目）",
+    "docs/v33/accept/M04/accept.json"
+  ],
+  "next_card": "M05"
+}
