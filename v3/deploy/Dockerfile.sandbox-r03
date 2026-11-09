@@ -1,0 +1,9 @@
+# V3.4 R03 generic Go/Python sandbox.
+# The base tag is resolved and pinned by scripts/build_r03_sandbox.py; the
+# build itself runs with --network=none and adds only V3-owned trusted files.
+FROM golang:1.27.1-bookworm
+COPY --chmod=755 r03/bootstrap.py /opt/mgar/bootstrap.py
+COPY --chmod=755 r03/runner.py /opt/mgar/runner.py
+WORKDIR /workspace
+USER 65532:65532
+ENTRYPOINT ["/usr/bin/python3", "/opt/mgar/bootstrap.py", "--"]

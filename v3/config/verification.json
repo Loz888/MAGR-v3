@@ -198,6 +198,25 @@
     ],
     "timeout_seconds": 300
   },
+  "R03": {
+    "components": {
+      "adapters": "trusted_go_and_python_adapters_generate_fixed_argv_no_model_shell",
+      "dependencies": "separate_preparation_phase_waits_when_offline_bundle_is_missing",
+      "image": "fixed_base_pinned_by_image_id_in_r03_sandbox_lock_built_offline",
+      "limits": "cpus_memory_pids_wall_clock_output_workspace_and_tmp_disk_quotas",
+      "model": "not_used",
+      "network": "container_network_none_verified_from_docker_inspect",
+      "postgres": "not_used",
+      "redis": "not_used",
+      "results": "passed_build_failed_test_failed_timeout_sandbox_error_no_tests_and_waiting",
+      "secrets": "host_credentials_never_injected_allowlisted_environment_verified",
+      "tests": "python_unittest_runner_and_go_test_json_parser"
+    },
+    "tests": [
+      "tests/test_v34_sandbox_executor.py"
+    ],
+    "timeout_seconds": 300
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
