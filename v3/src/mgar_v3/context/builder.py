@@ -65,6 +65,7 @@ class MemoryNote(Model):
     subject_key: str
     version_status: str
     requires_reverification: bool
+    downweighted: bool = False
     confidence: float
     evidence_ids: list[str] = Field(default_factory=list)
     source_uris: list[str] = Field(default_factory=list)

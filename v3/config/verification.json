@@ -143,6 +143,24 @@
     ],
     "timeout_seconds": 300
   },
+  "M05": {
+    "components": {
+      "candidates": "post_verification_investigation_candidate_with_evidence_and_m02_confirmation_gate",
+      "compaction": "m04_context_builder_reused_while_memory_and_evidence_sections_survive",
+      "filtering": "unverified_disputed_injected_and_authority_claiming_memories_excluded_or_downweighted",
+      "model": "fixture_no_network",
+      "network": "not_used",
+      "postgres": "real_disposable_database_0021_migration",
+      "recall": "task_start_recall_with_plan_hints_and_followup_confirmed_facts_at_exact_commit",
+      "redis": "not_used",
+      "safety": "memory_reference_only_never_changes_tools_repository_commit_budget_approval_or_sandbox",
+      "working": "post_tool_working_memory_created_and_superseded_per_run"
+    },
+    "tests": [
+      "tests/test_v33_memory_agent.py"
+    ],
+    "timeout_seconds": 600
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",

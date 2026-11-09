@@ -7,7 +7,7 @@ import hashlib
 import inspect
 import json
 from concurrent.futures import ThreadPoolExecutor
-from typing import Any, Protocol, TypedDict
+from typing import Any, Protocol, TypedDict, cast
 from uuid import UUID
 
 from langgraph.graph import END, START, StateGraph
@@ -17,6 +17,7 @@ from mgar_v3.context.builder import (
     ContextBuilder,
     ContextRequest,
     EvidenceRef,
+    MemoryNote,
     RemainingBudget,
 )
 from mgar_v3.context.compactor import Observation, PermissionSnapshot, estimate_tokens
@@ -62,6 +63,9 @@ class AnalysisState(TypedDict, total=False):
     insufficient_reason: str | None
     stop_reason: str | None
     finished: bool
+    known_failures: list[dict[str, Any]]
+    working_memory_id: str | None
+    memory_write: dict[str, Any] | None
 
 
 class AgentRuntime(Protocol):
@@ -106,6 +110,8 @@ def run_sync(value: Any) -> Any:
 class RepoAnalysisAgent:
     def __init__(self, runtime: AgentRuntime):
         self.runtime = runtime
+        self._recall_cache: dict[str, dict[str, Any] | None] = {}
+        self._failure_cache: dict[tuple[str, str], list[dict[str, Any]]] = {}
 
     def _spec_epoch(self, state: AnalysisState) -> tuple[AnalysisSpec, int]:
         spec = self.runtime.store.spec(UUID(state["run_id"]))
@@ -214,6 +220,44 @@ class RepoAnalysisAgent:
             },
         )
 
+    def _memory(self) -> Any | None:
+        return getattr(self.runtime, "memory", None)
+
+    def _recall(self, spec: AnalysisSpec) -> dict[str, Any] | None:
+        key = str(spec.run_id)
+        if key in self._recall_cache:
+            return self._recall_cache[key]
+        memory = self._memory()
+        value: dict[str, Any] | None = None
+        if memory is not None:
+            try:
+                value = memory.recall_task(spec).model_dump(mode="json")
+            except DomainError:
+                value = None
+        self._recall_cache[key] = value
+        return value
+
+    def _failure_memory(
+        self, spec: AnalysisSpec, *, error_code: str, tool: str
+    ) -> list[dict[str, Any]]:
+        key = (str(spec.run_id), f"{error_code}:{tool}")
+        if key in self._failure_cache:
+            return self._failure_cache[key]
+        memory = self._memory()
+        value: list[dict[str, Any]] = []
+        if memory is not None:
+            try:
+                value = [
+                    item.model_dump(mode="json")
+                    for item in memory.recall_failures(
+                        spec, error_code=error_code, tool=tool
+                    )
+                ]
+            except DomainError:
+                value = []
+        self._failure_cache[key] = value
+        return value
+
     def _payload(self, spec: AnalysisSpec, state: AnalysisState, round_no: int) -> dict[str, Any]:
         observations = [
             Observation.from_mapping(item) for item in state.get("history", [])
@@ -228,6 +272,21 @@ class RepoAnalysisAgent:
             )
             for item in observations
             if item.evidence_id is not None
+        ]
+        recall = self._recall(spec) or {}
+        advisories = list(recall.get("advisories") or [])
+        memories = [
+            MemoryNote(
+                memory_id=str(item["memory_id"]),
+                subject_key=str(item["subject_key"]),
+                version_status=str(item["version_status"]),
+                requires_reverification=bool(item["requires_reverification"]),
+                downweighted=bool(item.get("downweighted", False)),
+                confidence=float(item["confidence"]),
+                evidence_ids=[str(value) for value in item.get("evidence_ids") or []],
+                source_uris=[str(value) for value in item.get("source_uris") or []],
+            )
+            for item in advisories
         ]
         prior = self.runtime.prior_report_text(spec)
         if prior and len(prior) > MAX_PRIOR_REPORT_CHARS:
@@ -249,6 +308,7 @@ class RepoAnalysisAgent:
             current_plan=[state["thought"]] if state.get("thought") else [],
             observations=observations,
             evidence=evidence,
+            memories=memories,
             available_tools=list(TOOL_NAMES),
         )
         bundle = ContextBuilder(
@@ -276,9 +336,37 @@ class RepoAnalysisAgent:
                 "prior_report": prior,
                 "prior_evidence_id_map": spec.prior_evidence_map if prior else {},
                 "history": history,
+                "prior_experience": list(recall.get("plan_hints") or []),
+                "confirmed_facts": list(recall.get("confirmed_facts") or []),
+                "known_failures": list(state.get("known_failures") or []),
+                "memory_recall": {
+                    "retrieval_mode": recall.get("retrieval_mode"),
+                    "advisory_count": len(advisories),
+                    "excluded": list(recall.get("excluded") or []),
+                },
+                "memory_policy": {
+                    "reference_only": True,
+                    "may_change_tools": False,
+                    "may_change_repository": False,
+                    "may_change_commit": False,
+                    "may_change_budget": False,
+                    "may_change_approvals": False,
+                    "may_change_sandbox": False,
+                },
             }
         )
         return payload
+
+    @staticmethod
+    def _merge_hints(
+        known: list[dict[str, Any]], hints: list[dict[str, Any]]
+    ) -> None:
+        seen = {str(item.get("memory_id")) for item in known}
+        for hint in hints:
+            memory_id = str(hint.get("memory_id"))
+            if memory_id not in seen:
+                known.append(hint)
+                seen.add(memory_id)
 
     def tools(self, state: AnalysisState) -> AnalysisState:
         try:
@@ -287,6 +375,8 @@ class RepoAnalysisAgent:
             return self._stop(state, exc.code)
         history = list(state.get("history", []))
         evidence = list(state.get("evidence", []))
+        known_failures = list(state.get("known_failures") or [])
+        observed: list[dict[str, Any]] = []
         decision_round = int(state.get("decision_round", 1))
         for index, raw in enumerate(state.get("pending_calls", [])):
             try:
@@ -304,6 +394,12 @@ class RepoAnalysisAgent:
                         "error_code": "TOOL_SCHEMA_INVALID",
                     }
                 )
+                self._merge_hints(
+                    known_failures,
+                    self._failure_memory(
+                        spec, error_code="TOOL_SCHEMA_INVALID", tool="unknown"
+                    ),
+                )
                 continue
             step_key = f"tool:r{decision_round}:{index}"
             try:
@@ -311,8 +407,15 @@ class RepoAnalysisAgent:
                     UUID(state["run_id"]), epoch, step_key, call.tool, _tool_args_hash(call)
                 )
             except DomainError as exc:
+                self._merge_hints(
+                    known_failures,
+                    self._failure_memory(spec, error_code=exc.code, tool=call.tool),
+                )
                 if exc.code in PARTIAL_CODES:
-                    return self._stop({**state, "history": history}, exc.code)
+                    return self._stop(
+                        {**state, "history": history, "known_failures": known_failures},
+                        exc.code,
+                    )
                 history.append(
                     {
                         "tool": "tool_error",
@@ -337,6 +440,10 @@ class RepoAnalysisAgent:
                     self.runtime.store.finish_tool(
                         attempt.call_id, epoch, outcome=None, error_code=exc.code
                     )
+                    self._merge_hints(
+                        known_failures,
+                        self._failure_memory(spec, error_code=exc.code, tool=call.tool),
+                    )
                     history.append(
                         {
                             "tool": call.tool,
@@ -354,6 +461,12 @@ class RepoAnalysisAgent:
                 except Exception:
                     self.runtime.store.finish_tool(
                         attempt.call_id, epoch, outcome=None, error_code="TOOL_INTERNAL_ERROR"
+                    )
+                    self._merge_hints(
+                        known_failures,
+                        self._failure_memory(
+                            spec, error_code="TOOL_INTERNAL_ERROR", tool=call.tool
+                        ),
                     )
                     history.append(
                         {
@@ -394,9 +507,26 @@ class RepoAnalysisAgent:
                 "locator": _call_locator(call),
             }
             history.append(item)
+            observed.append(item)
             if evidence_id is not None:
                 evidence.append(item)
-        return {**state, "history": history, "evidence": evidence, "pending_calls": []}
+        working_memory_id: str | None = None
+        memory = self._memory()
+        if memory is not None and observed:
+            try:
+                record = memory.record_working(spec, observed)
+            except DomainError:
+                record = None
+            if record is not None:
+                working_memory_id = str(record.memory_id)
+        return {
+            **state,
+            "history": history,
+            "evidence": evidence,
+            "pending_calls": [],
+            "known_failures": known_failures,
+            "working_memory_id": working_memory_id,
+        }
 
     @staticmethod
     def route(state: AnalysisState) -> str:
@@ -411,14 +541,46 @@ class RepoAnalysisAgent:
     def final(self, state: AnalysisState) -> AnalysisState:
         spec, epoch = self._spec_epoch(state)
         report = RepoAnalysisReport.model_validate(state["final_report"])
+        rows = self.runtime.store.evidence_rows(spec.run_id)
         verification = verify_report(
             report,
-            self.runtime.store.evidence_rows(spec.run_id),
+            rows,
             lambda content_hash: self.runtime.store.artifact_bytes(content_hash, spec.run_id),
         )
         rendered = render_report(spec, report, verification)
-        self.runtime.store.finish_success(spec.run_id, epoch, rendered, verification)
-        return {**state, "finished": True}
+        report_hash = self.runtime.store.finish_success(
+            spec.run_id, epoch, rendered, verification
+        )
+        memory_write = self._after_verification(
+            spec, report, verification, rows, report_hash
+        )
+        return {**state, "finished": True, "memory_write": memory_write}
+
+    def _after_verification(
+        self,
+        spec: AnalysisSpec,
+        report: RepoAnalysisReport,
+        verification: ReportVerification,
+        rows: list[Any],
+        report_hash: str | None,
+    ) -> dict[str, Any] | None:
+        memory = self._memory()
+        if memory is None:
+            return None
+        try:
+            result = memory.after_verification(
+                spec,
+                report_hash=report_hash
+                if isinstance(report_hash, str)
+                else spec.report_hash,
+                passed=verification.passed,
+                evidence_ids=[row.evidence_id for row in rows],
+                conclusion=report.conclusion,
+                artifact_hashes=[row.content_hash for row in rows],
+            )
+        except DomainError as exc:
+            return {"status": "rejected", "issues": [exc.code]}
+        return cast(dict[str, Any], result.model_dump(mode="json"))
 
     def insufficient(self, state: AnalysisState) -> AnalysisState:
         spec, epoch = self._spec_epoch(state)
