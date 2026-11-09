@@ -1,0 +1,217 @@
+{
+  "card": "R04",
+  "title": "Iterative Repair & Independent Verification",
+  "commit": "0481cfc0d823842d833bb71c7d1c01f494975b93",
+  "commit_note": "单次本地提交：repair/repair_agent.py（基线复现、提供方协议、受控补丁、范围与冻结路径检查、公开测试、隐藏验证、结构化反馈、预算、Proposal 与 Episodic Memory）、tests/test_v34_repair_agent.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "7f821317ffcce3a6a2bb8047f8f6b720122b0f07",
+  "accepted_at": "2026-11-09T10:35:19Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (new repair_agent.py)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "docker": "USED (real Docker 29.9.2; fixed image mgar-v3-sandbox-r03:local sha256:75ff415b813cad5a2d61d418dfaaf33d1f6e7e56b0a4bb386624f0cf1a92b3c1 from base golang:1.27.1-bookworm sha256:8d48e12ec56735e9358640898b9d9b9fcca110612ed8a5567438c0a1baa24e66)",
+    "sandbox_toolchains": "go1.27.1 linux/amd64; Python 3.11.2",
+    "model": "fixture_deterministic_provider_no_network",
+    "network": "NOT_USED (sandbox --network=none; provider is a local deterministic script)",
+    "postgres": "NOT_USED",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as 0481cfc. Evidence and .local/r03/sandbox-lock.json are gitignored; this accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/repair/repair_agent.py",
+        "tests/test_v34_repair_agent.py"
+      ],
+      "secondary_argv": ["/tmp/mgar-v3-venv/bin/mypy", "src/mgar_v3/repair/repair_agent.py"],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）零告警；mypy strict 覆盖新增 repair_agent.py",
+      "log": "evidence/R04/20261109T103300Z-R04/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "sandbox-build",
+      "argv": ["make", "sandbox-build"],
+      "exit_code": 0,
+      "purpose": "确认 R04 依赖的固定镜像可离线重建；镜像 ID、基础镜像 ID、源码哈希与工具链版本写入 .local/r03/sandbox-lock.json",
+      "image_id": "sha256:75ff415b813cad5a2d61d418dfaaf33d1f6e7e56b0a4bb386624f0cf1a92b3c1",
+      "source_sha256": "9a6eec5ce1dbc356d12f866e0bccb5e704323ea825ce8343ba651042b4583262",
+      "log": "evidence/R04/20261109T103300Z-R04/03-sandbox-build.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "R04"],
+      "exit_code": 0,
+      "duration_seconds": 58.625,
+      "purpose": "R04 统一验收：基线复现、Python/Go 真实修复、隐藏验证、范围拒绝、预算与 Memory",
+      "counts": {
+        "tests": 9,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "0c64bb1f3c5629845082b9afebb2a469df5b323e78e25693d20014cf1836605c",
+      "finished_source_sha256": "0c64bb1f3c5629845082b9afebb2a469df5b323e78e25693d20014cf1836605c",
+      "git_commit": "0481cfc0d823842d833bb71c7d1c01f494975b93",
+      "attempt": "evidence/R04/20261109T103304Z-f63ee7a3",
+      "log": "evidence/R04/20261109T103304Z-f63ee7a3/command.log",
+      "junit": "evidence/R04/20261109T103304Z-f63ee7a3/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "regression",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_v34_repair_handoff.py",
+        "tests/test_v34_patch_workspace.py",
+        "tests/test_v34_sandbox_executor.py",
+        "-q"
+      ],
+      "counts": {
+        "tests": 26,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration_seconds": 40.65,
+      "purpose": "R01/R02/R03 回归；确认新增修复循环未改变交接、补丁编辑与沙箱执行行为",
+      "log": "evidence/R04/20261109T103300Z-R04/09-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "container-residue",
+      "argv": ["docker", "ps", "-aq", "--filter", "label=mgar.v3.r03.sandbox"],
+      "exit_code": 0,
+      "purpose": "确认所有测试结束后没有残留沙箱容器",
+      "result": "0 containers",
+      "log": "evidence/R04/20261109T103300Z-R04/10-containers.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean（实现已提交为 0481cfc）",
+      "log": "evidence/R04/20261109T103300Z-R04/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 verify / 测试未修改源工作区",
+      "log": "evidence/R04/20261109T103300Z-R04/08-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "R04 在真实 Docker 沙箱中执行 Go/Python 修复，但修复提供方是确定性本地脚本，未调用外部模型或 GitHub；容器网络为 none，宿主凭据从未注入。",
+  "must_pass": [
+    {
+      "item": "复现基线问题",
+      "result": "PASS",
+      "evidence": "每个成功修复用例都先运行公开测试；test_python_repair_loops... 断言 baseline.status=test_failed 且失败测试为 tests/test_calc.py::test_add。"
+    },
+    {
+      "item": "模型提出修复计划",
+      "result": "PASS",
+      "evidence": "RepairProvider 只接收 RepairPrompt 并返回 PatchPlan（summary + FileEdit 列表）；测试中 ScriptedProvider 记录每轮提示，生产模型不能返回自由 shell 文本。"
+    },
+    {
+      "item": "生成受控补丁",
+      "result": "PASS",
+      "evidence": "PatchPlan.edits 经 R02 PatchWorktree.apply_patch 原子应用，更新/删除必须携带前置 SHA-256；任何模型文本都不进入命令行。"
+    },
+    {
+      "item": "检查修改范围",
+      "result": "PASS",
+      "evidence": "test_scope_protected_and_frozen_paths... 分别以 PATCH_PROTECTED 与 REPAIR_FROZEN_PATH 拒绝 pyproject.toml 与公开测试文件，且被拒补丁不执行任何测试。"
+    },
+    {
+      "item": "执行公开测试",
+      "result": "PASS",
+      "evidence": "每轮补丁后调用 R03 Python/Go 适配器运行公开测试；失败时记录 public_receipt 与公开失败测试名并回滚。"
+    },
+    {
+      "item": "执行独立验证测试",
+      "result": "PASS",
+      "evidence": "test_hidden_verification_rejects_a_public_test_only_fix 中仅满足公开测试的补丁被隐藏套件拒绝；provider.prompts 断言 verification/test_calc_hidden.py 从未出现在可见文件树。"
+    },
+    {
+      "item": "结构化反馈",
+      "result": "PASS",
+      "evidence": "RepairFeedback 记录 attempt、stage、code、message 与公开 failed_tests；下一轮 Prompt 携带历史反馈。验证失败只返回通用消息，不泄露隐藏测试名。"
+    },
+    {
+      "item": "限定次数与预算",
+      "result": "PASS",
+      "evidence": "test_exhausted_repair... 在 2 次尝试后停止；test_test_run_budget... 在验证运行前以 budget_exhausted 停止；test_deadline... 以 deadline_exceeded 停止。默认 max_attempts=3。"
+    },
+    {
+      "item": "验证成功后保存 Repair Proposal",
+      "result": "PASS",
+      "evidence": "RepairProposal 是内容寻址对象，proposal_id 绑定 base_tree、tested_tree、diff、公开回执与验证回执；仅当双阶段通过时返回，含完整 diff、变更清单与两份 TestReceipt。持久化位置由上层调用方/R05 决定。"
+    },
+    {
+      "item": "修复失败原因进入 Memory",
+      "result": "PASS",
+      "evidence": "MemoryEpisodeLog 记录 patch_rejected、public_tests_failed、verification_failed、exhausted、baseline_not_reproduced 等 episode；测试逐项断言状态顺序与失败测试名。"
+    },
+    {
+      "item": "错误补丁不能被发布",
+      "result": "PASS",
+      "evidence": "test_exhausted_repair_never_publishes_a_bad_patch 断言 proposal 为 None；公开测试或隐藏验证失败的补丁在下一轮前已 revert，成功 Proposal 只来自双阶段通过的树。"
+    },
+    {
+      "item": "Go 与 Python 至少各一次真实补丁生成与测试验证",
+      "result": "PASS",
+      "evidence": "Python 用例在真实 R03 沙箱完成 2 轮修复；Go 用例 test_go_repair_uses_the_same_loop... 使用 go-test-json-v1 适配器完成编译、公开测试与 TestSubNegative 独立验证。"
+    },
+    {
+      "item": "既有 R01/R02/R03 行为不回归",
+      "result": "PASS",
+      "evidence": "R01 8 项 + R02 8 项 + R03 10 项 = 26 passed，0 failed，0 skipped；无残留沙箱容器。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "测试中的修复提供方是确定性脚本而非真实 LLM",
+      "handling": "R04 定义 RepairProvider/PatchPlan 协议并完成真实补丁应用与真实沙箱验证；生产模型接入只需实现 propose，返回同样结构的 JSON，不改变执行路径。离线验收不依赖外部模型。"
+    },
+    {
+      "issue": "Episodic Memory 默认使用进程内 MemoryEpisodeLog",
+      "handling": "EpisodeSink 协议隔离存储；R04 验证每次失败与最终结果都产生内容寻址 episode，生产接线把 RepairEpisode 交给 M02 MemoryWriter。"
+    },
+    {
+      "issue": "基线只接受公开测试失败",
+      "handling": "编译失败、无测试、已通过、沙箱错误或依赖等待都不算复现，分别返回 baseline_not_reproduced / sandbox_error / waiting_for_dependencies，避免在无失败证据时宣称修复。"
+    },
+    {
+      "issue": "隐藏验证失败的具体断言不反馈给模型",
+      "handling": "反馈只说明 Independent verification did not pass.，防止模型针对隐藏测试名过拟合；公开测试失败仍提供完整测试名。"
+    },
+    {
+      "issue": "Repair Proposal 的持久化未绑定数据库",
+      "handling": "Proposal 以内容寻址对象返回，proposal_id 绑定补丁树与两份回执；R05 负责审批与发布，持久化由上层存储层完成，R04 不引入数据库依赖。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/repair/repair_agent.py",
+    "tests/test_v34_repair_agent.py",
+    "docs/v33/R04-repair-agent.md",
+    "config/verification.json（R04 条目）",
+    "docs/v33/accept/R04/accept.json"
+  ],
+  "next_card": "R05"
+}
