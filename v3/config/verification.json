@@ -28,6 +28,22 @@
     ],
     "timeout_seconds": 120
   },
+  "A02": {
+    "components": {
+      "docker": "real_pinned_golang_image_observed_network_none_readonly_nonroot_capdrop",
+      "languages": "go_and_python_scanned_other_source_languages_explicitly_unsupported",
+      "model": "not_used",
+      "network": "not_used",
+      "postgres": "not_used",
+      "redis": "not_used",
+      "sandbox": "local_process_rlimits_and_disposable_verified_snapshot",
+      "tools": "real_ruff_real_pytest_fake_pyright_fake_semgrep_fake_go_and_race_harness"
+    },
+    "tests": [
+      "tests/test_v33_scanners.py"
+    ],
+    "timeout_seconds": 600
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
