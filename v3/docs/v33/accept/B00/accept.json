@@ -1,0 +1,127 @@
+{
+  "card": "B00",
+  "title": "基线检查与架构契约",
+  "commit": "e98e494f58f8844931d614d563cc6a43a6cf0ed5",
+  "accepted_at": "2026-11-09T06:25:10Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 (Windows native lacks make/docker/uv)",
+    "python": "3.12.16",
+    "python_source": "uv-managed, UV_PYTHON_DOWNLOADS=never",
+    "uv": "0.13.7",
+    "uv_project_environment": "/tmp/mgar-v3-venv",
+    "postgres": "pgvector/pgvector:0.8.1-pg16-bookworm, container mgar-v3-postgres-1, 127.0.0.1:55433",
+    "redis": "redis:7.4.7, container mgar-v3-redis-1, 127.0.0.1:56379",
+    "migration_head": "0020_repository_analysis.sql"
+  },
+  "worktree_at_acceptance": "clean",
+  "commands": [
+    {
+      "name": "git-baseline",
+      "argv": ["git", "status", "--short"],
+      "exit_code": 0,
+      "purpose": "确认工作区与基线一致",
+      "log": "evidence/B00/20261109T062247Z-b00/00-git.log",
+      "status": "PASS"
+    },
+    {
+      "name": "deps-up",
+      "argv": ["make", "deps-up"],
+      "exit_code": 0,
+      "duration_seconds": 1,
+      "purpose": "启动并等待 PostgreSQL 与 Redis healthy",
+      "log": "evidence/B00/20261109T062247Z-b00/01-deps-up.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrate",
+      "argv": ["make", "migrate"],
+      "exit_code": 0,
+      "duration_seconds": 1,
+      "purpose": "确认迁移已在 0020，无待应用",
+      "log": "evidence/B00/20261109T062247Z-b00/02-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["make", "doctor"],
+      "exit_code": 0,
+      "duration_seconds": 0,
+      "purpose": "依赖与配置体检",
+      "log": "evidence/B00/20261109T062247Z-b00/03-doctor.log",
+      "status": "PASS",
+      "stdout": "{\"postgres\": \"PASS\", \"redis\": \"PASS\", \"live\": \"NOT_RUN\"}"
+    },
+    {
+      "name": "unit",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v32_repository_analysis.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 4,
+      "purpose": "无网络单元测试",
+      "counts": {"passed": 13, "failed": 0, "skipped": 0},
+      "log": "evidence/B00/20261109T062247Z-b00/04-unit.log",
+      "status": "PASS"
+    },
+    {
+      "name": "postgres-integration",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v32_repository_analysis_db.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 8,
+      "purpose": "真实 PostgreSQL 集成（fixture 执行模式）",
+      "counts": {"passed": 4, "failed": 0, "skipped": 0},
+      "log": "evidence/B00/20261109T062247Z-b00/05-db.log",
+      "status": "PASS"
+    },
+    {
+      "name": "verify-registry",
+      "argv": ["make", "verify", "TASK=B00"],
+      "exit_code": 0,
+      "duration_seconds": 6.567,
+      "purpose": "统一验收记录机制自检（junit + 源码指纹）",
+      "counts": {"tests": 13, "failures": 0, "errors": 0, "skipped": 0},
+      "source_sha256": "ee513b7a0f1c49fea59c7b837be402859705f8b8dded54fc930d58dd6eb4656d",
+      "attempt": "evidence/B00/20261109T062501Z-f10d0048",
+      "log": "evidence/B00/20261109T062501Z-f10d0048/command.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--short"],
+      "exit_code": 0,
+      "purpose": "确认验收未产生工作区改动",
+      "log": "evidence/B00/20261109T062247Z-b00/06-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_reason": "B00 只做基线检查与契约记录，不调用付费模型，不访问 GitHub",
+  "deviations": [
+    {
+      "issue": "make deps-up 需要 MGAR_V3_DB_PASSWORD，而现有 .env 未包含该键",
+      "handling": "仅在验收进程环境内由现有 DATABASE_URL 的密码部分推导注入，未修改 .env",
+      "attempt": "evidence/B00/20261109T062124Z-b00"
+    },
+    {
+      "issue": ".env 以 UTF-8 BOM 开头，直接 grep 锚点匹配失败导致 DSN/密码为空",
+      "handling": "验收脚本先剥离首行 BOM；未修改 .env",
+      "attempt": "evidence/B00/20261109T062217Z-b00"
+    },
+    {
+      "issue": "Windows 原生缺少 make/docker/uv，Makefile 依赖不可直接执行",
+      "handling": "全部验收命令改在 WSL2 内执行，uv venv 放在 /tmp 避免 /mnt/c 性能与跨平台 venv 冲突",
+      "attempt": null
+    },
+    {
+      "issue": "仓库 .git 于本次 B00 之前不存在（此前为归档快照目录）",
+      "handling": "在实施目录初始化 git 并 fetch origin main，HEAD 对齐 e98e494；未改写历史",
+      "attempt": null
+    }
+  ],
+  "artifacts": [
+    "docs/v33/ARCHITECTURE_CONTRACT.md",
+    "config/verification.json（新增 B00 条目）",
+    "docs/v33/accept/B00/accept.json"
+  ],
+  "next_card": "B01"
+}

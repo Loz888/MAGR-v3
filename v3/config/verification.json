@@ -1,35 +1,90 @@
 {
+  "B00": {
+    "components": {
+      "github": "not_used",
+      "langgraph": "fixture_deterministic",
+      "mcp": "not_used",
+      "model": "fixture_no_network",
+      "postgres": "real",
+      "redis": "real"
+    },
+    "tests": [
+      "tests/test_v32_repository_analysis.py"
+    ],
+    "timeout_seconds": 120
+  },
+  "V31-P0-IMPLEMENT": {
+    "components": {
+      "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
+      "historical_results": "unchanged",
+      "live": "NOT_RUN_pending_exact_frozen_grants_and_complete_Action_review",
+      "model": "controlled_HTTP_ONLY_in_registered_tests",
+      "postgres": "real_disposable_database_18_migrations",
+      "prior_full_regression": "404_PASS_at_b0b75e036fd0094fda4a61114ba9df554dfbd62ac052afecef56d73ad2834783",
+      "publication": "controlled_persistent_stdio_MCP_three_writes_and_readonly_reconciliation",
+      "redis": "real_local_coordination",
+      "results": "append_only_case_spec_and_business_results_SQL_only_atomic_commit",
+      "sandbox": "real_pinned_Docker_Go_public_28_independent_cases_and_observed_Case_window"
+    },
+    "tests": [
+      "tests/test_p0_commerce.py",
+      "tests/test_p0_live_adapter.py"
+    ],
+    "timeout_seconds": 900
+  },
+  "V31-P0-REVIEW": {
+    "components": {
+      "history": "original_business_results_and_actions_immutable",
+      "models": "none",
+      "postgres": "real_disposable_database_19_migrations",
+      "publication": "controlled_stdio_MCP_exact_approved_payload",
+      "sandbox": "real_pinned_Docker_Go_public_independent_and_observed_window"
+    },
+    "tests": [
+      "tests/test_p0_review.py",
+      "tests/test_environment.py"
+    ],
+    "timeout_seconds": 900
+  },
   "V31-R0-02": {
+    "components": {
+      "github": "controlled_server",
+      "langgraph": "import_checked",
+      "mcp": "real_stdio_controlled_server",
+      "model": "not_used",
+      "postgres": "real",
+      "redis": "real"
+    },
     "tests": [
       "tests/test_environment.py",
       "tests/test_verification.py",
       "tests/test_mcp.py",
       "tests/test_rate_limit.py"
     ],
-    "timeout_seconds": 90,
-    "components": {
-      "postgres": "real",
-      "redis": "real",
-      "mcp": "real_stdio_controlled_server",
-      "model": "not_used",
-      "github": "controlled_server",
-      "langgraph": "import_checked"
-    }
+    "timeout_seconds": 90
   },
   "V31-R0-03": {
+    "components": {
+      "github": "not_used",
+      "langgraph": "not_used",
+      "model": "not_used",
+      "postgres": "real",
+      "redis": "not_used"
+    },
     "tests": [
       "tests/test_coordination.py"
     ],
-    "timeout_seconds": 90,
-    "components": {
-      "postgres": "real",
-      "redis": "not_used",
-      "model": "not_used",
-      "github": "not_used",
-      "langgraph": "not_used"
-    }
+    "timeout_seconds": 90
   },
   "V31-R1-01": {
+    "components": {
+      "github": "controlled_server",
+      "langgraph": "real_postgres_checkpoint",
+      "mcp": "real_stdio_controlled_server",
+      "model": "fixture_http_transport",
+      "postgres": "real",
+      "redis": "real"
+    },
     "tests": [
       "tests/test_pipeline.py",
       "tests/test_effects.py",
@@ -38,17 +93,17 @@
       "tests/test_cli.py",
       "tests/test_models.py"
     ],
-    "timeout_seconds": 120,
-    "components": {
-      "postgres": "real",
-      "redis": "real",
-      "mcp": "real_stdio_controlled_server",
-      "model": "fixture_http_transport",
-      "github": "controlled_server",
-      "langgraph": "real_postgres_checkpoint"
-    }
+    "timeout_seconds": 120
   },
   "V31-R1-BUDGET-02": {
+    "components": {
+      "github": "controlled_server",
+      "langgraph": "real_postgres_checkpoint",
+      "mcp": "real_stdio_controlled_server",
+      "model": "fixture_http_transport",
+      "postgres": "real",
+      "redis": "real"
+    },
     "tests": [
       "tests/test_environment.py",
       "tests/test_verification.py",
@@ -62,17 +117,18 @@
       "tests/test_cli.py",
       "tests/test_models.py"
     ],
-    "timeout_seconds": 120,
-    "components": {
-      "postgres": "real",
-      "redis": "real",
-      "mcp": "real_stdio_controlled_server",
-      "model": "fixture_http_transport",
-      "github": "controlled_server",
-      "langgraph": "real_postgres_checkpoint"
-    }
+    "timeout_seconds": 120
   },
   "V31-R2": {
+    "components": {
+      "github": "controlled_server",
+      "langgraph": "real_postgres_checkpoint",
+      "mcp": "real_stdio_controlled_server",
+      "model": "fixture_http_transport",
+      "postgres": "real",
+      "redis": "real",
+      "router_llm": "not_used"
+    },
     "tests": [
       "tests/test_duplex.py",
       "tests/test_models.py",
@@ -80,18 +136,19 @@
       "tests/test_cli.py",
       "tests/test_environment.py"
     ],
-    "timeout_seconds": 120,
-    "components": {
-      "postgres": "real",
-      "redis": "real",
-      "langgraph": "real_postgres_checkpoint",
-      "mcp": "real_stdio_controlled_server",
-      "model": "fixture_http_transport",
-      "github": "controlled_server",
-      "router_llm": "not_used"
-    }
+    "timeout_seconds": 120
   },
   "V31-R3": {
+    "components": {
+      "github": "signed_fixture_webhook_and_controlled_transport",
+      "langgraph": "real_postgres_checkpoint",
+      "mcp": "not_used_by_router",
+      "model": "fixture_http_transport",
+      "postgres": "real",
+      "redis": "real",
+      "router": "real_engine_with_bounded_proposals",
+      "web": "real_fastapi_static_and_authenticated_api"
+    },
     "tests": [
       "tests/test_routing.py",
       "tests/test_router_model.py",
@@ -102,19 +159,23 @@
       "tests/test_cli.py",
       "tests/test_environment.py"
     ],
-    "timeout_seconds": 150,
-    "components": {
-      "postgres": "real",
-      "redis": "real",
-      "langgraph": "real_postgres_checkpoint",
-      "mcp": "not_used_by_router",
-      "model": "fixture_http_transport",
-      "github": "signed_fixture_webhook_and_controlled_transport",
-      "web": "real_fastapi_static_and_authenticated_api",
-      "router": "real_engine_with_bounded_proposals"
-    }
+    "timeout_seconds": 150
   },
   "V31-R4": {
+    "components": {
+      "business_oracle": "independent_frozen_synthetic_case_grader",
+      "data": "independent_postgresql_readonly_role_and_typed_cells",
+      "embedding": "fixture_protocol_only_in_this_target; real model gate is make rag-eval",
+      "expert_model": "fixture_deterministic_protocol_provider",
+      "github": "controlled_transport_no_new_publication",
+      "langgraph": "real_postgres_checkpoint_parallel_Send",
+      "mcp": "real_http_knowledge_and_data",
+      "postgres": "real_pgvector_exact_filtered_search",
+      "redis": "real_cache_with_acl_recheck_and_signed_values",
+      "reranker": "fixture_protocol_only_in_this_target; real model gate is make rag-eval",
+      "trial_budget": "real_shared_postgres_ledger_with_fixture_HTTP_models",
+      "web": "real_fastapi_static_and_authenticated_api"
+    },
     "tests": [
       "tests/test_r4_knowledge.py",
       "tests/test_r4_experts.py",
@@ -130,23 +191,20 @@
       "tests/test_r4_trials.py",
       "tests/test_mcp.py"
     ],
-    "timeout_seconds": 180,
-    "components": {
-      "postgres": "real_pgvector_exact_filtered_search",
-      "redis": "real_cache_with_acl_recheck_and_signed_values",
-      "langgraph": "real_postgres_checkpoint_parallel_Send",
-      "mcp": "real_http_knowledge_and_data",
-      "data": "independent_postgresql_readonly_role_and_typed_cells",
-      "expert_model": "fixture_deterministic_protocol_provider",
-      "embedding": "fixture_protocol_only_in_this_target; real model gate is make rag-eval",
-      "reranker": "fixture_protocol_only_in_this_target; real model gate is make rag-eval",
-      "github": "controlled_transport_no_new_publication",
-      "web": "real_fastapi_static_and_authenticated_api",
-      "trial_budget": "real_shared_postgres_ledger_with_fixture_HTTP_models",
-      "business_oracle": "independent_frozen_synthetic_case_grader"
-    }
+    "timeout_seconds": 180
   },
   "V31-R5": {
+    "components": {
+      "budget": "real_cumulative_PG_group_including_R1_R4_predecessors",
+      "docker": "real_nonroot_network_none_readonly_no_credentials",
+      "github": "real_stdio_MCP_controlled_remote_and_Git_tree_proof",
+      "go": "real_compiler_public_and_independent_hidden_tests",
+      "langgraph": "real_postgres_checkpoint_and_approval_interrupt",
+      "model": "controlled_HTTP_of_production_R5_adapter",
+      "postgres": "real",
+      "recovery": "real_SIGKILL_sandbox_candidate_branch_PR_and_costed_model_cache",
+      "web": "shared_authenticated_API"
+    },
     "tests": [
       "tests/test_acceptance.py",
       "tests/test_api.py",
@@ -178,42 +236,20 @@
       "tests/test_routing.py",
       "tests/test_verification.py"
     ],
-    "timeout_seconds": 1200,
-    "components": {
-      "postgres": "real",
-      "docker": "real_nonroot_network_none_readonly_no_credentials",
-      "go": "real_compiler_public_and_independent_hidden_tests",
-      "langgraph": "real_postgres_checkpoint_and_approval_interrupt",
-      "model": "controlled_HTTP_of_production_R5_adapter",
-      "github": "real_stdio_MCP_controlled_remote_and_Git_tree_proof",
-      "recovery": "real_SIGKILL_sandbox_candidate_branch_PR_and_costed_model_cache",
-      "web": "shared_authenticated_API",
-      "budget": "real_cumulative_PG_group_including_R1_R4_predecessors"
-    }
-  },
-  "V31-R6-01": {
-    "tests": [
-      "tests/test_r6_watchdog.py",
-      "tests/test_environment.py",
-      "tests/test_api.py",
-      "tests/test_cli.py",
-      "tests/test_coordination.py",
-      "tests/test_duplex.py",
-      "tests/test_effects.py",
-      "tests/test_recovery.py",
-      "tests/test_r5_review_renewal.py"
-    ],
-    "timeout_seconds": 300,
-    "components": {
-      "postgres": "real_Engine_single_writer_same_session",
-      "watchdog": "real_separate_process_and_loopback_HTTP_observe_only",
-      "authorization": "distinct_limited_watchdog_token_admin_decisions_separate",
-      "recovery": "deterministic_facts_dedupe_stale_epoch_manual_fencing_and_rollback",
-      "model": "none_in_watchdog_controlled_in_regression",
-      "external_writes": "controlled_regression_only_no_live_GitHub_publication"
-    }
+    "timeout_seconds": 1200
   },
   "V31-R6": {
+    "components": {
+      "benchmark": "fixed_30_cases_90_assignments_protocol_only_live_NOT_RUN",
+      "docker_go": "real_isolated_public_and_independent_hidden_tests",
+      "github": "controlled_MCP_and_Git_metadata_no_publication",
+      "model": "controlled_HTTP_no_paid_calls",
+      "postgres": "real_disposable_database_17_migrations",
+      "proactivity": "Engine_scoped_bounded_readonly_independent_budget",
+      "recovery": "real_SIGKILL_and_unknown_effect_reconciliation",
+      "redis": "real",
+      "watchdog": "separate_process_loopback_HTTP_limited_identity"
+    },
     "tests": [
       "tests/test_acceptance.py",
       "tests/test_api.py",
@@ -253,36 +289,38 @@
       "tests/test_r6_repair_contract.py",
       "tests/test_r6_wire_protocol.py"
     ],
-    "timeout_seconds": 1800,
-    "components": {
-      "postgres": "real_disposable_database_17_migrations",
-      "redis": "real",
-      "watchdog": "separate_process_loopback_HTTP_limited_identity",
-      "proactivity": "Engine_scoped_bounded_readonly_independent_budget",
-      "model": "controlled_HTTP_no_paid_calls",
-      "github": "controlled_MCP_and_Git_metadata_no_publication",
-      "docker_go": "real_isolated_public_and_independent_hidden_tests",
-      "recovery": "real_SIGKILL_and_unknown_effect_reconciliation",
-      "benchmark": "fixed_30_cases_90_assignments_protocol_only_live_NOT_RUN"
-    }
+    "timeout_seconds": 1800
   },
-  "V31-R6-RESUME": {
-    "tests": [
-      "tests/test_final_resume.py",
-      "tests/test_final_evaluation.py",
-      "tests/test_models.py",
-      "tests/test_environment.py",
-      "tests/test_verification.py"
-    ],
-    "timeout_seconds": 300,
+  "V31-R6-01": {
     "components": {
-      "postgres": "real",
-      "model": "controlled_HTTP_only_no_new_paid_calls",
-      "go": "real_isolated_reference_oracles",
-      "recovery": "explicit_continuation_no_reruns_no_reset_sealed_results_unknown_stop"
-    }
+      "authorization": "distinct_limited_watchdog_token_admin_decisions_separate",
+      "external_writes": "controlled_regression_only_no_live_GitHub_publication",
+      "model": "none_in_watchdog_controlled_in_regression",
+      "postgres": "real_Engine_single_writer_same_session",
+      "recovery": "deterministic_facts_dedupe_stale_epoch_manual_fencing_and_rollback",
+      "watchdog": "real_separate_process_and_loopback_HTTP_observe_only"
+    },
+    "tests": [
+      "tests/test_r6_watchdog.py",
+      "tests/test_environment.py",
+      "tests/test_api.py",
+      "tests/test_cli.py",
+      "tests/test_coordination.py",
+      "tests/test_duplex.py",
+      "tests/test_effects.py",
+      "tests/test_recovery.py",
+      "tests/test_r5_review_renewal.py"
+    ],
+    "timeout_seconds": 300
   },
   "V31-R6-BILLING": {
+    "components": {
+      "billing": "exact_hourly_request_and_token_attribution_same_Run_budget_idempotent_no_invented_per_call_usage",
+      "continuation": "AST_proof_of_identical_generation_and_pricing",
+      "go": "real_isolated_hidden_oracle_checks",
+      "model": "controlled_HTTP_only_no_new_paid_calls",
+      "postgres": "real"
+    },
     "tests": [
       "tests/test_billing_reconciliation.py",
       "tests/test_final_resume.py",
@@ -291,37 +329,18 @@
       "tests/test_environment.py",
       "tests/test_verification.py"
     ],
-    "timeout_seconds": 300,
-    "components": {
-      "postgres": "real",
-      "model": "controlled_HTTP_only_no_new_paid_calls",
-      "billing": "exact_hourly_request_and_token_attribution_same_Run_budget_idempotent_no_invented_per_call_usage",
-      "continuation": "AST_proof_of_identical_generation_and_pricing",
-      "go": "real_isolated_hidden_oracle_checks"
-    }
-  },
-  "V31-R6-REPAIR": {
-    "tests": [
-      "tests/test_r6_repair_contract.py",
-      "tests/test_final_evaluation.py",
-      "tests/test_final_resume.py",
-      "tests/test_billing_reconciliation.py",
-      "tests/test_models.py",
-      "tests/test_verification.py",
-      "tests/test_r6_wire_protocol.py"
-    ],
-    "timeout_seconds": 600,
-    "components": {
-      "postgres": "real_disposable_database_17_migrations",
-      "model": "controlled_only_no_paid_calls",
-      "numeric": "observed_SQL_aggregate_min_event_and_exact_Decimal",
-      "policy": "public_capabilities_current_ACL_scope_revision_no_oracle_labels",
-      "contract": "strict_fields_boolean_strings_fail_closed_and_bounded_repair",
-      "go": "real_isolated_hidden_oracle_regression",
-      "wire": "exact_quote_catalog_body_only_patch_rendering_known_invalid_expert_fallback_unknown_stop"
-    }
+    "timeout_seconds": 300
   },
   "V31-R6-COORD": {
+    "components": {
+      "business_history": "original_ABC87_PASS3_FAIL_unmodified",
+      "live": "NOT_RUN_until_exact_new_manifest_authorization",
+      "model": "controlled_HTTP_ONLY_in_registered_tests",
+      "postgres": "real_17_original_migrations_and_separate_DEF_schema",
+      "recovery": "real_SIGKILL_known_response_reuse_epoch_fencing_unknown_no_resend",
+      "redis": "real_source_cache_trial_namespace_only",
+      "worker": "same_real_LangGraph_R2_and_production_Verifier"
+    },
     "tests": [
       "tests/test_coordination_eval.py",
       "tests/test_router_model.py",
@@ -330,18 +349,18 @@
       "tests/test_environment.py",
       "tests/test_verification.py"
     ],
-    "timeout_seconds": 300,
-    "components": {
-      "postgres": "real_17_original_migrations_and_separate_DEF_schema",
-      "redis": "real_source_cache_trial_namespace_only",
-      "worker": "same_real_LangGraph_R2_and_production_Verifier",
-      "model": "controlled_HTTP_ONLY_in_registered_tests",
-      "recovery": "real_SIGKILL_known_response_reuse_epoch_fencing_unknown_no_resend",
-      "live": "NOT_RUN_until_exact_new_manifest_authorization",
-      "business_history": "original_ABC87_PASS3_FAIL_unmodified"
-    }
+    "timeout_seconds": 300
   },
   "V31-R6-COORD-REPAIR": {
+    "components": {
+      "business_history": "original_ABC87_PASS3_FAIL_unmodified",
+      "live": "NOT_RUN_until_exact_new_manifest_authorization",
+      "model": "controlled_HTTP_ONLY_in_registered_tests",
+      "postgres": "real_17_original_migrations_and_separate_DEF_schema",
+      "recovery": "real_SIGKILL_known_response_reuse_epoch_fencing_unknown_no_resend",
+      "redis": "real_source_cache_trial_namespace_only",
+      "worker": "same_real_LangGraph_R2_and_production_Verifier"
+    },
     "tests": [
       "tests/test_coordination_candidates.py",
       "tests/test_coordination_eval.py",
@@ -351,48 +370,43 @@
       "tests/test_environment.py",
       "tests/test_verification.py"
     ],
-    "timeout_seconds": 300,
-    "components": {
-      "postgres": "real_17_original_migrations_and_separate_DEF_schema",
-      "redis": "real_source_cache_trial_namespace_only",
-      "worker": "same_real_LangGraph_R2_and_production_Verifier",
-      "model": "controlled_HTTP_ONLY_in_registered_tests",
-      "recovery": "real_SIGKILL_known_response_reuse_epoch_fencing_unknown_no_resend",
-      "live": "NOT_RUN_until_exact_new_manifest_authorization",
-      "business_history": "original_ABC87_PASS3_FAIL_unmodified"
-    }
+    "timeout_seconds": 300
   },
-  "V31-P0-IMPLEMENT": {
-    "tests": [
-      "tests/test_p0_commerce.py",
-      "tests/test_p0_live_adapter.py"
-    ],
-    "timeout_seconds": 900,
+  "V31-R6-REPAIR": {
     "components": {
-      "postgres": "real_disposable_database_18_migrations",
-      "redis": "real_local_coordination",
-      "sandbox": "real_pinned_Docker_Go_public_28_independent_cases_and_observed_Case_window",
-      "model": "controlled_HTTP_ONLY_in_registered_tests",
-      "publication": "controlled_persistent_stdio_MCP_three_writes_and_readonly_reconciliation",
-      "results": "append_only_case_spec_and_business_results_SQL_only_atomic_commit",
-      "live": "NOT_RUN_pending_exact_frozen_grants_and_complete_Action_review",
-      "historical_results": "unchanged",
-      "prior_full_regression": "404_PASS_at_b0b75e036fd0094fda4a61114ba9df554dfbd62ac052afecef56d73ad2834783",
-      "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery"
-    }
+      "contract": "strict_fields_boolean_strings_fail_closed_and_bounded_repair",
+      "go": "real_isolated_hidden_oracle_regression",
+      "model": "controlled_only_no_paid_calls",
+      "numeric": "observed_SQL_aggregate_min_event_and_exact_Decimal",
+      "policy": "public_capabilities_current_ACL_scope_revision_no_oracle_labels",
+      "postgres": "real_disposable_database_17_migrations",
+      "wire": "exact_quote_catalog_body_only_patch_rendering_known_invalid_expert_fallback_unknown_stop"
+    },
+    "tests": [
+      "tests/test_r6_repair_contract.py",
+      "tests/test_final_evaluation.py",
+      "tests/test_final_resume.py",
+      "tests/test_billing_reconciliation.py",
+      "tests/test_models.py",
+      "tests/test_verification.py",
+      "tests/test_r6_wire_protocol.py"
+    ],
+    "timeout_seconds": 600
   },
-  "V31-P0-REVIEW": {
-    "tests": [
-      "tests/test_p0_review.py",
-      "tests/test_environment.py"
-    ],
-    "timeout_seconds": 900,
+  "V31-R6-RESUME": {
     "components": {
-      "postgres": "real_disposable_database_19_migrations",
-      "sandbox": "real_pinned_Docker_Go_public_independent_and_observed_window",
-      "models": "none",
-      "publication": "controlled_stdio_MCP_exact_approved_payload",
-      "history": "original_business_results_and_actions_immutable"
-    }
+      "go": "real_isolated_reference_oracles",
+      "model": "controlled_HTTP_only_no_new_paid_calls",
+      "postgres": "real",
+      "recovery": "explicit_continuation_no_reruns_no_reset_sealed_results_unknown_stop"
+    },
+    "tests": [
+      "tests/test_final_resume.py",
+      "tests/test_final_evaluation.py",
+      "tests/test_models.py",
+      "tests/test_environment.py",
+      "tests/test_verification.py"
+    ],
+    "timeout_seconds": 300
   }
 }
