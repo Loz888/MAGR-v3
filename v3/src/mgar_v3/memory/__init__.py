@@ -18,6 +18,17 @@ from mgar_v3.memory.model import (
     SemanticDetail,
     WorkingDetail,
 )
+from mgar_v3.memory.retrieval import (
+    MemoryHit,
+    MemoryRetriever,
+    MemorySearchResult,
+    MemoryVersionStatus,
+    Reranker,
+    RetrievalMode,
+    recency_weight,
+    source_validity,
+    version_status,
+)
 from mgar_v3.memory.store import MemoryStore
 from mgar_v3.memory.write import (
     CANDIDATE_SCHEMA,
@@ -41,10 +52,19 @@ __all__ = [
     "CandidateValidation",
     "MemoryCandidate",
     "MemoryConfirmation",
+    "MemoryHit",
     "MemoryOutcome",
+    "MemoryRetriever",
+    "MemorySearchResult",
+    "MemoryVersionStatus",
     "MemoryWriter",
+    "Reranker",
+    "RetrievalMode",
     "candidate_from_finding",
     "execution_candidate",
+    "recency_weight",
+    "source_validity",
+    "version_status",
     "MEMORY_KINDS",
     "MEMORY_LIFECYCLES",
     "MEMORY_SCHEMA",

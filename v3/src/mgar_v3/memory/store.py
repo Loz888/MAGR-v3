@@ -167,7 +167,10 @@ class MemoryStore:
         scope: MemoryScope | None = None,
         commit: str | None = None,
         limit: int = 32,
+        include_stale: bool = False,
     ) -> list[MemoryRecord]:
+        """Permission-scoped records; stale entries are opt-in for retrieval."""
+
         actor = self._actor(actor)
         if not 1 <= limit <= 64:
             raise DomainError("MEMORY_BOUND_INVALID", "recall limit is out of range", 400)
@@ -175,7 +178,7 @@ class MemoryStore:
             "m.project_id=%s",
             "m.repository=%s",
             "m.actor=%s",
-            "m.status='active'",
+            "m.status IN ('active','stale')" if include_stale else "m.status='active'",
             "(m.memory_kind <> 'working' OR w.expires_at > now())",
         ]
         params: list[Any] = [self.settings.project_id, self._repository, actor]

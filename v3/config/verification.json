@@ -107,6 +107,24 @@
     ],
     "timeout_seconds": 300
   },
+  "M03": {
+    "components": {
+      "degradation": "lexical_bm25_when_embedding_is_absent_or_unavailable_with_reported_reason",
+      "embedding": "fixture_protocol_only_no_vector_model_required",
+      "evidence": "hits_return_source_uris_evidence_ids_confidence_and_verification_status",
+      "fusion": "bm25_plus_optional_dense_rrf_with_optional_reranker",
+      "model": "not_used",
+      "network": "not_used",
+      "postgres": "real_disposable_database_0021_migration",
+      "redis": "not_used",
+      "scope": "project_repository_actor_filtered_before_scoring",
+      "versioning": "commit_scope_marked_current_historical_stale_with_reverification_required"
+    },
+    "tests": [
+      "tests/test_v33_memory_retrieval.py"
+    ],
+    "timeout_seconds": 300
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
