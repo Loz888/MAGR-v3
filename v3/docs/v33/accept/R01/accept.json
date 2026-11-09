@@ -1,0 +1,200 @@
+{
+  "card": "R01",
+  "title": "Investigation-to-Repair Handoff",
+  "commit": "374a5bcae33a8a3f7662401e4d7b792c18742234",
+  "commit_note": "单次本地提交：repair/handoff.py（十项 Handoff 契约、授权/预算/版本/证据/复现证明/路径校验）、tests/test_v34_repair_handoff.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "edf751f08715432c5d32f8a4208600d8c8e7a2f5",
+  "accepted_at": "2026-11-09T09:50:56Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (new module only)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "model": "NOT_USED",
+    "network": "NOT_USED",
+    "docker": "NOT_USED",
+    "postgres": "NOT_USED",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as 374a5bc. Evidence is gitignored; this accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "engineering-verify",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/verify.py",
+        "--task",
+        "R01"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 12.689,
+      "purpose": "R01 统一验收：已验证缺陷创建受控 Repair Run；无权限、未验证目标、版本不匹配全部拒绝",
+      "counts": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "d4342b6f9cfddf184a16b0c257c7856457dbf18c37ba73ac74f9ec34d0b95609",
+      "finished_source_sha256": "d4342b6f9cfddf184a16b0c257c7856457dbf18c37ba73ac74f9ec34d0b95609",
+      "git_commit": "374a5bcae33a8a3f7662401e4d7b792c18742234",
+      "attempt": "evidence/R01/20261109T095005Z-9d59ac8f",
+      "log": "evidence/R01/20261109T095005Z-9d59ac8f/command.log",
+      "junit": "evidence/R01/20261109T095005Z-9d59ac8f/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/repair/handoff.py",
+        "tests/test_v34_repair_handoff.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/mypy",
+        "src/mgar_v3/repair/handoff.py"
+      ],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）零告警；mypy strict 覆盖新增 handoff.py",
+      "log": "evidence/R01/20261109T095002Z-R01/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "regression",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_v33_defect_verifier.py",
+        "tests/test_v33_findings.py",
+        "-q"
+      ],
+      "counts": {
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "purpose": "A04 复现回执与 A03 Finding 生命周期回归；确认 Handoff 消费的证据与状态未被改变",
+      "log": "evidence/R01/20261109T095002Z-R01/08-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean（实现已提交为 374a5bc）",
+      "log": "evidence/R01/20261109T095002Z-R01/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 verify / 测试未修改源工作区",
+      "log": "evidence/R01/20261109T095002Z-R01/07-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "R01 是本地 Handoff 契约卡：不访问网络、不写远端、不调用真实模型、不发布 PR。verify 记录中的 live_gate=NOT_RUN 与本节一致；真实 GitHub 修复运行属于 R05。",
+  "must_pass": [
+    {
+      "item": "Handoff 包含 Repository / Base Commit / Finding ID / Relevant Evidence / Reproduction Proof / Repair Objective / Allowed Paths / Execution Budget / Authorization / Parent Run",
+      "result": "PASS",
+      "evidence": "RepairHandoff 定义全部十项字段并附加 handoff_id、graph_version、finding_lifecycle；test_reproduced_finding_creates_controlled_repair_run 逐项断言字段存在且取值一致。"
+    },
+    {
+      "item": "已验证缺陷可以创建 Repair Run",
+      "result": "PASS",
+      "evidence": "真实 pytest 复现 src/calc.py 后，A04 回执把 Finding 推进到 reproduced；HandoffBuilder 从 test_run 证据构造 receipt:// 复现证明并成功创建 handoff。"
+    },
+    {
+      "item": "复现证明必须是验证器回执，静态确认不得伪装成已复现",
+      "result": "PASS",
+      "evidence": "test_static_confirmation_never_claims_reproduction 断言 confirmed_static 目标生成 kind=static_confirmation，receipt_id 与 reproduce_command 均为 None；ReproductionProof 的校验器禁止静态确认携带执行回执。"
+    },
+    {
+      "item": "无权限时拒绝",
+      "result": "PASS",
+      "evidence": "test_repair_requires_explicit_verified_authorization 覆盖 allow_repair=false、授权过期、审批人不在 allowed_actors、仓库越界、预算超过授权上限，分别返回 HANDOFF_AUTHORIZATION_DENIED / HANDOFF_BUDGET_EXCEEDED。"
+    },
+    {
+      "item": "未验证目标时拒绝",
+      "result": "PASS",
+      "evidence": "test_unverified_and_already_repaired_targets_are_rejected 覆盖 suspected、investigating、not_reproduced 与 fix_proposed：前三种返回 HANDOFF_TARGET_UNVERIFIED，已进入修复流程返回 HANDOFF_TARGET_ALREADY_REPAIRED。"
+    },
+    {
+      "item": "版本不匹配时拒绝",
+      "result": "PASS",
+      "evidence": "test_version_and_repository_mismatch_are_rejected 使用不同 Commit 返回 HANDOFF_VERSION_MISMATCH，不同仓库返回 HANDOFF_REPOSITORY_MISMATCH。"
+    },
+    {
+      "item": "父运行与证据必须完整",
+      "result": "PASS",
+      "evidence": "test_parent_run_and_evidence_must_be_complete 断言 running 父运行、缺失 report_hash、空证据与悬空证据引用分别返回 HANDOFF_PARENT_NOT_SETTLED / HANDOFF_EVIDENCE_MISSING。"
+    },
+    {
+      "item": "Allowed Paths 不能越界或遗漏缺陷位置",
+      "result": "PASS",
+      "evidence": "test_allowed_paths_cannot_escape_or_hide_the_defect 拒绝 ../etc/passwd、.git/config、/etc/passwd 与仅给 src 的缩围，合法扩围到 src/util.py 成功；绝对路径不会被归一化成相对路径后放行。"
+    },
+    {
+      "item": "不得把旧 R5 的 orders.go、固定测试和业务字段硬编码搬到通用流程",
+      "result": "PASS",
+      "evidence": "实现不读取任何仓库内容；Python 与 Go 夹具使用同一契约；test_reproduced_finding_creates_controlled_repair_run 与 test_go_repository_uses_the_same_generic_handoff 断言序列化结果不含 orders.go、TestPaidRevenueCents、PaidRevenueCents。"
+    },
+    {
+      "item": "Handoff 身份可复现",
+      "result": "PASS",
+      "evidence": "handoff_id 为规范化内容的 SHA-256；同一授权与同一输入重复构建得到相同 ID，目标变化产生不同 ID。"
+    },
+    {
+      "item": "A03/A04 行为不回归",
+      "result": "PASS",
+      "evidence": "A04 复现验证与 A03 Finding 测试共 24 项通过，0 failed，0 skipped。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "Handoff 不落库",
+      "handling": "R01 只交付不可变值对象与校验链；持久化、Worktree 与 Patch 执行由 R02 起消费 handoff_id，避免在 R01 提前引入表结构。"
+    },
+    {
+      "issue": "父分析必须 succeeded 才可交接",
+      "handling": "running/waiting_input/缺失报告一律拒绝，避免从未完成的调查生成修复目标；AnalysisSpec 投影在缺报告时直接抛 HANDOFF_PARENT_NOT_SETTLED。"
+    },
+    {
+      "issue": "静态确认没有执行回执",
+      "handling": "以 kind=static_confirmation 显式区分，只允许 scanner/static_analysis/investigation/manual 证据，不伪造 reproduce_command。"
+    },
+    {
+      "issue": "Allowed Paths 只能扩围不能缩围",
+      "handling": "必须覆盖全部 Finding source_locations；额外路径逐条通过绝对路径、遍历、.git、控制字符与仓库路径校验。"
+    },
+    {
+      "issue": "verify 注册只包含 R01 测试文件",
+      "handling": "验收命令与任务书一致；A03/A04 回归以独立命令执行并记录在 08-regression.log，24 passed / 0 skipped。"
+    },
+    {
+      "issue": "全仓 Ruff / mypy 存在与本卡无关的历史告警",
+      "handling": "按 A02–M05 惯例：Ruff 覆盖新增/修改文件，mypy strict 只覆盖新增 handoff.py。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/repair/handoff.py",
+    "tests/test_v34_repair_handoff.py",
+    "docs/v33/R01-repair-handoff.md",
+    "config/verification.json（R01 条目）",
+    "docs/v33/accept/R01/accept.json"
+  ],
+  "next_card": "R02"
+}
