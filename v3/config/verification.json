@@ -59,6 +59,22 @@
     ],
     "timeout_seconds": 180
   },
+  "A04": {
+    "components": {
+      "baseline": "real_pytest_baseline_bound_to_commit_and_environment",
+      "findings": "lifecycle_advanced_only_by_verifier_minted_receipts",
+      "model": "not_used",
+      "network": "not_used",
+      "postgres": "not_used",
+      "redis": "not_used",
+      "sandbox": "local_process_rlimits_with_command_policy",
+      "tools": "real_pytest_and_real_python_subprocesses"
+    },
+    "tests": [
+      "tests/test_v33_defect_verifier.py"
+    ],
+    "timeout_seconds": 300
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
