@@ -161,6 +161,23 @@
     ],
     "timeout_seconds": 600
   },
+  "R01": {
+    "components": {
+      "authorization": "explicit_time_bound_actor_and_repository_scoped_repair_authority",
+      "budget": "repair_budget_bounded_by_authorization_limits",
+      "evidence": "finding_evidence_registry_resolved_and_retained",
+      "handoff": "ten_field_content_addressed_contract_repository_commit_finding_evidence_reproduction_objective_paths_budget_authorization_parent_run",
+      "model": "not_used",
+      "network": "not_used",
+      "postgres": "not_used",
+      "reproduction": "verifier_minted_execution_receipt_or_static_confirmation_never_conflated",
+      "target": "only_reproduced_or_statically_confirmed_findings_at_the_parent_commit"
+    },
+    "tests": [
+      "tests/test_v34_repair_handoff.py"
+    ],
+    "timeout_seconds": 300
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
