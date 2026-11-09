@@ -44,6 +44,21 @@
     ],
     "timeout_seconds": 600
   },
+  "A03": {
+    "components": {
+      "dedupe": "path_rule_and_root_cause_with_evidence_registry",
+      "findings": "deterministic_contract_and_enforced_lifecycle_gates",
+      "model": "not_used",
+      "network": "not_used",
+      "postgres": "not_used",
+      "redis": "not_used",
+      "scanners": "consumed_synthetic_scan_reports_without_tool_execution"
+    },
+    "tests": [
+      "tests/test_v33_findings.py"
+    ],
+    "timeout_seconds": 180
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
