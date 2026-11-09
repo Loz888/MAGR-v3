@@ -1,0 +1,188 @@
+{
+  "card": "M03",
+  "title": "Hybrid Memory Retrieval",
+  "commit": "597ad08b8f2561abec23843127ecd3613ddff75e",
+  "commit_note": "单次本地提交：memory/retrieval.py（权限前置的候选加载、BM25/Dense/RRF/可选 Rerank、版本状态）、MemoryStore.recall(include_stale)、__init__ 导出、tests/test_v33_memory_retrieval.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "2a62980abf9f01025d4a36afd5e7d2482cbf34f7",
+  "accepted_at": "2026-11-09T09:03:42Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "git": "2.43.0",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (src only)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "model": "NOT_USED",
+    "network": "NOT_USED",
+    "docker": "NOT_USED",
+    "postgres": "USED (real PostgreSQL; disposable per-session test database created by tests/conftest.py, 0021 migration applied)",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as 597ad08. This accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "engineering-verify",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/verify.py",
+        "--task",
+        "M03"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 19.303,
+      "purpose": "M03 统一验收：权限隔离、相关命中、版本状态、词法降级、RRF/Rerank、Evidence 与可信度返回",
+      "counts": {
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "9aa569ac53cb4dba6691a3410bdccbe1706b033051cc049fdfc27f64dc83d1f7",
+      "finished_source_sha256": "9aa569ac53cb4dba6691a3410bdccbe1706b033051cc049fdfc27f64dc83d1f7",
+      "git_commit": "597ad08b8f2561abec23843127ecd3613ddff75e",
+      "attempt": "evidence/M03/20261109T090346Z-15edee95",
+      "log": "evidence/M03/20261109T090346Z-15edee95/command.log",
+      "junit": "evidence/M03/20261109T090346Z-15edee95/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/memory",
+        "tests/test_v33_memory_retrieval.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/mypy",
+        "src/mgar_v3/memory"
+      ],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）与 mypy strict(src) 零告警",
+      "log": "evidence/M03/20261109T090342Z-M03/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean（实现已提交为 597ad08）",
+      "log": "evidence/M03/20261109T090342Z-M03/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 verify / 测试未修改源工作区",
+      "log": "evidence/M03/20261109T090342Z-M03/07-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "M03 是本地记忆检索卡：不调用模型、不访问网络、不写远端。Dense 检索使用 Embedder 协议的 fixture 实现，真实向量模型门属于后续 RAG 评测任务；因此 live 门不适用，verify 记录中的 live_gate=NOT_RUN 与本节一致。",
+  "must_pass": [
+    {
+      "item": "相关记忆能被命中",
+      "result": "PASS",
+      "evidence": "test_relevant_memory_returns_evidence_confidence_and_version 用 query='duplicate count' 命中 subject='duplicate-count:src/app.py' 的记录；test_lexical_fallback_and_hybrid_with_dense_scores 在无向量/向量失败/向量可用三种模式下均命中同一记录。"
+    },
+    {
+      "item": "无关项目和撤权记忆不泄露",
+      "result": "PASS",
+      "evidence": "test_unrelated_project_and_denied_actor_never_leak 在 other-demo/example/other 作用域写入同文本记录，主作用域检索为空；actor='outsider' 直接 MEMORY_ACTOR_DENIED。test_revoked_memory_is_hidden_but_readable_as_inactive 中 revoke 后检索为空，include_inactive 才可读。"
+    },
+    {
+      "item": "旧 Commit 记忆不会被标记为当前版本事实",
+      "result": "PASS",
+      "evidence": "test_historical_commit_memory_is_not_current_and_ranks_below_current：commit=B 检索得到 current(B) + historical(A)，historical 的 requires_reverification=true 且排在 current 之后；未给 commit 时两条均为 historical。test_stale_memory_is_returned_only_with_reverification 中 stale 记录返回 version_status='stale'、requires_reverification=true，绝不标记为 current。"
+    },
+    {
+      "item": "权限过滤先于结果返回",
+      "result": "PASS",
+      "evidence": "MemoryRetriever._load 调用 MemoryStore.recall，project_id/repository/actor 三个条件先于任何打分进入 SQL；revoked/superseded 在候选加载阶段排除；_source_uris 只对已授权候选查询 app.evidence。"
+    },
+    {
+      "item": "同仓库、同 Commit 优先",
+      "result": "PASS",
+      "evidence": "version_affinity：current=1.0、repository=0.92、project=0.9、historical=0.8、stale=0.7，并在同分时按版本优先级排序；test_historical_commit_memory_is_not_current_and_ranks_below_current 验证 current 排在 historical 之前。"
+    },
+    {
+      "item": "历史 Commit 记忆明确携带版本状态",
+      "result": "PASS",
+      "evidence": "MemoryHit 必含 version_status 与 requires_reverification；version_status() 对 stale/commit-current/commit-historical/repository/project 五类显式映射。"
+    },
+    {
+      "item": "使用 BM25 / Dense / RRF，可选 Rerank",
+      "result": "PASS",
+      "evidence": "retrieval.py 复用 rag.rank.bm25、rag.embedding.Embedder、rag.rank.rrf；test_lexical_fallback_and_hybrid_with_dense_scores 验证 hybrid 模式与 dense_score；test_rerank_reorders_fused_candidates 验证 Reranker 重排为 lexical_reranked。"
+    },
+    {
+      "item": "使用来源有效性、相关性与时间信息排序",
+      "result": "PASS",
+      "evidence": "score = relevance × (0.5+0.5×confidence) × source_validity × recency × version_affinity；test_source_validity_breaks_relevance_ties 在词法分数相同情况下 verified 排在 unverified 之前，并验证 recency_weight 随时间单调下降。"
+    },
+    {
+      "item": "不允许过期记忆直接替代重新读取当前代码",
+      "result": "PASS",
+      "evidence": "stale 记录虽可召回，但 version_status='stale' 且 requires_reverification=true；test_stale_memory_is_returned_only_with_reverification 断言其永远不为 current。"
+    },
+    {
+      "item": "支持无向量模型时的词法降级",
+      "result": "PASS",
+      "evidence": "未注入 Embedder 时 retrieval_mode='lexical_fallback'；注入的 Embedder 抛 DomainError(RAG_MODEL_NOT_INSTALLED) 时降级并在 degraded_reason 返回错误码（test_lexical_fallback_and_hybrid_with_dense_scores）。"
+    },
+    {
+      "item": "检索结果必须返回来源 Evidence 和可信度",
+      "result": "PASS",
+      "evidence": "MemoryHit 返回 evidence_ids、source_uris、verification_status、confidence 与分数构成；test_relevant_memory_returns_evidence_confidence_and_version 断言 evidence_ids、source_uris=['repo://src/app.py']、confidence≈0.8。"
+    },
+    {
+      "item": "四个建议工具可用",
+      "result": "PASS",
+      "evidence": "MemoryRetriever.search_memory / read_memory / get_prior_findings / get_repository_knowledge 均实现；test_prior_findings_match_evidence_path_and_symbol 与 test_repository_knowledge_reports_scope_status 覆盖后两者。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "M03 任务书未要求新的数据库结构",
+      "handling": "复用 M01 的 0021 迁移与 knowledge.memory_* 表；仅给 MemoryStore.recall 增加 include_stale 参数（默认 False，保持 M01 行为）。"
+    },
+    {
+      "issue": "没有持久向量索引",
+      "handling": "候选集上限 64 条，Dense 在查询时即时计算；ANN/持久索引不在本卡范围，真实向量模型评测属于后续 RAG 任务。"
+    },
+    {
+      "issue": "M01 只有 summary_hash，没有摘要文本列，Artifact 在测试中不含原始摘要字节",
+      "handling": "检索文本由 memory_kind、subject_key、类型载荷字段与 Evidence source_uri 拼接，不读取 Artifact 字节；未新增列。"
+    },
+    {
+      "issue": "get_repository_knowledge 不使用文本查询",
+      "handling": "该工具返回仓库/项目级知识与指定 Commit 的经验，retrieval_mode='structured'，按版本亲和度、可信度与时间排序；文本检索仍由 search_memory 承担。"
+    },
+    {
+      "issue": "全仓 Ruff / mypy 存在与本卡无关的历史告警",
+      "handling": "按 A02–M02 惯例只对本卡新增/修改文件执行 Ruff 与 mypy，二者零告警；未改动既有无关文件。"
+    },
+    {
+      "issue": "首次运行测试时 mandates.scope 需要 JSONB 适配",
+      "handling": "测试 fixture 改用 psycopg.types.json.Jsonb({})；该修正发生在首次执行前，没有失败运行需要保留。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/memory/retrieval.py",
+    "src/mgar_v3/memory/store.py（include_stale）",
+    "src/mgar_v3/memory/__init__.py",
+    "tests/test_v33_memory_retrieval.py",
+    "docs/v33/M03-memory-retrieval.md",
+    "config/verification.json（M03 条目）",
+    "docs/v33/accept/M03/accept.json"
+  ],
+  "next_card": "M04"
+}
