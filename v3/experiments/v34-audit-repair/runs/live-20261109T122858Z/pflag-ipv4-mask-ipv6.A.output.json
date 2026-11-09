@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\":[{\"file\":\"ipmask.go\",\"symbol\":\"pflag.ParseIPv4Mask\",\"category\":\"ipv4_mask_validation\",\"call_chain\":[\"pflag.(*FlagSet).GetIPv4Mask\",\"pflag.parseIPv4Mask\",\"pflag.ParseIPv4Mask\"],\"start_line\":34,\"end_line\":56,\"quote\":\"\\tmask := net.ParseIP(s)\\n\\tif mask == nil {\\n\\t\\tif len(s) != 8 {\\n\\t\\t\\treturn nil\\n\\t\\t}\\n\\t\\t// net.IPMask.String() actually outputs things like ffffff00\\n\\t\\t// so write a horrible parser for that as well  :-(\\n\\t\\tm := []int{}\\n\\t\\tfor i := 0; i < 4; i++ {\\n\\t\\t\\tb := \\\"0x\\\" + s[2*i:2*i+2]\\n\\t\\t\\td, err := strconv.ParseInt(b, 0, 0)\\n\\t\\t\\tif err != nil {\\n\\t\\t\\t\\treturn nil\\n\\t\\t\\t}\\n\\t\\t\\tm = append(m, int(d))\\n\\t\\t}\\n\\t\\ts := fmt.Sprintf(\\\"%d.%d.%d.%d\\\", m[0], m[1], m[2], m[3])\\n\\t\\tmask = net.ParseIP(s)\\n\\t\\tif mask == nil {\\n\\t\\t\\treturn nil\\n\\t\\t}\\n\\t}\\n\\treturn net.IPv4Mask(mask[12], mask[13], mask[14], mask[15])\"}],\"coverage\":{\"scanned_files\":[\"ipmask.go\"],\"scannable_files\":[\"ipmask.go\"]}}",
+  "usage": {
+    "prompt_tokens": 1777,
+    "completion_tokens": 7521,
+    "total_tokens": 9298,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 7157
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 1777
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 45510.759,
+  "cost_micros": 9558
+}

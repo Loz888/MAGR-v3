@@ -1,0 +1,16 @@
+[
+  {
+    "memory_id": "mem-001",
+    "task_id": "click-short-help-abbreviation",
+    "repo_id": "click",
+    "language": "python",
+    "findings": [
+      {
+        "file": "src/click/utils.py",
+        "symbol": "click.utils._make_default_short_help",
+        "category": "sentence_boundary_abbreviation",
+        "quote": "        if word[-1] == \".\":  # sentence end, truncate without \"...\"\n            return \" \".join(words[: i + 1])"
+      }
+    ]
+  }
+]

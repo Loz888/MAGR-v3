@@ -1,0 +1,19 @@
+{
+  "content": "{\"reproduction\": \"PYTHONPATH=src python - <<'PY'\\nimport copy\\nimport pickle\\nfrom click._utils import FLAG_NEEDS_VALUE, UNSET\\n\\nfor value in (UNSET, FLAG_NEEDS_VALUE):\\n    assert copy.copy(value) is value\\n    assert copy.deepcopy(value) is value\\n    assert pickle.loads(pickle.dumps(value)) is value\\nPY\", \"patch\": \"--- a/src/click/_utils.py\\n+++ b/src/click/_utils.py\\n@@ -16,7 +16,18 @@ class Sentinel(enum.Enum):\\n     FLAG_NEEDS_VALUE = object()\\n \\n     def __repr__(self) -> str:\\n         return f\\\"{self.__class__.__name__}.{self.name}\\\"\\n+\\n+    def __copy__(self) -> Sentinel:\\n+        return self\\n+\\n+    def __deepcopy__(self, memo: dict[int, t.Any]) -> Sentinel:\\n+        return self\\n+\\n+    def __reduce_ex__(\\n+        self, protocol: int\\n+    ) -> tuple[t.Any, tuple[type[Sentinel], str]]:\\n+        return getattr, (self.__class__, self.name)\\n \\n \\n UNSET: t.Literal[Sentinel.UNSET] = Sentinel.UNSET\", \"files_touched\": [\"src/click/_utils.py\"], \"notes\": \"Added identity-preserving __copy__, __deepcopy__, and name-based __reduce_ex__ to Sentinel so shallow/deep copies and pickle round-trips return the singleton members. Local checks: reproduction command and `python -m compileall src/click/_utils.py`.\"}",
+  "usage": {
+    "prompt_tokens": 8861,
+    "completion_tokens": 11777,
+    "total_tokens": 20638,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 11401
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 8861
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 70610.823,
+  "cost_micros": 16790
+}

@@ -4,6 +4,7 @@ These tests assert the offline dataset, grading math and honesty gates. They do
 not call a model and they never turn a NOT_RUN arm into a capability score.
 """
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -143,19 +144,44 @@ def test_committed_selftest_matches_recomputation():
 # ---------------------------------------------------------------- record honesty
 
 
-def test_all_live_arms_are_not_run():
+def test_live_arms_are_honest():
     records = load_records()
     assert len(records) == 54
     assert {record["arm"] for record in records} == {"A", "B", "C"}
-    assert {record["status"] for record in records} == {"NOT_RUN"}
-    assert not any(record["status"] in {"PASS", "FAIL"} for record in records)
+    executed = [record for record in records if record["status"] in {"PASS", "FAIL"}]
+    assert executed, "no arm was executed against the provider"
     for record in records:
         assert record["mode"] == "real_model_live"
-        assert record["model_calls"] == 0
-        assert record["usage_source"] == "not_applicable"
-        assert record["not_run_reason"]
-        assert record["failure_kind"] is None
-        assert record["latency_ms"] is None
+        if record["status"] == "NOT_RUN":
+            assert record["model_calls"] == 0
+            assert record["usage_source"] == "not_applicable"
+            assert record["not_run_reason"]
+            assert record["failure_kind"] is None
+            assert record["latency_ms"] is None
+            continue
+        if record["failure_kind"] == "infrastructure":
+            assert record["usage_source"] == "not_applicable"
+            assert record["model_calls"] == 0
+            assert record["latency_ms"] is None
+            continue
+        assert record["failure_kind"] in {None, "business"}
+        assert record["model_calls"] == 1
+        assert record["usage_source"] == "actual_provider_usage"
+        assert record["latency_ms"] and record["latency_ms"] > 0
+        assert record["prompt_tokens"] > 0
+        assert record["completion_tokens"] > 0
+        assert record["cost_micros"] > 0
+        assert record["input_sha256"] and record["output_sha256"]
+        assert record["input_ref"] and record["output_ref"]
+        input_path = EXPERIMENT / record["input_ref"]
+        output_path = EXPERIMENT / record["output_ref"]
+        assert input_path.is_file(), record["input_ref"]
+        assert output_path.is_file(), record["output_ref"]
+        assert hashlib.sha256(input_path.read_bytes()).hexdigest() == record["input_sha256"]
+        content = json.loads(output_path.read_text(encoding="utf-8"))["content"]
+        assert hashlib.sha256(content.encode()).hexdigest() == record["output_sha256"]
+    assert sum(record["model_calls"] for record in records) == len(executed)
+    assert sum(record["cost_micros"] for record in records) <= 2000000
 
 
 def test_abc_pairing_is_complete():
@@ -180,7 +206,8 @@ def test_manifest_and_case_files_agree():
     assert {record["config_hash"] for record in records} == {manifest["config"]["hash"]}
     assert manifest["authorization"] == {
         "external_writes": False,
-        "paid_models": False,
+        "paid_models": True,
+        "budget_usd": 2.0,
         "production_actions": False,
     }
     digest = canonical_digest(
@@ -216,7 +243,8 @@ def test_config_declares_required_metrics():
         "retrieval_cost",
     }
     assert required <= set(config["metrics"])
-    assert config["authorization"]["live_arms_allowed"] is False
+    assert config["authorization"]["live_arms_allowed"] is True
+    assert config["experiment_budget"]["limit_micros"] == 2000000
     assert set(config["arms"]) == {"A", "B", "C"}
     assert config["arms"]["A"]["memory"] == "disabled"
     assert config["arms"]["C"]["compression"] == "enabled"

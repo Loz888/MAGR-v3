@@ -1,0 +1,35 @@
+{
+  "task_id": "click-negative-no-subprocess",
+  "arm": "A",
+  "answer": {
+    "findings": [],
+    "coverage": {
+      "scanned_files": [
+        "src/click/core.py"
+      ],
+      "scannable_files": [
+        "src/click/core.py"
+      ]
+    }
+  },
+  "grading": {
+    "task_id": "click-negative-no-subprocess",
+    "kind": "negative",
+    "findings": 0,
+    "gold_findings": 0,
+    "precision_at_k": 1.0,
+    "recall_at_budget": 1.0,
+    "unverified_false_positives": 0,
+    "false_positives": 0,
+    "source_citation_validity": 1.0,
+    "call_chain_correctness": 1.0,
+    "scanned_files": 1,
+    "scannable_files": 1,
+    "scan_coverage": 1.0,
+    "within_budget": true,
+    "passed": true
+  },
+  "memory_read": [],
+  "memory_written": [],
+  "parse_error": null
+}

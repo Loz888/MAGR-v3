@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\":[{\"file\":\"src/requests/utils.py\",\"symbol\":\"requests.utils._parse_content_type_header\",\"category\":\"malformed_parameter_value\",\"call_chain\":[\"requests.utils.get_encoding_from_headers\",\"requests.utils._parse_content_type_header\"],\"start_line\":520,\"end_line\":525,\"quote\":\"            key, value = param, True\\n            index_of_equals = param.find(\\\"=\\\")\\n            if index_of_equals != -1:\\n                key = param[:index_of_equals].strip(items_to_strip)\\n                value = param[index_of_equals + 1 :].strip(items_to_strip)\\n            params_dict[key.lower()] = value\"}],\"coverage\":{\"scanned_files\":[\"src/requests/utils.py\"],\"scannable_files\":[\"src/requests/utils.py\"]}}",
+  "usage": {
+    "prompt_tokens": 8854,
+    "completion_tokens": 7978,
+    "total_tokens": 16832,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 7802
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 8854
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 31731.525,
+  "cost_micros": 12229
+}

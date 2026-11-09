@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\": [{\"file\": \"src/requests/models.py\", \"symbol\": \"requests.models.RequestEncodingMixin._encode_files\", \"category\": \"file_wrapper_detection\", \"call_chain\": [\"requests.models.PreparedRequest.prepare_body\", \"requests.models.RequestEncodingMixin._encode_files\"], \"start_line\": 237, \"end_line\": 242, \"quote\": \"            if isinstance(fp, (str, bytes, bytearray)):\\n                fdata = fp\\n            elif isinstance(fp, _SupportsRead):  # defensive check for untyped callers\\n                fdata = fp.read()\\n            elif fp is None:  # defensive check for untyped callers\\n                continue\"}], \"coverage\": {\"scanned_files\": [\"src/requests/models.py\", \"src/requests/utils.py\"], \"scannable_files\": [\"src/requests/models.py\", \"src/requests/utils.py\"]}}",
+  "usage": {
+    "prompt_tokens": 19528,
+    "completion_tokens": 6350,
+    "total_tokens": 25878,
+    "prompt_tokens_details": {
+      "cached_tokens": 19328
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 6149
+    },
+    "prompt_cache_hit_tokens": 19328,
+    "prompt_cache_miss_tokens": 200
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 29938.362,
+  "cost_micros": 13478
+}

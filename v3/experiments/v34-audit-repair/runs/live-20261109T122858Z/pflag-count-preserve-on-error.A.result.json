@@ -1,0 +1,48 @@
+{
+  "task_id": "pflag-count-preserve-on-error",
+  "arm": "A",
+  "answer": {
+    "findings": [
+      {
+        "file": "count.go",
+        "symbol": "pflag.countValue.Set",
+        "category": "state_mutation_on_error",
+        "call_chain": [
+          "pflag.FlagSet.Set",
+          "pflag.countValue.Set"
+        ],
+        "start_line": 19,
+        "end_line": 21,
+        "quote": "\tv, err := strconv.ParseInt(s, 0, 0)\n\t*i = countValue(v)\n\treturn err"
+      }
+    ],
+    "coverage": {
+      "scanned_files": [
+        "count.go"
+      ],
+      "scannable_files": [
+        "count.go"
+      ]
+    }
+  },
+  "grading": {
+    "task_id": "pflag-count-preserve-on-error",
+    "kind": "review",
+    "findings": 1,
+    "gold_findings": 1,
+    "precision_at_k": 1.0,
+    "recall_at_budget": 1.0,
+    "unverified_false_positives": 0,
+    "false_positives": 0,
+    "source_citation_validity": 1.0,
+    "call_chain_correctness": 1.0,
+    "scanned_files": 1,
+    "scannable_files": 1,
+    "scan_coverage": 1.0,
+    "within_budget": true,
+    "passed": true
+  },
+  "memory_read": [],
+  "memory_written": [],
+  "parse_error": null
+}

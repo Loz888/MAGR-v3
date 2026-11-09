@@ -1,7 +1,8 @@
 # E01 — Real Repository Evaluation
 
 - 状态: 工程门 PASS（`tests/test_v34_evaluation.py` 18 tests；离线 Harness 自检 15/15）
-- Live 门: **NOT_RUN**（未授权付费模型调用与 GitHub 写入，A/B/C 全部未执行）
+- Live 门: **已执行**（`deepseek-flash`，54/54 次真实调用，0 NOT_RUN；A 9/18、B 10/18、C 10/18；
+  正式 run 保守计费 USD 0.785467，全部 paid run 累计 USD 0.928086，低于授权上限 USD 2）
 - 依赖: QEV-02（记录/Manifest/Validate/Summarize）、U01（工作台）、R05（发布契约）
 - 代码: `v3/src/mgar_v3/quality_eval/v34.py`、`v3/scripts/quality_eval.py`
 - 实验: `v3/experiments/v34-audit-repair/`
@@ -23,10 +24,11 @@ E01 要证明新增的审计、修复与记忆能力在**独立、可复现的�
 
 明确不做：
 
-- 不调用任何真实模型，不产生 token、成本或延迟数字；
 - 不向 GitHub 写入、不创建真实 Draft PR；
 - 不把离线 Harness 自检当作模型能力成绩，也不计入 A/B/C 成功率；
-- 不在未授权时把任何 live 用例填成 PASS。
+- 不在未执行时把任何 live 用例填成 PASS；
+- 真实模型调用只在本轮用户授权（`deepseek-flash`，总预算 USD 2）内执行，
+  每次调用记录 prompt/completion tokens、延迟与保守费用。
 
 ## 2. 数据集
 
@@ -93,9 +95,14 @@ Review 判定口径：
 | `recall_at_budget` | 前 K 条命中的 gold 数 / gold 总数 |
 | `unverified_false_positives` | 非 gold 且 quote 无效的 finding 数 |
 | `source_citation_validity` | 有效 quote 数 / findings 数 |
-| `call_chain_correctness` | 命中 gold 且调用链完全一致的 finding 数 / findings 数 |
+| `call_chain_correctness` | 命中 gold 且答案调用链以 gold symbol 结束（≥2 个完全限定符号）的 finding 数 / 命中 finding 数 |
 | `scan_coverage` | 声明已扫描的 scope 文件数 / scope 可扫描文件数 |
-| `passed` | recall=1、误报=0、citation=1、call chain=1、coverage=1、findings≤budget |
+| `passed` | recall=1、precision=1、误报=0、citation=1、chain=1、coverage=1、findings≤budget |
+
+`call_chain_correctness` 只要求调用链把缺陷符号放在最内层（最后一项），不要求复现固定的中间帧：
+真实上游修复前后的调用路径与外部库帧无法仅凭快照唯一重建，逐字符相等会把“记住合成答案”
+误当成“分析正确”。该指标仍作为 `passed` 的必要条件之一，只是判定取值按“最后一项等于
+gold symbol 且链长 ≥2”计算。
 
 Repair 判定为二元门：`bug_reproduction_success`、`patch_validation_success`、
 `independent_test_pass`、`draft_pr_correctness` 全部为真且
@@ -122,13 +129,100 @@ Negative 判定：返回空列表即 PASS；任何 finding 必须有可验证 qu
 `pairing_key = (case_id, repeat_index)`。18 个任务 × 3 臂 = 54 条记录，
 `pair_coverage` 要求三臂完整且无散落记录。
 
-`cases.jsonl` 中 54 条记录全部为：
+### 4.1 正式 run
 
-- `mode=real_model_live`、`status=NOT_RUN`、`failure_kind=null`、`latency_ms=null`；
-- `model_calls=0`、`usage_source=not_applicable`、`cost_micros=0`；
-- `not_run_reason` 明确写明缺少 `paid_model_calls` 与 `github_draft_pr_writes` 授权。
+- run_id：`live-20261109T122858Z`（产物在 `experiments/v34-audit-repair/runs/` 下）；
+- 模型：`deepseek-flash`，`temperature=0`、`response_format=json_object`、
+  `max_tokens=16384`；
+- 预算：调用前按 worst-case 预留（`chars//3+512` 输入 + 16384 输出），调用后按 provider
+  usage 结算；超过 2,000,000 micros 抛 `BudgetExhausted` 并停止，不做超预算调用；
+- 正式 run：54 次调用、0 重试、0 transport error、0 NOT_RUN；
+- Tokens：输入 782,847，输出 458,886；
+- 保守计费：785,467 micros（USD 0.785467），未使用 provider 缓存折扣。
 
-`test_all_live_arms_are_not_run` 断言不存在任何 PASS/FAIL，防止把未执行包装成通过。
+| 臂 | PASS | FAIL | NOT_RUN | 成功率 |
+| --- | ---: | ---: | ---: | --- |
+| A | 9 | 9 | 0 | 9/18 = 0.5000 |
+| B | 10 | 8 | 0 | 10/18 = 0.5556 |
+| C | 10 | 8 | 0 | 10/18 = 0.5556 |
+
+| 臂 | prompt tokens | completion tokens | cost micros | 延迟 P50 / P95 (ms) |
+| --- | ---: | ---: | ---: | --- |
+| A | 260,197 | 153,589 | 262,348 | 39,441 / 94,778 |
+| B | 261,868 | 159,092 | 269,453 | 48,924 / 92,764 |
+| C | 260,782 | 146,205 | 253,666 | 36,315 / 98,589 |
+
+| 臂 | Precision@K | Recall@Budget | 未验证误报 | Citation | Chain | Coverage |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| A | 0.6000 | 0.6000 | 0 | 1.0000 | 1.0000 | 0.8000 |
+| B | 0.6667 | 0.6667 | 0 | 1.0000 | 1.0000 | 0.8000 |
+| C | 0.6667 | 0.6667 | 0 | 1.0000 | 1.0000 | 0.8000 |
+
+Repair：每臂 3 个用例，`bug_reproduction_success=3`、`patch_validation_success=0`、
+`independent_test_pass=0`、`draft_pr_correctness=0`、`regression_failures=3`。
+
+配对（18/18 三臂齐全）：A/B/C 正确率 = 0.5000 / 0.5556 / 0.5556；
+B、C 相对 A 的输入 token 均值增量 = +92.83 / +32.50；成本均值增量 =
++394.72 / −482.33 micros；C 相对 B 的每用例上下文 token 缩减 = 60.33。
+
+### 4.2 逐任务结果
+
+| task_id | 类型 | A | B | C |
+| --- | --- | --- | --- | --- |
+| `click-sentinel-identity` | review | FAIL | FAIL | FAIL |
+| `click-short-help-abbreviation` | review | PASS | PASS | PASS |
+| `click-help-name-collision` | review | FAIL | FAIL | FAIL |
+| `click-show-envvar-sequence` | review | FAIL | FAIL | FAIL |
+| `requests-content-type-parameter` | review | PASS | PASS | PASS |
+| `requests-netrc-empty-default` | review | PASS | PASS | PASS |
+| `pflag-unknown-flag-non-interspersed` | review | FAIL | FAIL | FAIL |
+| `pflag-count-preserve-on-error` | review | PASS | PASS | PASS |
+| `pflag-native-int-overflow` | review | FAIL | PASS | PASS |
+| `goexample-weave-newline` | review | FAIL | FAIL | FAIL |
+| `click-negative-no-subprocess` | negative | PASS | PASS | PASS |
+| `requests-negative-no-dynamic-eval` | negative | PASS | PASS | PASS |
+| `click-sentinel-repair` | repair | FAIL | FAIL | FAIL |
+| `click-short-help-repair` | repair | FAIL | FAIL | FAIL |
+| `click-help-name-repair` | repair | FAIL | FAIL | FAIL |
+| `requests-encode-files-getattr`（holdout） | review | PASS | PASS | PASS |
+| `pflag-ipv4-mask-ipv6`（holdout） | review | PASS | PASS | PASS |
+| `pflag-negative-no-unsafe`（holdout） | negative | PASS | PASS | PASS |
+
+失败原因（按实际产物）：
+
+- `click-sentinel-identity`：三臂都返回空 `findings`（扫描覆盖 1.0，未解析失败），是对
+  `Sentinel.__copy__/__deepcopy__` 的真实漏报；
+- `click-help-name-collision`、`click-show-envvar-sequence`、
+  `pflag-unknown-flag-non-interspersed`：三臂都在 reasoning 中耗尽 16384 输出 token，
+  `content` 为空，`parse_error=response did not contain a JSON object`，按失败记录且不重试；
+- `goexample-weave-newline`：三臂均定位到正确文件/行/类别，但 `symbol` 写成 `main.main`，
+  与 gold `internal/cmd/weave.main` 不一致，按误报计；
+- `pflag-native-int-overflow`：A 把符号写成 `pflag.(*intValue).Set` / `pflag.(*uintValue).Set`，
+  与 gold 的 `pflag.intValue.Set` 不一致（两个 finding 均有效引用但 key 不匹配）；
+  B、C 命中 gold；
+- 3 个 repair：三臂都给出了补丁，但 hunk 行号/上下文与固定 buggy 快照不匹配，
+  `apply_unified_patch` 拒绝，补丁验证、独立测试、回归全部失败；
+- 3 个 negative 与 3 个 holdout 任务三臂全部 PASS。
+
+### 4.3 计费台账
+
+| run | model_calls | cost_micros |
+| --- | ---: | ---: |
+| `smoke-20261109T121518Z` | 3 | 22,126 |
+| `smoke-20261109T121656Z` | 3 | 28,527 |
+| `live-20261109T122004Z`（预检后中止） | 6 | 57,154 |
+| `smoke-20261109T122431Z` | 3 | 34,812 |
+| `live-20261109T122858Z`（正式） | 54 | 785,467 |
+| 合计 | 69 | 928,086（USD 0.928086） |
+
+`cache_state` 统一记为 `none`（未按调用控制/记录）；provider 报告 54 次中有 37 次
+prompt cache 命中，但计费未打折，仍按全价保守记录。
+
+### 4.4 诚实性
+
+`test_live_arms_are_honest` 断言：54 条记录覆盖 A/B/C 与全部 18 个任务；每条执行记录
+`model_calls=1`、`usage_source=actual_provider_usage`、延迟/Token/费用为正且与产物文件
+的 SHA-256 一致；不存在 `NOT_RUN` 被填成 PASS/FAIL；总费用不超过 2,000,000 micros。
 
 ## 5. 离线 Harness 自检
 
@@ -159,8 +253,21 @@ uv run --frozen python scripts/verify.py --task E01
 
 ## 7. 偏差与后续
 
-- Live A/B/C 未执行：缺少付费模型与 GitHub 写入授权；获得逐次明确授权后，
-  用同一 `pairing_key` 填入真实记录，`NOT_RUN` 才可变为 PASS/FAIL。
+- Live A/B/C 已按用户授权（`deepseek-flash`，USD 2 上限）真实执行：54 次调用、0 NOT_RUN，
+  失败如实记为 business，未隐藏、未重试；全程未执行 GitHub 写入。
+- `live-20261109T122004Z` 是预检 run，6 次调用后人工中止：初版提示词未强制
+  完全限定符号与精确 category，答案不合规；修正提示词后重跑正式 run。该 run 的
+  57,154 micros 计入总费用。
+- 3 次 smoke run（共 9 次调用）用于确认 JSON 输出与 `max_tokens` 上限，计入总费用。
+- `max_tokens=16384` 对 3 个 scope 较大的 review 任务仍不够：reasoning 耗尽输出，
+  `content` 为空；未提高上限或重试，按失败记录。该限制同时影响三个臂，不改变臂间比较。
+- `draft_pr_correctness` 是离线代理（补丁非空、只改 scope 文件、可应用），
+  未创建真实 Draft PR，也未调用 GitHub API。
+- 记忆指标中 `recall_at_k`、`stale_rejection`、`contamination_rate` 无标注用例，
+  `repeated_tool_call_reduction` 不适用（每任务每臂单次调用、无工具循环）；
+  `token_reduction` 由 B/C 相对 A 的输入 token 增量与 C 相对 B 的缩减近似反映。
+- `call_chain_correctness` 只要求 gold symbol 位于链尾，因为 gold 链含无法从快照
+  唯一重建的合成中间帧；该指标仍进入 `passed` 合取。
 - 离线自检不覆盖模型行为，只覆盖判定器、答案与补丁应用；
 - 3 个 repair 任务的独立测试由本轮编写，未复用 upstream 测试，避免答案泄漏；
 - 快照只保留任务相关文件，不是整仓克隆；`repositories.json` 记录的是快照内文件。

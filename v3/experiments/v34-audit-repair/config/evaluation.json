@@ -17,26 +17,37 @@
     }
   },
   "authorization": {
+    "budget_usd": 2.0,
     "external_writes": false,
-    "live_arms_allowed": false,
-    "paid_models": false,
+    "live_arms_allowed": true,
+    "paid_models": true,
+    "paid_models_granted_at": "2026-11-09",
+    "paid_models_granted_by": "user",
     "production_actions": false,
     "required_for_live": [
-      "paid_model_calls",
+      "paid_model_calls"
+    ],
+    "withheld": [
       "github_draft_pr_writes"
     ]
   },
   "budget_per_task": {
-    "max_cost_micros": 200000,
+    "max_cost_micros": 40000,
     "max_latency_ms": 600000,
-    "max_model_calls": 24,
-    "max_tool_calls": 40
+    "max_model_calls": 1,
+    "max_tool_calls": 1
   },
   "card": "E01",
   "determinism": {
     "repeat_index": 0,
     "seed": 20261109,
     "temperature": 0.0
+  },
+  "experiment_budget": {
+    "enforced": "pre-call worst-case reservation plus actual usage settlement",
+    "limit_micros": 2000000,
+    "limit_usd": 2.0,
+    "source": "user authorization 2026-11-09"
   },
   "experiment_id": "v34-audit-repair",
   "grading": {
@@ -80,11 +91,16 @@
     "retrieval_cost"
   ],
   "model": {
-    "max_output_tokens": 8192,
-    "provider": "not_selected_without_authorization",
+    "endpoint": "https://api.deepseek.com/v1/chat/completions",
+    "input_micros_per_million": 300000,
+    "max_output_tokens": 16384,
+    "model_id": "deepseek-flash",
+    "output_micros_per_million": 1200000,
+    "price_version": "deepseek-2026-11-01-peak-upper-bound",
+    "provider": "deepseek",
     "temperature": 0.0
   },
-  "not_run_reason": "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made",
+  "not_run_reason": null,
   "pairing": {
     "pairing_key": [
       "case_id",

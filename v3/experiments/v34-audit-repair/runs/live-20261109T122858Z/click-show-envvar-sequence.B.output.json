@@ -1,0 +1,19 @@
+{
+  "content": "",
+  "usage": {
+    "prompt_tokens": 34311,
+    "completion_tokens": 16384,
+    "total_tokens": 50695,
+    "prompt_tokens_details": {
+      "cached_tokens": 34176
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 16384
+    },
+    "prompt_cache_hit_tokens": 34176,
+    "prompt_cache_miss_tokens": 135
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 57351.285,
+  "cost_micros": 29953
+}

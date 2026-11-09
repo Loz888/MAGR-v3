@@ -1,0 +1,52 @@
+{
+  "task_id": "requests-netrc-empty-default",
+  "arm": "C",
+  "answer": {
+    "findings": [
+      {
+        "file": "src/requests/utils.py",
+        "symbol": "requests.utils.get_netrc_auth",
+        "category": "empty_netrc_fallback",
+        "call_chain": [
+          "requests.sessions.Session.prepare_request",
+          "requests.utils.get_netrc_auth"
+        ],
+        "start_line": 233,
+        "end_line": 237,
+        "quote": "            _netrc = netrc(netrc_path).authenticators(host)\n            if _netrc:\n                # Return with login / password\n                login_i = 0 if _netrc[0] else 1\n                return (_netrc[login_i], _netrc[2])"
+      }
+    ],
+    "coverage": {
+      "scanned_files": [
+        "src/requests/utils.py"
+      ],
+      "scannable_files": [
+        "src/requests/utils.py"
+      ]
+    }
+  },
+  "grading": {
+    "task_id": "requests-netrc-empty-default",
+    "kind": "review",
+    "findings": 1,
+    "gold_findings": 1,
+    "precision_at_k": 1.0,
+    "recall_at_budget": 1.0,
+    "unverified_false_positives": 0,
+    "false_positives": 0,
+    "source_citation_validity": 1.0,
+    "call_chain_correctness": 1.0,
+    "scanned_files": 1,
+    "scannable_files": 1,
+    "scan_coverage": 1.0,
+    "within_budget": true,
+    "passed": true
+  },
+  "memory_read": [
+    "mem-002"
+  ],
+  "memory_written": [
+    "mem-003"
+  ],
+  "parse_error": null
+}

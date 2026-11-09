@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\":[{\"file\":\"src/click/utils.py\",\"symbol\":\"click.utils._make_default_short_help\",\"category\":\"sentence_boundary_abbreviation\",\"call_chain\":[\"click.core.Command.get_short_help_str\",\"click.utils._make_default_short_help\"],\"start_line\":92,\"end_line\":93,\"quote\":\"        if word[-1] == \\\".\\\":  # sentence end, truncate without \\\"...\\\"\\n            return \\\" \\\".join(words[: i + 1])\"}],\"coverage\":{\"scanned_files\":[\"src/click/utils.py\",\"src/click/_textwrap.py\",\"src/click/formatting.py\"],\"scannable_files\":[\"src/click/utils.py\",\"src/click/_textwrap.py\",\"src/click/formatting.py\"]}}",
+  "usage": {
+    "prompt_tokens": 9793,
+    "completion_tokens": 8731,
+    "total_tokens": 18524,
+    "prompt_tokens_details": {
+      "cached_tokens": 9600
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 8558
+    },
+    "prompt_cache_hit_tokens": 9600,
+    "prompt_cache_miss_tokens": 193
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 44831.954,
+  "cost_micros": 13414
+}

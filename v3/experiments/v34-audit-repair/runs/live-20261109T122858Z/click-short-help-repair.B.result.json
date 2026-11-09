@@ -1,0 +1,32 @@
+{
+  "task_id": "click-short-help-repair",
+  "arm": "B",
+  "answer": {
+    "findings": [],
+    "coverage": {
+      "scanned_files": [],
+      "scannable_files": []
+    }
+  },
+  "grading": {
+    "task_id": "click-short-help-repair",
+    "kind": "repair",
+    "bug_reproduction_success": true,
+    "patch_validation_success": false,
+    "independent_test_pass": false,
+    "draft_pr_correctness": false,
+    "regression_failures": 1,
+    "cost_micros": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "latency_ms": 0.0,
+    "model_calls": 0,
+    "tool_calls": 0,
+    "passed": false
+  },
+  "memory_read": [
+    "mem-001"
+  ],
+  "memory_written": [],
+  "parse_error": "response did not contain a JSON object"
+}

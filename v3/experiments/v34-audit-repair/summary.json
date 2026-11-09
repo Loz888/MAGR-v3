@@ -4,141 +4,183 @@
       "arm": "A",
       "case_count": 18,
       "cost_per_completed_case_micros": {
-        "denominator": 0,
-        "numerator": 0,
+        "denominator": 18,
+        "numerator": 262348,
         "scope": "sum(cost_micros) of eligible cases divided by eligible case count",
-        "value": null
+        "value": 14574.888888888889
       },
-      "failure_kinds": {},
+      "failure_kinds": {
+        "business": 9
+      },
       "failure_rate": {
-        "denominator": 0,
-        "interval95": null,
-        "numerator": 0,
+        "denominator": 18,
+        "interval95": [
+          0.2903,
+          0.7097
+        ],
+        "numerator": 9,
         "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
-        "value": null
+        "value": 0.5
       },
-      "latency_by_cache": {},
-      "not_run_reasons": {
-        "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made": 18
+      "latency_by_cache": {
+        "none": {
+          "method": "linear_interpolation",
+          "n": 18,
+          "p50_ms": 39441.1225,
+          "p95_ms": 94778.4117,
+          "scope": "completed cases (PASS|FAIL) with cache_state=none"
+        }
       },
+      "not_run_reasons": {},
       "records": 18,
       "status_counts": {
-        "fail": 0,
-        "not_run": 18,
-        "pass": 0,
+        "fail": 9,
+        "not_run": 0,
+        "pass": 9,
         "unknown": 0
       },
       "success_rate": {
-        "denominator": 0,
-        "interval95": null,
-        "numerator": 0,
+        "denominator": 18,
+        "interval95": [
+          0.2903,
+          0.7097
+        ],
+        "numerator": 9,
         "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
-        "value": null
+        "value": 0.5
       },
       "totals": {
-        "completion_tokens": 0,
-        "cost_micros": 0,
-        "model_calls": 0,
-        "prompt_tokens": 0
+        "completion_tokens": 153589,
+        "cost_micros": 262348,
+        "model_calls": 18,
+        "prompt_tokens": 260197
       },
       "usage_sources": {
-        "not_applicable": 18
+        "actual_provider_usage": 18
       }
     },
     "B": {
       "arm": "B",
       "case_count": 18,
       "cost_per_completed_case_micros": {
-        "denominator": 0,
-        "numerator": 0,
+        "denominator": 18,
+        "numerator": 269453,
         "scope": "sum(cost_micros) of eligible cases divided by eligible case count",
-        "value": null
+        "value": 14969.611111111111
       },
-      "failure_kinds": {},
+      "failure_kinds": {
+        "business": 8
+      },
       "failure_rate": {
-        "denominator": 0,
-        "interval95": null,
-        "numerator": 0,
+        "denominator": 18,
+        "interval95": [
+          0.2456,
+          0.6628
+        ],
+        "numerator": 8,
         "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
-        "value": null
+        "value": 0.4444444444444444
       },
-      "latency_by_cache": {},
-      "not_run_reasons": {
-        "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made": 18
+      "latency_by_cache": {
+        "none": {
+          "method": "linear_interpolation",
+          "n": 18,
+          "p50_ms": 48924.0185,
+          "p95_ms": 92763.61179999997,
+          "scope": "completed cases (PASS|FAIL) with cache_state=none"
+        }
       },
+      "not_run_reasons": {},
       "records": 18,
       "status_counts": {
-        "fail": 0,
-        "not_run": 18,
-        "pass": 0,
+        "fail": 8,
+        "not_run": 0,
+        "pass": 10,
         "unknown": 0
       },
       "success_rate": {
-        "denominator": 0,
-        "interval95": null,
-        "numerator": 0,
+        "denominator": 18,
+        "interval95": [
+          0.3372,
+          0.7544
+        ],
+        "numerator": 10,
         "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
-        "value": null
+        "value": 0.5555555555555556
       },
       "totals": {
-        "completion_tokens": 0,
-        "cost_micros": 0,
-        "model_calls": 0,
-        "prompt_tokens": 0
+        "completion_tokens": 159092,
+        "cost_micros": 269453,
+        "model_calls": 18,
+        "prompt_tokens": 261868
       },
       "usage_sources": {
-        "not_applicable": 18
+        "actual_provider_usage": 18
       }
     },
     "C": {
       "arm": "C",
       "case_count": 18,
       "cost_per_completed_case_micros": {
-        "denominator": 0,
-        "numerator": 0,
+        "denominator": 18,
+        "numerator": 253666,
         "scope": "sum(cost_micros) of eligible cases divided by eligible case count",
-        "value": null
+        "value": 14092.555555555555
       },
-      "failure_kinds": {},
+      "failure_kinds": {
+        "business": 8
+      },
       "failure_rate": {
-        "denominator": 0,
-        "interval95": null,
-        "numerator": 0,
+        "denominator": 18,
+        "interval95": [
+          0.2456,
+          0.6628
+        ],
+        "numerator": 8,
         "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
-        "value": null
+        "value": 0.4444444444444444
       },
-      "latency_by_cache": {},
-      "not_run_reasons": {
-        "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made": 18
+      "latency_by_cache": {
+        "none": {
+          "method": "linear_interpolation",
+          "n": 18,
+          "p50_ms": 36314.7745,
+          "p95_ms": 98588.52965,
+          "scope": "completed cases (PASS|FAIL) with cache_state=none"
+        }
       },
+      "not_run_reasons": {},
       "records": 18,
       "status_counts": {
-        "fail": 0,
-        "not_run": 18,
-        "pass": 0,
+        "fail": 8,
+        "not_run": 0,
+        "pass": 10,
         "unknown": 0
       },
       "success_rate": {
-        "denominator": 0,
-        "interval95": null,
-        "numerator": 0,
+        "denominator": 18,
+        "interval95": [
+          0.3372,
+          0.7544
+        ],
+        "numerator": 10,
         "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
-        "value": null
+        "value": 0.5555555555555556
       },
       "totals": {
-        "completion_tokens": 0,
-        "cost_micros": 0,
-        "model_calls": 0,
-        "prompt_tokens": 0
+        "completion_tokens": 146205,
+        "cost_micros": 253666,
+        "model_calls": 18,
+        "prompt_tokens": 260782
       },
       "usage_sources": {
-        "not_applicable": 18
+        "actual_provider_usage": 18
       }
     }
   },
   "case_count": 18,
-  "config_hash": "62119c069fca7f17ad8afb3f5aa52affac0f2ab9a19edebcabe78d5ff1cd9c32",
-  "dataset_hash": "29b14ee695cb6c5d9bc8254744cdd1fec6d78deffd7ae2161750601bdd2230ee",
+  "config_hash": "d03e5ef4a7677c4e66d0de408139d21f7de8c95bad583af26439110334d94fec",
+  "dataset_hash": "1db67439cd0bf461ffdac863bf44ed5343f2d7616ac11e4254e79a9d94f83c8f",
   "experiment_id": "v34-audit-repair",
   "method": {
     "bootstrap_iterations": 10000,
@@ -150,15 +192,16 @@
     "interval": "wilson_95",
     "percentile": "linear_interpolation"
   },
-  "not_run_records": 54,
+  "not_run_records": 0,
   "record_count": 54,
   "schema": "mgar-quality-eval-summary-v1",
-  "summary_sha256": "f8d0a2feaa35410861f2db040c0caf0f6e620da490b73abf280ca8ef7fa82775",
+  "summary_sha256": "fa2b45f6cc34c1a11d7302ff579e6433ccba6d9a1a6cd0290f24dd9b35143ac3",
   "unknown_records": 0,
   "v34": {
     "authorization": {
+      "budget_usd": 2.0,
       "external_writes": false,
-      "paid_models": false,
+      "paid_models": true,
       "production_actions": false
     },
     "dataset": {
@@ -191,49 +234,190 @@
       "used_in_development": false
     },
     "live_arms": {
-      "reason": "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made",
+      "by_arm": {
+        "A": {
+          "executed": 18,
+          "fail": 9,
+          "memory": {
+            "read_items": 0,
+            "written_items": 0
+          },
+          "missing_grading_artifacts": 0,
+          "not_run": 0,
+          "pass": 9,
+          "records": 18,
+          "repair": {
+            "bug_reproduction_success": 3,
+            "cases": 3,
+            "draft_pr_correctness": 0,
+            "independent_test_pass": 0,
+            "patch_validation_success": 0,
+            "regression_failures": 3
+          },
+          "review": {
+            "call_chain_correctness_mean": 1.0,
+            "call_chain_evaluated_cases": 9,
+            "cases": 15,
+            "false_positives": 3,
+            "findings": 9,
+            "findings_within_budget": 15,
+            "precision_at_k_mean": 0.6,
+            "recall_at_budget_mean": 0.6,
+            "scan_coverage_mean": 0.8,
+            "source_citation_validity_mean": 1.0,
+            "unverified_false_positives": 0
+          },
+          "usage": {
+            "completion_tokens": 153589,
+            "cost_micros": 262348,
+            "latency_ms_mean": 44574.020778,
+            "model_calls": 18,
+            "prompt_tokens": 260197
+          }
+        },
+        "B": {
+          "executed": 18,
+          "fail": 8,
+          "memory": {
+            "read_items": 16,
+            "written_items": 0
+          },
+          "missing_grading_artifacts": 0,
+          "not_run": 0,
+          "pass": 10,
+          "records": 18,
+          "repair": {
+            "bug_reproduction_success": 3,
+            "cases": 3,
+            "draft_pr_correctness": 0,
+            "independent_test_pass": 0,
+            "patch_validation_success": 0,
+            "regression_failures": 3
+          },
+          "review": {
+            "call_chain_correctness_mean": 1.0,
+            "call_chain_evaluated_cases": 10,
+            "cases": 15,
+            "false_positives": 1,
+            "findings": 9,
+            "findings_within_budget": 15,
+            "precision_at_k_mean": 0.666667,
+            "recall_at_budget_mean": 0.666667,
+            "scan_coverage_mean": 0.8,
+            "source_citation_validity_mean": 1.0,
+            "unverified_false_positives": 0
+          },
+          "usage": {
+            "completion_tokens": 159092,
+            "cost_micros": 269453,
+            "latency_ms_mean": 45610.507222,
+            "model_calls": 18,
+            "prompt_tokens": 261868
+          }
+        },
+        "C": {
+          "executed": 18,
+          "fail": 8,
+          "memory": {
+            "read_items": 16,
+            "written_items": 8
+          },
+          "missing_grading_artifacts": 0,
+          "not_run": 0,
+          "pass": 10,
+          "records": 18,
+          "repair": {
+            "bug_reproduction_success": 3,
+            "cases": 3,
+            "draft_pr_correctness": 0,
+            "independent_test_pass": 0,
+            "patch_validation_success": 0,
+            "regression_failures": 3
+          },
+          "review": {
+            "call_chain_correctness_mean": 1.0,
+            "call_chain_evaluated_cases": 10,
+            "cases": 15,
+            "false_positives": 1,
+            "findings": 9,
+            "findings_within_budget": 15,
+            "precision_at_k_mean": 0.666667,
+            "recall_at_budget_mean": 0.666667,
+            "scan_coverage_mean": 0.8,
+            "source_citation_validity_mean": 1.0,
+            "unverified_false_positives": 0
+          },
+          "usage": {
+            "completion_tokens": 146205,
+            "cost_micros": 253666,
+            "latency_ms_mean": 42122.837167,
+            "model_calls": 18,
+            "prompt_tokens": 260782
+          }
+        }
+      },
+      "metrics_unmeasured": {
+        "contamination_rate": "live runner has no labeled contaminated-memory cases",
+        "memory_recall_at_k": "live runner has no labeled memory-relevance cases",
+        "repeated_tool_call_reduction": "single-shot runner issues one model call per arm, so there are no tool-call loops",
+        "stale_rejection": "live runner has no labeled stale-memory cases"
+      },
+      "paired": {
+        "cases": 18,
+        "cases_with_all_arms_executed": 18,
+        "context_token_reduction_c_vs_b": 60.333,
+        "correctness_with_memory_and_compression": 0.555556,
+        "correctness_with_retrieval_only": 0.555556,
+        "correctness_without_memory": 0.5,
+        "cost_overhead_micros": {
+          "B": 394.722222,
+          "C": -482.333333
+        },
+        "pass_counts": {
+          "A": 9,
+          "B": 10,
+          "C": 10
+        },
+        "prompt_token_overhead": {
+          "B": 92.833333,
+          "C": 32.5
+        }
+      },
+      "reason": null,
       "records": {
         "A": {
-          "fail": 0,
-          "not_run": 18,
-          "pass": 0,
+          "executed": 18,
+          "fail": 9,
+          "not_run": 0,
+          "pass": 9,
           "records": 18
         },
         "B": {
-          "fail": 0,
-          "not_run": 18,
-          "pass": 0,
+          "executed": 18,
+          "fail": 8,
+          "not_run": 0,
+          "pass": 10,
           "records": 18
         },
         "C": {
-          "fail": 0,
-          "not_run": 18,
-          "pass": 0,
+          "executed": 18,
+          "fail": 8,
+          "not_run": 0,
+          "pass": 10,
           "records": 18
         }
       },
-      "status": "NOT_RUN"
+      "status": "EXECUTED",
+      "totals": {
+        "completion_tokens": 458886,
+        "cost_micros": 785467,
+        "executed": 54,
+        "model_calls": 54,
+        "not_run": 0,
+        "prompt_tokens": 782847,
+        "records": 54
+      }
     },
-    "metrics_not_run": [
-      "finding_precision_at_k",
-      "recall_at_budget",
-      "unverified_false_positives",
-      "source_citation_validity",
-      "call_chain_correctness",
-      "bug_reproduction_success",
-      "patch_validation_success",
-      "independent_test_pass",
-      "regression_failures",
-      "draft_pr_correctness",
-      "memory_recall_at_k",
-      "stale_rejection",
-      "contamination_rate",
-      "token_reduction",
-      "repeated_tool_call_reduction",
-      "correctness_with_memory",
-      "correctness_without_memory",
-      "retrieval_cost"
-    ],
     "repository_sources": [
       {
         "commits": [

@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\": [], \"coverage\": {\"scanned_files\": [\"string.go\"], \"scannable_files\": [\"string.go\"]}}",
+  "usage": {
+    "prompt_tokens": 1501,
+    "completion_tokens": 63,
+    "total_tokens": 1564,
+    "prompt_tokens_details": {
+      "cached_tokens": 1152
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 33
+    },
+    "prompt_cache_hit_tokens": 1152,
+    "prompt_cache_miss_tokens": 349
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 861.881,
+  "cost_micros": 525
+}

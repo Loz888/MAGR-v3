@@ -1,0 +1,51 @@
+{
+  "task_id": "pflag-ipv4-mask-ipv6",
+  "arm": "B",
+  "answer": {
+    "findings": [
+      {
+        "file": "ipmask.go",
+        "symbol": "pflag.ParseIPv4Mask",
+        "category": "ipv4_mask_validation",
+        "call_chain": [
+          "pflag.(*ipMaskValue).Set",
+          "pflag.ParseIPv4Mask"
+        ],
+        "start_line": 34,
+        "end_line": 56,
+        "quote": "\tmask := net.ParseIP(s)\n\tif mask == nil {\n\t\tif len(s) != 8 {\n\t\t\treturn nil\n\t\t}\n\t\t// net.IPMask.String() actually outputs things like ffffff00\n\t\t// so write a horrible parser for that as well  :-(\n\t\tm := []int{}\n\t\tfor i := 0; i < 4; i++ {\n\t\t\tb := \"0x\" + s[2*i:2*i+2]\n\t\t\td, err := strconv.ParseInt(b, 0, 0)\n\t\t\tif err != nil {\n\t\t\t\treturn nil\n\t\t\t}\n\t\t\tm = append(m, int(d))\n\t\t}\n\t\ts := fmt.Sprintf(\"%d.%d.%d.%d\", m[0], m[1], m[2], m[3])\n\t\tmask = net.ParseIP(s)\n\t\tif mask == nil {\n\t\t\treturn nil\n\t\t}\n\t}\n\treturn net.IPv4Mask(mask[12], mask[13], mask[14], mask[15])"
+      }
+    ],
+    "coverage": {
+      "scanned_files": [
+        "ipmask.go"
+      ],
+      "scannable_files": [
+        "ipmask.go"
+      ]
+    }
+  },
+  "grading": {
+    "task_id": "pflag-ipv4-mask-ipv6",
+    "kind": "review",
+    "findings": 1,
+    "gold_findings": 1,
+    "precision_at_k": 1.0,
+    "recall_at_budget": 1.0,
+    "unverified_false_positives": 0,
+    "false_positives": 0,
+    "source_citation_validity": 1.0,
+    "call_chain_correctness": 1.0,
+    "scanned_files": 1,
+    "scannable_files": 1,
+    "scan_coverage": 1.0,
+    "within_budget": true,
+    "passed": true
+  },
+  "memory_read": [
+    "mem-004",
+    "mem-005"
+  ],
+  "memory_written": [],
+  "parse_error": null
+}

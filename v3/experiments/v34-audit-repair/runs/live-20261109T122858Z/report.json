@@ -1,0 +1,13 @@
+{
+  "run_id": "live-20261109T122858Z",
+  "model": "deepseek-flash",
+  "calls": 54,
+  "spent_micros": 785467,
+  "budget_micros": 2000000,
+  "records": 54,
+  "status_counts": {
+    "PASS": 29,
+    "FAIL": 25,
+    "NOT_RUN": 0
+  }
+}

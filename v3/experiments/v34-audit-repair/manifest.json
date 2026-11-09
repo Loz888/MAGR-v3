@@ -5,17 +5,18 @@
     "C"
   ],
   "authorization": {
+    "budget_usd": 2.0,
     "external_writes": false,
-    "paid_models": false,
+    "paid_models": true,
     "production_actions": false
   },
-  "baseline_commit": "b4f7e24726bf2fef9552a66f24f0c64dc81f73cc",
-  "candidate_commit": "b4f7e24726bf2fef9552a66f24f0c64dc81f73cc",
+  "baseline_commit": "19c6ff29c107a4d94d4ed903b222988873ffcb07",
+  "candidate_commit": "19c6ff29c107a4d94d4ed903b222988873ffcb07",
   "card": "E01",
   "config": {
     "file": "experiments/v34-audit-repair/config/evaluation.json",
-    "file_sha256": "62119c069fca7f17ad8afb3f5aa52affac0f2ab9a19edebcabe78d5ff1cd9c32",
-    "hash": "62119c069fca7f17ad8afb3f5aa52affac0f2ab9a19edebcabe78d5ff1cd9c32"
+    "file_sha256": "d03e5ef4a7677c4e66d0de408139d21f7de8c95bad583af26439110334d94fec",
+    "hash": "d03e5ef4a7677c4e66d0de408139d21f7de8c95bad583af26439110334d94fec"
   },
   "created_at": "2026-11-09T00:00:00+00:00",
   "dataset": {
@@ -42,21 +43,30 @@
     "case_ids_sha256": "e16c4d974d3f732aab1e07303b27dc69f80a34894e15b6028930babf5076cfa6",
     "count": 18,
     "file": "experiments/v34-audit-repair/dataset.json",
-    "file_sha256": "29b14ee695cb6c5d9bc8254744cdd1fec6d78deffd7ae2161750601bdd2230ee",
-    "hash": "29b14ee695cb6c5d9bc8254744cdd1fec6d78deffd7ae2161750601bdd2230ee"
+    "file_sha256": "1db67439cd0bf461ffdac863bf44ed5343f2d7616ac11e4254e79a9d94f83c8f",
+    "hash": "1db67439cd0bf461ffdac863bf44ed5343f2d7616ac11e4254e79a9d94f83c8f"
   },
   "environment": {
-    "offline": true,
-    "paid_model_calls": 0,
+    "live_cost_micros": 785467,
+    "live_model": "deepseek-flash",
+    "live_run_id": "live-20261109T122858Z",
+    "live_status_counts": {
+      "FAIL": 25,
+      "NOT_RUN": 0,
+      "PASS": 29,
+      "UNKNOWN": 0
+    },
+    "offline": false,
+    "paid_model_calls": 54,
     "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
     "python_requires": ">=3.12,<3.13",
     "python_requires_deviation": null,
     "python_version": "3.12.16"
   },
   "experiment_id": "v34-audit-repair",
-  "manifest_sha256": "c63c439943db0b2e4e4498e84c6da70c4ed8a2bfddbf8446cca8317c3dd876f2",
+  "manifest_sha256": "acb16657c0a53c72998ffeecd7fc5d932c4a2c751dd0173cf8697d67732e703e",
   "mode": "real_model_live",
-  "notes": "E01 real-repository evaluation. Dataset and offline harness are complete; the live A/B/C arms were not executed because paid-model and GitHub write authorization were not granted. Nothing here is a model capability score.",
+  "notes": "E01 real-repository evaluation. Dataset, offline harness and live A/B/C arms run against deepseek-flash with a hard USD 2 cap; no GitHub write was performed. Live records and per-run artifacts are in cases.jsonl and runs/.",
   "pairing_key": [
     "case_id",
     "repeat_index"
@@ -64,7 +74,7 @@
   "provenance": {
     "card": "E01",
     "dataset": "pinned public GitHub commits copied verbatim",
-    "live_authorization": "not granted; A/B/C recorded as NOT_RUN",
+    "live_authorization": "user granted paid deepseek-flash calls on 2026-11-09, cap USD 2; GitHub writes withheld",
     "upstream_repositories": [
       "https://github.com/pallets/click",
       "https://github.com/psf/requests",
@@ -76,21 +86,23 @@
   "seed": 20261109,
   "v34": {
     "authorization_required": [
-      "paid_model_calls",
-      "github_draft_pr_writes"
+      "paid_model_calls"
     ],
     "holdout_file": "holdout/tasks.jsonl",
-    "holdout_file_sha256": "44652f262f387040405b71ad197940e88f6a62d07b1ba438db3268592c3fbc5b",
+    "holdout_file_sha256": "aa901ffd87123f9a67d0031914b005ea1d06bc31f47b3b7158567ef3144dbefe",
     "holdout_ids": [
       "pflag-ipv4-mask-ipv6",
       "pflag-negative-no-unsafe",
       "requests-encode-files-getattr"
     ],
-    "not_run_reason": "live A/B/C execution requires explicit paid-model authorization and GitHub draft-PR write authorization; neither was granted for this run, so no model, tool or network call was made",
+    "not_run_reason": null,
     "repositories_file": "repositories.json",
-    "repositories_file_sha256": "b877f15998c1c3031b81d6ff51b4fdaad67132c74fa14b83ff250f0efdc54921",
+    "repositories_file_sha256": "57cce9949d883834bb6340bc9cda2bd25b289b833d40e30d06f0310861efee4c",
     "selftest_file": "harness-selftest.json",
     "tasks_file": "tasks.jsonl",
-    "tasks_file_sha256": "29bdd15b912bd8747c00612c925f53bcf6b76c7464068fe018c3a325be836774"
+    "tasks_file_sha256": "7e31d37f88347a9cd68bcbc14a053854e520e350933e0105a1f849a4d47d1b28",
+    "withheld": [
+      "github_draft_pr_writes"
+    ]
   }
 }

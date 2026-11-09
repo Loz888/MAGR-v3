@@ -1,0 +1,31 @@
+{
+  "task_id": "click-sentinel-identity",
+  "arm": "C",
+  "answer": {
+    "findings": [],
+    "coverage": {
+      "scanned_files": [],
+      "scannable_files": []
+    }
+  },
+  "grading": {
+    "task_id": "click-sentinel-identity",
+    "kind": "review",
+    "findings": 0,
+    "gold_findings": 1,
+    "precision_at_k": 0.0,
+    "recall_at_budget": 0.0,
+    "unverified_false_positives": 0,
+    "false_positives": 0,
+    "source_citation_validity": 1.0,
+    "call_chain_correctness": 1.0,
+    "scanned_files": 0,
+    "scannable_files": 0,
+    "scan_coverage": 0.0,
+    "within_budget": true,
+    "passed": false
+  },
+  "memory_read": [],
+  "memory_written": [],
+  "parse_error": "response did not contain a JSON object"
+}

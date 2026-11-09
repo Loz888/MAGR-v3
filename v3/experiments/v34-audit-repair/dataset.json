@@ -25,7 +25,7 @@
   "holdout": {
     "count": 3,
     "file": "holdout/tasks.jsonl",
-    "sha256": "44652f262f387040405b71ad197940e88f6a62d07b1ba438db3268592c3fbc5b"
+    "sha256": "aa901ffd87123f9a67d0031914b005ea1d06bc31f47b3b7158567ef3144dbefe"
   },
   "holdout_case_ids": [
     "pflag-ipv4-mask-ipv6",
@@ -34,16 +34,19 @@
   ],
   "live_authorization": {
     "authorization": {
+      "budget_usd": 2.0,
       "external_writes": false,
-      "paid_models": false,
+      "paid_models": true,
+      "paid_models_granted_at": "2026-11-09",
       "production_actions": false
     },
-    "granted": false,
-    "records_status": "NOT_RUN"
+    "authorized": true,
+    "records": "cases.jsonl",
+    "records_status": "see_cases_jsonl"
   },
   "repositories": {
     "file": "repositories.json",
-    "sha256": "b877f15998c1c3031b81d6ff51b4fdaad67132c74fa14b83ff250f0efdc54921"
+    "sha256": "57cce9949d883834bb6340bc9cda2bd25b289b833d40e30d06f0310861efee4c"
   },
   "schema": "mgar-v34-dataset-v1",
   "selftest": {
@@ -53,6 +56,6 @@
   "tasks": {
     "count": 18,
     "file": "tasks.jsonl",
-    "sha256": "29bdd15b912bd8747c00612c925f53bcf6b76c7464068fe018c3a325be836774"
+    "sha256": "7e31d37f88347a9cd68bcbc14a053854e520e350933e0105a1f849a4d47d1b28"
   }
 }

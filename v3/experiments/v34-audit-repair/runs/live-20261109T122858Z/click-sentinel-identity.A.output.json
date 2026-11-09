@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\": [], \"coverage\": {\"scanned_files\": [\"src/click/_utils.py\", \"src/click/utils.py\", \"src/click/exceptions.py\"], \"scannable_files\": [\"src/click/_utils.py\", \"src/click/utils.py\", \"src/click/exceptions.py\"]}}",
+  "usage": {
+    "prompt_tokens": 9164,
+    "completion_tokens": 9882,
+    "total_tokens": 19046,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 9814
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 9164
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 58618.726,
+  "cost_micros": 14607
+}

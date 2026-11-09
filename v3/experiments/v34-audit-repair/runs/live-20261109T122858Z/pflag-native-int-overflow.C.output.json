@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\":[{\"file\":\"int.go\",\"symbol\":\"pflag.intValue.Set\",\"category\":\"integer_width_mismatch\",\"call_chain\":[\"pflag.FlagSet.Set\",\"pflag.intValue.Set\"],\"start_line\":17,\"end_line\":21,\"quote\":\"\\tv, err := strconv.ParseInt(s, 0, 64)\\n\\tif err != nil {\\n\\t\\treturn errors.New(\\\"must be an integer\\\")\\n\\t}\\n\\t*i = intValue(v)\"},{\"file\":\"uint.go\",\"symbol\":\"pflag.uintValue.Set\",\"category\":\"integer_width_mismatch\",\"call_chain\":[\"pflag.FlagSet.Set\",\"pflag.uintValue.Set\"],\"start_line\":17,\"end_line\":21,\"quote\":\"\\tv, err := strconv.ParseUint(s, 0, 64)\\n\\tif err != nil {\\n\\t\\treturn errors.New(\\\"must be a non-negative integer\\\")\\n\\t}\\n\\t*i = uintValue(v)\"}],\"coverage\":{\"scanned_files\":[\"int.go\",\"uint.go\"],\"scannable_files\":[\"int.go\",\"uint.go\"]}}",
+  "usage": {
+    "prompt_tokens": 2210,
+    "completion_tokens": 3451,
+    "total_tokens": 5661,
+    "prompt_tokens_details": {
+      "cached_tokens": 2048
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 3207
+    },
+    "prompt_cache_hit_tokens": 2048,
+    "prompt_cache_miss_tokens": 162
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 20130.975,
+  "cost_micros": 4804
+}

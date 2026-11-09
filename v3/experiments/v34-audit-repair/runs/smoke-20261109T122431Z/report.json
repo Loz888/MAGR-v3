@@ -1,0 +1,13 @@
+{
+  "run_id": "smoke-20261109T122431Z",
+  "model": "deepseek-flash",
+  "calls": 3,
+  "spent_micros": 34812,
+  "budget_micros": 2000000,
+  "records": 3,
+  "status_counts": {
+    "PASS": 0,
+    "FAIL": 3,
+    "NOT_RUN": 0
+  }
+}

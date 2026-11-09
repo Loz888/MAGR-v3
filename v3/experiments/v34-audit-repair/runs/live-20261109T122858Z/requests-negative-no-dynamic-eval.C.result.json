@@ -1,0 +1,38 @@
+{
+  "task_id": "requests-negative-no-dynamic-eval",
+  "arm": "C",
+  "answer": {
+    "findings": [],
+    "coverage": {
+      "scanned_files": [
+        "src/requests/utils.py"
+      ],
+      "scannable_files": [
+        "src/requests/utils.py"
+      ]
+    }
+  },
+  "grading": {
+    "task_id": "requests-negative-no-dynamic-eval",
+    "kind": "negative",
+    "findings": 0,
+    "gold_findings": 0,
+    "precision_at_k": 1.0,
+    "recall_at_budget": 1.0,
+    "unverified_false_positives": 0,
+    "false_positives": 0,
+    "source_citation_validity": 1.0,
+    "call_chain_correctness": 1.0,
+    "scanned_files": 1,
+    "scannable_files": 1,
+    "scan_coverage": 1.0,
+    "within_budget": true,
+    "passed": true
+  },
+  "memory_read": [
+    "mem-002",
+    "mem-003"
+  ],
+  "memory_written": [],
+  "parse_error": null
+}

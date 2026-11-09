@@ -1,0 +1,55 @@
+{
+  "task_id": "requests-encode-files-getattr",
+  "arm": "C",
+  "answer": {
+    "findings": [
+      {
+        "file": "src/requests/models.py",
+        "symbol": "requests.models.RequestEncodingMixin._encode_files",
+        "category": "file_wrapper_detection",
+        "call_chain": [
+          "requests.models.PreparedRequest.prepare_body",
+          "requests.models.RequestEncodingMixin._encode_files"
+        ],
+        "start_line": 237,
+        "end_line": 242,
+        "quote": "            if isinstance(fp, (str, bytes, bytearray)):\n                fdata = fp\n            elif isinstance(fp, _SupportsRead):  # defensive check for untyped callers\n                fdata = fp.read()\n            elif fp is None:  # defensive check for untyped callers\n                continue"
+      }
+    ],
+    "coverage": {
+      "scanned_files": [
+        "src/requests/models.py",
+        "src/requests/utils.py"
+      ],
+      "scannable_files": [
+        "src/requests/models.py",
+        "src/requests/utils.py"
+      ]
+    }
+  },
+  "grading": {
+    "task_id": "requests-encode-files-getattr",
+    "kind": "review",
+    "findings": 1,
+    "gold_findings": 1,
+    "precision_at_k": 1.0,
+    "recall_at_budget": 1.0,
+    "unverified_false_positives": 0,
+    "false_positives": 0,
+    "source_citation_validity": 1.0,
+    "call_chain_correctness": 1.0,
+    "scanned_files": 2,
+    "scannable_files": 2,
+    "scan_coverage": 1.0,
+    "within_budget": true,
+    "passed": true
+  },
+  "memory_read": [
+    "mem-002",
+    "mem-003"
+  ],
+  "memory_written": [
+    "mem-007"
+  ],
+  "parse_error": null
+}

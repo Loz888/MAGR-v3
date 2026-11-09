@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\":[{\"file\":\"src/click/_utils.py\",\"symbol\":\"Sentinel\",\"category\":\"singleton_identity_loss\",\"call_chain\":[\"click.core.Option.consume_value\",\"click._utils.FLAG_NEEDS_VALUE\"],\"start_line\":15,\"end_line\":16,\"quote\":\"    UNSET = object()\\n    FLAG_NEEDS_VALUE = object()\"}],\"coverage\":{\"scanned_files\":[\"src/click/_utils.py\",\"src/click/utils.py\",\"src/click/exceptions.py\"],\"scannable_files\":[\"src/click/_utils.py\",\"src/click/utils.py\",\"src/click/exceptions.py\"]}}",
+  "usage": {
+    "prompt_tokens": 9115,
+    "completion_tokens": 12863,
+    "total_tokens": 21978,
+    "prompt_tokens_details": {
+      "cached_tokens": 8960
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 12720
+    },
+    "prompt_cache_hit_tokens": 8960,
+    "prompt_cache_miss_tokens": 155
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 71622.171,
+  "cost_micros": 18169
+}

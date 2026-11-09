@@ -1,0 +1,33 @@
+{
+  "task_id": "click-help-name-repair",
+  "arm": "C",
+  "answer": {
+    "reproduction": "python - <<'PY'\nimport click\nfrom click.testing import CliRunner\n\n@click.command()\n@click.argument(\"help\")\ndef cli(help):\n    click.echo(help)\n\nresult = CliRunner().invoke(cli, [\"value\"])\nprint(result.exit_code, repr(result.output))\nPY",
+    "patch": "diff --git a/src/click/core.py b/src/click/core.py\n--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -810,5 +810,16 @@ class Command:\n             # Apply help_option decorator and pop resulting option\n             help_option(*help_option_names)(self)\n-            self._help_option = self.params.pop()  # type: ignore[assignment]\n+            help_option_obj = self.params.pop()\n+            param_names = {param.name for param in self.params}\n+\n+            if help_option_obj.name in param_names:\n+                name = help_option_obj.name\n+\n+                while name in param_names:\n+                    name = f\"_{name}\"\n+\n+                help_option_obj.name = name\n+\n+            self._help_option = t.cast(\"Option\", help_option_obj)\n \n         return self._help_option\n",
+    "files_touched": [
+      "src/click/core.py"
+    ],
+    "notes": "Reproduced with a command declaring an argument named help. Without the patch, invoking it with a value lets the automatic --help option consume the same parser destination, triggering the help callback and exiting. The fix gives the generated help option a collision-free parameter name when a user parameter already uses its derived name. Local checks: reproduction emits the argument value; --help still prints usage/help for the same command; ordinary command help is unchanged; a parameter named _help also avoids collision via the while loop."
+  },
+  "grading": {
+    "task_id": "click-help-name-repair",
+    "kind": "repair",
+    "bug_reproduction_success": true,
+    "patch_validation_success": false,
+    "independent_test_pass": false,
+    "draft_pr_correctness": false,
+    "regression_failures": 1,
+    "cost_micros": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "latency_ms": 0.0,
+    "model_calls": 0,
+    "tool_calls": 0,
+    "passed": false
+  },
+  "memory_read": [
+    "mem-001"
+  ],
+  "memory_written": [],
+  "parse_error": null
+}

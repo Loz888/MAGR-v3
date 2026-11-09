@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\":[{\"file\":\"count.go\",\"symbol\":\"pflag.countValue.Set\",\"category\":\"state_mutation_on_error\",\"call_chain\":[\"pflag.FlagSet.Set\",\"pflag.countValue.Set\"],\"start_line\":19,\"end_line\":21,\"quote\":\"\\tv, err := strconv.ParseInt(s, 0, 0)\\n\\t*i = countValue(v)\\n\\treturn err\"}],\"coverage\":{\"scanned_files\":[\"count.go\"],\"scannable_files\":[\"count.go\"]}}",
+  "usage": {
+    "prompt_tokens": 1331,
+    "completion_tokens": 2172,
+    "total_tokens": 3503,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 2061
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 1331
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 13335.11,
+  "cost_micros": 3005
+}

@@ -201,6 +201,8 @@ def _v34_markdown(section: Mapping[str, Any]) -> list[str]:
     kinds = dataset["kinds"]
     languages = dataset["languages"]
     selftest = section.get("harness_selftest") or {}
+    live = section["live_arms"]
+    totals = live["totals"]
     lines = [
         "",
         "## V3.4 真实公开仓库数据集（E01）",
@@ -212,16 +214,70 @@ def _v34_markdown(section: Mapping[str, Any]) -> list[str]:
         f"- 语言覆盖：python {languages['python']}，go {languages['go']}",
         f"- Holdout 未参与开发：{', '.join(section['holdout']['ids'])}"
         f"（used_in_development={section['holdout']['used_in_development']}）",
-        f"- 实时臂状态：`{section['live_arms']['status']}`；原因：{section['live_arms']['reason']}",
+        f"- 实时臂状态：`{live['status']}`"
+        + (f"；原因：{live['reason']}" if live.get("reason") else ""),
+        f"- 真实调用：{totals['model_calls']} 次，记录 {totals['records']} 条"
+        f"（执行 {totals['executed']}，NOT_RUN {totals['not_run']}），"
+        f"保守计费 {totals['cost_micros']} micros（USD {totals['cost_micros'] / 1_000_000:.6f}）",
+        f"- Tokens：输入 {totals['prompt_tokens']}，输出 {totals['completion_tokens']}",
         "",
-        "| 臂 | 记录数 | NOT_RUN | PASS | FAIL |",
-        "|---|---:|---:|---:|---:|",
+        "| 臂 | 记录数 | 执行 | NOT_RUN | PASS | FAIL |",
+        "|---|---:|---:|---:|---:|---:|",
     ]
-    for arm, counts in section["live_arms"]["records"].items():
+    for arm, counts in live["records"].items():
         lines.append(
-            f"| {arm} | {counts['records']} | {counts['not_run']} | {counts['pass']} "
-            f"| {counts['fail']} |"
+            f"| {arm} | {counts['records']} | {counts['executed']} | {counts['not_run']} "
+            f"| {counts['pass']} | {counts['fail']} |"
         )
+    lines.extend(
+        [
+            "",
+            "| 臂 | Precision@K | Recall@Budget | 未验证误报 | Citation | Chain | Coverage |",
+            "|---|---:|---:|---:|---:|---:|---:|",
+        ]
+    )
+    for arm, item in live["by_arm"].items():
+        review = item["review"]
+        lines.append(
+            f"| {arm} | {_fmt(review['precision_at_k_mean'])} "
+            f"| {_fmt(review['recall_at_budget_mean'])} "
+            f"| {review['unverified_false_positives']} "
+            f"| {_fmt(review['source_citation_validity_mean'])} "
+            f"| {_fmt(review['call_chain_correctness_mean'])} "
+            f"| {_fmt(review['scan_coverage_mean'])} |"
+        )
+    lines.extend(
+        [
+            "",
+            "| 臂 | 修复用例 | 复现成功 | 补丁可应用 | 独立测试通过 | Draft PR 正确 | 回归失败 |",
+            "|---|---:|---:|---:|---:|---:|---:|",
+        ]
+    )
+    for arm, item in live["by_arm"].items():
+        repair = item["repair"]
+        lines.append(
+            f"| {arm} | {repair['cases']} | {repair['bug_reproduction_success']} "
+            f"| {repair['patch_validation_success']} | {repair['independent_test_pass']} "
+            f"| {repair['draft_pr_correctness']} | {repair['regression_failures']} |"
+        )
+    paired = live["paired"]
+    lines.extend(
+        [
+            "",
+            f"- 配对完整用例：{paired['cases_with_all_arms_executed']}/{paired['cases']}",
+            f"- 正确率（无 Memory / 仅检索 / 完整 Memory+压缩）："
+            f"{_fmt(paired['correctness_without_memory'])} / "
+            f"{_fmt(paired['correctness_with_retrieval_only'])} / "
+            f"{_fmt(paired['correctness_with_memory_and_compression'])}",
+            f"- 输入 Token 相对 A 的增量（B / C）："
+            f"{_fmt(paired['prompt_token_overhead'].get('B'))} / "
+            f"{_fmt(paired['prompt_token_overhead'].get('C'))}",
+            f"- 成本相对 A 的增量 micros（B / C）："
+            f"{_fmt(paired['cost_overhead_micros'].get('B'))} / "
+            f"{_fmt(paired['cost_overhead_micros'].get('C'))}",
+            f"- C 相对 B 的上下文 Token 缩减：{_fmt(paired['context_token_reduction_c_vs_b'])}",
+        ]
+    )
     if selftest:
         lines.extend(
             [
@@ -231,9 +287,9 @@ def _v34_markdown(section: Mapping[str, Any]) -> list[str]:
                 "- 该自检只证明判定管线与固定答案一致，不是模型能力成绩，也不计入 A/B/C 成功率。",
             ]
         )
-    lines.extend(["", "未执行的指标：", ""])
-    for name in section["metrics_not_run"]:
-        lines.append(f"- `{name}`")
+    lines.extend(["", "未测量的指标：", ""])
+    for name, reason in live.get("metrics_unmeasured", {}).items():
+        lines.append(f"- `{name}`：{reason}")
     return lines
 
 

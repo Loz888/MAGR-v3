@@ -241,7 +241,7 @@
     "components": {
       "arms": "A_B_C_paired_same_task_commit_model_budget_and_grader",
       "coverage": "four_public_repositories_python_and_go_at_pinned_commits",
-      "honesty": "live_arms_NOT_RUN_without_paid_model_and_github_write_authorization",
+      "honesty": "live_arms_executed_with_paid_model_under_usd_cap_and_per_call_usage_recorded",
       "holdout": "three_tasks_withheld_from_development_and_from_the_offline_selftest",
       "metrics": "precision_at_k_recall_at_budget_citation_call_chain_repair_gates_and_memory_metrics",
       "offline_harness": "fifteen_dev_tasks_verified_against_real_upstream_fix_patches",

@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\": [{\"file\": \"int.go\", \"symbol\": \"pflag.(*intValue).Set\", \"category\": \"integer_width_mismatch\", \"call_chain\": [\"pflag.(*FlagSet).IntVarP\", \"pflag.(*intValue).Set\"], \"start_line\": 16, \"end_line\": 23, \"quote\": \"func (i *intValue) Set(s string) error {\\n\\tv, err := strconv.ParseInt(s, 0, 64)\\n\\tif err != nil {\\n\\t\\treturn errors.New(\\\"must be an integer\\\")\\n\\t}\\n\\t*i = intValue(v)\\n\\treturn nil\\n}\"}, {\"file\": \"uint.go\", \"symbol\": \"pflag.(*uintValue).Set\", \"category\": \"integer_width_mismatch\", \"call_chain\": [\"pflag.(*FlagSet).UintVarP\", \"pflag.(*uintValue).Set\"], \"start_line\": 16, \"end_line\": 23, \"quote\": \"func (i *uintValue) Set(s string) error {\\n\\tv, err := strconv.ParseUint(s, 0, 64)\\n\\tif err != nil {\\n\\t\\treturn errors.New(\\\"must be a non-negative integer\\\")\\n\\t}\\n\\t*i = uintValue(v)\\n\\treturn nil\\n}\"}], \"coverage\": {\"scanned_files\": [\"int.go\", \"uint.go\"], \"scannable_files\": [\"int.go\", \"uint.go\"]}}",
+  "usage": {
+    "prompt_tokens": 2179,
+    "completion_tokens": 1489,
+    "total_tokens": 3668,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 1156
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 2179
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 7613.079,
+  "cost_micros": 2439
+}

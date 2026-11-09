@@ -1,0 +1,19 @@
+{
+  "content": "{\"reproduction\":\"python -c \\\"import copy, pickle; from click._utils import UNSET, FLAG_NEEDS_VALUE; assert copy.copy(UNSET) is UNSET; assert copy.deepcopy(UNSET) is UNSET; assert pickle.loads(pickle.dumps(UNSET)) is UNSET; assert copy.deepcopy(FLAG_NEEDS_VALUE) is FLAG_NEEDS_VALUE\\\"\",\"patch\":\"--- a/src/click/_utils.py\\n+++ b/src/click/_utils.py\\n@@ -15,7 +15,18 @@\\n     UNSET = object()\\n     FLAG_NEEDS_VALUE = object()\\n \\n     def __repr__(self) -> str:\\n         return f\\\"{self.__class__.__name__}.{self.name}\\\"\\n+\\n+    def __copy__(self) -> Sentinel:\\n+        return self\\n+\\n+    def __deepcopy__(self, memo: dict[int, t.Any]) -> Sentinel:\\n+        return self\\n+\\n+    def __reduce_ex__(\\n+        self, protocol: int\\n+    ) -> tuple[t.Any, tuple[type[Sentinel], str]]:\\n+        return getattr, (self.__class__, self.name)\\n \\n UNSET: t.Literal[Sentinel.UNSET] = Sentinel.UNSET\\n\",\"files_touched\":[\"src/click/_utils.py\"],\"notes\":\"Added identity-preserving copy, deepcopy, and pickle behavior to Sentinel. Local validation was an inline assertion command covering copy.copy, copy.deepcopy, and a pickle round-trip; no full test suite was available in the pinned snapshot.\"}",
+  "usage": {
+    "prompt_tokens": 8943,
+    "completion_tokens": 15249,
+    "total_tokens": 24192,
+    "prompt_tokens_details": {
+      "cached_tokens": 8704
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 14883
+    },
+    "prompt_cache_hit_tokens": 8704,
+    "prompt_cache_miss_tokens": 239
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 81264.263,
+  "cost_micros": 20980
+}

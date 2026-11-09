@@ -1,0 +1,52 @@
+{
+  "task_id": "click-sentinel-identity",
+  "arm": "A",
+  "answer": {
+    "findings": [
+      {
+        "file": "src/click/_utils.py",
+        "symbol": "Sentinel",
+        "category": "singleton_identity_loss",
+        "call_chain": [
+          "click.core.Option.consume_value",
+          "click._utils.FLAG_NEEDS_VALUE"
+        ],
+        "start_line": 15,
+        "end_line": 16,
+        "quote": "    UNSET = object()\n    FLAG_NEEDS_VALUE = object()"
+      }
+    ],
+    "coverage": {
+      "scanned_files": [
+        "src/click/_utils.py",
+        "src/click/utils.py",
+        "src/click/exceptions.py"
+      ],
+      "scannable_files": [
+        "src/click/_utils.py",
+        "src/click/utils.py",
+        "src/click/exceptions.py"
+      ]
+    }
+  },
+  "grading": {
+    "task_id": "click-sentinel-identity",
+    "kind": "review",
+    "findings": 1,
+    "gold_findings": 1,
+    "precision_at_k": 0.0,
+    "recall_at_budget": 0.0,
+    "unverified_false_positives": 0,
+    "false_positives": 1,
+    "source_citation_validity": 1.0,
+    "call_chain_correctness": 1.0,
+    "scanned_files": 3,
+    "scannable_files": 3,
+    "scan_coverage": 1.0,
+    "within_budget": true,
+    "passed": false
+  },
+  "memory_read": [],
+  "memory_written": [],
+  "parse_error": null
+}

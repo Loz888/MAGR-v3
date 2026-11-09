@@ -1,0 +1,19 @@
+{
+  "content": "{\"findings\":[{\"file\":\"src/requests/utils.py\",\"symbol\":\"requests.utils.get_netrc_auth\",\"category\":\"empty_netrc_fallback\",\"call_chain\":[\"requests.sessions.Session.prepare_request\",\"requests.utils.get_netrc_auth\"],\"start_line\":233,\"end_line\":237,\"quote\":\"            _netrc = netrc(netrc_path).authenticators(host)\\n            if _netrc:\\n                # Return with login / password\\n                login_i = 0 if _netrc[0] else 1\\n                return (_netrc[login_i], _netrc[2])\"}],\"coverage\":{\"scanned_files\":[\"src/requests/utils.py\"],\"scannable_files\":[\"src/requests/utils.py\"]}}",
+  "usage": {
+    "prompt_tokens": 8860,
+    "completion_tokens": 6608,
+    "total_tokens": 15468,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 6441
+    },
+    "prompt_cache_hit_tokens": 0,
+    "prompt_cache_miss_tokens": 8860
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 33371.486,
+  "cost_micros": 10587
+}

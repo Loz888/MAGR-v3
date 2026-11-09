@@ -1,0 +1,19 @@
+{
+  "content": "{\"reproduction\":\"python - <<'PY'\\nimport click\\nfrom click.testing import CliRunner\\n\\n@click.command()\\n@click.argument(\\\"help\\\")\\ndef cli(help):\\n    click.echo(f\\\"got={help}\\\")\\n\\nresult = CliRunner().invoke(cli, [\\\"value\\\"])\\nprint(result.exit_code)\\nprint(result.output)\\nassert result.exit_code == 0, result.output\\nassert \\\"got=value\\\" in result.output\\nPY\",\"patch\":\"diff --git a/src/click/core.py b/src/click/core.py\\n--- a/src/click/core.py\\n+++ b/src/click/core.py\\n@@ -1284,8 +1284,21 @@ class Command:\\n             # Avoid circular import.\\n             from .decorators import help_option\\n \\n             # Apply help_option decorator and pop resulting option\\n             help_option(*help_option_names)(self)\\n             self._help_option = self.params.pop()  # type: ignore[assignment]\\n+\\n+            # The implicit help option must not share its parser destination\\n+            # with an argument named 'help' (from @click.argument('help')).\\n+            # The help option is not exposed, so it can use an internal name.\\n+            param_names = {param.name for param in self.params}\\n+\\n+            if self._help_option.name in param_names:\\n+                name = f\\\"_{self._help_option.name}\\\"\\n+\\n+                while name in param_names:\\n+                    name = f\\\"_{name}\\\"\\n+\\n+                self._help_option.name = name\\n \\n         return self._help_option\\n\",\"files_touched\":[\"src/click/core.py\"],\"notes\":\"The implicit --help Option and @click.argument('help') shared the parser destination 'help', so the argument value could trigger the help callback. The patch renames only the implicit help option's internal destination when it collides with an existing parameter name. Local checks: reproduction script with ['value'] (argument value is delivered) and ['--help'] (help still displays).\"}",
+  "usage": {
+    "prompt_tokens": 42413,
+    "completion_tokens": 11919,
+    "total_tokens": 54332,
+    "prompt_tokens_details": {
+      "cached_tokens": 42240
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 11456
+    },
+    "prompt_cache_hit_tokens": 42240,
+    "prompt_cache_miss_tokens": 173
+  },
+  "model": "deepseek-flash",
+  "latency_ms": 81102.4,
+  "cost_micros": 27025
+}
