@@ -1,6 +1,6 @@
 # A01 — Repository Workspace & Inventory
 
-- 状态: 实现与工程验收完成（待记录 accept.json）
+- 状态: 工程门 PASS（22 tests）；live 门 PASS（两个公开仓库固定 Commit 哈希一致）
 - 依赖: B00
 - 代码: `v3/src/mgar_v3/repository_analysis/workspace.py`
 - 测试: `v3/tests/test_v33_workspace.py`

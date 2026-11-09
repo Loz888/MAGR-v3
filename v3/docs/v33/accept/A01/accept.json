@@ -1,0 +1,127 @@
+{
+  "card": "A01",
+  "title": "Repository Workspace & Inventory",
+  "commit": "02902bab137e34533e9bac3102b2476ae9e7f300",
+  "commit_note": "67f049f 实现 A01；02902ba 修正 GitHub 远端身份大小写比较（不影响清单哈希）",
+  "base_commit": "24a6acb2278d48c1c3aafc274b40ba80fcb124b0",
+  "accepted_at": "2026-11-09T06:49:01Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 (Windows native lacks make/uv)",
+    "git": "2.43.0",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "python_source": "UV_PYTHON_DOWNLOADS=never, UV_PROJECT_ENVIRONMENT=/tmp/mgar-v3-venv",
+    "uv": "0.13.7",
+    "postgres": "NOT_USED (A01 tests are DB-free)",
+    "redis": "NOT_USED",
+    "network": "ENGINEERING_GATE=not_used; LIVE_GATE=https://github.com"
+  },
+  "worktree_at_acceptance": "clean",
+  "commands": [
+    {
+      "name": "engineering-pytest",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v33_workspace.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 2.32,
+      "purpose": "A01 验收命令：工作区、Manifest、恶意路径与限额",
+      "counts": {"passed": 22, "failed": 0, "skipped": 0},
+      "log": "evidence/A01/20261109T064819Z-A01/02-pytest.log",
+      "status": "PASS"
+    },
+    {
+      "name": "verify-registry",
+      "argv": ["make", "verify", "TASK=A01"],
+      "exit_code": 0,
+      "duration_seconds": 7.507,
+      "purpose": "统一验收记录机制（junit + 源码指纹）",
+      "counts": {"tests": 22, "failures": 0, "errors": 0, "skipped": 0},
+      "source_sha256": "775c3eb276c0083af90118fcf5fd048ce2099796bf2880151736fbf9ec25c877",
+      "git_commit": "02902bab137e34533e9bac3102b2476ae9e7f300",
+      "attempt": "evidence/A01/20261109T064826Z-89e74613",
+      "log": "evidence/A01/20261109T064826Z-89e74613/command.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区干净",
+      "log": "evidence/A01/20261109T064819Z-A01/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收未产生工作区改动",
+      "log": "evidence/A01/20261109T064819Z-A01/04-git-after.log",
+      "status": "PASS"
+    },
+    {
+      "name": "live-public-repositories",
+      "argv": ["bash", ".push-staging/a01-live.sh"],
+      "exit_code": 0,
+      "purpose": "两个不同结构的公开仓库在相同 Commit 下产生一致清单哈希",
+      "repositories": [
+        {
+          "repository": "octocat/hello-world",
+          "commit": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+          "manifest_hash": "9635e1e500712639f1794bbf31898219ec82aa860094b3bc5b0ef93f723ccd61",
+          "second_manifest_hash": "9635e1e500712639f1794bbf31898219ec82aa860094b3bc5b0ef93f723ccd61",
+          "same_hash": true,
+          "tree_entries": 1,
+          "git_clean": true
+        },
+        {
+          "repository": "octocat/spoon-knife",
+          "commit": "d0dd1f61b33d64e29d8bc1372a94ef6a2fee76a9",
+          "manifest_hash": "089c7235fe8871a84e2fe392e87565608c5cec3dcd49f4cc2eed1305a08b4939",
+          "second_manifest_hash": "089c7235fe8871a84e2fe392e87565608c5cec3dcd49f4cc2eed1305a08b4939",
+          "same_hash": true,
+          "tree_entries": 3,
+          "git_clean": true
+        }
+      ],
+      "log": "evidence/A01/20261109T064845Z-A01-live/01-live.log",
+      "remote_log": "evidence/A01/20261109T064845Z-A01-live/00-remote.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "PASS",
+  "live_gate_note": "只读克隆两个小型公开仓库的固定 Commit；各在两个独立工作区重复 prepare，哈希一致；未调用模型、未写入任何远端。",
+  "must_pass": [
+    {"item": "两个不同结构的仓库得到可复现 Manifest", "result": "PASS", "evidence": "tests/test_v33_workspace.py::test_different_repository_shapes_produce_stable_manifests + live 两个公开仓库"},
+    {"item": "相同 Commit 产生一致的清单哈希", "result": "PASS", "evidence": "test_same_commit_same_manifest_hash_across_workspaces + live same_hash=true"},
+    {"item": "恶意路径不能越过 Workspace", "result": "PASS", "evidence": "test_manifest_paths_reject_traversal / test_malicious_tree_entry_cannot_escape_workspace / test_symlink_and_submodule_entries_are_excluded"}
+  ],
+  "deviations": [
+    {
+      "issue": "用户口述卡片为 B01，但任务书与 B00 accept.json 的 next_card 也写作 B01，任务书卡片序列实际为 B00 → A01 → A02",
+      "handling": "按任务书执行下一张依赖卡 A01（Phase 1 首卡）；未跳过任何卡"
+    },
+    {
+      "issue": "首次验收调用 uv 失败：非交互 WSL bash 未加载 ~/.local/bin",
+      "handling": "在验收脚本显式导出 PATH=\"$HOME/.local/bin:$PATH\" 后重跑；失败尝试保留",
+      "attempt": "evidence/A01/20261109T064532Z-A01"
+    },
+    {
+      "issue": "live gate 暴露 GitHub 仓库名大小写比较过严（octocat/Hello-World 与规范化小写身份不一致）",
+      "handling": "改为大小写不敏感比较并以小写构造 canonical URL；清单哈希不含远端，两次 live 证据哈希一致",
+      "commit": "02902bab137e34533e9bac3102b2476ae9e7f300",
+      "attempt": "evidence/A01/20261109T064718Z-A01-live"
+    },
+    {
+      "issue": "验收脚本 00-meta.log 的 python3 是系统 3.12.3，而实际 pytest 运行于 uv venv",
+      "handling": "以 uv 运行结果与 verify.argv 为准记录 Python 3.12.16；未改动系统 Python"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/repository_analysis/workspace.py",
+    "tests/test_v33_workspace.py",
+    "docs/v33/A01-repository-workspace.md",
+    "config/verification.json（A01 条目）",
+    "docs/v33/accept/A01/accept.json"
+  ],
+  "next_card": "A02"
+}
