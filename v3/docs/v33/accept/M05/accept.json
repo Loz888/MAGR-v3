@@ -1,0 +1,212 @@
+{
+  "card": "M05",
+  "title": "Memory-aware Agent Loop",
+  "commit": "ab147592704c4df62eb428f8dc8a34d3fa26c45d",
+  "commit_note": "单次本地提交：repository_analysis/memory_loop.py（召回/规划/失败检索/Working Memory/验证后候选/追问/投毒防护）、agent.py 与 service.py 接入、context/builder.py MemoryNote.downweighted、tests/test_v33_memory_agent.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "a704a0ab27065261128eb3a660b6266a938cecd2",
+  "accepted_at": "2026-11-09T09:40:56Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (new/changed modules only)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "model": "fixture_no_network",
+    "network": "NOT_USED",
+    "docker": "NOT_USED",
+    "postgres": "USED (real PostgreSQL; disposable per-session test database created by tests/conftest.py, 0021 migration applied)",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as ab14759. Evidence is gitignored; this accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "engineering-verify",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/verify.py",
+        "--task",
+        "M05"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 16.682,
+      "purpose": "M05 统一验收：连续任务召回、追问复用、投毒防护、过期/未验证过滤、失败尝试检索、Working Memory 更新",
+      "counts": {
+        "tests": 6,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "da657b2369213048f2c5c09c0f6ff67ad2388500792c3734423f3eb0e50da286",
+      "finished_source_sha256": "da657b2369213048f2c5c09c0f6ff67ad2388500792c3734423f3eb0e50da286",
+      "git_commit": "ab147592704c4df62eb428f8dc8a34d3fa26c45d",
+      "attempt": "evidence/M05/20261109T094036Z-a306bfdd",
+      "log": "evidence/M05/20261109T094036Z-a306bfdd/command.log",
+      "junit": "evidence/M05/20261109T094036Z-a306bfdd/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/repository_analysis/memory_loop.py",
+        "src/mgar_v3/repository_analysis/agent.py",
+        "src/mgar_v3/repository_analysis/service.py",
+        "src/mgar_v3/context/builder.py",
+        "tests/test_v33_memory_agent.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/mypy",
+        "src/mgar_v3/repository_analysis/memory_loop.py",
+        "src/mgar_v3/context/builder.py"
+      ],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）零告警；mypy strict 覆盖新增 memory_loop.py 与修改的 builder.py",
+      "log": "evidence/M05/20261109T094033Z-M05/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "regression",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_v33_context_compaction.py",
+        "tests/test_v32_repository_analysis.py",
+        "-q"
+      ],
+      "counts": {
+        "tests": 23,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "purpose": "M04 Context 压缩与 V3.2 仓库分析回归；确认 Memory 接入未破坏既有 agent 行为",
+      "log": "evidence/M05/20261109T094033Z-M05/08-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean（实现已提交为 ab14759）",
+      "log": "evidence/M05/20261109T094033Z-M05/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 verify / 测试未修改源工作区",
+      "log": "evidence/M05/20261109T094033Z-M05/07-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "M05 是本地记忆参与执行卡：模型使用 fixture，不访问网络、不写远端、不调用真实 LLM。verify 记录中的 live_gate=NOT_RUN 与本节一致；真实模型下的记忆效果评测属于后续 RAG/Agent 评测任务。",
+  "must_pass": [
+    {
+      "item": "任务开始前召回相关仓库知识",
+      "result": "PASS",
+      "evidence": "AnalysisMemory.recall_task 合并 search_memory 与 get_repository_knowledge；test_second_task_recalls_and_uses_first_verified_experience 断言第二个任务 payload 的 relevant_memories 含第一个任务候选的 subject。"
+    },
+    {
+      "item": "规划调查路线时参考历史经验",
+      "result": "PASS",
+      "evidence": "recall_task 生成 plan_hints（仅非降权、confidence>=0.5），agent 注入 payload.prior_experience；同一测试断言第一个任务的 subject 出现在 prior_experience。"
+    },
+    {
+      "item": "工具调用后更新 Working Memory",
+      "result": "PASS",
+      "evidence": "test_tool_calls_update_working_memory 断言 run:<run_id> 的 working 记录存在、引用 Evidence，并绑定当前 run 与 commit。"
+    },
+    {
+      "item": "Context 过长时触发 Compaction",
+      "result": "PASS",
+      "evidence": "M04 ContextBuilder 在每次模型调用前自动压缩；M05 不绕过该路径，MemoryNote 与 Evidence 段保持固定。回归 test_v33_context_compaction.py 10 项全部通过（含 Evidence 保留与权限不升级）。"
+    },
+    {
+      "item": "遇到已知失败时检索相关历史尝试",
+      "result": "PASS",
+      "evidence": "test_known_failure_recalls_historical_failure_attempt 先写入 GITHUB_NOT_FOUND/read_file 失败记忆，脚本模型触发真实工具失败后，第二个 payload 的 known_failures 命中该记忆且 reference_only=true。"
+    },
+    {
+      "item": "验证完成后产生 Memory Candidate",
+      "result": "PASS",
+      "evidence": "final 在 finish_success 之后调用 after_verification，走 execution_candidate(investigation_completed) + MemoryWriter.validate/write；test_second_task... 断言候选存在、verification_status=verified 且 evidence_ids 非空。"
+    },
+    {
+      "item": "后续追问复用已确认事实及准确 Commit",
+      "result": "PASS",
+      "evidence": "test_follow_up_reuses_confirmed_facts_at_exact_commit 断言 payload.commit 等于首个任务 Commit，confirmed_facts 含首个任务的已验证 subject。"
+    },
+    {
+      "item": "第二个任务实际召回并使用第一个的已验证经验",
+      "result": "PASS",
+      "evidence": "两个连续任务均在真实 PostgreSQL 上执行；第二个任务的模型 payload 同时包含 relevant_memories 与 prior_experience 中的第一个任务 subject。"
+    },
+    {
+      "item": "错误或过期记忆被过滤或明确降权",
+      "result": "PASS",
+      "evidence": "test_unverified_and_stale_memories_are_filtered_or_downweighted：unverified 进入 excluded（UNVERIFIED）；stale 记忆 requires_reverification/downweighted 为 true，且不进入 prior_experience。"
+    },
+    {
+      "item": "Memory Poisoning 不能改变工具清单、允许仓库、预算、审批和沙箱策略",
+      "result": "PASS",
+      "evidence": "test_poisoned_memory_cannot_change_tools_repository_budget_or_approval：authority 记忆被排除为 AUTHORITY_CLAIM、注入记忆为 PROMPT_INJECTION；payload 的 available_tools/allowed_tools 仍等于 TOOL_NAMES，budgets 等于 AnalysisLimits，repository/commit 等于 spec，memory_policy 全部为 false。"
+    },
+    {
+      "item": "记忆只能提供参考内容",
+      "result": "PASS",
+      "evidence": "MemoryAdvisory.reference_only 为 Literal[True]；prior_experience 每条带 [reference-only] 前缀；memory_policy 显式禁止修改工具、仓库、Commit、预算、审批与沙箱。"
+    },
+    {
+      "item": "既有 V3.2 / M04 行为不回归",
+      "result": "PASS",
+      "evidence": "M04 Context 压缩 10 项 + V3.2 仓库分析 13 项 = 23 passed，0 failed，0 skipped。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "M05 不重复实现 Compaction",
+      "handling": "复用 M04 ContextBuilder；M05 只需保证记忆段与 Evidence 段在压缩后仍存在，回归测试已覆盖。"
+    },
+    {
+      "issue": "Working Memory 不参与跨任务召回",
+      "handling": "recall_task/recall_failures 显式跳过 memory_kind=working，避免未验证的运行中笔记被当作仓库知识。"
+    },
+    {
+      "issue": "验证失败的运行也会写入候选",
+      "handling": "after_verification 以 outcome=failure 生成候选；只有带 Evidence 的候选标记为 verified，未验证内容不能冒充当前事实。"
+    },
+    {
+      "issue": "MemoryStore 作用域绑定 Settings.repository，而分析对象可能不是默认仓库",
+      "handling": "AnalysisMemory 按 spec.repository 构造 Settings 视图（仅替换 repository），复用原 project/actor/数据库/Artifact 配置；未修改 M01 表结构或存储契约。"
+    },
+    {
+      "issue": "全仓 Ruff / mypy 存在与本卡无关的历史告警",
+      "handling": "按 A02–M04 惯例：Ruff 覆盖本卡新增/修改文件，mypy strict 覆盖新增 memory_loop.py 与修改的 context/builder.py；agent.py 的既有类型告警未在本卡处理。"
+    },
+    {
+      "issue": "verify 注册只包含 M05 测试文件",
+      "handling": "验收命令与任务书一致；M04 与 V3.2 回归以独立命令执行并记录在 08-regression.log，23 passed / 0 skipped。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/repository_analysis/memory_loop.py",
+    "src/mgar_v3/repository_analysis/agent.py",
+    "src/mgar_v3/repository_analysis/service.py",
+    "src/mgar_v3/context/builder.py（MemoryNote.downweighted）",
+    "tests/test_v33_memory_agent.py",
+    "docs/v33/M05-memory-agent-loop.md",
+    "config/verification.json（M05 条目）",
+    "docs/v33/accept/M05/accept.json"
+  ],
+  "next_card": "R01"
+}
