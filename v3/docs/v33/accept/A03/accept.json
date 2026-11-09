@@ -1,0 +1,152 @@
+{
+  "card": "A03",
+  "title": "Finding Store & Defect Discovery",
+  "commit": "91e0aac6d22a1527ed1987382b5808a55a6208f9",
+  "commit_note": "单次本地提交：findings 包（契约、Store、发现）、测试、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "cc90df3c24ebc77bacb3c241bbdbba9393869518",
+  "accepted_at": "2026-11-09T08:01:16Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "git": "2.43.0",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "model": "NOT_USED",
+    "network": "NOT_USED",
+    "docker": "NOT_USED (A03 consumes ScanReport; scanner execution is A02)",
+    "postgres": "NOT_USED (A03 is a domain card; no migration required)",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean (implementation committed as 91e0aac before this record)",
+  "commands": [
+    {
+      "name": "engineering-verify",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/verify.py",
+        "--task",
+        "A03"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 5.527,
+      "purpose": "A03 统一验收：Finding 契约、去重、生命周期门、覆盖范围、排序与确定性",
+      "counts": {
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "32d2e5c1abef14726a0c34eb6cfd4bffcbe678235f75d793f6812881f1d55f99",
+      "finished_source_sha256": "32d2e5c1abef14726a0c34eb6cfd4bffcbe678235f75d793f6812881f1d55f99",
+      "git_commit": "cc90df3c24ebc77bacb3c241bbdbba9393869518",
+      "attempt": "evidence/A03/20261109T080027Z-01d11067",
+      "log": "evidence/A03/20261109T080027Z-01d11067/command.log",
+      "junit": "evidence/A03/20261109T080027Z-01d11067/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/findings",
+        "tests/test_v33_findings.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/mypy",
+        "src/mgar_v3/findings"
+      ],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）与 mypy strict(src) 零告警",
+      "log": "evidence/A03/20261109T080024Z-A03/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前待提交文件仅为 A03 交付物",
+      "log": "evidence/A03/20261109T080024Z-A03/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认测试未产生源工作区改动",
+      "log": "evidence/A03/20261109T080024Z-A03/04-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "A03 是纯领域卡：不执行扫描器、不调用模型、不访问网络、不写远端。扫描器真实执行已由 A02 live 门覆盖；运行时复现验证属于 A04。verify 记录中的 live_gate=NOT_RUN 与本节一致。",
+  "must_pass": [
+    {
+      "item": "已知缺陷能产生独立 Finding",
+      "result": "PASS",
+      "evidence": "test_known_defects_produce_independent_findings（go-vet 与 go-test 各自独立，finding_id 不同，evidence_ids 非空）"
+    },
+    {
+      "item": "同一条 Scanner 警告不被重复计为多个独立 Bug",
+      "result": "PASS",
+      "evidence": "test_duplicate_scanner_warning_is_one_finding_not_multiple_bugs（同路径/规则合并为 1 个 Finding，位置与证据累加，duplicates_merged=1）"
+    },
+    {
+      "item": "无证据的模型猜测不能进入 reproduced",
+      "result": "PASS",
+      "evidence": "test_model_guess_without_evidence_cannot_become_reproduced（声称 reproduced 的提案被拒并保持 suspected；直接迁移返回 FINDING_EVIDENCE_REQUIRED）"
+    },
+    {
+      "item": "每个 Finding 带证据与不确定性，且真实错误与质量建议可区分",
+      "result": "PASS",
+      "evidence": "test_real_defects_quality_advice_and_supply_chain_risk_are_distinct（F401=quality、失败测试=defect、CI_PIPE_SHELL=risk）；所有扫描器 Finding 断言 evidence_ids 与 uncertainty 非空"
+    },
+    {
+      "item": "维护审查覆盖范围，明确未扫描部分",
+      "result": "PASS",
+      "evidence": "test_review_coverage_marks_every_unscanned_scope（files:4、language:Rust、scanner:dependency:failed、scanner:go-race:skipped；complete=false）"
+    },
+    {
+      "item": "支持按严重程度、可复现性和修复风险排序",
+      "result": "PASS",
+      "evidence": "test_findings_sort_by_severity_reproducibility_and_fix_risk（static-error > high-risk > warning-rule）"
+    },
+    {
+      "item": "结果确定且可回读",
+      "result": "PASS",
+      "evidence": "test_report_round_trips_and_repeats_byte_for_byte（两次发现逐字节一致，FindingReport JSON 往返相等）"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "A03 任务书未要求数据库或迁移，验收命令也仅运行 pytest",
+      "handling": "实现为进程内 FindingStore + 可序列化 FindingReport；PostgreSQL 未使用，未新增迁移。持久化与跨 Run 查询留给后续卡片"
+    },
+    {
+      "issue": "模型可能声称已验证成功，但 A03 没有独立验证器",
+      "handling": "InvestigationProposal 的 claimed_status 若超过 investigating 一律返回 FINDING_VERIFICATION_REQUIRED 并保持 suspected；reproduced 仅接受外部 test_run 证据，A04 负责真实复现"
+    },
+    {
+      "issue": "首次静态/测试检查失败（ruff F401/F841，测试辅助函数漏传 root_cause/fix_risk）",
+      "handling": "移除未用导入与变量、补齐辅助函数字段后重跑；失败原始输出保留在 evidence，不计入验收",
+      "attempt": "evidence/A03/20261109T075500Z-A03-first-check/01-first-check.log"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/findings/model.py",
+    "src/mgar_v3/findings/store.py",
+    "src/mgar_v3/findings/discovery.py",
+    "src/mgar_v3/findings/__init__.py",
+    "tests/test_v33_findings.py",
+    "docs/v33/A03-findings.md",
+    "config/verification.json（A03 条目）",
+    "docs/v33/accept/A03/accept.json"
+  ],
+  "next_card": "A04"
+}
