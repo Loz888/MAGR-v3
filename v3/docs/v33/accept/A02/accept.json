@@ -1,0 +1,157 @@
+{
+  "card": "A02",
+  "title": "Scanner Registry & Isolated Language Scanners",
+  "commit": "fc70a402cffb6a5ab96f5d62975f61f11b7298ea",
+  "commit_note": "单次本地提交：scanners 包、测试、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "126e9dbbdc4930440bf9cfb6fa7d77d3d571bfc7",
+  "accepted_at": "2026-11-09T07:39:07Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 (Windows native lacks make/uv/git PATH) for verification",
+    "git": "2.43.0",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "docker": "real daemon; image golang:1.27.1-bookworm present",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "pyright": "NOT_INSTALLED (fake harness validates JSON parsing and optional semantics)",
+    "semgrep": "NOT_INSTALLED (fake harness validates JSON parsing and optional semantics)",
+    "local_go": "NOT_INSTALLED (fake harness validates race-check opt-in and budget split)",
+    "model": "NOT_USED",
+    "network": "NOT_USED (Docker network=none for every container)",
+    "postgres": "NOT_USED",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean (implementation committed as fc70a40 before this record)",
+  "commands": [
+    {
+      "name": "engineering-verify",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/verify.py",
+        "--task",
+        "A02"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 24.498,
+      "purpose": "A02 统一验收：契约、沙箱、真实 Docker Go、真实 Ruff/pytest、unsupported 与命令策略",
+      "counts": {
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "b17ce63d3b80caa995fd1bbd4c7d9cb259cf420fab7ecc1afc7f65d106854177",
+      "git_commit": "126e9dbbdc4930440bf9cfb6fa7d77d3d571bfc7",
+      "attempt": "evidence/A02/20261109T072723Z-7fb7e0bc",
+      "log": "evidence/A02/20261109T072723Z-7fb7e0bc/command.log",
+      "junit": "evidence/A02/20261109T072723Z-7fb7e0bc/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/scanners",
+        "tests/test_v33_scanners.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/mypy",
+        "src/mgar_v3/scanners"
+      ],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）与 mypy strict(src) 零告警",
+      "log": "evidence/A02/20261109T073907Z-A02/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after-implementation",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认实现提交后工作区干净（空输出）",
+      "log": "evidence/A02/20261109T073907Z-A02/01-git-after-implementation.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "PASS",
+  "live_gate_note": "验收 pytest 内含真实 Docker 固定镜像 Go 仓库（go vet 的 printf 问题与失败 TestAdd 均产生结构化结果）、真实 Ruff F401 与真实 pytest 失败；容器创建后 docker inspect 复核 network=none/read-only/非 root/cap-drop ALL，源工作区哈希不变。Pyright/Semgrep/本机 Go race 通过 fake 二进制验证解析与可选语义；未使用模型、网络、PostgreSQL、Redis。",
+  "must_pass": [
+    {
+      "item": "Go 与 Python 仓库已知问题产生结构化扫描结果",
+      "result": "PASS",
+      "evidence": "test_docker_go_repository_yields_structured_findings（go-vet/go-test，line 7）；test_ruff_and_pytest_report_real_findings_without_touching_source（F401 + test_failure）"
+    },
+    {
+      "item": "不支持语言明确标记 unsupported，且不声称扫描完成",
+      "result": "PASS",
+      "evidence": "test_unsupported_language_is_explicit_and_never_complete（Rust → unsupported / NO_SCANNER_FOR_LANGUAGE / complete=false）"
+    },
+    {
+      "item": "所有扫描在隔离沙箱执行，不允许未经认可的安装或构建命令",
+      "result": "PASS",
+      "evidence": "test_command_policy_rejects_unapproved_commands（拒绝 pip install/go get/go mod/bash/rm/元字符）；test_snapshot_detects_a_changed_workspace；DockerSandbox 启动前 inspect 策略校验"
+    },
+    {
+      "item": "工具契约含 id/version/language/required_capabilities/timeout/resource_limits/output_schema",
+      "result": "PASS",
+      "evidence": "test_scanner_contracts_are_complete_and_unique（7 个 id 唯一，字段与 schema 完整）"
+    },
+    {
+      "item": "缺失工具链不得被当作扫描完成",
+      "result": "PASS",
+      "evidence": "test_missing_toolchains_are_reported_not_claimed（Go/Ruff/pytest → CAPABILITY_MISSING，complete=false）"
+    },
+    {
+      "item": "-race 为独立资源预算且按需执行",
+      "result": "PASS",
+      "evidence": "test_race_check_is_independent_and_opt_in（未请求 → RACE_CHECK_DISABLED/required=false；请求 → 独立 timeout=300s、cpu=300s、rule=go-race/category=bug）"
+    },
+    {
+      "item": "依赖与 CI 配置风险信号可结构化输出",
+      "result": "PASS",
+      "evidence": "test_dependency_and_ci_supply_chain_signals（DEP_LOCKFILE_MISSING/DEP_UNPINNED/CI_PIPE_SHELL/CI_UNPINNED_ACTION 含行号）"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "Windows/WSL 非交互 bash 无 make，且 $HOME 环境值为 Windows 路径导致 uv 不在 PATH",
+      "handling": "验收脚本显式设置 HOME=/home/imini 与绝对 PATH，直接调用 uv run --frozen python scripts/verify.py --task A02；首次失败的 uv 调用目录保留",
+      "attempt": "evidence/A02/20261109T072656Z-951b7773"
+    },
+    {
+      "issue": "Ruff 在 1GB RLIMIT_AS 下 abort（exit 101/134），并非真实 lint 失败",
+      "handling": "将 python-ruff 的内存预算提升到 2GB（实测 2GB 正常），契约字段与沙箱策略不变"
+    },
+    {
+      "issue": "go test 默认内置 vet，会在测试执行前因 printf 告警失败并掩盖真实测试失败",
+      "handling": "独立 go vet 已单独执行；go test 与 go test -race 使用 -vet=off，使编译错误与测试失败分别结构化"
+    },
+    {
+      "issue": "本机只有 golang 固定镜像；无 Python 语言镜像、无本机 go/pyright/semgrep",
+      "handling": "Go 走 Docker 隔离；Python 工具走进程沙箱（rlimit + 一次性哈希校验快照）；Pyright/Semgrep/race 用 fake 二进制验证解析与可选/预算语义"
+    },
+    {
+      "issue": "全量 pytest 在共享测试库上出现既有失败（schema_migrations 20 vs 19 等），与 A02 无关",
+      "handling": "未修改无关模块；A02 验收限定 tests/test_v33_scanners.py，13 passed / 0 skipped，failures 中无 test_v33_scanners"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/scanners/domain.py",
+    "src/mgar_v3/scanners/sandbox.py",
+    "src/mgar_v3/scanners/registry.py",
+    "src/mgar_v3/scanners/go.py",
+    "src/mgar_v3/scanners/python.py",
+    "src/mgar_v3/scanners/dependency.py",
+    "src/mgar_v3/scanners/semgrep.py",
+    "src/mgar_v3/scanners/__init__.py",
+    "tests/test_v33_scanners.py",
+    "docs/v33/A02-scanners.md",
+    "config/verification.json（A02 条目）",
+    "docs/v33/accept/A02/accept.json"
+  ]
+}
