@@ -1,4 +1,4 @@
-"""V3.3 M01 unified memory schema and lifecycle."""
+"""V3.3 unified memory schema, lifecycle and candidate write gate."""
 
 from mgar_v3.memory.model import (
     MEMORY_KINDS,
@@ -19,8 +19,32 @@ from mgar_v3.memory.model import (
     WorkingDetail,
 )
 from mgar_v3.memory.store import MemoryStore
+from mgar_v3.memory.write import (
+    CANDIDATE_SCHEMA,
+    CandidateIssue,
+    CandidateProvenance,
+    CandidateTrigger,
+    CandidateValidation,
+    MemoryCandidate,
+    MemoryConfirmation,
+    MemoryOutcome,
+    MemoryWriter,
+    candidate_from_finding,
+    execution_candidate,
+)
 
 __all__ = [
+    "CANDIDATE_SCHEMA",
+    "CandidateIssue",
+    "CandidateProvenance",
+    "CandidateTrigger",
+    "CandidateValidation",
+    "MemoryCandidate",
+    "MemoryConfirmation",
+    "MemoryOutcome",
+    "MemoryWriter",
+    "candidate_from_finding",
+    "execution_candidate",
     "MEMORY_KINDS",
     "MEMORY_LIFECYCLES",
     "MEMORY_SCHEMA",

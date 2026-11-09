@@ -91,6 +91,22 @@
     ],
     "timeout_seconds": 300
   },
+  "M02": {
+    "components": {
+      "candidates": "six_execution_triggers_with_outcome_matrix_and_digest_identity",
+      "confirmation": "semantic_procedural_and_high_risk_require_external_digest_bound_confirmation",
+      "filtering": "secrets_prompt_injection_inferred_and_disputed_content_rejected",
+      "findings": "a03_findings_become_outcome_scoped_candidates_without_mixing_success_and_failure",
+      "model": "not_used",
+      "network": "not_used",
+      "postgres": "real_disposable_database_0021_migration_and_reference_scope_checks",
+      "redis": "not_used"
+    },
+    "tests": [
+      "tests/test_v33_memory_write.py"
+    ],
+    "timeout_seconds": 300
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
