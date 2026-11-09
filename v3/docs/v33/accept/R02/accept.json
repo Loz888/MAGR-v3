@@ -1,0 +1,188 @@
+{
+  "card": "R02",
+  "title": "Generic Worktree & Patch Editor",
+  "commit": "0e768eb913aee1ea532308c1b6f58c1c722188b3",
+  "commit_note": "单次本地提交：repair/worktree.py（隔离 Worktree、五个补丁工具、配额、树哈希、回滚、受保护路径）、tests/test_v34_patch_workspace.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "93881b61ccf8573a5a61cf29097428b926782389",
+  "accepted_at": "2026-11-09T10:04:11Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (new module only)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "model": "NOT_USED",
+    "network": "NOT_USED",
+    "docker": "NOT_USED",
+    "postgres": "NOT_USED",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as 0e768eb. Evidence is gitignored; this accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "R02"],
+      "exit_code": 0,
+      "duration_seconds": 5.503,
+      "purpose": "R02 统一验收：隔离 Worktree 中多文件补丁、配额、树哈希、回滚与全部拒绝路径",
+      "counts": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "da23355754f55aa8b700c599a34942388bfd53a210c1f548aaf048aea4d3d2e3",
+      "finished_source_sha256": "da23355754f55aa8b700c599a34942388bfd53a210c1f548aaf048aea4d3d2e3",
+      "git_commit": "0e768eb913aee1ea532308c1b6f58c1c722188b3",
+      "attempt": "evidence/R02/20261109T100334Z-ca7b1001",
+      "log": "evidence/R02/20261109T100334Z-ca7b1001/command.log",
+      "junit": "evidence/R02/20261109T100334Z-ca7b1001/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/repair/worktree.py",
+        "tests/test_v34_patch_workspace.py"
+      ],
+      "secondary_argv": ["/tmp/mgar-v3-venv/bin/mypy", "src/mgar_v3/repair/worktree.py"],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）零告警；mypy strict 覆盖新增 worktree.py",
+      "log": "evidence/R02/20261109T100330Z-R02/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "regression",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_v34_repair_handoff.py",
+        "-q"
+      ],
+      "counts": {
+        "tests": 8,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "purpose": "R01 Handoff 回归；确认 Worktree 继承的 Allowed Paths 与修复目标未被改变",
+      "log": "evidence/R02/20261109T100330Z-R02/08-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean（实现已提交为 0e768eb）",
+      "log": "evidence/R02/20261109T100330Z-R02/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 verify / 测试未修改源工作区",
+      "log": "evidence/R02/20261109T100330Z-R02/07-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "R02 是本地 Worktree 与补丁编辑卡：不访问网络、不写远端、不调用真实模型、不发布 PR。真实修复执行与发布属于 R04/R05。",
+  "must_pass": [
+    {
+      "item": "Agent 可在隔离 Workspace 中修改授权文件",
+      "result": "PASS",
+      "evidence": "apply_patch 只写入 mkdtemp 私有 Worktree；每条编辑必须属于 allowed_paths，未列出路径返回 PATCH_PATH_DENIED。"
+    },
+    {
+      "item": "支持跨语言、多文件修改，而非只修 orders.go",
+      "result": "PASS",
+      "evidence": "test_python_multi_file_patch_applies_and_reverts 与 test_go_multi_file_patch_uses_the_same_editor 使用同一编辑器处理 Python 四文件与 Go 三文件补丁；diff 断言不含 orders.go。"
+    },
+    {
+      "item": "支持新增源文件与测试文件",
+      "result": "PASS",
+      "evidence": "Python 补丁新增 src/extra.py 与 tests/test_extra.py；Go 补丁新增 internal/mathx/helper.go；create 在 allow_new_files 开启时成功，关闭时返回 PATCH_CREATE_DENIED。"
+    },
+    {
+      "item": "可配置文件数、修改行数与总字节数",
+      "result": "PASS",
+      "evidence": "test_patch_quotas_and_new_file_policy_are_configurable 分别用 max_files=1、max_changed_lines=2、max_total_bytes=10 触发 PATCH_LIMIT，默认配置下正常补丁通过。"
+    },
+    {
+      "item": "默认禁止删除大量文件或修改受保护配置",
+      "result": "PASS",
+      "evidence": "PatchLimits.max_deleted_files 默认 0，删除返回 PATCH_DELETE_DENIED；go.mod/pyproject.toml/Dockerfile 返回 PATCH_PROTECTED；.github 与 .git 路径在路径校验阶段被拒绝。"
+    },
+    {
+      "item": "防止路径穿越、符号链接逃逸，且不能修改 .git 控制文件",
+      "result": "PASS",
+      "evidence": "test_paths_symlinks_and_protected_configuration_are_rejected 覆盖 ../outside.txt、/etc/passwd、.git/config、src/../escape.py 与指向宿主目录的符号链接；链接目标文件内容保持不变。"
+    },
+    {
+      "item": "每次补丁保存前后都有 Tree Hash",
+      "result": "PASS",
+      "evidence": "PatchResult 固定返回 tree_before / tree_after / patch_id；test_stale_conflict_and_missing_preimages_are_rejected 断言第二次补丁的 tree_before 等于第一次的 tree_after，revert 后回到基线哈希。"
+    },
+    {
+      "item": "支持撤销补丁",
+      "result": "PASS",
+      "evidence": "revert_patch 逐层恢复前置文件映射与 Tree Hash；Python 多文件补丁回滚后内容与基线一致，新增文件消失；空回滚返回 PATCH_REVERT_EMPTY。"
+    },
+    {
+      "item": "修改不能触及宿主机真实用户项目",
+      "result": "PASS",
+      "evidence": "test_host_project_is_never_the_worktree 用宿主哨兵文件验证补丁与回滚全程未改写宿主；Worktree 根目录位于指定 worktrees 目录且退出后删除。"
+    },
+    {
+      "item": "与 R01 Handoff 衔接",
+      "result": "PASS",
+      "evidence": "PatchWorktree.from_handoff 直接继承 handoff.allowed_paths；test_worktree_can_inherit_an_r01_handoff_scope 验证补丁成功且空作用域被拒绝。"
+    },
+    {
+      "item": "R01 行为不回归",
+      "result": "PASS",
+      "evidence": "R01 Handoff 测试独立回归 8 passed，0 failed，0 skipped。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "Worktree 仅支持 UTF-8 文本",
+      "handling": "二进制文件不可编辑，读取与写入均返回 PATCH_FORMAT；本卡修复对象是源码与测试文件，二进制发布物由后续发布卡处理。"
+    },
+    {
+      "issue": "默认删除上限为 0",
+      "handling": "比任务书“禁止大量删除”更严格：默认完全禁止删除，仓库可按需通过 max_deleted_files 放宽到具体数量。"
+    },
+    {
+      "issue": "路径字符集限制为 ASCII 安全集",
+      "handling": "继续使用 R5 Git Tree 算法与安全字符集，拒绝空格、Unicode、控制字符与隐藏路径；换取确定的跨平台行为与 Git 兼容 Tree Hash。"
+    },
+    {
+      "issue": "补丁为整文件替换而非 unified diff 输入",
+      "handling": "FileEdit 要求读取时的 SHA-256 作为前置条件，避免上下文漂移；get_diff 输出统一 diff 供审查，apply_patch 接收结构化编辑以保证语言无关。"
+    },
+    {
+      "issue": "尚未接入 Agent 工具循环",
+      "handling": "R02 交付可调用的工具面；R04 修复循环负责把 read/apply/diff/revert 暴露给模型，并继续受 R01 授权约束。"
+    },
+    {
+      "issue": "verify 注册只包含 R02 测试文件",
+      "handling": "验收命令与任务书一致；R01 回归以独立命令执行并记录在 08-regression.log，8 passed / 0 skipped。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/repair/worktree.py",
+    "tests/test_v34_patch_workspace.py",
+    "docs/v33/R02-patch-workspace.md",
+    "config/verification.json（R02 条目）",
+    "docs/v33/accept/R02/accept.json"
+  ],
+  "next_card": "R03"
+}
