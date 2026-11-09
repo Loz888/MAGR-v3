@@ -178,6 +178,26 @@
     ],
     "timeout_seconds": 300
   },
+  "R02": {
+    "components": {
+      "diff": "unified_diff_against_baseline_with_git_headers",
+      "isolation": "mkdtemp_worktree_from_explicit_base_tree_never_host_project",
+      "limits": "configurable_max_files_changed_lines_total_bytes_file_bytes_deletions_new_files",
+      "model": "not_used",
+      "network": "not_used",
+      "paths": "repo_relative_traversal_hidden_and_symlink_escape_rejected_r01_scope_enforced",
+      "postgres": "not_used",
+      "protected": "dependency_manifests_ci_dockerfile_and_env_denied_by_default",
+      "redis": "not_used",
+      "revert": "last_patch_revert_restores_preimages_and_tree_hash",
+      "tools": "read_worktree_file_apply_patch_get_diff_revert_patch_get_changed_files",
+      "tree": "git_style_tree_hash_before_and_after_every_patch"
+    },
+    "tests": [
+      "tests/test_v34_patch_workspace.py"
+    ],
+    "timeout_seconds": 300
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
