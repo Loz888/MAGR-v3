@@ -1,0 +1,163 @@
+{
+  "card": "M02",
+  "title": "Memory Write Gate",
+  "commit": "2005d1db88c0745b3e68922d8c18f55801064b60",
+  "commit_note": "单次本地提交：memory/write.py（候选契约、过滤、确认策略、引用校验）、__init__ 导出、tests/test_v33_memory_write.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "dac1fa47b1fad35c8356e1753f9db8d465bcf29c",
+  "accepted_at": "2026-11-09T08:50:25Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "git": "2.43.0",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (src only)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "model": "NOT_USED",
+    "network": "NOT_USED",
+    "docker": "NOT_USED",
+    "postgres": "USED (real PostgreSQL; disposable per-session test database created by tests/conftest.py, 0021 migration applied)",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as 2005d1d. This accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "engineering-verify",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/verify.py",
+        "--task",
+        "M02"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 21.597,
+      "purpose": "M02 统一验收：六类触发时机、Outcome 矩阵、确认策略、内容过滤、引用校验与 M01 回读",
+      "counts": {
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "6e90115fd1f5e253e2094ddff8c3dff345baff7dac11fd822c4d555505cef1cb",
+      "finished_source_sha256": "6e90115fd1f5e253e2094ddff8c3dff345baff7dac11fd822c4d555505cef1cb",
+      "git_commit": "2005d1db88c0745b3e68922d8c18f55801064b60",
+      "attempt": "evidence/M02/20261109T085030Z-bb486423",
+      "log": "evidence/M02/20261109T085030Z-bb486423/command.log",
+      "junit": "evidence/M02/20261109T085030Z-bb486423/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/memory",
+        "tests/test_v33_memory_write.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/mypy",
+        "src/mgar_v3/memory"
+      ],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）与 mypy strict(src) 零告警",
+      "log": "evidence/M02/20261109T085025Z-M02/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean（实现已提交为 2005d1d）",
+      "log": "evidence/M02/20261109T085025Z-M02/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 verify / 测试未修改源工作区",
+      "log": "evidence/M02/20261109T085025Z-M02/07-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "M02 是领域写入门与 PostgreSQL 引用校验卡：不调用模型、不访问网络、不写远端。验收使用真实 PostgreSQL 临时库（0021 迁移），因此 live 门不适用；PR/Release 的远端结果只作为候选输入，实际远端发布属于后续卡片。verify 记录中的 live_gate=NOT_RUN 与本节一致。",
+  "must_pass": [
+    {
+      "item": "成功与失败经验均可记录但状态不会混淆",
+      "result": "PASS",
+      "evidence": "test_success_and_failure_experiences_stay_distinct：同一 subject_key 下 patch_tests_passed:success 与 patch_verification_failed:failure 是两条 active 记录，memory_id、resolved_subject 与 event_kind 均不同；test_successful_investigation_is_auto_confirmed 记录 investigation_completed:success。"
+    },
+    {
+      "item": "自动写入仅限有明确来源的事实和执行经历",
+      "result": "PASS",
+      "evidence": "test_semantic_knowledge_requires_explicit_confirmation、test_procedural_recipe_requires_explicit_confirmation、test_high_risk_experience_requires_explicit_confirmation 均在未确认时返回 MEMORY_CONFIRMATION_REQUIRED 且 _count==0；普通 episodic 执行经历可自动确认。"
+    },
+    {
+      "item": "跨任务知识、可执行流程与高风险经验有明确确认策略",
+      "result": "PASS",
+      "evidence": "MemoryWriter._requires_confirmation 对 semantic/procedural/high_risk 一律要求确认；MemoryConfirmation 必须绑定 candidate_digest、确认人必须在 allowed_actors 且不得自证；test_confirmation_must_be_external_and_digest_bound 覆盖摘要不符、无权限与自证三种拒绝。"
+    },
+    {
+      "item": "过滤敏感凭据、Prompt Injection 与未经验证的推论",
+      "result": "PASS",
+      "evidence": "test_secrets_are_rejected_without_echoing_them（SENSITIVE_CONTENT，错误信息不含 token）；test_prompt_injection_is_rejected（PROMPT_INJECTION）；test_missing_artifacts_and_unverified_inference_are_rejected 覆盖 inferred、disputed、无 Evidence/Artifact 三类拒绝。"
+    },
+    {
+      "item": "伪造 Evidence、秘密内容、缺少权限的候选不能成为 Confirmed Memory",
+      "result": "PASS",
+      "evidence": "test_forged_and_cross_scope_evidence_are_rejected（EVIDENCE_NOT_FOUND / EVIDENCE_SCOPE_DENIED / REFERENCE_SCOPE_DENIED，_count==0）；test_working_memory_and_actor_permissions_are_rejected（KIND_NOT_WRITABLE、MEMORY_ACTOR_DENIED，_count==0）；缺少权限或自证的确认返回 MEMORY_CONFIRMATION_INVALID。"
+    },
+    {
+      "item": "A03 Finding 与执行结果可转换为候选记忆",
+      "result": "PASS",
+      "evidence": "test_a03_finding_becomes_a_scoped_candidate：reproduced Finding 产生 commit 作用域、provenance=mechanical、verified 的 success 候选；not_reproduced 映射为 failure；candidate.resolved_subject 与 record.subject_key 一致。"
+    },
+    {
+      "item": "候选产生时机与 Outcome 不匹配时被拒绝",
+      "result": "PASS",
+      "evidence": "test_trigger_outcome_mismatch_is_rejected：patch_verification_failed+success 与 patch_tests_passed+failure 均在模型层抛 ValidationError；test_pr_and_release_results_are_recorded_as_separate_experiences 验证 PR 审批与发布结果是两条独立经验。"
+    },
+    {
+      "item": "Confirmed Memory 可由 M01 存储读取",
+      "result": "PASS",
+      "evidence": "test_confirmed_memory_is_readable_through_the_m01_store：writer.write 后 MemoryStore.get、current、history 均命中同一 memory_id；写入仍经过 M01 的引用与权限复核。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "M02 任务书未要求新的数据库结构",
+      "handling": "复用 M01 的 0021 迁移与 knowledge.memory_* 表，未新增迁移；候选契约只存在于代码层，Confirmed Memory 才落库。"
+    },
+    {
+      "issue": "M01 契约以 summary_hash 引用原始摘要，没有摘要文本列",
+      "handling": "候选 summary 只用于过滤、确认展示与路径引用校验，不新增列；落库仍以 summary_hash + evidence_ids + artifact_hashes 表达来源。"
+    },
+    {
+      "issue": "确认人身份来自 Settings.allowed_actors，未引入独立审批表",
+      "handling": "本卡只要求「明确确认策略」：摘要绑定、确认人白名单、禁止自证；持久化审批记录属于后续审批/审计卡片，本卡不越权建模。"
+    },
+    {
+      "issue": "首次运行前修正了一处测试断言",
+      "handling": "A03 Finding 的 subject_key 带 trigger 前缀（resolved_subject），原断言 startswith('finding:') 不正确，改为与 candidate.resolved_subject 相等并断言包含 ':finding:'；该修正发生在首次执行前，没有失败运行需要保留。"
+    },
+    {
+      "issue": "全仓 Ruff / mypy 存在与本卡无关的历史告警",
+      "handling": "按 A02–A04 惯例只对本卡新增/修改文件执行 Ruff 与 mypy，二者零告警；未改动既有无关文件。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/memory/write.py",
+    "src/mgar_v3/memory/__init__.py",
+    "tests/test_v33_memory_write.py",
+    "docs/v33/M02-memory-write.md",
+    "config/verification.json（M02 条目）",
+    "docs/v33/accept/M02/accept.json"
+  ],
+  "next_card": "M03"
+}
