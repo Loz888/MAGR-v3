@@ -1,0 +1,203 @@
+{
+  "card": "R03",
+  "title": "General Sandbox Test Executor",
+  "commit": "3a218b6fa97868fbd56f8b9b2639532e617adb16",
+  "commit_note": "单次本地提交：repair/sandbox_executor.py（Go/Python 可信适配器、依赖准备阶段、容器策略校验、结果分类）、deploy/Dockerfile.sandbox-r03、deploy/r03/bootstrap.py、deploy/r03/runner.py、scripts/build_r03_sandbox.py、Makefile、tests/test_v34_sandbox_executor.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "44a6fdc41a1837a8cb727d25bb7a82dd0116a910",
+  "accepted_at": "2026-11-09T10:18:48Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (new sandbox_executor.py)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "docker": "USED (real Docker 29.9.2; fixed image mgar-v3-sandbox-r03:local sha256:75ff415b813cad5a2d61d418dfaaf33d1f6e7e56b0a4bb386624f0cf1a92b3c1 from base golang:1.27.1-bookworm sha256:8d48e12ec56735e9358640898b9d9b9fcca110612ed8a5567438c0a1baa24e66)",
+    "sandbox_toolchains": "go1.27.1 linux/amd64; Python 3.11.2",
+    "model": "fixture_no_network",
+    "network": "NOT_USED (image build and every container run use --network=none)",
+    "postgres": "NOT_USED",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as 3a218b6. Evidence and .local/r03/sandbox-lock.json are gitignored; this accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "sandbox-build",
+      "argv": ["make", "sandbox-build"],
+      "exit_code": 0,
+      "purpose": "构建固定 Go/Python 沙箱镜像；基础镜像 ID、源码哈希与工具链版本写入 .local/r03/sandbox-lock.json；镜像内校验 bootstrap/runner 哈希",
+      "image_id": "sha256:75ff415b813cad5a2d61d418dfaaf33d1f6e7e56b0a4bb386624f0cf1a92b3c1",
+      "source_sha256": "9a6eec5ce1dbc356d12f866e0bccb5e704323ea825ce8343ba651042b4583262",
+      "log": "evidence/R03/20261109T101727Z-R03/03-sandbox-build.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "R03"],
+      "exit_code": 0,
+      "duration_seconds": 43.436,
+      "purpose": "R03 统一验收：Python/Go 隔离执行、网络与凭据隔离、依赖等待、构建/测试/超时/沙箱错误分类",
+      "counts": {
+        "tests": 10,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "e286443140f28ca7f67b034eca852b29737de18c009f6872c9020e46459f86b5",
+      "finished_source_sha256": "e286443140f28ca7f67b034eca852b29737de18c009f6872c9020e46459f86b5",
+      "git_commit": "3a218b6fa97868fbd56f8b9b2639532e617adb16",
+      "attempt": "evidence/R03/20261109T101731Z-54b5c3a3",
+      "log": "evidence/R03/20261109T101731Z-54b5c3a3/command.log",
+      "junit": "evidence/R03/20261109T101731Z-54b5c3a3/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/repair/sandbox_executor.py",
+        "tests/test_v34_sandbox_executor.py",
+        "scripts/build_r03_sandbox.py",
+        "deploy/r03/bootstrap.py",
+        "deploy/r03/runner.py"
+      ],
+      "secondary_argv": ["/tmp/mgar-v3-venv/bin/mypy", "src/mgar_v3/repair/sandbox_executor.py"],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）零告警；mypy strict 覆盖新增 sandbox_executor.py",
+      "log": "evidence/R03/20261109T101727Z-R03/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "regression",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_v34_repair_handoff.py",
+        "tests/test_v34_patch_workspace.py",
+        "-q"
+      ],
+      "counts": {
+        "tests": 16,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "purpose": "R01/R02 回归；确认新增执行器与 Makefile 调整未破坏前置卡片",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean（实现已提交为 3a218b6）",
+      "log": "evidence/R03/20261109T101727Z-R03/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 verify / 测试未修改源工作区",
+      "log": "evidence/R03/20261109T101727Z-R03/08-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "R03 在本机真实 Docker 上执行，但模型使用 fixture，不访问网络。容器构建与运行均强制 --network=none；真实 GitHub / 模型凭据未被使用。",
+  "must_pass": [
+    {
+      "item": "第一阶段支持 Go 与 Python",
+      "result": "PASS",
+      "evidence": "test_python_tests_run_in_a_verified_isolated_sandbox 与 test_go_tests_run_in_the_same_generic_sandbox 在同一固定镜像中分别以 PythonAdapter / GoAdapter 通过。"
+    },
+    {
+      "item": "使用固定基础镜像与隔离 Workspace",
+      "result": "PASS",
+      "evidence": "make sandbox-build 将基础镜像 ID 与构建源码哈希写入锁；运行只使用锁中的 image_id；/workspace 为容器内独立 tmpfs，无 bind mount，回执 policy.mounts=0。"
+    },
+    {
+      "item": "沙箱不拥有宿主文件系统访问权",
+      "result": "PASS",
+      "evidence": "test_host_files_and_credentials_are_not_visible 在宿主创建哨兵文件，容器内测试断言该绝对路径不存在；docker inspect 校验 Binds 为空、Mounts 为空、根文件系统只读。"
+    },
+    {
+      "item": "不注入 GitHub Token、DeepSeek Key、数据库凭据",
+      "result": "PASS",
+      "evidence": "宿主设置 GITHUB_TOKEN / DEEPSEEK_API_KEY / DATABASE_URL / PGPASSWORD 哨兵后，容器内测试断言这些变量不存在；回执 environment_keys 与 docker inspect 的 Config.Env 均不含密钥形态变量，策略校验对密钥名直接拒绝。"
+    },
+    {
+      "item": "默认无自由网络访问",
+      "result": "PASS",
+      "evidence": "test_network_is_denied_inside_the_sandbox 的测试尝试连接 1.1.1.1:80 并期望 OSError；docker inspect 要求 NetworkMode=none。"
+    },
+    {
+      "item": "CPU、内存、时间、进程数、磁盘配额",
+      "result": "PASS",
+      "evidence": "每次 create 使用 --cpus/--memory/--memory-swap/--pids-limit/--tmpfs size；docker inspect 逐项核对 NanoCpus、Memory、PidsLimit 与 tmpfs 挂载点；test_timeout_is_reported_and_the_container_is_killed 验证墙钟超时。"
+    },
+    {
+      "item": "测试命令由可信适配器生成，不执行模型 shell 文本",
+      "result": "PASS",
+      "evidence": "GoAdapter/PythonAdapter 返回固定 argv；回执 command 与 GO_COMMAND / PYTHON_COMMAND 完全一致；bootstrap 直接 execv argv，不经过 shell。"
+    },
+    {
+      "item": "独立依赖准备阶段；无法安全安装时等待",
+      "result": "PASS",
+      "evidence": "run 先调用 prepare；test_dependency_preparation_waits_instead_of_installing 对 Python 第三方 import 与 Go go.mod require 均返回 waiting_for_dependencies，command 为空且未创建容器。"
+    },
+    {
+      "item": "记录命令、镜像版本、测试集合、退出码、日志哈希",
+      "result": "PASS",
+      "evidence": "TestReceipt 记录 command、image/image_id、tests、exit_code、log_sha256/log_bytes，并断言 log_sha256 等于原始日志字节的 SHA-256。"
+    },
+    {
+      "item": "区分构建失败、测试失败、超时与沙箱错误",
+      "result": "PASS",
+      "evidence": "test_build_failures_are_distinguished_from_test_failures 覆盖 Python 收集失败、Go 编译失败与断言失败；test_timeout... 返回 timeout；test_sandbox_process_crash... 与 test_unavailable_docker... 返回 sandbox_error。"
+    },
+    {
+      "item": "既有 R01/R02 行为不回归",
+      "result": "PASS",
+      "evidence": "R01 8 项 + R02 8 项 = 16 passed，0 failed，0 skipped。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "固定基础镜像依赖本地已有的 golang:1.27.1-bookworm",
+      "handling": "构建脚本先解析该镜像 ID 并写入锁；镜像缺失时明确失败而不会联网拉取。镜像内同时提供 Go 1.27.1 与 Python 3.11，满足第一阶段双语言。"
+    },
+    {
+      "issue": "make sandbox-build 目标改为构建 R03 通用沙箱",
+      "handling": "R5 镜像仍可通过 make sandbox-build-r5 构建；R03 验收只需通用沙箱，避免每次验收重复复制完整 GOROOT。"
+    },
+    {
+      "issue": "Python 第一阶段不使用 pytest",
+      "handling": "镜像离线且不含 pytest；runner 仅用标准库支持 unittest.TestCase 与无参 test_* 函数。pytest 插件与 fixture 属于后续依赖包阶段。"
+    },
+    {
+      "issue": "第三方依赖不自动安装",
+      "handling": "准备阶段检测 Go require / Python import / requirements.txt / pyproject.toml 依赖并返回 waiting_for_dependencies；这是安全默认值，后续通过受控离线依赖包扩展。"
+    },
+    {
+      "issue": "沙箱错误与前置配置错误分离",
+      "handling": "镜像未构建、锁无效、输入越界以 DomainError 拒绝；Docker 不可用、容器创建失败、runner 崩溃与输出截断以 sandbox_error 回执返回，保证可审计。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/repair/sandbox_executor.py",
+    "deploy/Dockerfile.sandbox-r03",
+    "deploy/r03/bootstrap.py",
+    "deploy/r03/runner.py",
+    "scripts/build_r03_sandbox.py",
+    "Makefile（sandbox-build / sandbox-build-r5 / sandbox-build-r03）",
+    "tests/test_v34_sandbox_executor.py",
+    "docs/v33/R03-sandbox-executor.md",
+    "config/verification.json（R03 条目）",
+    "docs/v33/accept/R03/accept.json"
+  ],
+  "next_card": "R04"
+}
