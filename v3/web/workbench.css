@@ -1,0 +1,251 @@
+:root {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --panel-2: #1d212a;
+  --line: #2a2f3a;
+  --text: #e6e9ef;
+  --muted: #9aa4b2;
+  --accent: #4c8dff;
+  --ok: #35c98e;
+  --bad: #ff6b6b;
+  --warn: #f2c14e;
+  --violet: #a78bfa;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 24px;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.55 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+}
+header,
+main {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+h2 {
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+h3 {
+  font-size: 14px;
+  margin: 18px 0 8px;
+}
+.muted {
+  color: var(--muted);
+}
+nav a {
+  color: var(--accent);
+  text-decoration: none;
+}
+nav span {
+  color: var(--muted);
+  margin: 0 6px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+  margin: 16px 0;
+}
+label {
+  display: block;
+  margin: 10px 0;
+  color: var(--muted);
+}
+label.inline {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--text);
+}
+label.inline input {
+  width: auto;
+  margin: 0;
+}
+input,
+select,
+textarea {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px 10px;
+  background: #0c0e13;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+button {
+  padding: 8px 14px;
+  background: var(--accent);
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+}
+button.secondary {
+  background: #2b3240;
+}
+button.danger {
+  background: #7a2f35;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 12px 0;
+}
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.output {
+  margin: 8px 0 0;
+  padding: 12px;
+  max-height: 360px;
+  overflow: auto;
+  background: #0c0e13;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: 12px/1.5 "Cascadia Mono", Consolas, monospace;
+}
+.output.diff {
+  max-height: 480px;
+}
+.runs {
+  display: grid;
+  gap: 10px;
+}
+.run {
+  text-align: left;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  padding: 12px;
+  border-radius: 8px;
+  color: var(--text);
+}
+.run:hover {
+  border-color: var(--accent);
+}
+.run .run-title {
+  font-weight: 600;
+}
+.run .run-meta {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.badge.suspected {
+  background: #3a3220;
+  color: var(--warn);
+  border-color: #5c4d26;
+}
+.badge.reproduced {
+  background: #1f3347;
+  color: #7cc4ff;
+  border-color: #2d4d6b;
+}
+.badge.patch_verified {
+  background: #1f3a2e;
+  color: var(--ok);
+  border-color: #2c5944;
+}
+.badge.waiting_approval {
+  background: #352a4d;
+  color: var(--violet);
+  border-color: #4c3d70;
+}
+.badge.pr_created {
+  background: #173a41;
+  color: #5eead4;
+  border-color: #245a63;
+}
+.badge.status {
+  background: #232833;
+  color: var(--muted);
+  border-color: var(--line);
+}
+.timeline {
+  margin: 8px 0 0;
+  padding-left: 22px;
+  max-height: 360px;
+  overflow: auto;
+}
+.timeline li {
+  margin: 6px 0;
+}
+.timeline .when {
+  color: var(--muted);
+  font-size: 12px;
+  margin-left: 8px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  text-align: left;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 12px;
+}
+tbody tr {
+  cursor: pointer;
+}
+tbody tr:hover,
+tbody tr.selected {
+  background: #1d2430;
+}
+.finding-next {
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (max-width: 860px) {
+  .grid2,
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+}

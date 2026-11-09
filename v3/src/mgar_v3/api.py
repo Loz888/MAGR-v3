@@ -45,6 +45,12 @@ from mgar_v3.routing.live import load_router_permit
 from mgar_v3.routing.model import DeepSeekRouter
 from mgar_v3.routing.worker import FixtureRouter, RouterProvider, RouterWorker
 from mgar_v3.settings import ROOT, Settings
+from mgar_v3.workbench.domain import (
+    ApproveWorkbenchFinding,
+    CreateWorkbenchTask,
+    WorkbenchMessage,
+)
+from mgar_v3.workbench.service import WorkbenchService
 
 
 class BodyLimitMiddleware:
@@ -126,6 +132,7 @@ def create_app(
         repo_service = app.state.repo_service = RepositoryAnalysisService(
             authority, configuration
         )
+        app.state.workbench = WorkbenchService(authority, configuration, repo_service)
         if (
             selected_draft is None
             and live_repair_permit is not None
@@ -318,6 +325,9 @@ def create_app(
     def repository_service(request: Request) -> RepositoryAnalysisService:
         return cast(RepositoryAnalysisService, request.app.state.repo_service)
 
+    def workbench_service(request: Request) -> WorkbenchService:
+        return cast(WorkbenchService, request.app.state.workbench)
+
     def authenticated(request: Request) -> None:
         supplied = request.headers.get("X-MGAR-Token", "")
         if not hmac.compare_digest(
@@ -505,6 +515,156 @@ def create_app(
         service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
     ) -> dict[str, str]:
         return {"run_id": str(service.resume(run_id))}
+
+    @app.get("/workbench", include_in_schema=False)
+    def workbench_page() -> FileResponse:
+        return FileResponse(
+            ROOT / "web/workbench.html",
+            headers={
+                "Content-Security-Policy": (
+                    "default-src 'self'; script-src 'self'; style-src 'self'; "
+                    "connect-src 'self'; frame-ancestors 'none'"
+                ),
+                "Cache-Control": "no-store",
+                "X-Content-Type-Options": "nosniff",
+            },
+        )
+
+    @app.get("/api/v3/workbench/profile", dependencies=[Depends(authenticated)])
+    def workbench_profile(
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(service.profile())
+
+    @app.post(
+        "/api/v3/workbench/tasks",
+        status_code=202,
+        dependencies=[Depends(authenticated)],
+    )
+    def create_workbench_task(
+        body: CreateWorkbenchTask,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(service.create(body, actor=configuration.local_actor))
+
+    @app.get("/api/v3/workbench/tasks", dependencies=[Depends(authenticated)])
+    def list_workbench_tasks(
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+        limit: int = 30,
+    ) -> Any:
+        return jsonable_encoder(service.history(limit))
+
+    @app.get("/api/v3/workbench/tasks/{task_id}", dependencies=[Depends(authenticated)])
+    def workbench_task(
+        task_id: UUID,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(service.view(task_id))
+
+    @app.post(
+        "/api/v3/workbench/tasks/{task_id}/run",
+        dependencies=[Depends(authenticated)],
+    )
+    def run_workbench_task(
+        task_id: UUID,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(service.run(task_id))
+
+    @app.get(
+        "/api/v3/workbench/tasks/{task_id}/findings/{finding_id}",
+        dependencies=[Depends(authenticated)],
+    )
+    def workbench_finding(
+        task_id: UUID,
+        finding_id: str,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(service.finding(task_id, finding_id))
+
+    @app.get(
+        "/api/v3/workbench/tasks/{task_id}/findings/{finding_id}/diff",
+        dependencies=[Depends(authenticated)],
+    )
+    def workbench_finding_diff(
+        task_id: UUID,
+        finding_id: str,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(service.diff(task_id, finding_id))
+
+    @app.post(
+        "/api/v3/workbench/tasks/{task_id}/findings/{finding_id}/reproduce",
+        dependencies=[Depends(authenticated)],
+    )
+    def reproduce_workbench_finding(
+        task_id: UUID,
+        finding_id: str,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(service.reproduce(task_id, finding_id))
+
+    @app.post(
+        "/api/v3/workbench/tasks/{task_id}/findings/{finding_id}/repair",
+        dependencies=[Depends(authenticated)],
+    )
+    def repair_workbench_finding(
+        task_id: UUID,
+        finding_id: str,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(service.repair(task_id, finding_id))
+
+    @app.post(
+        "/api/v3/workbench/tasks/{task_id}/findings/{finding_id}/approve",
+        dependencies=[Depends(authenticated)],
+    )
+    def approve_workbench_finding(
+        task_id: UUID,
+        finding_id: str,
+        body: ApproveWorkbenchFinding,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(
+            service.approve(
+                task_id,
+                finding_id,
+                payload_hash=body.payload_hash,
+                actor=configuration.local_actor,
+            )
+        )
+
+    @app.post(
+        "/api/v3/workbench/tasks/{task_id}/messages",
+        status_code=202,
+        dependencies=[Depends(authenticated)],
+    )
+    def workbench_message(
+        task_id: UUID,
+        body: WorkbenchMessage,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(
+            service.follow_up(
+                task_id,
+                body.body,
+                client_request_id=body.client_request_id,
+            )
+        )
+
+    @app.post(
+        "/api/v3/workbench/tasks/{task_id}/{control}",
+        dependencies=[Depends(authenticated)],
+    )
+    def workbench_control(
+        task_id: UUID,
+        control: str,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        actions = {"pause": service.pause, "resume": service.resume, "cancel": service.cancel}
+        if control not in actions:
+            raise DomainError("CONTROL_UNSUPPORTED", "Workbench control is unsupported", 400)
+        return jsonable_encoder(actions[control](task_id))
 
     @app.get("/api/v3/router/status", dependencies=[Depends(authenticated)])
     def router_status(service: Annotated[Engine, Depends(authority)]) -> Any:

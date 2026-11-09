@@ -119,12 +119,54 @@ def main(argv: list[str] | None = None) -> int:
     repo.add_argument("--seconds", type=int, default=600)
     repo.add_argument("--client-request-id", default=None)
     commands.add_parser("repo-list")
-    for name in ["repo-status", "repo-report", "repo-message", "repo-pause", "repo-resume", "repo-cancel"]:
+    for name in [
+        "repo-status",
+        "repo-report",
+        "repo-message",
+        "repo-pause",
+        "repo-resume",
+        "repo-cancel",
+    ]:
         command = commands.add_parser(name)
         command.add_argument("run_id")
         if name == "repo-message":
             command.add_argument("--body", required=True)
             command.add_argument("--client-request-id", default=None)
+    workbench = commands.add_parser("workbench")
+    workbench.add_argument(
+        "--action",
+        required=True,
+        choices=[
+            "create",
+            "list",
+            "status",
+            "run",
+            "finding",
+            "reproduce",
+            "repair",
+            "diff",
+            "approve",
+            "pause",
+            "resume",
+            "cancel",
+            "message",
+        ],
+    )
+    workbench.add_argument("--task-id")
+    workbench.add_argument("--finding-id")
+    workbench.add_argument("--repo-url")
+    workbench.add_argument("--mode", choices=["audit", "issue_repair", "audit_and_repair"])
+    workbench.add_argument("--task")
+    workbench.add_argument("--ref")
+    workbench.add_argument("--commit")
+    workbench.add_argument("--issue", type=int)
+    workbench.add_argument("--include", action="append", default=[])
+    workbench.add_argument("--exclude", action="append", default=[])
+    workbench.add_argument("--execution-mode", choices=["fixture", "live"], default="fixture")
+    workbench.add_argument("--payload-hash")
+    workbench.add_argument("--body")
+    workbench.add_argument("--client-request-id")
+    workbench.add_argument("--no-auto-start", action="store_true")
     for name in [
         "status",
         "report",
@@ -266,6 +308,73 @@ def main(argv: list[str] | None = None) -> int:
                     )
                 else:
                     response = client.post(base + "/" + args.command.removeprefix("repo-"))
+            elif args.command == "workbench":
+                if args.action == "create":
+                    if not args.repo_url or not args.mode:
+                        print('{"code":"REPO_AND_MODE_REQUIRED"}', file=sys.stderr)
+                        return 2
+                    response = client.post(
+                        "/api/v3/workbench/tasks",
+                        json={
+                            "repository_url": args.repo_url,
+                            "mode": args.mode,
+                            "task": args.task or "",
+                            "ref": args.ref,
+                            "commit": args.commit,
+                            "issue_number": args.issue,
+                            "execution_mode": args.execution_mode,
+                            "coverage": {
+                                "scope": "paths" if args.include else "repository",
+                                "include_paths": args.include,
+                                "exclude_paths": args.exclude,
+                            },
+                            "auto_start": not args.no_auto_start,
+                            "client_request_id": args.client_request_id or str(uuid4()),
+                        },
+                    )
+                elif args.action == "list":
+                    response = client.get("/api/v3/workbench/tasks")
+                else:
+                    if not args.task_id:
+                        print('{"code":"TASK_ID_REQUIRED"}', file=sys.stderr)
+                        return 2
+                    base = "/api/v3/workbench/tasks/" + args.task_id
+                    if args.action == "status":
+                        response = client.get(base)
+                    elif args.action == "run":
+                        response = client.post(base + "/run")
+                    elif args.action in {"pause", "resume", "cancel"}:
+                        response = client.post(base + "/" + args.action)
+                    elif args.action == "message":
+                        if not args.body:
+                            print('{"code":"BODY_REQUIRED"}', file=sys.stderr)
+                            return 2
+                        response = client.post(
+                            base + "/messages",
+                            json={
+                                "body": args.body,
+                                "client_request_id": args.client_request_id or str(uuid4()),
+                            },
+                        )
+                    else:
+                        if not args.finding_id:
+                            print('{"code":"FINDING_ID_REQUIRED"}', file=sys.stderr)
+                            return 2
+                        finding_base = base + "/findings/" + args.finding_id
+                        if args.action == "finding":
+                            response = client.get(finding_base)
+                        elif args.action == "diff":
+                            response = client.get(finding_base + "/diff")
+                        elif args.action in {"reproduce", "repair"}:
+                            response = client.post(finding_base + "/" + args.action)
+                        else:
+                            if not args.payload_hash:
+                                print('{"code":"PAYLOAD_HASH_REQUIRED"}', file=sys.stderr)
+                                return 2
+                            response = client.post(
+                                finding_base + "/approve",
+                                json={"payload_hash": args.payload_hash},
+                            )
             elif args.command == "recovery-requests":
                 response = client.get("/api/v3/recovery-requests")
             elif args.command == "recovery-decision":

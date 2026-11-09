@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RepoSage · Unified Repository Workbench</title>
+    <link rel="stylesheet" href="/static/workbench.css" />
+  </head>
+  <body>
+    <header>
+      <h1>RepoSage V3.4 · 统一仓库工作台</h1>
+      <p class="muted">
+        Audit / Issue Repair / Audit &amp; Repair 共用同一套任务、证据与审批视图。
+        远端内容一律按不可信文本渲染；建议修复不等于已修复，Draft PR 不等于合并。
+      </p>
+      <nav>
+        <a href="/">返回 V3 工作台</a>
+        <span>·</span>
+        <a href="/repo">仓库分析（只读）</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>本机鉴权与能力</h2>
+        <label>X-MGAR-Token
+          <input id="token" type="password" autocomplete="off" placeholder="MGAR_V3_LOCAL_TOKEN" />
+        </label>
+        <div class="row">
+          <button id="save-token">保存到本页</button>
+          <button id="load-profile" class="secondary">读取工作台能力</button>
+        </div>
+        <pre id="profile" class="output"></pre>
+      </section>
+
+      <section class="card">
+        <h2>新建任务</h2>
+        <form id="create-form">
+          <label>GitHub Repository URL
+            <input id="repo-url" required placeholder="https://github.com/owner/repository" />
+          </label>
+          <div class="grid3">
+            <label>任务模式
+              <select id="mode">
+                <option value="audit">Audit（只审计）</option>
+                <option value="issue_repair">Issue Repair（按 Issue 修复）</option>
+                <option value="audit_and_repair">Audit &amp; Repair</option>
+              </select>
+            </label>
+            <label>Issue 编号（Issue Repair 必填）
+              <input id="issue-number" type="number" min="1" placeholder="123" />
+            </label>
+            <label>执行模式
+              <select id="execution-mode">
+                <option value="fixture">fixture（离线可复现）</option>
+                <option value="live">live（只读审计；写操作仍受 R05 授权约束）</option>
+              </select>
+            </label>
+          </div>
+          <label>自然语言任务
+            <textarea id="task" rows="3" placeholder="例如：审计仓库的请求处理链路，列出可复现的风险，并给出修复建议。"></textarea>
+          </label>
+          <div class="grid3">
+            <label>Branch / Tag（可选）
+              <input id="ref" placeholder="main" />
+            </label>
+            <label>Commit SHA（可选，40 位）
+              <input id="commit" placeholder="full sha" />
+            </label>
+            <label>扫描覆盖范围
+              <select id="scope">
+                <option value="repository">整个仓库</option>
+                <option value="paths">指定路径</option>
+              </select>
+            </label>
+          </div>
+          <div class="grid2">
+            <label>Include 路径（每行一个）
+              <textarea id="include-paths" rows="2" placeholder="src/&#10;tests/"></textarea>
+            </label>
+            <label>Exclude 路径（每行一个）
+              <textarea id="exclude-paths" rows="2" placeholder="vendor/"></textarea>
+            </label>
+          </div>
+          <label class="inline">
+            <input id="auto-start" type="checkbox" checked />
+            创建后立即执行（fixture 模式同步执行；live 审计排队）
+          </label>
+          <div class="row">
+            <button type="submit">提交任务</button>
+            <button type="button" id="refresh" class="secondary">刷新列表</button>
+          </div>
+        </form>
+        <pre id="create-result" class="output"></pre>
+      </section>
+
+      <section class="card">
+        <h2>任务</h2>
+        <div id="runs" class="runs"></div>
+      </section>
+
+      <section class="card" id="detail-card" hidden>
+        <h2>任务详情</h2>
+        <div id="task-summary" class="summary"></div>
+        <div class="row">
+          <button id="run-task">执行 / 继续</button>
+          <button id="pause-task" class="secondary">暂停</button>
+          <button id="resume-task" class="secondary">恢复</button>
+          <button id="cancel-task" class="danger">取消</button>
+        </div>
+        <h3>扫描覆盖范围</h3>
+        <pre id="coverage" class="output"></pre>
+        <h3>Agent 执行时间线</h3>
+        <ol id="timeline" class="timeline"></ol>
+      </section>
+
+      <section class="card" id="findings-card" hidden>
+        <h2>Findings（按风险排序）</h2>
+        <p class="muted" id="finding-disclaimer"></p>
+        <table id="findings">
+          <thead>
+            <tr><th>#</th><th>状态</th><th>严重度</th><th>位置</th><th>标题</th><th>下一步</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+
+      <section class="card" id="finding-card" hidden>
+        <h2>Finding 详情</h2>
+        <div id="finding-summary" class="summary"></div>
+        <div class="row">
+          <button id="reproduce-finding">Reproduce</button>
+          <button id="repair-finding" class="secondary">Prepare Repair</button>
+          <button id="approve-finding" class="secondary">Approve Draft PR</button>
+        </div>
+        <h3>来源与证据</h3>
+        <pre id="finding-source" class="output"></pre>
+        <h3>复现记录</h3>
+        <pre id="finding-reproduction" class="output"></pre>
+        <h3>Diff 与测试回执</h3>
+        <pre id="finding-diff" class="output diff"></pre>
+        <h3>Memory 命中与来源追踪</h3>
+        <pre id="finding-memory" class="output"></pre>
+        <h3>审批与发布状态</h3>
+        <pre id="finding-publication" class="output"></pre>
+      </section>
+
+      <section class="card" id="follow-up-card" hidden>
+        <h2>历史任务追问</h2>
+        <p class="muted">追问会创建同一 Thread 下的子任务；历史证据不会被改写。</p>
+        <textarea id="follow-up" rows="2" placeholder="基于当前证据继续追问，例如：这个缺陷还可能影响哪些调用方？"></textarea>
+        <div class="row"><button id="send-follow-up">提交追问</button></div>
+        <pre id="follow-up-result" class="output"></pre>
+      </section>
+    </main>
+
+    <script src="/static/workbench.js"></script>
+  </body>
+</html>

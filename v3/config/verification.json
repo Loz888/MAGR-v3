@@ -255,6 +255,25 @@
     ],
     "timeout_seconds": 300
   },
+  "U01": {
+    "components": {
+      "coverage": "explicit_repository_or_path_scope_with_observed_scanned_unscanned_and_languages",
+      "findings": "risk_ranked_single_source_with_evidence_uri_quote_hash_and_reproduction_plan",
+      "memory": "m05_task_recall_hits_exposed_as_references_only",
+      "modes": "audit_issue_repair_and_audit_and_repair_shared_by_web_cli_and_api",
+      "network": "not_used_fixture_in_memory_remote_only",
+      "postgres": "real_disposable_database_0022_migration",
+      "publication": "r05_draft_pr_contract_never_merges",
+      "reproduction": "real_pytest_subprocess_failing_before_and_passing_after_receipts",
+      "review": "suggested_fix_never_rendered_as_fixed_and_five_stage_labels_evidence_gated",
+      "surfaces": "authenticated_api_cli_and_static_web_workbench",
+      "timeline": "append_only_agent_execution_timeline_and_follow_up_threads"
+    },
+    "tests": [
+      "tests/test_v34_repository_api.py"
+    ],
+    "timeout_seconds": 600
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
