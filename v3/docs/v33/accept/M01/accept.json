@@ -1,0 +1,193 @@
+{
+  "card": "M01",
+  "title": "Memory Schema & Lifecycle",
+  "commit": "20e2b0579539f50360ad04a9e26b339cc2931f51",
+  "commit_note": "单次本地提交：0021 迁移、memory 包（契约与存储）、测试、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "d8985698f025e11c8f284b4aa34e84fe43f3c205",
+  "accepted_at": "2026-11-09T08:38:30Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "git": "2.43.0",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (src only)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "model": "NOT_USED",
+    "network": "NOT_USED",
+    "docker": "NOT_USED",
+    "postgres": "USED (real PostgreSQL; 0021 applied to the dev database and to a disposable per-session test database)",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as 20e2b05. This accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "engineering-verify",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/verify.py",
+        "--task",
+        "M01"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 18.358,
+      "purpose": "M01 统一验收：四类记忆身份、作用域与权限、证据/工件引用、生命周期、旧记忆兼容",
+      "counts": {
+        "tests": 13,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "2cd005db856d154ac5904493f8f4890b5f6f4ed7dc8d44640b4c19cd4818e9d2",
+      "finished_source_sha256": "2cd005db856d154ac5904493f8f4890b5f6f4ed7dc8d44640b4c19cd4818e9d2",
+      "git_commit": "20e2b0579539f50360ad04a9e26b339cc2931f51",
+      "attempt": "evidence/M01/20261109T083657Z-fc3aa52c",
+      "log": "evidence/M01/20261109T083657Z-fc3aa52c/command.log",
+      "junit": "evidence/M01/20261109T083657Z-fc3aa52c/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "migrate",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "-m",
+        "mgar_v3.store.migrate"
+      ],
+      "exit_code": 0,
+      "purpose": "等价于 make migrate：0021 已在开发库应用，重复执行返回空 applied；记录 0021 校验和与各表行数",
+      "output_summary": {
+        "applied_now": [],
+        "schema_migrations": "0021_memory_schema.sql sha256=99ebb5a1f491c42fc04a268d223e6d4788ad41bf66d1d4242e7341d8e6f70fa2",
+        "row_counts": {
+          "memories": 0,
+          "memory_records": 0,
+          "memory_working": 0,
+          "memory_episodic": 0,
+          "memory_semantic": 0,
+          "memory_procedural": 0
+        }
+      },
+      "log": "evidence/M01/20261109T083741Z-M01/03-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/memory",
+        "tests/test_v33_memory_schema.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/mypy",
+        "src/mgar_v3/memory"
+      ],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）与 mypy strict(src) 零告警",
+      "log": "evidence/M01/20261109T083741Z-M01/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean",
+      "log": "evidence/M01/20261109T083741Z-M01/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 migrate / verify 未修改源工作区",
+      "log": "evidence/M01/20261109T083741Z-M01/07-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "M01 是数据契约与 PostgreSQL 迁移卡：不访问网络、不调用模型、不写远端。验收使用真实 PostgreSQL（开发库迁移 + 每次验收创建的临时库），因此 live 门不适用；后续依赖 M01 的 B00/M02 卡片再承担外部仓库 live 门。",
+  "must_pass": [
+    {
+      "item": "旧 Memory 仍可访问",
+      "result": "PASS",
+      "evidence": "test_legacy_memory_remains_accessible_and_can_be_imported：legacy() 与 get(old_id) 返回规范化记录，import_legacy 幂等且旧表 summary_hash / evidence_ids / revoked_at 不变；ContextStore.resolve(\"memory\", ...) 未修改。"
+    },
+    {
+      "item": "跨仓库和跨 Actor 不能错误读取",
+      "result": "PASS",
+      "evidence": "test_cross_repository_and_project_reads_are_rejected（另一仓库/另一项目的 get 与 recall 均不可见，越权写入被 MEMORY_SCOPE_DENIED）与 test_cross_actor_reads_are_rejected（outsider 读取 404、召回为空、非法 Actor 403、跨 Actor 创建被拒）。"
+    },
+    {
+      "item": "历史记录不会被静默覆盖",
+      "result": "PASS",
+      "evidence": "test_history_is_not_silently_overwritten：同身份重复创建 MEMORY_CONFLICT；supersede 产生新版本并保留旧版本；触发器拒绝内容 UPDATE、DELETE 与明细行 UPDATE。"
+    },
+    {
+      "item": "Working / Episodic / Semantic / Procedural 统一身份模型",
+      "result": "PASS",
+      "evidence": "memory_records 唯一身份表 + 四张窄明细表；test_four_kinds_share_one_identity_model 断言同一 subject 下四类记录共存、类型明细正确并可统一召回。"
+    },
+    {
+      "item": "Project / Repository / Commit 作用域",
+      "result": "PASS",
+      "evidence": "scope_kind + scope_key 由数据库 CHECK 约束强制；test_commit_scope_is_explicit_and_filterable 覆盖 Commit 必填、按 Commit 过滤、Project/Repository 作用域拒绝钉 Commit。"
+    },
+    {
+      "item": "Evidence 与 Artifact 引用、原始摘要哈希",
+      "result": "PASS",
+      "evidence": "summary_hash 外键 app.artifacts(content_hash)；artifact_hashes / evidence_ids 在 store 中逐项校验；test_references_evidence_and_verification_are_checked 覆盖缺失工件、未知证据、跨作用域证据。"
+    },
+    {
+      "item": "可信度与验证状态",
+      "result": "PASS",
+      "evidence": "confidence numeric(4,3) CHECK [0,1]；verification_status 四态；verified 必须有 Evidence（MEMORY_EVIDENCE_REQUIRED）；模型拒绝越界可信度与非法状态。"
+    },
+    {
+      "item": "Supersede、Revoke 和 Stale",
+      "result": "PASS",
+      "evidence": "test_supersede_requires_the_same_identity_and_a_live_record、test_revoke_hides_recall_and_keeps_history、test_stale_memory_is_retained_but_not_recalled；终态不可回退，stale 可被 supersede 且保留 stale_reason。"
+    },
+    {
+      "item": "版本迁移与旧记忆兼容",
+      "result": "PASS",
+      "evidence": "0021 仅新增对象，旧 knowledge.memories DDL 未改；migrate 重复执行为空操作；import_legacy 提供显式、幂等、可审计的迁移路径；撤销的旧记忆不可见且不可导入。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "任务书允许四类记忆不存一张物理表",
+      "handling": "采用一张统一身份表 knowledge.memory_records + 四张类型明细表；身份唯一索引只约束 active/stale，历史版本保留。"
+    },
+    {
+      "issue": "supersede 需要旧记录在同事务内指向尚未插入的新记录",
+      "handling": "superseded_by 外键设为 DEFERRABLE INITIALLY DEFERRED；先更新旧记录、再插入新记录，事务提交时校验外键。0021 尚未提交/推送，因此直接修正迁移而非追加 0022。"
+    },
+    {
+      "issue": "首次检查失败：测试夹具未写 app.runs.input_revision；supersede 先更新后插入触发外键立即校验",
+      "handling": "补齐 input_revision=1，并将 superseded_by 改为延迟外键后重跑 13 passed。首次检查脚本与重跑写入同一临时日志路径，原始输出已被覆盖，未保留原始文件；错误类型为 NotNullViolation(input_revision) 与 ForeignKeyViolation(memory_records_superseded_by_fkey)。"
+    },
+    {
+      "issue": "全仓 Ruff / mypy 存在与本卡无关的历史告警",
+      "handling": "按 A02–A04 惯例只对本卡新增/修改文件执行 Ruff 与 mypy，二者零告警；未改动 quality_eval / repository_analysis 等既有文件。"
+    }
+  ],
+  "artifacts": [
+    "migrations/0021_memory_schema.sql",
+    "src/mgar_v3/memory/model.py",
+    "src/mgar_v3/memory/store.py",
+    "src/mgar_v3/memory/__init__.py",
+    "tests/test_v33_memory_schema.py",
+    "docs/v33/M01-memory-schema.md",
+    "config/verification.json（M01 条目）",
+    "docs/v33/accept/M01/accept.json"
+  ],
+  "next_card": "M02"
+}
