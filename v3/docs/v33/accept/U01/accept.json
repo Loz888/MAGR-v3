@@ -1,0 +1,246 @@
+{
+  "card": "U01",
+  "title": "Unified Repository Workbench",
+  "commit": "e259fcb14d112600ce8dd950b2098dc98c1b250d",
+  "commit_note": "单次本地提交：workbench domain/store/service（五阶段证据门禁、风险排序、三模式编排、真实 pytest 复现与补丁验证回执、R05 审批与 Draft PR 发布、时间线、追问、控制）、migration 0022、12 个 API 路由、CLI workbench 命令、静态页面 workbench.{html,css,js}、tests/test_v34_repository_api.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "68a89f28fa30c5f76504e6b848d19e8aadc5b07f",
+  "accepted_at": "2026-11-09T11:28:04Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "mypy": "strict (workbench 包: domain/store/service/__init__)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "postgres": "real local PostgreSQL 17 (disposable database per test; migration 0022)",
+    "redis": "real local Redis (test settings)",
+    "docker": "NOT_USED by U01 tests (R03 sandbox regression reuses fixed image mgar-v3-sandbox-r03:local)",
+    "model": "not_used",
+    "network": "NOT_USED by tests (fixture repository and in-memory publication remote)",
+    "browser": "Chromium against http://localhost:18080/workbench"
+  },
+  "worktree_at_acceptance": "clean before this record; implementation committed as e259fcb. Evidence directory is gitignored; this accept.json is the only acceptance addition.",
+  "commands": [
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/workbench",
+        "src/mgar_v3/api.py",
+        "src/mgar_v3/cli.py",
+        "tests/test_v34_repository_api.py"
+      ],
+      "secondary_argv": ["/tmp/mgar-v3-venv/bin/mypy", "--strict", "src/mgar_v3/workbench"],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）零告警；mypy strict 覆盖新增 workbench 包",
+      "log": "evidence/U01/20261109T112442Z-U01/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "U01"],
+      "exit_code": 0,
+      "duration_seconds": 26.428,
+      "purpose": "U01 统一验收：三模式创建与幂等、扫描覆盖、五阶段证据门禁、建议修复不推进阶段、风险排序、来源与复现记录、真实 pytest 前后回执、Diff 审查、错误 payload 被拒、Draft PR 发布、控制与追问、非法输入",
+      "counts": {
+        "tests": 15,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "a3df4054170fc723e5ef0347ad22b0eabc76bce33654663883075cfd7878186e",
+      "finished_source_sha256": "a3df4054170fc723e5ef0347ad22b0eabc76bce33654663883075cfd7878186e",
+      "git_commit": "e259fcb14d112600ce8dd950b2098dc98c1b250d",
+      "attempt": "evidence/U01/20261109T112451Z-b4919a22",
+      "log": "evidence/U01/20261109T112451Z-b4919a22/command.log",
+      "junit": "evidence/U01/20261109T112451Z-b4919a22/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "regression",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_v34_repair_handoff.py",
+        "tests/test_v34_patch_workspace.py",
+        "tests/test_v34_sandbox_executor.py",
+        "tests/test_v34_repair_agent.py",
+        "tests/test_v34_pr_delivery.py",
+        "-q"
+      ],
+      "counts": {
+        "tests": 46,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "duration_seconds": 117.89,
+      "purpose": "R01/R02/R03/R04/R05 回归；确认新增工作台只组合既有能力，没有改变交接、补丁编辑、沙箱执行、修复循环与发布语义",
+      "log": "evidence/U01/20261109T112442Z-U01/07-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "web-e2e",
+      "argv": ["browser", "http://localhost:18080/workbench"],
+      "purpose": "Web 端到端：创建 Audit → 查看 Finding → 触发 Reproduce → Prepare Repair → 查看 Diff 与测试回执 → 人工审批生成 Draft PR",
+      "result": "任务 b399467c 完成后 stage=pr_created，publication=published，merged=false，pull_request_url=fixture://github/octo/example/pull/1；其余 Findings 保持 Suspected",
+      "log": "evidence/U01/20261109T112442Z-U01/10-e2e-workbench.log",
+      "status": "PASS"
+    },
+    {
+      "name": "container-residue",
+      "argv": ["docker", "ps", "-aq", "--filter", "label=mgar.v3.r03.sandbox"],
+      "exit_code": 0,
+      "purpose": "确认回归结束后没有残留沙箱容器",
+      "result": "0 containers",
+      "log": "evidence/U01/20261109T112442Z-U01/09-containers.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区 clean（实现已提交为 e259fcb）",
+      "log": "evidence/U01/20261109T112442Z-U01/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认 verify / 回归 / Web 验收未修改源工作区",
+      "log": "evidence/U01/20261109T112442Z-U01/08-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "live_gate_note": "U01 在 fixture 仓库与内存发布 remote 上完成全部验收，未连接 github.com、未使用真实模型。真实仓库审计仍走 M05 的 Live 授权，真实修复与发布仍需要 R05 profile、写权限凭据与人工授权；U01 不读取也不放宽这些凭据。",
+  "must_pass": [
+    {
+      "item": "仓库 URL 输入并固化解析后的 commit",
+      "result": "PASS",
+      "evidence": "create 复用 M05 的 parse_repository_url，fixture 用 fixture_commit(repository, ref) 固化 40 位 commit；测试断言 task.repository 与 40 位 commit；非法 URL 返回 422 INVALID_INPUT。"
+    },
+    {
+      "item": "Audit / Issue Repair / Audit & Repair 三种模式统一到 Web/CLI/API",
+      "result": "PASS",
+      "evidence": "POST/GET /api/v3/workbench/tasks、任务详情、Finding、reproduce/repair/approve、messages 与 controls 同时被 Web 页面和 mgar workbench CLI 使用；profile 返回三种模式；测试分别覆盖三种模式的端到端结果。"
+    },
+    {
+      "item": "仓库扫描覆盖范围",
+      "result": "PASS",
+      "evidence": "CoverageRequest 支持 repository 与 paths 两种 scope，include/exclude 路径经仓库相对路径校验；审计回报 files_considered/files_scanned/unscanned_files/languages/complete；测试断言 fixture 仓库扫描 4 个文件且 complete。"
+    },
+    {
+      "item": "Agent 执行时间线",
+      "result": "PASS",
+      "evidence": "app.workbench_events 追加式记录 task/audit/agent/reproduce/repair/approval/publication/control/follow_up；测试断言 Audit 时间线包含 task/audit/agent，审批后包含 reproduce/repair/approval/publication；页面按顺序渲染。"
+    },
+    {
+      "item": "Findings 列表与风险排序",
+      "result": "PASS",
+      "evidence": "score_finding 组合 severity/classification/fix_risk/confidence；rank_findings 按 (-risk_score, path, finding_id) 排序并写入 risk_rank；测试断言 error/defect 排名第一且分数降序。"
+    },
+    {
+      "item": "单个 Finding 的来源和复现记录",
+      "result": "PASS",
+      "evidence": "FindingSource 记录 kind/uri/evidence_id/quote/content_hash；复现记录包含命令、失败输出摘要与 TestReceipt；测试断言 source.uri 指向固化 commit 的路径、content_hash 为 64 位、详情接口返回同一 evidence_id。"
+    },
+    {
+      "item": "Diff 与测试回执",
+      "result": "PASS",
+      "evidence": "修复在临时 fixture 树中运行真实 pytest：修复前失败生成 before_receipt，修复后同一测试通过生成 after_receipt；diff_sha256 与完整 unified diff 一并返回 /diff；测试断言 diff、hash、文件列表与前后回执。"
+    },
+    {
+      "item": "Memory 命中和来源追踪",
+      "result": "PASS",
+      "evidence": "审计后调用 M05 recall_task 并写入 app.workbench_memory，返回 retrieval_mode、advisories、plan_hints、confirmed_facts、excluded 与来源；页面明确标注仅作参考，不改变权限与证据门禁。"
+    },
+    {
+      "item": "PR 审批与发布状态",
+      "result": "PASS",
+      "evidence": "审批必须携带当前 payload_hash，不匹配返回 APPROVAL_STALE；通过后复用 R05 PublicationApproval 与 DraftPRPublisher，写入 branch/commit/pull_request 三步回执与 PR URL；测试断言错误 hash 被拒、正确审批后 stage=pr_created、merged=false、draft=true。"
+    },
+    {
+      "item": "Pause / Resume / Cancel",
+      "result": "PASS",
+      "evidence": "任务状态机限制允许的转换；测试覆盖 queued→paused→queued→cancelled，并断言从 cancelled 再次 pause 返回 409 TASK_NOT_PAUSABLE；控制同时写入时间线事件并尽力同步底层分析运行。"
+    },
+    {
+      "item": "历史任务追问",
+      "result": "PASS",
+      "evidence": "POST /messages 创建同 thread、parent_task_id 指向父任务的子任务，继承 repository/commit/coverage，并复用 M05 follow-up 运行；测试断言子任务完成后仍带 Findings 且 thread 一致。"
+    },
+    {
+      "item": "UI 区分 Suspected / Reproduced / Patch Verified / Waiting Approval / PR Created",
+      "result": "PASS",
+      "evidence": "STAGE_LABELS 与五阶段 CSS badge 一一对应；阶段由 derive_stage 从证据反推，WorkbenchFinding 强制 stage == derive_stage(...)，advance_finding 拒绝跳级并返回 FINDING_STAGE_INVALID。"
+    },
+    {
+      "item": "不能把“已建议修复”显示成“已修复”",
+      "result": "PASS",
+      "evidence": "suggested_fix 与 fix 分离；只有存在完整 FixRecord 时 stage 才能到 patch_verified。仅建议时 fix_state=proposed_not_verified、verified=false、suggested_fix_is_not_applied=true；未复现直接 repair 返回 FINDING_NOT_REPRODUCED 且无 diff。"
+    },
+    {
+      "item": "Web 端到端验收：创建 Audit、查看 Finding、触发 Repair、查看 Diff、人工审批",
+      "result": "PASS",
+      "evidence": "浏览器在 http://localhost:18080/workbench 完成 Audit→Finding→Reproduce→Prepare Repair→Diff 回执→Approve Draft PR；独立 API 复核任务 completed、stage=pr_created、merged=false；详见 10-e2e-workbench.log。"
+    },
+    {
+      "item": "既有 R01/R02/R03/R04/R05 行为不回归",
+      "result": "PASS",
+      "evidence": "R01 8 项 + R02 8 项 + R03 10 项 + R04 9 项 + R05 11 项 = 46 passed，0 failed，0 skipped；无残留沙箱容器。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "Live 修复与发布未在 U01 中自动执行",
+      "handling": "Live 审计复用 M05 的只读授权；Live 修复仍由 R05 profile 与人工授权控制，U01 对 live 的 issue_repair/audit_and_repair 返回 WORKBENCH_LIVE_REPAIR_PROFILE_REQUIRED（403），不放宽任何写权限。"
+    },
+    {
+      "issue": "fixture 修复只覆盖单一示例缺陷",
+      "handling": "fixture 仓库固定 src/dispatcher.py 的静默降级缺陷，用于证明真实失败→通过回执链路；真实仓库修复仍由 R01–R04 的授权、补丁与沙箱链路完成。"
+    },
+    {
+      "issue": "发布使用内存 remote，不产生真实 GitHub 对象",
+      "handling": "复用 R05 的 DraftPRPublisher 契约，写入内存读/写 remote 并生成 fixture:// PR URL；真实发布需要 R05 写 profile，U01 在离线验收中不伪造外部写入。"
+    },
+    {
+      "issue": "Memory 命中不作为事实或权限",
+      "handling": "命中只写入 app.workbench_memory 并在页面标注参考性质；不改变工具白名单、预算、审批或沙箱，不因命中跳过证据门禁。"
+    },
+    {
+      "issue": "Pause 只在步骤边界生效",
+      "handling": "控制操作更新任务状态并尽力同步底层分析运行；正在运行的 pytest 子进程不会被强制中断，避免产生半写状态。"
+    },
+    {
+      "issue": "CLI 通过本地 API 调用而非直接调用服务",
+      "handling": "CLI 与 Web 使用同一鉴权、校验与状态机路径，避免出现第二套语义；CLI 仅允许 127.0.0.1/localhost/::1。"
+    },
+    {
+      "issue": "同 thread 追问共享父任务仓库与 commit",
+      "handling": "追问用于历史任务解释，不支持跨仓库或跨 commit；需要新仓库时创建新任务。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/workbench/__init__.py",
+    "src/mgar_v3/workbench/domain.py",
+    "src/mgar_v3/workbench/store.py",
+    "src/mgar_v3/workbench/service.py",
+    "migrations/0022_workbench.sql",
+    "src/mgar_v3/api.py（workbench 路由）",
+    "src/mgar_v3/cli.py（workbench 命令）",
+    "web/workbench.html",
+    "web/workbench.css",
+    "web/workbench.js",
+    "tests/test_v34_repository_api.py",
+    "docs/v33/U01-repository-workbench.md",
+    "config/verification.json（U01 条目）",
+    "docs/v33/accept/U01/accept.json"
+  ],
+  "next_card": "E01"
+}
