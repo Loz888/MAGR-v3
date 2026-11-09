@@ -1,0 +1,160 @@
+{
+  "card": "A04",
+  "title": "Independent Defect Verifier",
+  "commit": "09192f332397a3531407c1ade3c28548a87b06c5",
+  "commit_note": "单次本地提交：verification 包（回执、分类、验证器）、测试、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "852a911d967aa56160e778f582b81994a6245e37",
+  "accepted_at": "2026-11-09T08:13:11Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "git": "2.43.0",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (invoked via absolute /home/imini/.local/bin/uv)",
+    "ruff": "0.17.3 (real, in uv venv)",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "model": "NOT_USED",
+    "network": "NOT_USED",
+    "docker": "NOT_USED (A04 uses the local rlimit sandbox; scanner Docker gate is A02)",
+    "postgres": "NOT_USED (A04 is a domain card; no migration required)",
+    "redis": "NOT_USED"
+  },
+  "worktree_at_acceptance": "dirty by design: verification.json, A04 doc, src/mgar_v3/verification, tests/test_v33_defect_verifier.py are the A04 deliverables (see deviations); committed as 09192f3 before this record",
+  "commands": [
+    {
+      "name": "engineering-verify",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/verify.py",
+        "--task",
+        "A04"
+      ],
+      "exit_code": 0,
+      "duration_seconds": 15.577,
+      "purpose": "A04 统一验收：基线记录、真实失败复现、环境/依赖区分、静态口径、反自我确认、零缺陷仓库",
+      "counts": {
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_sha256": "568f66bfa9a4aa3591e2fe822ed66b155c9a7054a66787e49b640ef21a642159",
+      "finished_source_sha256": "568f66bfa9a4aa3591e2fe822ed66b155c9a7054a66787e49b640ef21a642159",
+      "git_commit": "852a911d967aa56160e778f582b81994a6245e37",
+      "attempt": "evidence/A04/20261109T081253Z-851ec259",
+      "log": "evidence/A04/20261109T081253Z-851ec259/command.log",
+      "junit": "evidence/A04/20261109T081253Z-851ec259/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/verification",
+        "tests/test_v33_defect_verifier.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/mypy",
+        "src/mgar_v3/verification"
+      ],
+      "exit_code": 0,
+      "purpose": "Ruff（E,F,I,UP,B；line-length 100）与 mypy strict(src) 零告警",
+      "log": "evidence/A04/20261109T081249Z-A04/02-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-before",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认验收前工作区仅含 A04 交付物",
+      "log": "evidence/A04/20261109T081249Z-A04/01-git-before.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "purpose": "确认真实 pytest 子进程未修改源工作区",
+      "log": "evidence/A04/20261109T081249Z-A04/04-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "A04 的验收对象是本地真实子进程（pytest、python），不访问网络、不调用模型、不写远端。真实失败测试在受限本地沙箱内被复现，回执与基线的 Commit/环境绑定；live 门留给需要外部仓库的卡片。",
+  "must_pass": [
+    {
+      "item": "记录基线测试，并绑定准确 Commit、环境与命令",
+      "result": "PASS",
+      "evidence": "test_baseline_is_bound_to_commit_environment_and_command（receipt.commit、environment_id、argv、reproduce_command 全部断言；JSONL 已落盘）"
+    },
+    {
+      "item": "真实失败可被记录为 reproduced",
+      "result": "PASS",
+      "evidence": "test_real_failure_is_recorded_as_reproduced（真实 pytest 失败，FINDING 迁移到 reproduced，附 test_run 证据，源文件不变）"
+    },
+    {
+      "item": "无法复现的候选不会被伪装为已确认缺陷",
+      "result": "PASS",
+      "evidence": "test_unreproducible_candidate_is_not_confirmed 与 test_failure_without_the_expected_signature_is_not_reproduced（not_reproduced / signature_mismatch，均不进入 reproduced）"
+    },
+    {
+      "item": "区分环境错误、依赖缺失与真实测试失败",
+      "result": "PASS",
+      "evidence": "test_environment_error_never_changes_the_finding、test_missing_dependency_is_distinct_from_a_real_failure、test_classification_separates_environment_dependencies_and_real_failures"
+    },
+    {
+      "item": "保存可复现命令与结构化执行回执",
+      "result": "PASS",
+      "evidence": "ExecutionReceipt（argv、reproduce_command、退出码、输出哈希、分类、Commit、环境）+ ReceiptJournal JSONL；test_receipts_are_deterministic_and_the_journal_is_append_only"
+    },
+    {
+      "item": "纯静态风险使用不同的确认口径",
+      "result": "PASS",
+      "evidence": "test_static_risk_is_confirmed_statically_never_reproduced（verify 返回 STATIC_ONLY_CONFIRMATION_REQUIRED；verify_static 仅到 confirmed_static/static_only，test_run 证据被拒）"
+    },
+    {
+      "item": "不允许 Agent 自己宣布验证成功",
+      "result": "PASS",
+      "evidence": "test_agent_cannot_declare_verification_success（伪造回执 AGENT_SELF_VERIFICATION_DENIED；Commit 不匹配 RECEIPT_BINDING_MISMATCH；状态保持 suspected）"
+    },
+    {
+      "item": "普通仓库可返回零缺陷",
+      "result": "PASS",
+      "evidence": "test_normal_repository_returns_zero_defects（基线 passed，summary.zero_defects=true，findings_total=0）"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "A04 任务书未要求数据库或迁移",
+      "handling": "实现为进程内 FindingStore + JSONL 回执日志；PostgreSQL/Redis 未使用，未新增迁移。持久化到数据库留给后续卡片"
+    },
+    {
+      "issue": "基线不健康时必须阻止复现，否则会把环境问题误判为缺陷",
+      "handling": "新增 baseline_unhealthy 结果；环境/依赖/超时/未知命令的基线不改变 Finding，也不允许归因。覆盖于 test_unhealthy_baseline_blocks_reproduction"
+    },
+    {
+      "issue": "仓库基线本身可能已红（既有失败），不能因此拒绝复现",
+      "handling": "基线 test_failure 仍视为环境健康，仅标记 baseline_dirty=true；复现结果仍需通过 failure signature 校验"
+    },
+    {
+      "issue": "首次运行检查失败：LocalSandbox 不是可调用对象",
+      "handling": "改为传入 sandbox.run 绑定方法后重跑；原始失败输出保留在 evidence，不计入验收",
+      "attempt": "evidence/A04/20261109T080900Z-A04-first-check/01-first-check.log"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/verification/receipts.py",
+    "src/mgar_v3/verification/verifier.py",
+    "src/mgar_v3/verification/__init__.py",
+    "tests/test_v33_defect_verifier.py",
+    "docs/v33/A04-defect-verifier.md",
+    "config/verification.json（A04 条目）",
+    "docs/v33/accept/A04/accept.json"
+  ],
+  "next_card": "A05"
+}
