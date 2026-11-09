@@ -1,0 +1,21 @@
+﻿{
+  "commit": "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+  "results": [
+    {
+      "path": "requests/definitely_missing_module_p4.py",
+      "code": "GITHUB_NOT_FOUND",
+      "status": 404,
+      "message": "Read-only GitHub tool rejected the request: Failed to get file contents. The path does not point to a file or directory, or the file does not exist in the repository."
+    }
+  ]
+}
+{"missing_raw_error": "GITHUB_NOT_FOUND", "detail": "Read-only GitHub tool rejected the request: Failed to get file contents. The path does not point to a file or directory, or the file does not exist in the repository."}
+{"range_read_error": "TOOL_PATH_NOT_EXACT", "detail": "Resolved potential matches in the repository tree (resolved refs: {\"Ref\":\"\",\"SHA\":\"3c7baaa05ab4aa49cc819ce3a819d260de19c157\"}, matching files: [\"src/requests/api.py\"])."}
+{
+  "texts": [
+    "Resolved potential matches in the repository tree (resolved refs: {\"Ref\":\"\",\"SHA\":\"3c7baaa05ab4aa49cc819ce3a819d260de19c157\"}, matching files: [\"src/requests/api.py\"])."
+  ],
+  "structured_type": "NoneType",
+  "structured": null,
+  "resources": []
+}

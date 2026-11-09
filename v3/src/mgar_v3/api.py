@@ -2,6 +2,7 @@ import asyncio
 import hashlib
 import hmac
 import json
+import logging
 from collections.abc import AsyncIterator
 from contextlib import AsyncExitStack, asynccontextmanager
 from typing import Annotated, Any, cast
@@ -33,6 +34,12 @@ from mgar_v3.repair.domain import ApprovalDecision, EditDecision, RepairInput
 from mgar_v3.repair.graph import acknowledge_approval
 from mgar_v3.repair.live import repair_permit
 from mgar_v3.repair.publication import LiveDraftMCPTransport
+from mgar_v3.repository_analysis.domain import (
+    REPOSITORY_ANALYSIS_GRAPH,
+    CreateAnalysisInput,
+    FollowUpInput,
+)
+from mgar_v3.repository_analysis.service import RepositoryAnalysisService
 from mgar_v3.routing.domain import CorrectionInput, EventInput
 from mgar_v3.routing.live import load_router_permit
 from mgar_v3.routing.model import DeepSeekRouter
@@ -116,6 +123,9 @@ def create_app(
                     with authority.transaction() as conn:
                         authority._event(conn, run["run_id"], "sandbox_cleanup_unavailable")
         app.state.engine = authority
+        repo_service = app.state.repo_service = RepositoryAnalysisService(
+            authority, configuration
+        )
         if (
             selected_draft is None
             and live_repair_permit is not None
@@ -146,6 +156,9 @@ def create_app(
             )
 
         async def execute_run(run: dict[str, Any]) -> None:
+            if run["graph_version"] == REPOSITORY_ANALYSIS_GRAPH:
+                await asyncio.to_thread(repo_service.execute, run["run_id"])
+                return
             runner = Runner(authority)
             try:
                 if (
@@ -302,6 +315,9 @@ def create_app(
     def authority(request: Request) -> Engine:
         return cast(Engine, request.app.state.engine)
 
+    def repository_service(request: Request) -> RepositoryAnalysisService:
+        return cast(RepositoryAnalysisService, request.app.state.repo_service)
+
     def authenticated(request: Request) -> None:
         supplied = request.headers.get("X-MGAR-Token", "")
         if not hmac.compare_digest(
@@ -309,7 +325,12 @@ def create_app(
         ):
             raise DomainError("AUTH_REQUIRED", "Local authentication is required", 401)
         origin = request.headers.get("origin")
-        if origin and origin not in {"http://127.0.0.1:18080", "http://localhost:18080"}:
+        if origin and origin not in {
+            "http://127.0.0.1:18080",
+            "http://localhost:18080",
+            "http://127.0.0.1:18081",
+            "http://localhost:18081",
+        }:
             raise DomainError("ORIGIN_DENIED", "Origin is not allowed", 403)
 
     @app.get("/api/v3/healthz")
@@ -377,6 +398,113 @@ def create_app(
         return jsonable_encoder(
             {"ticket_id": ticket_id, "run_id": result} if control == "resume" else result
         )
+
+    @app.get("/repo", include_in_schema=False)
+    def repository_analysis_page() -> FileResponse:
+        return FileResponse(
+            ROOT / "web/repo.html",
+            headers={
+                "Content-Security-Policy": (
+                    "default-src 'self'; script-src 'self'; style-src 'self'; "
+                    "connect-src 'self'; frame-ancestors 'none'"
+                ),
+                "Cache-Control": "no-store",
+                "X-Content-Type-Options": "nosniff",
+            },
+        )
+
+    @app.get(
+        "/api/v3/repository-analyses/profile", dependencies=[Depends(authenticated)]
+    )
+    def repository_analysis_profile(
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+    ) -> Any:
+        return jsonable_encoder(service.profile())
+
+    @app.post(
+        "/api/v3/repository-analyses",
+        status_code=202,
+        dependencies=[Depends(authenticated)],
+    )
+    def create_repository_analysis(
+        body: CreateAnalysisInput,
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+    ) -> Any:
+        return jsonable_encoder(service.create(body, actor=configuration.local_actor))
+
+    @app.get("/api/v3/repository-analyses", dependencies=[Depends(authenticated)])
+    def list_repository_analyses(
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+        limit: int = 30,
+    ) -> Any:
+        return jsonable_encoder(service.list(limit))
+
+    @app.get(
+        "/api/v3/repository-analyses/{run_id}", dependencies=[Depends(authenticated)]
+    )
+    def repository_analysis_detail(
+        run_id: UUID,
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+    ) -> Any:
+        return jsonable_encoder(service.detail(run_id))
+
+    @app.get(
+        "/api/v3/repository-analyses/{run_id}/report",
+        dependencies=[Depends(authenticated)],
+    )
+    def repository_analysis_report(
+        run_id: UUID,
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+    ) -> Response:
+        return Response(
+            service.report_bytes(run_id),
+            media_type="text/markdown",
+            headers={"Cache-Control": "no-store"},
+        )
+
+    @app.post(
+        "/api/v3/repository-analyses/{run_id}/messages",
+        status_code=202,
+        dependencies=[Depends(authenticated)],
+    )
+    def repository_analysis_message(
+        run_id: UUID,
+        body: FollowUpInput,
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+    ) -> Any:
+        return jsonable_encoder(service.follow_up(run_id, body))
+
+    @app.post(
+        "/api/v3/repository-analyses/{run_id}/pause",
+        dependencies=[Depends(authenticated)],
+    )
+    def pause_repository_analysis(
+        run_id: UUID,
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+    ) -> dict[str, str]:
+        service.pause(run_id)
+        return {"run_id": str(run_id), "status": "paused"}
+
+    @app.post(
+        "/api/v3/repository-analyses/{run_id}/cancel",
+        dependencies=[Depends(authenticated)],
+    )
+    def cancel_repository_analysis(
+        run_id: UUID,
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+    ) -> dict[str, str]:
+        service.cancel(run_id)
+        return {"run_id": str(run_id), "status": "cancelled"}
+
+    @app.post(
+        "/api/v3/repository-analyses/{run_id}/resume",
+        dependencies=[Depends(authenticated)],
+    )
+    def resume_repository_analysis(
+        run_id: UUID,
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+    ) -> dict[str, str]:
+        return {"run_id": str(service.resume(run_id))}
 
     @app.get("/api/v3/router/status", dependencies=[Depends(authenticated)])
     def router_status(service: Annotated[Engine, Depends(authority)]) -> Any:
@@ -524,8 +652,17 @@ def create_app(
         "/api/v3/runs/{run_id}/messages", status_code=202, dependencies=[Depends(authenticated)]
     )
     def message(
-        run_id: UUID, body: MessageInput, service: Annotated[Engine, Depends(authority)]
+        run_id: UUID,
+        body: MessageInput,
+        service: Annotated[Engine, Depends(authority)],
+        repo: Annotated[RepositoryAnalysisService, Depends(repository_service)],
     ) -> Any:
+        if service.get_run(run_id)["graph_version"] == REPOSITORY_ANALYSIS_GRAPH:
+            return jsonable_encoder(
+                repo.follow_up(
+                    run_id, FollowUpInput(client_request_id=body.client_request_id, body=body.body)
+                )
+            )
         if service.commerce.binding(run_id):
             raise DomainError(
                 "COMMERCE_CASE_MESSAGE_REQUIRED",
@@ -710,6 +847,9 @@ def create_app(
 
     @app.exception_handler(psycopg.Error)
     async def database_unavailable(request: Request, exc: psycopg.Error) -> JSONResponse:
+        logging.getLogger("mgar_v3.api").exception(
+            "database error while handling %s %s", request.method, request.url.path
+        )
         return JSONResponse(
             {
                 "code": "STORAGE_UNAVAILABLE",

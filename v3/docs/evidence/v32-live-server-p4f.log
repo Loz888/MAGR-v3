@@ -1,0 +1,220 @@
+﻿python : INFO:     Started server process [39896]
+所在位置 行:15 字符: 1078
++ ... PATH='src'; python -m uvicorn mgar_v3.api:create_app --factory --host ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (INFO:     Started server process [39896]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+INFO:     Waiting for application startup.
+StreamableHTTP session manager started
+StreamableHTTP session manager started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18081 (Press CTRL+C to quit)
+INFO:     127.0.0.1:65038 - "POST /api/v3/repository-analyses/0d943ba2-e110-4498-b195-0492057ae79a/messages HTTP/1.1" 202 Accepted
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: ee2816b4-aa01-438e-bf5f-012528ecf26c
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: cfe3c22c-5c1f-404b-92c5-705d57316e6b
+Negotiated protocol version: 2025-11-25
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:63196 - "GET /api/v3/repository-analyses/4f88020a-c1ce-46a5-a390-581dc0a73cae HTTP/1.1" 200 OK
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: bd4cfc26-9c95-4e6f-a150-0151814700ff
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: b8113d62-c4de-4380-964a-3aae14ae0551
+Negotiated protocol version: 2025-11-25
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:56591 - "GET /api/v3/repository-analyses/4f88020a-c1ce-46a5-a390-581dc0a73cae HTTP/1.1" 200 OK
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: 1ef7bc48-cbd4-43bc-ae7c-17c7a1f759e9
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: 70d7aa18-ef70-4c23-9d77-298d278343e7
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:63567 - "GET /api/v3/repository-analyses/4f88020a-c1ce-46a5-a390-581dc0a73cae HTTP/1.1" 200 OK
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: 77ed6c69-f1fa-4654-90fd-1d6c7fde7c50
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: 5a7b4cde-665c-41bf-b9d7-a8da50054e3c
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:57522 - "GET /api/v3/repository-analyses/4f88020a-c1ce-46a5-a390-581dc0a73cae HTTP/1.1" 200 OK
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: 12bf856e-0108-47e3-a7d2-8b85c88f1522
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:53446 - "GET /api/v3/repository-analyses/4f88020a-c1ce-46a5-a390-581dc0a73cae HTTP/1.1" 200 OK
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: 91b9361a-f057-48cd-b7d5-74e8254345ec
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: 2d224494-7366-4628-9abb-144cfa771ccc
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:56593 - "GET /api/v3/repository-analyses/4f88020a-c1ce-46a5-a390-581dc0a73cae HTTP/1.1" 200 OK
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:57258 - "GET /api/v3/repository-analyses/4f88020a-c1ce-46a5-a390-581dc0a73cae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64741 - "GET /api/v3/repository-analyses/4f88020a-c1ce-46a5-a390-581dc0a73cae HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64742 - "GET /api/v3/repository-analyses/4f88020a-c1ce-46a5-a390-581dc0a73cae/report HTTP/1.1" 200 OK
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: 90d8f4f8-9f77-44ba-9765-224c5193203f
+Negotiated protocol version: 2025-11-25
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: 07ba0b33-0858-4ece-bf8f-2e626b6a82e3
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: ac4dd269-06a3-4b88-997f-6ce8ee92a56d
+Negotiated protocol version: 2025-11-25
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+INFO:     127.0.0.1:52794 - "POST /api/v3/repository-analyses HTTP/1.1" 202 Accepted
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+Received session ID: 8a3b3ab1-111c-4e71-b46b-095bc88a9495
+Negotiated protocol version: 2025-11-25
+INFO:     127.0.0.1:57661 - "POST /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac/pause HTTP/1.1" 200 OK
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 202 Accepted"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+GET stream disconnected, reconnecting in 1000ms...
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: GET https://api.githubcopilot.com/mcp/ "HTTP/1.1 405 Method Not Allowed"
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 200 OK"
+HTTP Request: DELETE https://api.githubcopilot.com/mcp/ "HTTP/1.1 204 No Content"
+INFO:     127.0.0.1:50700 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55566 - "POST /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac/resume HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:52425 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61735 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54105 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52137 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53843 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61355 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63852 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53959 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52384 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65140 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65109 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51545 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64109 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51583 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55333 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53470 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53571 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53374 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49674 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63244 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51177 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55128 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64719 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51843 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50256 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64193 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60919 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52800 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:62017 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65101 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63053 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57213 - "GET /api/v3/repository-analyses/c3fa407f-20d1-4067-8117-72568c79d5ac HTTP/1.1" 200 OK

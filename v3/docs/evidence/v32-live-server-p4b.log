@@ -1,0 +1,13 @@
+﻿python : INFO:     Started server process [22488]
+所在位置 行:15 字符: 1078
++ ... PATH='src'; python -m uvicorn mgar_v3.api:create_app --factory --host ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (INFO:     Started server process [22488]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+INFO:     Waiting for application startup.
+StreamableHTTP session manager started
+StreamableHTTP session manager started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18081 (Press CTRL+C to quit)
+INFO:     127.0.0.1:50469 - "POST /api/v3/repository-analyses/0d943ba2-e110-4498-b195-0492057ae79a/messages HTTP/1.1" 503 Service Unavailable

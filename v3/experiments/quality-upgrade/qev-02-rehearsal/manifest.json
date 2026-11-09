@@ -1,0 +1,86 @@
+{
+  "arms": [
+    "A",
+    "B",
+    "C"
+  ],
+  "authorization": {
+    "external_writes": false,
+    "paid_models": false,
+    "production_actions": false
+  },
+  "baseline_commit": "5edad21e42bab401efbf36b484aae47dc0a0622b",
+  "candidate_commit": "5edad21e42bab401efbf36b484aae47dc0a0622b",
+  "card": "QEV-02",
+  "config": {
+    "file": "eval/reports/final-v6-manifest.json",
+    "file_sha256": "75774ed08b3a5702da1e5101c1b998f5ef22c4f37bbbb63fcf813741d5539983",
+    "hash": "75774ed08b3a5702da1e5101c1b998f5ef22c4f37bbbb63fcf813741d5539983"
+  },
+  "created_at": "2026-11-09T00:00:00+00:00",
+  "dataset": {
+    "case_ids": [
+      "cross-00",
+      "cross-01",
+      "cross-02",
+      "cross-03",
+      "cross-04",
+      "cross-05",
+      "cross-06",
+      "cross-07",
+      "cross-08",
+      "cross-09",
+      "negative-00",
+      "negative-01",
+      "negative-02",
+      "negative-03",
+      "negative-04",
+      "qa-00",
+      "qa-01",
+      "qa-02",
+      "qa-03",
+      "qa-04",
+      "qa-05",
+      "qa-06",
+      "qa-07",
+      "qa-08",
+      "qa-09",
+      "repair-00",
+      "repair-01",
+      "repair-02",
+      "repair-03",
+      "repair-04"
+    ],
+    "case_ids_sha256": "0c4a2ddc08e703ea572dec326761e6f615c5d331e114e7e22883de9e662ac9fc",
+    "count": 30,
+    "file": "eval/final-v3/cases.json",
+    "file_sha256": "9ce3bc4762aacd2d738f8dc79ecea19a9a9e1f5f483b71e65d8b43319d9d36f9",
+    "hash": "9ce3bc4762aacd2d738f8dc79ecea19a9a9e1f5f483b71e65d8b43319d9d36f9"
+  },
+  "environment": {
+    "offline": true,
+    "paid_model_calls": 0,
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python_requires": ">=3.12,<3.13",
+    "python_requires_deviation": "runtime outside declared pyproject constraint; offline stdlib-only run",
+    "python_version": "3.13.15"
+  },
+  "experiment_id": "qev-02-rehearsal",
+  "manifest_sha256": "423f2d3bcec8a93f599b5b4e386c990a139fcacd8ab42b97dcfdb805117ceac8",
+  "mode": "historical_import",
+  "notes": "格式迁移演练，不是新实验成绩；原 final-v6 报告保持冻结。不调用模型、不产生费用、不重新判定。",
+  "pairing_key": [
+    "case_id",
+    "repeat_index"
+  ],
+  "provenance": {
+    "freeze_receipt": "eval/reports/final-v6-freeze-receipt.json",
+    "freeze_receipt_sha256": "57ccab553c1c7b4954d51ff552b7c2d0c3792f493c88425ff0b3d53187680e55",
+    "migration": "format only; PASS/FAIL and metrics copied verbatim",
+    "source_commit": "c5ca75cd59fc2206bda1d6486955774350227e04",
+    "source_file": "eval/reports/final-v6-answers.jsonl",
+    "source_file_sha256": "257f38466ef975eca9eb7e9642403fb338b2c2936191520c527a360ac41988b0"
+  },
+  "schema": "mgar-quality-eval-manifest-v1",
+  "seed": null
+}

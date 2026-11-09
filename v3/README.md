@@ -10,6 +10,25 @@
 
 默认fixture模式不调用付费模型或向GitHub发布业务内容。PG端口55433、Redis端口56379仅绑定回环；停止依赖用`make deps-stop`，保留数据卷。真实执行必须具有匹配的有效profile、预算和许可。
 
+## V3.2 通用 GitHub 仓库分析
+
+`repository_analysis` 任务接受 `https://github.com/owner/repo` 与自然语言问题，
+在固定 Commit 上由 DeepSeek 自主执行 `Reason → Tool Call → Observation → Reason`，
+只读调用 GitHub MCP（元数据、搜索、目录/文件、Issue/PR），并输出带
+`github://owner@commit/path#Lx-Ly`、Evidence ID 与逐字原文的报告。
+Web 入口为 `/repo`，CLI 为 `mgar repo-analyze`；完整配置、API/Tool Schema、
+状态恢复与已知限制见[仓库分析运行手册](docs/repo-analysis.md)。
+
+```bash
+uv run --frozen mgar repo-profile
+uv run --frozen mgar repo-analyze --repo-url https://github.com/pallets/flask \
+  --task '说明请求处理链路与关键入口' --execution-mode live
+uv run --frozen mgar repo-report <run_id>
+```
+
+live 模式需要 `MGAR_V3_ALLOW_PAID=1`、DeepSeek Key、GitHub 只读 Token（或固定 MCP
+二进制）和新的授权文件；fixture 模式不访问网络，仅用于工程测试。
+
 ## WSL2 首次启动
 
 在 Windows 上安装并启动 Docker Desktop，在 Settings → Resources → WSL Integration 中启用当前 WSL 发行版；已有可用的 WSL Docker Engine + Compose V2 也可以使用。

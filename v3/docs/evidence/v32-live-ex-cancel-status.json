@@ -1,0 +1,137 @@
+﻿{
+    "run":  {
+                "run_id":  "8c8197c8-216a-4212-a836-c372b5b134b1",
+                "thread_id":  "5fa2e5cd-4545-4326-829f-fe66799db81f",
+                "ticket_id":  "068446c2-64e8-48a2-9614-46898485559b",
+                "repository":  "pallets/flask",
+                "requested_ref":  null,
+                "commit":  "49943b5a94413a530761350f04e896f76e8d620e",
+                "task":  "è¯¦ç»è¯´æ Flask çé\u0085ç½®å è½½ä¸ from_pretrained è°ç¨è·¯å¾",
+                "execution_mode":  "live",
+                "limits":  {
+                               "max_model_calls":  10,
+                               "max_tool_calls":  20,
+                               "max_input_tokens":  120000,
+                               "max_cost_micros":  800000,
+                               "max_seconds":  600
+                           },
+                "model":  {
+                              "model_id":  "deepseek-flash",
+                              "price_version":  "deepseek-flash-v1",
+                              "input_micros_per_million":  300000,
+                              "output_micros_per_million":  1200000,
+                              "context_tokens":  131072,
+                              "max_output_tokens":  4096
+                          },
+                "deadline_at":  "2026-11-09T05:07:49.838353Z",
+                "model_calls_used":  1,
+                "tool_calls_used":  1,
+                "input_tokens_used":  965,
+                "stop_reason":  null,
+                "report_hash":  null,
+                "authorization_hash":  "a0f6cadef210ced684b8e5b913f9053848636324faeaafcba4a4e54a240629a3",
+                "profile_hash":  "9a0ecb7d5ceca5d81a05917966d6459b2c392e37fd12b1b3a117139e945b6e38",
+                "parent_run_id":  null,
+                "prior_report_hash":  null,
+                "prior_evidence_map":  {
+
+                                       },
+                "execution_epoch":  2,
+                "run_status":  "cancelled",
+                "run_reason_code":  null,
+                "outcome":  "cancelled"
+            },
+    "events":  [
+                   {
+                       "kind":  "repository_analysis_accepted",
+                       "payload":  {
+                                       "commit":  "49943b5a94413a530761350f04e896f76e8d620e",
+                                       "limits":  {
+                                                      "max_seconds":  600,
+                                                      "max_tool_calls":  20,
+                                                      "max_cost_micros":  800000,
+                                                      "max_model_calls":  10,
+                                                      "max_input_tokens":  120000
+                                                  },
+                                       "repository":  "pallets/flask",
+                                       "task_digest":  "e72f3fbf0a9592cb43c950a804920c62a115a065ec75b0fc0eaf0f0ef28fe2a3",
+                                       "execution_mode":  "live"
+                                   },
+                       "created_at":  "2026-11-09T04:57:49.831993+00:00"
+                   },
+                   {
+                       "kind":  "run_started",
+                       "payload":  {
+                                       "execution_epoch":  1
+                                   },
+                       "created_at":  "2026-11-09T04:57:49.873027+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r1",
+                                       "content_hash":  "1c3afd328b6c3b4cd9a24cea710858e1c0456315b4aa1bfd18adf485ba417dd7"
+                                   },
+                       "created_at":  "2026-11-09T04:57:49.908478+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "43d15f86-1c9f-4488-a7e9-91c93fbab08f",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:57:50.426316+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "43d15f86-1c9f-4488-a7e9-91c93fbab08f",
+                                       "http_status":  200,
+                                       "content_hash":  "463abaf815f140db76cd3ac726acb9dbb3618939aefd0ce9908687f91f89ed59"
+                                   },
+                       "created_at":  "2026-11-09T04:57:52.022736+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "43d15f86-1c9f-4488-a7e9-91c93fbab08f",
+                                       "settled_micros":  464
+                                   },
+                       "created_at":  "2026-11-09T04:57:52.034983+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "0fded6f0-5518-4968-a6c1-28517e6617f9",
+                                       "step_key":  "tool:r1:0"
+                                   },
+                       "created_at":  "2026-11-09T04:57:52.050205+00:00"
+                   },
+                   {
+                       "kind":  "run_cancelled",
+                       "payload":  {
+
+                                   },
+                       "created_at":  "2026-11-09T04:57:57.210533+00:00"
+                   }
+               ],
+    "tool_calls":  [
+                       {
+                           "step_key":  "tool:r1:0",
+                           "tool":  "search_code",
+                           "status":  "running",
+                           "result_uri":  null,
+                           "result_version":  null,
+                           "byte_count":  null,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:57:52.050205+00:00",
+                           "finished_at":  null
+                       }
+                   ],
+    "claims":  [
+
+               ],
+    "report":  null
+}

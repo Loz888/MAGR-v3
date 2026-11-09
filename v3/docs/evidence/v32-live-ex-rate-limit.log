@@ -1,0 +1,58 @@
+﻿[
+ {
+  "i": 0,
+  "status": "ok",
+  "head": "{"
+ },
+ {
+  "i": 1,
+  "status": "ok",
+  "head": "{"
+ },
+ {
+  "i": 2,
+  "status": "ok",
+  "head": "{"
+ },
+ {
+  "i": 3,
+  "status": "ok",
+  "head": "{"
+ },
+ {
+  "i": 4,
+  "status": "ok",
+  "head": "{"
+ },
+ {
+  "i": 5,
+  "status": "ok",
+  "head": "{"
+ },
+ {
+  "i": 6,
+  "status": "ok",
+  "head": "{"
+ },
+ {
+  "i": 7,
+  "status": "ok",
+  "head": "{"
+ },
+ {
+  "i": 8,
+  "status": "ok",
+  "head": "{"
+ },
+ {
+  "i": 9,
+  "status": "ok",
+  "head": "{"
+ },
+ {
+  "i": 10,
+  "status": "error",
+  "code": "GITHUB_RATE_LIMITED",
+  "detail": "Read-only GitHub tool rejected the request: failed to search code with query 'repo:psf/requests def request': GitHub API rate limit exceeded. Retry after 1s."
+ }
+]

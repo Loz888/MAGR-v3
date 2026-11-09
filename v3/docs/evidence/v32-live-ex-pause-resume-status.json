@@ -1,0 +1,192 @@
+﻿{
+    "run":  {
+                "run_id":  "c3fa407f-20d1-4067-8117-72568c79d5ac",
+                "thread_id":  "dccae1ce-3066-4630-a02b-e54b037ddb3c",
+                "ticket_id":  "110f09d6-0471-4b7a-a59a-85090f162a62",
+                "repository":  "pallets/flask",
+                "requested_ref":  null,
+                "commit":  "49943b5a94413a530761350f04e896f76e8d620e",
+                "task":  "è¯¦ç»è¯´æ Flask è¯·æ±ä¸ä¸æ ctx.push ä¸ pop çè°ç¨é¾ï¼ä»¥å RequestContext ççå½å¨æ",
+                "execution_mode":  "live",
+                "limits":  {
+                               "max_model_calls":  10,
+                               "max_tool_calls":  20,
+                               "max_input_tokens":  120000,
+                               "max_cost_micros":  800000,
+                               "max_seconds":  600
+                           },
+                "model":  {
+                              "model_id":  "deepseek-flash",
+                              "price_version":  "deepseek-flash-v1",
+                              "input_micros_per_million":  300000,
+                              "output_micros_per_million":  1200000,
+                              "context_tokens":  131072,
+                              "max_output_tokens":  4096
+                          },
+                "deadline_at":  "2026-11-09T04:56:51.658199Z",
+                "model_calls_used":  2,
+                "tool_calls_used":  1,
+                "input_tokens_used":  2040,
+                "stop_reason":  "DEADLINE_EXCEEDED",
+                "report_hash":  "2c3e58d7ebef063070759c891517ee4e4bcf571443250fe142e818f1d10bd46f",
+                "authorization_hash":  "a0f6cadef210ced684b8e5b913f9053848636324faeaafcba4a4e54a240629a3",
+                "profile_hash":  "8f8ee4be9162f53b4e1bc7471d925d4a674d6d35bb0ecda5abcb954feec42db7",
+                "parent_run_id":  null,
+                "prior_report_hash":  null,
+                "prior_evidence_map":  {
+
+                                       },
+                "execution_epoch":  3,
+                "run_status":  "waiting_input",
+                "run_reason_code":  "DEADLINE_EXCEEDED",
+                "outcome":  "partial_report"
+            },
+    "events":  [
+                   {
+                       "kind":  "repository_analysis_accepted",
+                       "payload":  {
+                                       "commit":  "49943b5a94413a530761350f04e896f76e8d620e",
+                                       "limits":  {
+                                                      "max_seconds":  600,
+                                                      "max_tool_calls":  20,
+                                                      "max_cost_micros":  800000,
+                                                      "max_model_calls":  10,
+                                                      "max_input_tokens":  120000
+                                                  },
+                                       "repository":  "pallets/flask",
+                                       "task_digest":  "2b841a9d88e9b61d98d34f695bd95fa5b429abc65af7abc012a774097cc5f9dc",
+                                       "execution_mode":  "live"
+                                   },
+                       "created_at":  "2026-11-09T04:46:51.651939+00:00"
+                   },
+                   {
+                       "kind":  "run_started",
+                       "payload":  {
+                                       "execution_epoch":  1
+                                   },
+                       "created_at":  "2026-11-09T04:46:51.725246+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r1",
+                                       "content_hash":  "de3ccd27c0c7ff7f0a599d8e638f5fc0079c7b0c8fa3fe6855a06b104083c583"
+                                   },
+                       "created_at":  "2026-11-09T04:46:51.756910+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "fdb052e8-7529-4152-89a5-ec665ad985ec",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:46:52.249348+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "fdb052e8-7529-4152-89a5-ec665ad985ec",
+                                       "http_status":  200,
+                                       "content_hash":  "3804a572c80e29027ed3bf5101324feef2927a29ab564f5730ca90074e7a7669"
+                                   },
+                       "created_at":  "2026-11-09T04:46:53.451555+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "fdb052e8-7529-4152-89a5-ec665ad985ec",
+                                       "settled_micros":  389
+                                   },
+                       "created_at":  "2026-11-09T04:46:53.461986+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r1:retry",
+                                       "content_hash":  "7ea7715dd0cac06e1d7ba2dd7db48949cf01bd64c859e982038fa4ccd62adfc6"
+                                   },
+                       "created_at":  "2026-11-09T04:46:53.480928+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "d4a1b09a-dc3a-484e-a160-0a754564af7c",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:46:53.950553+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "d4a1b09a-dc3a-484e-a160-0a754564af7c",
+                                       "http_status":  200,
+                                       "content_hash":  "b44cddcb26457016674e32c644d3091d20452160979a9f9e90925d6641bc4e32"
+                                   },
+                       "created_at":  "2026-11-09T04:46:55.430024+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "d4a1b09a-dc3a-484e-a160-0a754564af7c",
+                                       "settled_micros":  464
+                                   },
+                       "created_at":  "2026-11-09T04:46:55.439917+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "cacaa77b-ab9c-427e-8191-1ba387647d3c",
+                                       "step_key":  "tool:r1:0"
+                                   },
+                       "created_at":  "2026-11-09T04:46:55.457016+00:00"
+                   },
+                   {
+                       "kind":  "run_paused",
+                       "payload":  {
+
+                                   },
+                       "created_at":  "2026-11-09T04:46:57.934530+00:00"
+                   },
+                   {
+                       "kind":  "run_checkpoint_resume",
+                       "payload":  {
+
+                                   },
+                       "created_at":  "2026-11-09T04:56:58.224949+00:00"
+                   },
+                   {
+                       "kind":  "run_started",
+                       "payload":  {
+                                       "execution_epoch":  3
+                                   },
+                       "created_at":  "2026-11-09T04:56:58.287012+00:00"
+                   },
+                   {
+                       "kind":  "repository_analysis_partial",
+                       "payload":  {
+                                       "reason_code":  "DEADLINE_EXCEEDED",
+                                       "report_hash":  "2c3e58d7ebef063070759c891517ee4e4bcf571443250fe142e818f1d10bd46f"
+                                   },
+                       "created_at":  "2026-11-09T04:56:58.329650+00:00"
+                   }
+               ],
+    "tool_calls":  [
+                       {
+                           "step_key":  "tool:r1:0",
+                           "tool":  "search_code",
+                           "status":  "running",
+                           "result_uri":  null,
+                           "result_version":  null,
+                           "byte_count":  null,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:46:55.457016+00:00",
+                           "finished_at":  null
+                       }
+                   ],
+    "claims":  [
+
+               ],
+    "report":  "# RepoSage ä»åºåææ¥åï¼æªå®æï¼\n\n- Repository: `pallets/flask`\n- Commit: `49943b5a94413a530761350f04e896f76e8d620e`\n- åæ­¢åå : `DEADLINE_EXCEEDED`\n- ä»»å¡: è¯¦ç»è¯´æ Flask è¯·æ±ä¸ä¸æ ctx.push ä¸ pop çè°ç¨é¾ï¼ä»¥å RequestContext ççå½å¨æ\n\n## 1. é®é¢ç»è®º\n\nä»»å¡æªå®æï¼æ¨¡åè½®æ°ãå·¥å\u0085·æ¬¡æ°ãè¾å\u0085¥ Tokenãè´¹ç¨ææ§è¡æéå·²è¾¾å°ä¸éãä»¥ä¸ä»\u0085ååºæ¬è½®å·²ç»å®é\u0085è¯»åå¹¶è½åºçæºç è¯æ®ï¼ä¸ææå®æ´ç»è®ºã\n\n## 2. ä»åºæ»ä½ç»æ\n\nå°æªå®æè·¨æä»¶çæ»ä½ç»æå¤æ­ã\n\n## 3. å\u0085³é®ä»£ç æä»¶ä¸è°ç¨å\u0085³ç³»\n\nï¼ä»»å¡æªå®æï¼ä¸è½å½¢æç»æ ¸éªçè°ç¨å\u0085³ç³»ç»è®ºï¼\n\n## 4. å®é\u0085ä»£ç è¯æ®\n\nï¼æ¬è½®æ²¡æå·²è½åºçæºç è¯æ®ï¼\n\n\n## 5. ä¸ç¡®å®çç»è®º\n\n- åæ­¢åå ï¼DEADLINE_EXCEEDED\n- æ¨¡åè½®æ°ãå·¥å\u0085·æ¬¡æ°ãè¾å\u0085¥ Tokenãè´¹ç¨ææ§è¡æéå·²è¾¾å°ä¸é\n\n## 6. å»ºè®®ç»§ç»­è°æ¥çæ¹å\n\n- æé«æ¬ä»»å¡çæ¨¡åãå·¥å\u0085·æè´¹ç¨é¢ç®åç»§ç»­\n- ç¼©å°é®é¢èå´ï¼æå®æä»¶ãç¬¦å·æéè¯¯ç ï¼åéæ°åæ\n\n---\n\n\u003e æ¬æ¥åæ¯é¢ç®ãä¸ä¸æææéèå°½æ¶çå·²ç¥ç»æï¼ä¸æ¯æåç»è®ºã\n"
+}

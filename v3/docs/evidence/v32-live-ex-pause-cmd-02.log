@@ -1,0 +1,8 @@
+﻿python : usage: mgar repo-pause [-h] run_id
+所在位置 行:15 字符: 1586
++ ... -Seconds 4; python -m mgar_v3.cli --api http://127.0.0.1:18081 repo-p ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (usage: mgar repo-pause [-h] run_id:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+mgar repo-pause: error: the following arguments are required: run_id

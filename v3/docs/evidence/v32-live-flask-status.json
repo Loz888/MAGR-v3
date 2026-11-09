@@ -1,0 +1,111 @@
+{
+  "run": {
+    "run_id": "b8266926-65df-4d41-8153-fd55dd96d3a2",
+    "thread_id": "dddd977c-2ad7-495f-9198-8155ab1f45fc",
+    "ticket_id": "1afa8226-538e-44d1-a732-fd600518f0c0",
+    "repository": "pallets/flask",
+    "requested_ref": null,
+    "commit": "49943b5a94413a530761350f04e896f76e8d620e",
+    "task": "说明 HTTP 请求进入 Flask 应用后的处理链路：入口文件、WSGI 调用、请求上下文与路由分发的关键调用关系",
+    "execution_mode": "live",
+    "limits": {
+      "max_model_calls": 6,
+      "max_tool_calls": 20,
+      "max_input_tokens": 60000,
+      "max_cost_micros": 500000,
+      "max_seconds": 600
+    },
+    "model": {
+      "model_id": "deepseek-flash",
+      "price_version": "deepseek-flash-v1",
+      "input_micros_per_million": 300000,
+      "output_micros_per_million": 1200000,
+      "context_tokens": 131072,
+      "max_output_tokens": 2048
+    },
+    "deadline_at": "2026-11-09T03:53:33.069270Z",
+    "model_calls_used": 1,
+    "tool_calls_used": 0,
+    "input_tokens_used": 0,
+    "stop_reason": "MODEL_INVALID_RESPONSE",
+    "report_hash": null,
+    "authorization_hash": "8f3b0020151093980a6fb46c8163ec73bc02b506ee9d0210df2149f9852f445d",
+    "profile_hash": "1413b4d960d5709808bb8bb806a643d980ef4c53c20f5ff1d9b4bac798162aa6",
+    "parent_run_id": null,
+    "prior_report_hash": null,
+    "prior_evidence_map": {},
+    "execution_epoch": 2,
+    "run_status": "failed",
+    "run_reason_code": "MODEL_INVALID_RESPONSE",
+    "outcome": null
+  },
+  "events": [
+    {
+      "kind": "repository_analysis_accepted",
+      "payload": {
+        "commit": "49943b5a94413a530761350f04e896f76e8d620e",
+        "limits": {
+          "max_seconds": 600,
+          "max_tool_calls": 20,
+          "max_cost_micros": 500000,
+          "max_model_calls": 6,
+          "max_input_tokens": 60000
+        },
+        "repository": "pallets/flask",
+        "task_digest": "27cee5e4544d2d3f5801752c57d3af4c1ed976a8781c9bc5d0c1e6d091081a27",
+        "execution_mode": "live"
+      },
+      "created_at": "2026-11-09T03:43:33.061525+00:00"
+    },
+    {
+      "kind": "run_started",
+      "payload": {
+        "execution_epoch": 1
+      },
+      "created_at": "2026-11-09T03:43:33.256779+00:00"
+    },
+    {
+      "kind": "model_input_recorded",
+      "payload": {
+        "step_key": "reason:r1",
+        "content_hash": "afe7bc288d5cce98b780b344cfa1763efb5d5ad008e9a4aed1e637fb6616b6b5"
+      },
+      "created_at": "2026-11-09T03:43:33.302282+00:00"
+    },
+    {
+      "kind": "model_reserved",
+      "payload": {
+        "call_id": "3a17966b-7f05-44a5-8593-b9a424ff10f5",
+        "reserved_micros": 41780
+      },
+      "created_at": "2026-11-09T03:43:33.789005+00:00"
+    },
+    {
+      "kind": "model_response_recorded",
+      "payload": {
+        "call_id": "3a17966b-7f05-44a5-8593-b9a424ff10f5",
+        "http_status": 200,
+        "content_hash": "d8da0b1a34d8b58fbe4175b2e3b36c73b239ba854bf75529ffe69dbe335544d0"
+      },
+      "created_at": "2026-11-09T03:43:34.638429+00:00"
+    },
+    {
+      "kind": "model_settled",
+      "payload": {
+        "call_id": "3a17966b-7f05-44a5-8593-b9a424ff10f5",
+        "settled_micros": 341
+      },
+      "created_at": "2026-11-09T03:43:34.647252+00:00"
+    },
+    {
+      "kind": "run_failed",
+      "payload": {
+        "reason_code": "MODEL_INVALID_RESPONSE"
+      },
+      "created_at": "2026-11-09T03:43:34.662218+00:00"
+    }
+  ],
+  "tool_calls": [],
+  "claims": [],
+  "report": null
+}

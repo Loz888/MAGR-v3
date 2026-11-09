@@ -1,0 +1,11 @@
+# V3.2 repository analysis engineering tests (2026-11-09, Windows, Python 3.13 venv)
+
+# 1) network-free unit suite
+$ py -m pytest tests/test_v32_repository_analysis.py -q
+.............                                                            [100%]
+13 passed in 1.65s
+
+# 2) PostgreSQL integration suite (DSN loaded from v3/.env, not printed)
+$ py -m pytest tests/test_v32_repository_analysis_db.py -q
+....                                                                     [100%]
+4 passed in 18.94s

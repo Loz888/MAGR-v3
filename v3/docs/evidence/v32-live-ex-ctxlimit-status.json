@@ -1,0 +1,274 @@
+﻿{
+    "run":  {
+                "run_id":  "48eb4ed8-ecfb-448d-9bec-c8e6e16f13a3",
+                "thread_id":  "d5e5fb61-be34-42ab-b24a-4402792b1355",
+                "ticket_id":  "91f42258-f383-472c-b089-c3b14bddc5f2",
+                "repository":  "pallets/flask",
+                "requested_ref":  null,
+                "commit":  "49943b5a94413a530761350f04e896f76e8d620e",
+                "task":  "å®æ´åæ Flask æææ¨¡åçå\u0085é¨å®ç°ç»è",
+                "execution_mode":  "live",
+                "limits":  {
+                               "max_model_calls":  6,
+                               "max_tool_calls":  20,
+                               "max_input_tokens":  4096,
+                               "max_cost_micros":  300000,
+                               "max_seconds":  600
+                           },
+                "model":  {
+                              "model_id":  "deepseek-flash",
+                              "price_version":  "deepseek-flash-v1",
+                              "input_micros_per_million":  300000,
+                              "output_micros_per_million":  1200000,
+                              "context_tokens":  131072,
+                              "max_output_tokens":  4096
+                          },
+                "deadline_at":  "2026-11-09T04:34:23.310097Z",
+                "model_calls_used":  2,
+                "tool_calls_used":  4,
+                "input_tokens_used":  3669,
+                "stop_reason":  "INPUT_TOKEN_BUDGET",
+                "report_hash":  "ac86b3fe583e0a4f77f663fee110b758fe5bf1a71ad11a9900773ef9c29b580e",
+                "authorization_hash":  "a0f6cadef210ced684b8e5b913f9053848636324faeaafcba4a4e54a240629a3",
+                "profile_hash":  "824ab5d69481badfb81cc3e7d6f46593e6515f13b9e5fce12bd4c56720c607f8",
+                "parent_run_id":  null,
+                "prior_report_hash":  null,
+                "prior_evidence_map":  {
+
+                                       },
+                "execution_epoch":  1,
+                "run_status":  "waiting_input",
+                "run_reason_code":  "INPUT_TOKEN_BUDGET",
+                "outcome":  "partial_report"
+            },
+    "events":  [
+                   {
+                       "kind":  "repository_analysis_accepted",
+                       "payload":  {
+                                       "commit":  "49943b5a94413a530761350f04e896f76e8d620e",
+                                       "limits":  {
+                                                      "max_seconds":  600,
+                                                      "max_tool_calls":  20,
+                                                      "max_cost_micros":  300000,
+                                                      "max_model_calls":  6,
+                                                      "max_input_tokens":  4096
+                                                  },
+                                       "repository":  "pallets/flask",
+                                       "task_digest":  "0c300c398f231f7cda29e64296f0a5a2c6d1d84127417ac75f8034b15fe1f1d6",
+                                       "execution_mode":  "live"
+                                   },
+                       "created_at":  "2026-11-09T04:24:23.305322+00:00"
+                   },
+                   {
+                       "kind":  "run_started",
+                       "payload":  {
+                                       "execution_epoch":  1
+                                   },
+                       "created_at":  "2026-11-09T04:24:23.484883+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r1",
+                                       "content_hash":  "5c8662c822e9b1666d1953dbc954b6ea1a0e296c99194b355ad6b696936736fe"
+                                   },
+                       "created_at":  "2026-11-09T04:24:23.521342+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "a7bac686-1f90-479a-98f4-7f4bbd2da2e6",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:24:24.063058+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "a7bac686-1f90-479a-98f4-7f4bbd2da2e6",
+                                       "http_status":  200,
+                                       "content_hash":  "52f87c5776343545f66b7d0c080d462440faa15b3068c8d9c50b9a416a87859c"
+                                   },
+                       "created_at":  "2026-11-09T04:24:25.126469+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "a7bac686-1f90-479a-98f4-7f4bbd2da2e6",
+                                       "settled_micros":  338
+                                   },
+                       "created_at":  "2026-11-09T04:24:25.134917+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "list_directory",
+                                       "call_id":  "26928e33-fa7a-4aee-b341-3499d6050df8",
+                                       "step_key":  "tool:r1:0"
+                                   },
+                       "created_at":  "2026-11-09T04:24:25.145544+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "list_directory",
+                                       "call_id":  "26928e33-fa7a-4aee-b341-3499d6050df8",
+                                       "byte_count":  3784,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:24:30.642582+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r2",
+                                       "content_hash":  "5b7c4fc93594b6a57f832afce0f4199d7fe1dc5f433d9f5db8e6e04ff7ef7463"
+                                   },
+                       "created_at":  "2026-11-09T04:24:30.669551+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "3d23df82-534f-4268-a304-1650b6d60206",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:24:31.269215+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "3d23df82-534f-4268-a304-1650b6d60206",
+                                       "http_status":  200,
+                                       "content_hash":  "092f8f83c86a89bf3b0ec9dec08bc114e662b56b5beb662159fd1c77c98e7573"
+                                   },
+                       "created_at":  "2026-11-09T04:24:33.197186+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "3d23df82-534f-4268-a304-1650b6d60206",
+                                       "settled_micros":  1061
+                                   },
+                       "created_at":  "2026-11-09T04:24:33.206598+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "4eb99ba7-0ed9-44f1-93ba-ea105a7c6e7c",
+                                       "step_key":  "tool:r2:0"
+                                   },
+                       "created_at":  "2026-11-09T04:24:33.221918+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "4eb99ba7-0ed9-44f1-93ba-ea105a7c6e7c",
+                                       "byte_count":  833,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:24:38.810995+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "list_directory",
+                                       "call_id":  "000f95ba-99bf-4f00-87a5-4d1f0a8765a0",
+                                       "step_key":  "tool:r2:1"
+                                   },
+                       "created_at":  "2026-11-09T04:24:38.821188+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "list_directory",
+                                       "call_id":  "000f95ba-99bf-4f00-87a5-4d1f0a8765a0",
+                                       "byte_count":  843,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:24:44.185185+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "629eb209-0291-45a3-a6df-6732b18afacf",
+                                       "step_key":  "tool:r2:2"
+                                   },
+                       "created_at":  "2026-11-09T04:24:44.193816+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "629eb209-0291-45a3-a6df-6732b18afacf",
+                                       "byte_count":  2414,
+                                       "evidence_id":  "7affd6fe-51aa-41c7-8091-63f05855e3c6"
+                                   },
+                       "created_at":  "2026-11-09T04:24:49.728605+00:00"
+                   },
+                   {
+                       "kind":  "repository_analysis_partial",
+                       "payload":  {
+                                       "reason_code":  "INPUT_TOKEN_BUDGET",
+                                       "report_hash":  "ac86b3fe583e0a4f77f663fee110b758fe5bf1a71ad11a9900773ef9c29b580e"
+                                   },
+                       "created_at":  "2026-11-09T04:24:49.753205+00:00"
+                   }
+               ],
+    "tool_calls":  [
+                       {
+                           "step_key":  "tool:r1:0",
+                           "tool":  "list_directory",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask",
+                           "result_version":  null,
+                           "byte_count":  3784,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:24:25.145544+00:00",
+                           "finished_at":  "2026-11-09T04:24:30.642582+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r2:0",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e?search=def full_dispatch_request",
+                           "result_version":  null,
+                           "byte_count":  833,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:24:33.221918+00:00",
+                           "finished_at":  "2026-11-09T04:24:38.810995+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r2:1",
+                           "tool":  "list_directory",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/sansio",
+                           "result_version":  null,
+                           "byte_count":  843,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:24:38.821188+00:00",
+                           "finished_at":  "2026-11-09T04:24:44.185185+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r2:2",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/globals.py",
+                           "result_version":  "f4a7298ed45b92365267190c7e3e96f319e8c7e9",
+                           "byte_count":  2414,
+                           "evidence_id":  "7affd6fe-51aa-41c7-8091-63f05855e3c6",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:24:44.193816+00:00",
+                           "finished_at":  "2026-11-09T04:24:49.728605+00:00"
+                       }
+                   ],
+    "claims":  [
+
+               ],
+    "report":  "# RepoSage ä»åºåææ¥åï¼æªå®æï¼\n\n- Repository: `pallets/flask`\n- Commit: `49943b5a94413a530761350f04e896f76e8d620e`\n- åæ­¢åå : `INPUT_TOKEN_BUDGET`\n- ä»»å¡: å®æ´åæ Flask æææ¨¡åçå\u0085é¨å®ç°ç»è\n\n## 1. é®é¢ç»è®º\n\nä»»å¡æªå®æï¼æ¨¡åè½®æ°ãå·¥å\u0085·æ¬¡æ°ãè¾å\u0085¥ Tokenãè´¹ç¨ææ§è¡æéå·²è¾¾å°ä¸éãä»¥ä¸ä»\u0085ååºæ¬è½®å·²ç»å®é\u0085è¯»åå¹¶è½åºçæºç è¯æ®ï¼ä¸ææå®æ´ç»è®ºã\n\n## 2. ä»åºæ»ä½ç»æ\n\nå°æªå®æè·¨æä»¶çæ»ä½ç»æå¤æ­ã\n\n## 3. å\u0085³é®ä»£ç æä»¶ä¸è°ç¨å\u0085³ç³»\n\nï¼ä»»å¡æªå®æï¼ä¸è½å½¢æç»æ ¸éªçè°ç¨å\u0085³ç³»ç»è®ºï¼\n\n## 4. å®é\u0085ä»£ç è¯æ®\n\n- `github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/globals.py` Â· Evidence `7affd6fe-51aa-41c7-8091-63f05855e3c6` Â· Version `f4a7298ed45b92365267190c7e3e96f319e8c7e9`\n\n## 5. ä¸ç¡®å®çç»è®º\n\n- åæ­¢åå ï¼INPUT_TOKEN_BUDGET\n- æ¨¡åè½®æ°ãå·¥å\u0085·æ¬¡æ°ãè¾å\u0085¥ Tokenãè´¹ç¨ææ§è¡æéå·²è¾¾å°ä¸é\n\n## 6. å»ºè®®ç»§ç»­è°æ¥çæ¹å\n\n- æé«æ¬ä»»å¡çæ¨¡åãå·¥å\u0085·æè´¹ç¨é¢ç®åç»§ç»­\n- ç¼©å°é®é¢èå´ï¼æå®æä»¶ãç¬¦å·æéè¯¯ç ï¼åéæ°åæ\n\n---\n\n\u003e æ¬æ¥åæ¯é¢ç®ãä¸ä¸æææéèå°½æ¶çå·²ç¥ç»æï¼ä¸æ¯æåç»è®ºã\n"
+}

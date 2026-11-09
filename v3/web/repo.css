@@ -1,0 +1,140 @@
+:root {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --line: #2a2f3a;
+  --text: #e6e9ef;
+  --muted: #9aa4b2;
+  --accent: #4c8dff;
+  --ok: #35c98e;
+  --bad: #ff6b6b;
+  --pending: #f2c14e;
+}
+body {
+  margin: 0;
+  padding: 24px;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+}
+header,
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 22px;
+  margin: 0 0 6px;
+}
+h2 {
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+h3 {
+  font-size: 14px;
+  margin: 18px 0 8px;
+}
+.muted,
+.run-task {
+  color: var(--muted);
+}
+nav a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+  margin: 16px 0;
+}
+label {
+  display: block;
+  margin: 10px 0;
+  color: var(--muted);
+}
+input,
+select,
+textarea {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  background: #0c0e13;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+button {
+  padding: 8px 14px;
+  background: var(--accent);
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+}
+button.secondary {
+  background: #2b3240;
+}
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 10px 0;
+}
+.grid3,
+.grid5 {
+  display: grid;
+  gap: 10px;
+}
+.grid3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.grid5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.runs {
+  display: grid;
+  gap: 8px;
+}
+.run {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  background: #12151c;
+  border: 1px solid var(--line);
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+.run-meta.ok {
+  color: var(--ok);
+}
+.run-meta.bad {
+  color: var(--bad);
+}
+.run-meta.pending {
+  color: var(--pending);
+}
+.output {
+  background: #0c0e13;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  overflow: auto;
+  max-height: 360px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.report {
+  max-height: 640px;
+}
+@media (max-width: 820px) {
+  .grid3,
+  .grid5 {
+    grid-template-columns: 1fr 1fr;
+  }
+}

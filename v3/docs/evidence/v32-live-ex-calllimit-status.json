@@ -1,0 +1,148 @@
+﻿{
+    "run":  {
+                "run_id":  "68ffc1e1-15d8-43b5-9ca3-29f5295c8387",
+                "thread_id":  "bc530c13-1901-4dd3-adb3-2bfdc374479b",
+                "ticket_id":  "8dd7f2dd-426d-4ce1-b9ab-76567ff0eda4",
+                "repository":  "encode/httpx",
+                "requested_ref":  null,
+                "commit":  "b5addb64f0161ff6bfe94c124ef76f6a1fba5254",
+                "task":  "è¯´æ _send_single_request çä½ç¨",
+                "execution_mode":  "live",
+                "limits":  {
+                               "max_model_calls":  1,
+                               "max_tool_calls":  20,
+                               "max_input_tokens":  120000,
+                               "max_cost_micros":  300000,
+                               "max_seconds":  600
+                           },
+                "model":  {
+                              "model_id":  "deepseek-flash",
+                              "price_version":  "deepseek-flash-v1",
+                              "input_micros_per_million":  300000,
+                              "output_micros_per_million":  1200000,
+                              "context_tokens":  131072,
+                              "max_output_tokens":  4096
+                          },
+                "deadline_at":  "2026-11-09T04:35:21.764594Z",
+                "model_calls_used":  1,
+                "tool_calls_used":  1,
+                "input_tokens_used":  917,
+                "stop_reason":  "BUDGET_EXHAUSTED",
+                "report_hash":  "4fbd2f1c4da4beee0df3f6d078224168a774f0980bc4c1c96164dcd4d007e17d",
+                "authorization_hash":  "a0f6cadef210ced684b8e5b913f9053848636324faeaafcba4a4e54a240629a3",
+                "profile_hash":  "842b9f50ec1ecd09a5814f71eabc833cf88a53c3db67c8206059514fd8aa6695",
+                "parent_run_id":  null,
+                "prior_report_hash":  null,
+                "prior_evidence_map":  {
+
+                                       },
+                "execution_epoch":  1,
+                "run_status":  "waiting_input",
+                "run_reason_code":  "BUDGET_EXHAUSTED",
+                "outcome":  "partial_report"
+            },
+    "events":  [
+                   {
+                       "kind":  "repository_analysis_accepted",
+                       "payload":  {
+                                       "commit":  "b5addb64f0161ff6bfe94c124ef76f6a1fba5254",
+                                       "limits":  {
+                                                      "max_seconds":  600,
+                                                      "max_tool_calls":  20,
+                                                      "max_cost_micros":  300000,
+                                                      "max_model_calls":  1,
+                                                      "max_input_tokens":  120000
+                                                  },
+                                       "repository":  "encode/httpx",
+                                       "task_digest":  "e2ac9e0de8c522f13decc021e0987414c38c53e97f920802c983cc4cab26a372",
+                                       "execution_mode":  "live"
+                                   },
+                       "created_at":  "2026-11-09T04:25:21.759030+00:00"
+                   },
+                   {
+                       "kind":  "run_started",
+                       "payload":  {
+                                       "execution_epoch":  1
+                                   },
+                       "created_at":  "2026-11-09T04:25:21.837309+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r1",
+                                       "content_hash":  "e602445161e7815afd2880e05399d94354a4b728f2e7a936b9a2c0377d37757c"
+                                   },
+                       "created_at":  "2026-11-09T04:25:21.868817+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "411d7b97-ecc2-4bd6-925e-2d744b41affe",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:25:22.408730+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "411d7b97-ecc2-4bd6-925e-2d744b41affe",
+                                       "http_status":  200,
+                                       "content_hash":  "b2cdafdc4460f833216d6674495c365abc787f0cbaebf453bceafb2e79f9feff"
+                                   },
+                       "created_at":  "2026-11-09T04:25:23.508955+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "411d7b97-ecc2-4bd6-925e-2d744b41affe",
+                                       "settled_micros":  328
+                                   },
+                       "created_at":  "2026-11-09T04:25:23.518645+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "39dbda2e-b098-415c-8538-99f077159c9f",
+                                       "step_key":  "tool:r1:0"
+                                   },
+                       "created_at":  "2026-11-09T04:25:23.532351+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "39dbda2e-b098-415c-8538-99f077159c9f",
+                                       "byte_count":  580,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:25:29.224693+00:00"
+                   },
+                   {
+                       "kind":  "repository_analysis_partial",
+                       "payload":  {
+                                       "reason_code":  "BUDGET_EXHAUSTED",
+                                       "report_hash":  "4fbd2f1c4da4beee0df3f6d078224168a774f0980bc4c1c96164dcd4d007e17d"
+                                   },
+                       "created_at":  "2026-11-09T04:25:29.244893+00:00"
+                   }
+               ],
+    "tool_calls":  [
+                       {
+                           "step_key":  "tool:r1:0",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://encode/httpx@b5addb64f0161ff6bfe94c124ef76f6a1fba5254?search=_send_single_request",
+                           "result_version":  null,
+                           "byte_count":  580,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:25:23.532351+00:00",
+                           "finished_at":  "2026-11-09T04:25:29.224693+00:00"
+                       }
+                   ],
+    "claims":  [
+
+               ],
+    "report":  "# RepoSage ä»åºåææ¥åï¼æªå®æï¼\n\n- Repository: `encode/httpx`\n- Commit: `b5addb64f0161ff6bfe94c124ef76f6a1fba5254`\n- åæ­¢åå : `BUDGET_EXHAUSTED`\n- ä»»å¡: è¯´æ _send_single_request çä½ç¨\n\n## 1. é®é¢ç»è®º\n\nä»»å¡æªå®æï¼æ¨¡åè½®æ°ãå·¥å\u0085·æ¬¡æ°ãè¾å\u0085¥ Tokenãè´¹ç¨ææ§è¡æéå·²è¾¾å°ä¸éãä»¥ä¸ä»\u0085ååºæ¬è½®å·²ç»å®é\u0085è¯»åå¹¶è½åºçæºç è¯æ®ï¼ä¸ææå®æ´ç»è®ºã\n\n## 2. ä»åºæ»ä½ç»æ\n\nå°æªå®æè·¨æä»¶çæ»ä½ç»æå¤æ­ã\n\n## 3. å\u0085³é®ä»£ç æä»¶ä¸è°ç¨å\u0085³ç³»\n\nï¼ä»»å¡æªå®æï¼ä¸è½å½¢æç»æ ¸éªçè°ç¨å\u0085³ç³»ç»è®ºï¼\n\n## 4. å®é\u0085ä»£ç è¯æ®\n\nï¼æ¬è½®æ²¡æå·²è½åºçæºç è¯æ®ï¼\n\n\n## 5. ä¸ç¡®å®çç»è®º\n\n- åæ­¢åå ï¼BUDGET_EXHAUSTED\n- æ¨¡åè½®æ°ãå·¥å\u0085·æ¬¡æ°ãè¾å\u0085¥ Tokenãè´¹ç¨ææ§è¡æéå·²è¾¾å°ä¸é\n\n## 6. å»ºè®®ç»§ç»­è°æ¥çæ¹å\n\n- æé«æ¬ä»»å¡çæ¨¡åãå·¥å\u0085·æè´¹ç¨é¢ç®åç»§ç»­\n- ç¼©å°é®é¢èå´ï¼æå®æä»¶ãç¬¦å·æéè¯¯ç ï¼åéæ°åæ\n\n---\n\n\u003e æ¬æ¥åæ¯é¢ç®ãä¸ä¸æææéèå°½æ¶çå·²ç¥ç»æï¼ä¸æ¯æåç»è®ºã\n"
+}

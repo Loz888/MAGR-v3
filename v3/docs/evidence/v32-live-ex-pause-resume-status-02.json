@@ -1,0 +1,735 @@
+﻿{
+    "run":  {
+                "run_id":  "70445a7b-bd97-4116-9ce4-8df6423a4966",
+                "thread_id":  "324ffa82-0ba7-4eaa-bb7a-3c8f24980334",
+                "ticket_id":  "491f1d52-9696-4aaa-930c-2c93c812372f",
+                "repository":  "pallets/flask",
+                "requested_ref":  null,
+                "commit":  "49943b5a94413a530761350f04e896f76e8d620e",
+                "task":  "è¯´æ Flask RequestContext ç push ä¸ pop è°ç¨é¾ï¼å¹¶ç»åºæºç è¯æ®",
+                "execution_mode":  "live",
+                "limits":  {
+                               "max_model_calls":  10,
+                               "max_tool_calls":  20,
+                               "max_input_tokens":  120000,
+                               "max_cost_micros":  800000,
+                               "max_seconds":  600
+                           },
+                "model":  {
+                              "model_id":  "deepseek-flash",
+                              "price_version":  "deepseek-flash-v1",
+                              "input_micros_per_million":  300000,
+                              "output_micros_per_million":  1200000,
+                              "context_tokens":  131072,
+                              "max_output_tokens":  4096
+                          },
+                "deadline_at":  "2026-11-09T05:08:55.004287Z",
+                "model_calls_used":  10,
+                "tool_calls_used":  10,
+                "input_tokens_used":  52709,
+                "stop_reason":  "BUDGET_EXHAUSTED",
+                "report_hash":  "3e0f4793004af2b80900aabdb36eb85d87f2919976797d1c82af9c73943c803a",
+                "authorization_hash":  "a0f6cadef210ced684b8e5b913f9053848636324faeaafcba4a4e54a240629a3",
+                "profile_hash":  "5f11701940bd784d1fcfd00322dde5c011572bf4b736f12873f3a12de819eca7",
+                "parent_run_id":  null,
+                "prior_report_hash":  null,
+                "prior_evidence_map":  {
+
+                                       },
+                "execution_epoch":  3,
+                "run_status":  "waiting_input",
+                "run_reason_code":  "BUDGET_EXHAUSTED",
+                "outcome":  "partial_report"
+            },
+    "events":  [
+                   {
+                       "kind":  "repository_analysis_accepted",
+                       "payload":  {
+                                       "commit":  "49943b5a94413a530761350f04e896f76e8d620e",
+                                       "limits":  {
+                                                      "max_seconds":  600,
+                                                      "max_tool_calls":  20,
+                                                      "max_cost_micros":  800000,
+                                                      "max_model_calls":  10,
+                                                      "max_input_tokens":  120000
+                                                  },
+                                       "repository":  "pallets/flask",
+                                       "task_digest":  "f81821a3519ff6adce3c9eb5ab9204fcec322b48647aa51b386523529cf54363",
+                                       "execution_mode":  "live"
+                                   },
+                       "created_at":  "2026-11-09T04:58:54.997956+00:00"
+                   },
+                   {
+                       "kind":  "run_started",
+                       "payload":  {
+                                       "execution_epoch":  1
+                                   },
+                       "created_at":  "2026-11-09T04:58:55.041944+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r1",
+                                       "content_hash":  "e8a63a374ef96adcd03a0da1824ce544fa64b045360f0a97f83977f8f0432333"
+                                   },
+                       "created_at":  "2026-11-09T04:58:55.076840+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "07f72cce-2a0c-4147-bb99-3636914e4961",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:58:55.578376+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "07f72cce-2a0c-4147-bb99-3636914e4961",
+                                       "http_status":  200,
+                                       "content_hash":  "1372db697e10e37a431d94dd24f63f5216130eac69c6dede3033db890534a243"
+                                   },
+                       "created_at":  "2026-11-09T04:58:56.460081+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "07f72cce-2a0c-4147-bb99-3636914e4961",
+                                       "settled_micros":  439
+                                   },
+                       "created_at":  "2026-11-09T04:58:56.471086+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r1:retry",
+                                       "content_hash":  "82e7cafb70045da7643cf124a8c0631c35f586eda1aef81263aeece227823c30"
+                                   },
+                       "created_at":  "2026-11-09T04:58:56.490695+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "5b14220f-bd22-4125-8eaf-cbd339acf7a9",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:58:56.973352+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "5b14220f-bd22-4125-8eaf-cbd339acf7a9",
+                                       "http_status":  200,
+                                       "content_hash":  "0bc0d70abf5835c16b46d05b1dbeebe70cf962210ba2fd25eee2bd251a126017"
+                                   },
+                       "created_at":  "2026-11-09T04:58:58.097034+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "5b14220f-bd22-4125-8eaf-cbd339acf7a9",
+                                       "settled_micros":  400
+                                   },
+                       "created_at":  "2026-11-09T04:58:58.105954+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "7c84aa5f-c778-4636-8701-6047a45ceb4f",
+                                       "step_key":  "tool:r1:0"
+                                   },
+                       "created_at":  "2026-11-09T04:58:58.118408+00:00"
+                   },
+                   {
+                       "kind":  "run_paused",
+                       "payload":  {
+
+                                   },
+                       "created_at":  "2026-11-09T04:59:02.308189+00:00"
+                   },
+                   {
+                       "kind":  "run_checkpoint_resume",
+                       "payload":  {
+
+                                   },
+                       "created_at":  "2026-11-09T04:59:10.640412+00:00"
+                   },
+                   {
+                       "kind":  "run_started",
+                       "payload":  {
+                                       "execution_epoch":  3
+                                   },
+                       "created_at":  "2026-11-09T04:59:10.777163+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "4621e1ce-c527-470e-ac38-207b7c087b94",
+                                       "step_key":  "tool:r1:1"
+                                   },
+                       "created_at":  "2026-11-09T04:59:10.798678+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "4621e1ce-c527-470e-ac38-207b7c087b94",
+                                       "byte_count":  4639,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:59:16.205740+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r2",
+                                       "content_hash":  "83d538f32c3fb0842013f12ac838fae93d2689cd0ddc3cfa778c1c4bb6ec7a32"
+                                   },
+                       "created_at":  "2026-11-09T04:59:16.238205+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "77056403-e1b3-4ece-b228-a699baa10ed3",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:59:16.708605+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "77056403-e1b3-4ece-b228-a699baa10ed3",
+                                       "http_status":  200,
+                                       "content_hash":  "242b8e7b7841fc93c2b259ab14828d7f6f8fa78d397c9d3b63c588c4a4434cbf"
+                                   },
+                       "created_at":  "2026-11-09T04:59:17.484778+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "77056403-e1b3-4ece-b228-a699baa10ed3",
+                                       "settled_micros":  907
+                                   },
+                       "created_at":  "2026-11-09T04:59:17.495740+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "018802ac-4448-41db-92a4-ee9872b7cfe4",
+                                       "step_key":  "tool:r2:0"
+                                   },
+                       "created_at":  "2026-11-09T04:59:17.509937+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "018802ac-4448-41db-92a4-ee9872b7cfe4",
+                                       "byte_count":  1575,
+                                       "evidence_id":  "9e639846-be62-42bf-afa5-9796c2d4d73e"
+                                   },
+                       "created_at":  "2026-11-09T04:59:23.191039+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "487171d7-262d-4752-b2d3-5f453d0b34ca",
+                                       "step_key":  "tool:r2:1"
+                                   },
+                       "created_at":  "2026-11-09T04:59:23.223683+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "487171d7-262d-4752-b2d3-5f453d0b34ca",
+                                       "byte_count":  4481,
+                                       "evidence_id":  "d101bc3d-963e-4a06-a107-c06dd1837b2d"
+                                   },
+                       "created_at":  "2026-11-09T04:59:28.535019+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r3",
+                                       "content_hash":  "49b6c8c5e7c379c20e8ae93bc0da2f6114af13283689c128eb76f6472f7c4e80"
+                                   },
+                       "created_at":  "2026-11-09T04:59:28.571325+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "2ab7a582-30d8-4627-a64f-cea6a7ef0106",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:59:29.095420+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "2ab7a582-30d8-4627-a64f-cea6a7ef0106",
+                                       "http_status":  200,
+                                       "content_hash":  "28b927d57ab1e1e37bcc9caa767133f20aa61cfa265b9d393f994a225049cecd"
+                                   },
+                       "created_at":  "2026-11-09T04:59:30.455988+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "2ab7a582-30d8-4627-a64f-cea6a7ef0106",
+                                       "settled_micros":  1486
+                                   },
+                       "created_at":  "2026-11-09T04:59:30.465262+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "77023c32-53ec-417a-8565-108f35a90079",
+                                       "step_key":  "tool:r3:0"
+                                   },
+                       "created_at":  "2026-11-09T04:59:30.480244+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "77023c32-53ec-417a-8565-108f35a90079",
+                                       "byte_count":  4271,
+                                       "evidence_id":  "58de67ff-ca0d-4fab-adf8-5749228fc875"
+                                   },
+                       "created_at":  "2026-11-09T04:59:35.804545+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r4",
+                                       "content_hash":  "155d06d88c45ddd7944f9d782df85dd34f5f036975c747ea1f767f0c9657adeb"
+                                   },
+                       "created_at":  "2026-11-09T04:59:35.834081+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "7a29d2ea-c86f-4d11-8d4a-61ec540ddf45",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:59:36.345072+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "7a29d2ea-c86f-4d11-8d4a-61ec540ddf45",
+                                       "http_status":  200,
+                                       "content_hash":  "711f0ccfa7554ea881efb10d7453535e29ede35a468a0c776a3701d4d64302cd"
+                                   },
+                       "created_at":  "2026-11-09T04:59:38.137595+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "7a29d2ea-c86f-4d11-8d4a-61ec540ddf45",
+                                       "settled_micros":  1964
+                                   },
+                       "created_at":  "2026-11-09T04:59:38.147142+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r4:retry",
+                                       "content_hash":  "6cd73e95d5c240934b1e67f3b00bd94730296d3fc7d8b840996d6a1349c8e17c"
+                                   },
+                       "created_at":  "2026-11-09T04:59:38.164200+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "f5873e24-bc80-4449-9a5b-11dada914372",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:59:38.660601+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "f5873e24-bc80-4449-9a5b-11dada914372",
+                                       "http_status":  200,
+                                       "content_hash":  "01dc6a944c76faba6ae94ac4a8f94c9315e41dddb85821478b86c796fb51eb90"
+                                   },
+                       "created_at":  "2026-11-09T04:59:40.152977+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "f5873e24-bc80-4449-9a5b-11dada914372",
+                                       "settled_micros":  1909
+                                   },
+                       "created_at":  "2026-11-09T04:59:40.162423+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "d2dae555-180b-4881-99be-37cc8c5298b2",
+                                       "step_key":  "tool:r4:0"
+                                   },
+                       "created_at":  "2026-11-09T04:59:40.174860+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "d2dae555-180b-4881-99be-37cc8c5298b2",
+                                       "byte_count":  1201,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:59:45.723238+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r5",
+                                       "content_hash":  "eb751b2e1707db260d97337684f883317f3505c09c52561ca701f127d2111c61"
+                                   },
+                       "created_at":  "2026-11-09T04:59:45.751936+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "bb9e7425-b162-41ff-9cad-5cf919ef7b92",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:59:46.263137+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "bb9e7425-b162-41ff-9cad-5cf919ef7b92",
+                                       "http_status":  200,
+                                       "content_hash":  "a11d30d3b58ab5ad81cd484e951669a07826d85b34a64a98d717f13985b33a35"
+                                   },
+                       "created_at":  "2026-11-09T04:59:47.689086+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "bb9e7425-b162-41ff-9cad-5cf919ef7b92",
+                                       "settled_micros":  2048
+                                   },
+                       "created_at":  "2026-11-09T04:59:47.700398+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "80e21314-f383-4c8d-86ca-da2736817f2b",
+                                       "step_key":  "tool:r5:0"
+                                   },
+                       "created_at":  "2026-11-09T04:59:47.713432+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "80e21314-f383-4c8d-86ca-da2736817f2b",
+                                       "byte_count":  2693,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:59:53.355534+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "a23dea00-aae9-4fc0-9dde-5942c758f857",
+                                       "step_key":  "tool:r5:1"
+                                   },
+                       "created_at":  "2026-11-09T04:59:53.376343+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "a23dea00-aae9-4fc0-9dde-5942c758f857",
+                                       "byte_count":  557,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:59:58.830325+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r6",
+                                       "content_hash":  "65f7e842259a44bd1cc076f046fa1f5c3770f4715ef1bb71af90ad878517744a"
+                                   },
+                       "created_at":  "2026-11-09T04:59:58.862076+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "d9d08266-fcc1-409e-a84c-8b1c376d6d84",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:59:59.347756+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "d9d08266-fcc1-409e-a84c-8b1c376d6d84",
+                                       "http_status":  200,
+                                       "content_hash":  "ab4df33ff3a7ddbdc834e659c6b777187d5759c3285661399ad2dac2386196a3"
+                                   },
+                       "created_at":  "2026-11-09T05:00:01.368898+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "d9d08266-fcc1-409e-a84c-8b1c376d6d84",
+                                       "settled_micros":  2604
+                                   },
+                       "created_at":  "2026-11-09T05:00:01.378668+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "ba0aac7f-f0e5-49fc-aa0b-4d3a061708d7",
+                                       "step_key":  "tool:r6:0"
+                                   },
+                       "created_at":  "2026-11-09T05:00:01.393095+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "ba0aac7f-f0e5-49fc-aa0b-4d3a061708d7",
+                                       "byte_count":  3691,
+                                       "evidence_id":  "353e079a-f262-4fbe-a271-ebf0aa45bca3"
+                                   },
+                       "created_at":  "2026-11-09T05:00:07.398143+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r7",
+                                       "content_hash":  "d9266af505f1fa3559ff4f2eb98b21c97c69032dc67c2ef0b10db9e0bba8f82e"
+                                   },
+                       "created_at":  "2026-11-09T05:00:07.438619+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "fdbd4efb-15a0-4f1e-b9d5-3c0c665e3414",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T05:00:07.960375+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "fdbd4efb-15a0-4f1e-b9d5-3c0c665e3414",
+                                       "http_status":  200,
+                                       "content_hash":  "e7d1efcaee9c711aeee308e8fd142431f9252aa9372221f918348ee1b57cbc34"
+                                   },
+                       "created_at":  "2026-11-09T05:00:09.066693+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "fdbd4efb-15a0-4f1e-b9d5-3c0c665e3414",
+                                       "settled_micros":  2769
+                                   },
+                       "created_at":  "2026-11-09T05:00:09.075919+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r7:retry",
+                                       "content_hash":  "f1aa43b4b053e51d511c02b65296ad7de8e0fc46611029288bc42c8054e3f64a"
+                                   },
+                       "created_at":  "2026-11-09T05:00:09.092374+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "e2f6f666-a033-4401-a318-d441a91b9617",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T05:00:09.557224+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "e2f6f666-a033-4401-a318-d441a91b9617",
+                                       "http_status":  200,
+                                       "content_hash":  "d8a182497970b509a1179254b7d1739a5d93a77bb7060ec99980076778365f65"
+                                   },
+                       "created_at":  "2026-11-09T05:00:12.004613+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "e2f6f666-a033-4401-a318-d441a91b9617",
+                                       "settled_micros":  2944
+                                   },
+                       "created_at":  "2026-11-09T05:00:12.013970+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "ed1a586e-aa8c-44d5-a509-bb8038bd7a93",
+                                       "step_key":  "tool:r7:0"
+                                   },
+                       "created_at":  "2026-11-09T05:00:12.026498+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "ed1a586e-aa8c-44d5-a509-bb8038bd7a93",
+                                       "byte_count":  3457,
+                                       "evidence_id":  "1c822906-ec1d-4b94-ab4b-fe07b345ae63"
+                                   },
+                       "created_at":  "2026-11-09T05:00:18.048106+00:00"
+                   },
+                   {
+                       "kind":  "repository_analysis_partial",
+                       "payload":  {
+                                       "reason_code":  "BUDGET_EXHAUSTED",
+                                       "report_hash":  "3e0f4793004af2b80900aabdb36eb85d87f2919976797d1c82af9c73943c803a"
+                                   },
+                       "created_at":  "2026-11-09T05:00:18.078693+00:00"
+                   }
+               ],
+    "tool_calls":  [
+                       {
+                           "step_key":  "tool:r1:0",
+                           "tool":  "search_code",
+                           "status":  "running",
+                           "result_uri":  null,
+                           "result_version":  null,
+                           "byte_count":  null,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:58:58.118408+00:00",
+                           "finished_at":  null
+                       },
+                       {
+                           "step_key":  "tool:r1:1",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e?search=def push",
+                           "result_version":  null,
+                           "byte_count":  4639,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:59:10.798678+00:00",
+                           "finished_at":  "2026-11-09T04:59:16.205740+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r2:0",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/ctx.py",
+                           "result_version":  "d4d0de651951f7fa5cf5186847dc1c1189406e29",
+                           "byte_count":  1575,
+                           "evidence_id":  "9e639846-be62-42bf-afa5-9796c2d4d73e",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:59:17.509937+00:00",
+                           "finished_at":  "2026-11-09T04:59:23.191039+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r2:1",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/ctx.py",
+                           "result_version":  "d4d0de651951f7fa5cf5186847dc1c1189406e29",
+                           "byte_count":  4481,
+                           "evidence_id":  "d101bc3d-963e-4a06-a107-c06dd1837b2d",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:59:23.223683+00:00",
+                           "finished_at":  "2026-11-09T04:59:28.535019+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r3:0",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/ctx.py",
+                           "result_version":  "d4d0de651951f7fa5cf5186847dc1c1189406e29",
+                           "byte_count":  4271,
+                           "evidence_id":  "58de67ff-ca0d-4fab-adf8-5749228fc875",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:59:30.480244+00:00",
+                           "finished_at":  "2026-11-09T04:59:35.804545+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r4:0",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e?search=ctx.push()",
+                           "result_version":  null,
+                           "byte_count":  1201,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:59:40.174860+00:00",
+                           "finished_at":  "2026-11-09T04:59:45.723238+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r5:0",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e?search=def wsgi_app",
+                           "result_version":  null,
+                           "byte_count":  2693,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:59:47.713432+00:00",
+                           "finished_at":  "2026-11-09T04:59:53.355534+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r5:1",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e?search=ctx.pop(error)",
+                           "result_version":  null,
+                           "byte_count":  557,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:59:53.376343+00:00",
+                           "finished_at":  "2026-11-09T04:59:58.830325+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r6:0",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/app.py",
+                           "result_version":  "9b8b249ecc24550e22160df4054a581244883b22",
+                           "byte_count":  3691,
+                           "evidence_id":  "353e079a-f262-4fbe-a271-ebf0aa45bca3",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T05:00:01.393095+00:00",
+                           "finished_at":  "2026-11-09T05:00:07.398143+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r7:0",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/app.py",
+                           "result_version":  "9b8b249ecc24550e22160df4054a581244883b22",
+                           "byte_count":  3457,
+                           "evidence_id":  "1c822906-ec1d-4b94-ab4b-fe07b345ae63",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T05:00:12.026498+00:00",
+                           "finished_at":  "2026-11-09T05:00:18.048106+00:00"
+                       }
+                   ],
+    "claims":  [
+
+               ],
+    "report":  "# RepoSage ä»åºåææ¥åï¼æªå®æï¼\n\n- Repository: `pallets/flask`\n- Commit: `49943b5a94413a530761350f04e896f76e8d620e`\n- åæ­¢åå : `BUDGET_EXHAUSTED`\n- ä»»å¡: è¯´æ Flask RequestContext ç push ä¸ pop è°ç¨é¾ï¼å¹¶ç»åºæºç è¯æ®\n\n## 1. é®é¢ç»è®º\n\nä»»å¡æªå®æï¼æ¨¡åè½®æ°ãå·¥å\u0085·æ¬¡æ°ãè¾å\u0085¥ Tokenãè´¹ç¨ææ§è¡æéå·²è¾¾å°ä¸éãä»¥ä¸ä»\u0085ååºæ¬è½®å·²ç»å®é\u0085è¯»åå¹¶è½åºçæºç è¯æ®ï¼ä¸ææå®æ´ç»è®ºã\n\n## 2. ä»åºæ»ä½ç»æ\n\nå°æªå®æè·¨æä»¶çæ»ä½ç»æå¤æ­ã\n\n## 3. å\u0085³é®ä»£ç æä»¶ä¸è°ç¨å\u0085³ç³»\n\nï¼ä»»å¡æªå®æï¼ä¸è½å½¢æç»æ ¸éªçè°ç¨å\u0085³ç³»ç»è®ºï¼\n\n## 4. å®é\u0085ä»£ç è¯æ®\n\n- `github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/ctx.py` Â· Evidence `9e639846-be62-42bf-afa5-9796c2d4d73e` Â· Version `d4d0de651951f7fa5cf5186847dc1c1189406e29`\n- `github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/ctx.py` Â· Evidence `d101bc3d-963e-4a06-a107-c06dd1837b2d` Â· Version `d4d0de651951f7fa5cf5186847dc1c1189406e29`\n- `github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/ctx.py` Â· Evidence `58de67ff-ca0d-4fab-adf8-5749228fc875` Â· Version `d4d0de651951f7fa5cf5186847dc1c1189406e29`\n- `github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/app.py` Â· Evidence `353e079a-f262-4fbe-a271-ebf0aa45bca3` Â· Version `9b8b249ecc24550e22160df4054a581244883b22`\n- `github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/app.py` Â· Evidence `1c822906-ec1d-4b94-ab4b-fe07b345ae63` Â· Version `9b8b249ecc24550e22160df4054a581244883b22`\n\n## 5. ä¸ç¡®å®çç»è®º\n\n- åæ­¢åå ï¼BUDGET_EXHAUSTED\n- æ¨¡åè½®æ°ãå·¥å\u0085·æ¬¡æ°ãè¾å\u0085¥ Tokenãè´¹ç¨ææ§è¡æéå·²è¾¾å°ä¸é\n\n## 6. å»ºè®®ç»§ç»­è°æ¥çæ¹å\n\n- æé«æ¬ä»»å¡çæ¨¡åãå·¥å\u0085·æè´¹ç¨é¢ç®åç»§ç»­\n- ç¼©å°é®é¢èå´ï¼æå®æä»¶ãç¬¦å·æéè¯¯ç ï¼åéæ°åæ\n\n---\n\n\u003e æ¬æ¥åæ¯é¢ç®ãä¸ä¸æææéèå°½æ¶çå·²ç¥ç»æï¼ä¸æ¯æåç»è®ºã\n"
+}

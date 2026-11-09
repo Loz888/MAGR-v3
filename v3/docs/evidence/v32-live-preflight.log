@@ -1,0 +1,71 @@
+RepoSage V3.2 live preflight
+Date: 2026-11-09 (Asia/Shanghai)
+Environment: Windows working copy + WSL2 PostgreSQL/Redis
+Result: LIVE MODEL RUN NOT STARTED (DeepSeek credential invalid)
+
+1. Configuration
+- .env loaded from v3/.env (copied from WSL clone, secrets not printed).
+- MGAR_V3_ALLOW_PAID=1, allowed actor loz888.
+- Authorization file .local/repo-analysis-authorization.json validated:
+  approved_by=Loz888, expires_at=2026-12-09T23:59:59+08:00,
+  allowed_repositories=["*"], max_cost_micros=1000000, model=deepseek-chat,
+  authorization_hash=eb62eb490a7c2edb... (full hash is stored in each run row).
+
+2. Dependencies
+- PostgreSQL 127.0.0.1:55433/mgar_v3: PASS.
+- Migrations applied: 0001..0020 (0020_repository_analysis.sql included).
+- Redis 127.0.0.1:56379: PASS.
+- Stale V3.1 uvicorn (WSL pid 13513) holding the Engine advisory lock was stopped.
+- API server started on 127.0.0.1:18081 (18080 blocked by WSL port proxy).
+
+3. GitHub read access
+- Configured MGAR_V3_GITHUB_READ_TOKEN: HTTP 401 from api.github.com (invalid value).
+- Replaced it with the locally authenticated GitHub CLI token for account Loz888
+  (gh auth token; value never printed).
+- Official remote MCP https://api.githubcopilot.com/mcp/ with X-MCP-Readonly:
+  initialize PASS; read-only tool list returned (no write tools exposed).
+- Note: the gh OAuth token carries broad scopes; the V3.2 tool layer still exposes
+  only the read-only allowlist. Replace with a read-only fine-grained PAT for
+  production use.
+
+4. DeepSeek access
+- POST https://api.deepseek.com/chat/completions, model deepseek-chat:
+  HTTP 401 Invalid API key.
+- The value in .env contains angle-bracket placeholders (shape check only; the
+  secret itself is not logged). No live analysis run was created.
+
+5. DB-backed end-to-end verification (fixture mode, no remote content)
+- Run 58ebd90e-77a4-4656-b842-51596e3ac108
+  status=succeeded, outcome=internal_report, stop_reason=complete
+  model_calls=4, tool_calls=4, claims=2, report_hash=45a2c6cf3c71943d...
+- Report contains github://pallets/flask@b63788b4.../src/main.py#L1-L3,
+  GitHub blob link, evidence id and verbatim quote.
+- This validates Store/PostgresSaver/Agent loop/verifier/CAS/API on this machine;
+  it is NOT a substitute for the live P4 acceptance.
+
+6. Code fixes made during preflight
+- src/mgar_v3/api.py: repository-analysis endpoints now resolve the service from
+  app.state (removed a NameError on /api/v3/repository-analyses/profile).
+- src/mgar_v3/repository_analysis/store.py: added settle_call,
+  record_model_input, record_model_response delegating to Engine, completing the
+  AnalysisLedger contract used by both live and fixture models.
+- src/mgar_v3/evidence/artifacts.py: skip directory fsync when os.O_DIRECTORY
+  is unavailable (Windows).
+- src/mgar_v3/repository_analysis/fixture.py: use a contiguous 3-line quote so
+  the verifier can locate it.
+- src/mgar_v3/repository_analysis/report.py: indent every quote line inside the
+  Markdown code fence.
+
+7. Blocker
+- A valid DeepSeek API key is required before any live run. Until it is present,
+  P4 remains incomplete; no live success is claimed.
+
+8. Re-check after user reported configuration (2026-11-09, local session)
+- v3/.env re-read: MGAR_V3_DEEPSEEK_API_KEY shape only: length 40, prefix sk-<sk,
+  contains angle-bracket placeholders, trailing '>'. No key value logged.
+- GET https://api.deepseek.com/models with that key: HTTP 401
+  {"error":{"message":"Authentication Fails ... invalid","type":"authentication_error"}}
+  request_id=30ae45bc-950d-4837-a1b8-9132fc2bf72b.
+- WSL clone /home/imini/projects/MAGR-v3/v3/.env has the same placeholder prefix.
+- No other .env file or DEEPSEEK environment variable was found on this machine.
+- Result: live P4 still blocked; no run rows or model costs created.

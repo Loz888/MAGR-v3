@@ -24,6 +24,7 @@
 | R6 监控/有限主动性 | [恢复请求](adr/0011-observe-only-watchdog.md) · [评测](adr/0012-r6-monitoring-proactivity-evaluation.md) | [运行](r6-runbook.md) · [故障矩阵](r6-failure-matrix.md) |
 | 协调补验与修复 | [D/E/F设计](adr/0014-coordination-comparison.md) · [候选契约](adr/0015-coordination-candidate-contract.md) | [v1报告](experiments/coordination-v1/README.md) · [v2报告](experiments/coordination-v2/README.md) |
 | 两项P0 | [冻结设计](adr/0016-p0-commerce-and-business-results-design.md) · [实施ADR0017](adr/0017-p0-commerce-implementation.md) · [复验ADR0018](adr/0018-exact-proposal-review.md) | [最终验收](repairs/P0-20261107/acceptance.json) · [原实验](repairs/P0-20261106/acceptance.json) · [运行](p0-commerce-runbook.md) |
+| V3.2 通用仓库分析 | [运行手册](repo-analysis.md) | Web `/repo` · `mgar repo-analyze` · API `/api/v3/repository-analyses` |
 
 ## 结果与问题档案
 

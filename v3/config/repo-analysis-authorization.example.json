@@ -1,0 +1,21 @@
+{
+  "approved_by": "loz888",
+  "expires_at": "2026-12-31T00:00:00Z",
+  "allow_paid": true,
+  "allowed_repositories": ["octocat/Hello-World", "pallets/flask", "tiangolo/fastapi"],
+  "limits": {
+    "max_model_calls": 6,
+    "max_tool_calls": 20,
+    "max_input_tokens": 60000,
+    "max_cost_micros": 500000,
+    "max_seconds": 600
+  },
+  "model": {
+    "model_id": "deepseek-chat",
+    "price_version": "repository-analysis-v1",
+    "input_micros_per_million": 300000,
+    "output_micros_per_million": 1200000,
+    "context_tokens": 131072,
+    "max_output_tokens": 2048
+  }
+}

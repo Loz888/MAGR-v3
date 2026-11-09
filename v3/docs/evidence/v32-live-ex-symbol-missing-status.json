@@ -1,0 +1,496 @@
+﻿{
+    "run":  {
+                "run_id":  "9ac71662-4fc8-49dd-ab44-909a57d4c3e2",
+                "thread_id":  "3de3bcc6-9dc4-4afd-9a6f-537dfd1f6d9e",
+                "ticket_id":  "96e594c3-9855-4ee9-ad29-c14739fae7f5",
+                "repository":  "psf/requests",
+                "requested_ref":  null,
+                "commit":  "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+                "task":  "å®ä½ä»åºä¸­ä¸å­å¨çç¬¦å· NonExistentWidgetFactory å¹¶è¯´æå®çå®æ´è°ç¨é¾ä¸å®ä¹ä½ç½®",
+                "execution_mode":  "live",
+                "limits":  {
+                               "max_model_calls":  8,
+                               "max_tool_calls":  20,
+                               "max_input_tokens":  100000,
+                               "max_cost_micros":  500000,
+                               "max_seconds":  600
+                           },
+                "model":  {
+                              "model_id":  "deepseek-flash",
+                              "price_version":  "deepseek-flash-v1",
+                              "input_micros_per_million":  300000,
+                              "output_micros_per_million":  1200000,
+                              "context_tokens":  131072,
+                              "max_output_tokens":  4096
+                          },
+                "deadline_at":  "2026-11-09T04:36:24.329910Z",
+                "model_calls_used":  6,
+                "tool_calls_used":  7,
+                "input_tokens_used":  20038,
+                "stop_reason":  "MODEL_INVALID_RESPONSE",
+                "report_hash":  null,
+                "authorization_hash":  "a0f6cadef210ced684b8e5b913f9053848636324faeaafcba4a4e54a240629a3",
+                "profile_hash":  "f9acd6f6099d25cdbda6d4d15153048c00bc0cb30eff18490313a8c64fa8e933",
+                "parent_run_id":  null,
+                "prior_report_hash":  null,
+                "prior_evidence_map":  {
+
+                                       },
+                "execution_epoch":  2,
+                "run_status":  "failed",
+                "run_reason_code":  "MODEL_INVALID_RESPONSE",
+                "outcome":  null
+            },
+    "events":  [
+                   {
+                       "kind":  "repository_analysis_accepted",
+                       "payload":  {
+                                       "commit":  "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+                                       "limits":  {
+                                                      "max_seconds":  600,
+                                                      "max_tool_calls":  20,
+                                                      "max_cost_micros":  500000,
+                                                      "max_model_calls":  8,
+                                                      "max_input_tokens":  100000
+                                                  },
+                                       "repository":  "psf/requests",
+                                       "task_digest":  "d03ab5619c3eeecb76b2627f5391f817f5ab84ef35e28a30b2929f9e19c558f1",
+                                       "execution_mode":  "live"
+                                   },
+                       "created_at":  "2026-11-09T04:26:24.323534+00:00"
+                   },
+                   {
+                       "kind":  "run_started",
+                       "payload":  {
+                                       "execution_epoch":  1
+                                   },
+                       "created_at":  "2026-11-09T04:26:24.576027+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r1",
+                                       "content_hash":  "3a6c129f621db5dd8f5a3a0d34143ca627f065092eca704068d411a669563c45"
+                                   },
+                       "created_at":  "2026-11-09T04:26:24.608329+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "75568d14-9936-4612-b967-73771de8b032",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:26:25.204490+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "75568d14-9936-4612-b967-73771de8b032",
+                                       "http_status":  200,
+                                       "content_hash":  "87e3f84e9c304950ce67bbf62beba2d682cb2cef4185b1fc9655e58b3d7f1b55"
+                                   },
+                       "created_at":  "2026-11-09T04:26:26.087691+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "75568d14-9936-4612-b967-73771de8b032",
+                                       "settled_micros":  363
+                                   },
+                       "created_at":  "2026-11-09T04:26:26.096452+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "83967d17-95ea-4c5d-af22-cf3a9a520ebb",
+                                       "step_key":  "tool:r1:0"
+                                   },
+                       "created_at":  "2026-11-09T04:26:26.109660+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "83967d17-95ea-4c5d-af22-cf3a9a520ebb",
+                                       "byte_count":  236,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:26:31.593280+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "50945037-947e-41df-88e0-6ff16dd7ae8c",
+                                       "step_key":  "tool:r1:1"
+                                   },
+                       "created_at":  "2026-11-09T04:26:31.612300+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "50945037-947e-41df-88e0-6ff16dd7ae8c",
+                                       "byte_count":  225,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:26:37.262190+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r2",
+                                       "content_hash":  "ea054ba955dc49c4e285684c3353bb6a239b33485a6740b37dc5dbb7c2be685b"
+                                   },
+                       "created_at":  "2026-11-09T04:26:37.295551+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "2edfb2cf-c790-4d4d-9a12-125f58e94c9c",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:26:38.181129+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "2edfb2cf-c790-4d4d-9a12-125f58e94c9c",
+                                       "http_status":  200,
+                                       "content_hash":  "4758c58faa29faa87df618e9fb0ececf24c7ea08865561b2c937f553ff72f2ce"
+                                   },
+                       "created_at":  "2026-11-09T04:26:40.301622+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "2edfb2cf-c790-4d4d-9a12-125f58e94c9c",
+                                       "settled_micros":  601
+                                   },
+                       "created_at":  "2026-11-09T04:26:40.312343+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "list_directory",
+                                       "call_id":  "5c0325e0-f324-44d6-8358-6972b9301938",
+                                       "step_key":  "tool:r2:0"
+                                   },
+                       "created_at":  "2026-11-09T04:26:40.324400+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "list_directory",
+                                       "call_id":  "5c0325e0-f324-44d6-8358-6972b9301938",
+                                       "byte_count":  3579,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:26:46.503609+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "71f2fa2e-fad4-4b44-99d2-80a9edc1b39c",
+                                       "step_key":  "tool:r2:1"
+                                   },
+                       "created_at":  "2026-11-09T04:26:46.520923+00:00"
+                   },
+                   {
+                       "kind":  "tool_failed",
+                       "payload":  {
+                                       "call_id":  "71f2fa2e-fad4-4b44-99d2-80a9edc1b39c",
+                                       "error_code":  "MCP_RESPONSE_UNSUPPORTED"
+                                   },
+                       "created_at":  "2026-11-09T04:26:52.263381+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r3",
+                                       "content_hash":  "1668d4a47041c2c8ea613ee106298bedd7164896dc0c48d7e763cfb90eb43f8e"
+                                   },
+                       "created_at":  "2026-11-09T04:26:52.291070+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "b5c3fe3a-5053-43c5-a2ec-7689798a1687",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:26:53.166273+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "b5c3fe3a-5053-43c5-a2ec-7689798a1687",
+                                       "http_status":  200,
+                                       "content_hash":  "5770050f5fa6b2994c076ef5cf551e53729d6c6f5b9b2ee651b3956d191f2259"
+                                   },
+                       "created_at":  "2026-11-09T04:26:57.934651+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "b5c3fe3a-5053-43c5-a2ec-7689798a1687",
+                                       "settled_micros":  1681
+                                   },
+                       "created_at":  "2026-11-09T04:26:57.946993+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "01720724-c4a1-4058-b581-6eb0fbe8592b",
+                                       "step_key":  "tool:r3:0"
+                                   },
+                       "created_at":  "2026-11-09T04:26:57.964248+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "01720724-c4a1-4058-b581-6eb0fbe8592b",
+                                       "byte_count":  2000,
+                                       "evidence_id":  "46644c59-7f0c-4478-b62f-734fe5009809"
+                                   },
+                       "created_at":  "2026-11-09T04:27:03.591119+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r4",
+                                       "content_hash":  "3547b5aba9a66ce90b920f15b7a981718e70e7c8fa193c7517f9d1592ae5ee24"
+                                   },
+                       "created_at":  "2026-11-09T04:27:03.642676+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "daf1d326-923e-49b3-9b5d-47b729647731",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:27:04.248214+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "daf1d326-923e-49b3-9b5d-47b729647731",
+                                       "http_status":  200,
+                                       "content_hash":  "88ca610c03c658873364f919aca8354a84f751cb39cf40b3a9e46dea1ec42ffc"
+                                   },
+                       "created_at":  "2026-11-09T04:27:05.973412+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "daf1d326-923e-49b3-9b5d-47b729647731",
+                                       "settled_micros":  1452
+                                   },
+                       "created_at":  "2026-11-09T04:27:05.981387+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "63beab82-f78c-4ec6-a9b0-e4a8aa4fcf30",
+                                       "step_key":  "tool:r4:0"
+                                   },
+                       "created_at":  "2026-11-09T04:27:05.991299+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "63beab82-f78c-4ec6-a9b0-e4a8aa4fcf30",
+                                       "byte_count":  2341,
+                                       "evidence_id":  "f61c2616-7ea8-498d-a7a8-104e8076069c"
+                                   },
+                       "created_at":  "2026-11-09T04:27:11.661751+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "69e18b80-d011-4996-88fe-821cc8a82002",
+                                       "step_key":  "tool:r4:1"
+                                   },
+                       "created_at":  "2026-11-09T04:27:11.690441+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "69e18b80-d011-4996-88fe-821cc8a82002",
+                                       "byte_count":  1707,
+                                       "evidence_id":  "c170fe5b-fbe2-4824-95b8-347226a7a8e0"
+                                   },
+                       "created_at":  "2026-11-09T04:27:17.059356+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r5",
+                                       "content_hash":  "72f420b27356397b465eecf35c79921756dead9f8a1df9bc88f11bf798c6f25a"
+                                   },
+                       "created_at":  "2026-11-09T04:27:17.105288+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "241f6849-afd1-49ff-8b60-659a9597ebe2",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:27:17.705516+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "241f6849-afd1-49ff-8b60-659a9597ebe2",
+                                       "http_status":  200,
+                                       "content_hash":  "576071db253c18827a8fd92c4f90091d83a564c65ce48cc7bf6f70aee311824f"
+                                   },
+                       "created_at":  "2026-11-09T04:27:24.348593+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "241f6849-afd1-49ff-8b60-659a9597ebe2",
+                                       "settled_micros":  2844
+                                   },
+                       "created_at":  "2026-11-09T04:27:24.358885+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r5:retry",
+                                       "content_hash":  "456a5a400e5fbc564b0ad25d2de632364ee9abb9acb8c97107710d3806f40f28"
+                                   },
+                       "created_at":  "2026-11-09T04:27:24.377562+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "68df8f31-69d5-48dc-ab34-a85c2f168b52",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:27:25.007828+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "68df8f31-69d5-48dc-ab34-a85c2f168b52",
+                                       "http_status":  200,
+                                       "content_hash":  "97205b47dea7c488f57a0cf370206abe30f8e98f3a134e76b3b26c8f6fc7fb53"
+                                   },
+                       "created_at":  "2026-11-09T04:27:29.654535+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "68df8f31-69d5-48dc-ab34-a85c2f168b52",
+                                       "settled_micros":  2537
+                                   },
+                       "created_at":  "2026-11-09T04:27:29.665599+00:00"
+                   },
+                   {
+                       "kind":  "run_failed",
+                       "payload":  {
+                                       "reason_code":  "MODEL_INVALID_RESPONSE"
+                                   },
+                       "created_at":  "2026-11-09T04:27:29.680015+00:00"
+                   }
+               ],
+    "tool_calls":  [
+                       {
+                           "step_key":  "tool:r1:0",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157?search=NonExistentWidgetFactory",
+                           "result_version":  null,
+                           "byte_count":  236,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:26:26.109660+00:00",
+                           "finished_at":  "2026-11-09T04:26:31.593280+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r1:1",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157?search=WidgetFactory",
+                           "result_version":  null,
+                           "byte_count":  225,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:26:31.612300+00:00",
+                           "finished_at":  "2026-11-09T04:26:37.262190+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r2:0",
+                           "tool":  "list_directory",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/",
+                           "result_version":  null,
+                           "byte_count":  3579,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:26:40.324400+00:00",
+                           "finished_at":  "2026-11-09T04:26:46.503609+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r2:1",
+                           "tool":  "read_file",
+                           "status":  "failed",
+                           "result_uri":  null,
+                           "result_version":  null,
+                           "byte_count":  null,
+                           "evidence_id":  null,
+                           "error_code":  "MCP_RESPONSE_UNSUPPORTED",
+                           "created_at":  "2026-11-09T04:26:46.520923+00:00",
+                           "finished_at":  "2026-11-09T04:26:52.263381+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r3:0",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/__init__.py",
+                           "result_version":  "1093ff8bf67184ecb0f83d7015026b624a583d3d",
+                           "byte_count":  2000,
+                           "evidence_id":  "46644c59-7f0c-4478-b62f-734fe5009809",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:26:57.964248+00:00",
+                           "finished_at":  "2026-11-09T04:27:03.591119+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r4:0",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/__init__.py",
+                           "result_version":  "1093ff8bf67184ecb0f83d7015026b624a583d3d",
+                           "byte_count":  2341,
+                           "evidence_id":  "f61c2616-7ea8-498d-a7a8-104e8076069c",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:27:05.991299+00:00",
+                           "finished_at":  "2026-11-09T04:27:11.661751+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r4:1",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/api.py",
+                           "result_version":  "eeb3b54d7f27e2c843080dfe81dfdb0d460c2b31",
+                           "byte_count":  1707,
+                           "evidence_id":  "c170fe5b-fbe2-4824-95b8-347226a7a8e0",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:27:11.690441+00:00",
+                           "finished_at":  "2026-11-09T04:27:17.059356+00:00"
+                       }
+                   ],
+    "claims":  [
+
+               ],
+    "report":  null
+}

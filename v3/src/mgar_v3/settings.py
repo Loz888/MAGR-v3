@@ -40,6 +40,7 @@ class Settings(BaseSettings):
     github_use_gh_token: bool = False
     live_profile_path: Path | None = None
     live_authorization_path: Path | None = None
+    repo_analysis_authorization_path: Path | None = None
     router_mode: Literal["disabled", "fixture", "live"] = "fixture"
     router_batch_max: int = Field(default=16, ge=1, le=16)
     router_context_bytes: int = Field(default=65536, ge=4096, le=65536)

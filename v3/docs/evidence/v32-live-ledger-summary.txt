@@ -1,0 +1,29 @@
+﻿b1a7b242 | pallets/flask | failed/None | stop=EXECUTION_FAILED | model=1 tool=0 tokens=0 | cost=0 | 说明请求进入 Flask 应用后的处理链路
+c20062d0 | pallets/flask | paused/None | stop=None | model=1 tool=0 tokens=0 | cost=0 | 说明请求进入 Flask 应用后的处理链路
+2a285927 | pallets/flask | paused/None | stop=None | model=1 tool=1 tokens=1 | cost=0 | 说明请求进入 Flask 应用后的处理链路
+77169c20 | pallets/flask | failed/None | stop=EVIDENCE_REJECTED | model=4 tool=4 tokens=4 | cost=0 | 说明请求进入 Flask 应用后的处理链路
+0274db4f | pallets/flask | succeeded/internal_report | stop=complete | model=4 tool=4 tokens=4 | cost=0 | 说明请求进入 Flask 应用后的处理链路
+58ebd90e | pallets/flask | succeeded/internal_report | stop=complete | model=4 tool=4 tokens=4 | cost=0 | 说明请求进入 Flask 应用后的处理链路
+b8266926 | pallets/flask | failed/None | stop=MODEL_INVALID_RESPONSE | model=1 tool=0 tokens=0 | cost=341 | 说明 HTTP 请求进入 Flask 应用后的处理链路：入口文件、WSG
+20ec67f3 | pallets/flask | failed/None | stop=MODEL_INVALID_RESPONSE | model=3 tool=5 tokens=3925 | cost=4548 | 说明 HTTP 请求进入 Flask 应用后的处理链路：入口文件、WSG
+e281dbfc | pallets/flask | failed/None | stop=MODEL_INVALID_RESPONSE | model=6 tool=14 tokens=24306 | cost=16526 | 说明 HTTP 请求进入 Flask 应用后的处理链路：入口文件、WSG
+1e5e7150 | pallets/flask | failed/None | stop=MODEL_INVALID_RESPONSE | model=6 tool=11 tokens=31436 | cost=25060 | 说明 HTTP 请求进入 Flask 应用后的处理链路：入口文件、WSG
+b2e8b32d | pallets/flask | failed/None | stop=MODEL_INVALID_RESPONSE | model=1 tool=0 tokens=0 | cost=392 | 说明 HTTP 请求进入 Flask 应用后的处理链路：入口文件、WSG
+bfea9d23 | pallets/flask | failed/None | stop=MODEL_INVALID_RESPONSE | model=2 tool=0 tokens=1696 | cost=664 | 说明 HTTP 请求进入 Flask 应用后的处理链路：入口文件、WSG
+b6fc4d90 | pallets/flask | waiting_input/partial_report | stop=INPUT_TOKEN_BUDGET | model=7 tool=13 tokens=52135 | cost=22100 | 说明 HTTP 请求进入 Flask 应用后的处理链路：入口文件、WSG
+0d943ba2 | pallets/flask | succeeded/internal_report | stop=complete | model=8 tool=17 tokens=84694 | cost=38452 | 说明 HTTP 请求进入 Flask 应用后的处理链路：入口文件、WSG
+c79e8866 | encode/httpx | failed/None | stop=MODEL_INVALID_RESPONSE | model=6 tool=11 tokens=54807 | cost=30591 | 说明 httpx 中 Client 与 transport 的分层：从 
+d5c043f4 | encode/httpx | succeeded/internal_report | stop=complete | model=6 tool=10 tokens=44031 | cost=18423 | 说明 httpx 中 Client 与 transport 的分层：从 
+aee90fa7 | psf/requests | succeeded/internal_report | stop=complete | model=5 tool=8 tokens=35448 | cost=12493 | 说明 requests 中 Session.request 到适配器发送
+48eb4ed8 | pallets/flask | waiting_input/partial_report | stop=INPUT_TOKEN_BUDGET | model=2 tool=4 tokens=3669 | cost=1399 | 完整分析 Flask 所有模块的内部实现细节
+68ffc1e1 | encode/httpx | waiting_input/partial_report | stop=BUDGET_EXHAUSTED | model=1 tool=1 tokens=917 | cost=328 | 说明 _send_single_request 的作用
+9ac71662 | psf/requests | failed/None | stop=MODEL_INVALID_RESPONSE | model=6 tool=7 tokens=20038 | cost=9478 | 定位仓库中不存在的符号 NonExistentWidgetFactory
+5b851571 | psf/requests | succeeded/internal_report | stop=complete | model=3 tool=4 tokens=4063 | cost=2143 | 定位仓库中不存在的符号 NonExistentWidgetFactory
+3902de1f | zafstojano/ml-interview-questions-and-answers | succeeded/internal_report | stop=complete | model=3 tool=2 tokens=5709 | cost=8000 | 总结该仓库 README 的用途与联系方式，并指出 README 中是否
+e1cbe32f | pallets/flask | failed/None | stop=MODEL_SCOPE_DENIED | model=0 tool=0 tokens=0 | cost=0 | 继续说明 Blueprint 注册发生在哪里：Flask.add_url
+f2bdf5a1 | pallets/flask | failed/None | stop=MODEL_INVALID_RESPONSE | model=2 tool=0 tokens=2072 | cost=847 | 继续说明 Blueprint 注册发生在哪里：Flask.add_url
+4f88020a | pallets/flask | succeeded/internal_report | stop=complete | model=10 tool=11 tokens=90071 | cost=33173 | 继续说明 Blueprint 注册发生在哪里：Flask.add_url
+c3fa407f | pallets/flask | waiting_input/partial_report | stop=DEADLINE_EXCEEDED | model=2 tool=1 tokens=2040 | cost=853 | 详细说明 Flask 请求上下文 ctx.push 与 pop 的调用链
+8c8197c8 | pallets/flask | cancelled/cancelled | stop=None | model=1 tool=1 tokens=965 | cost=464 | 详细说明 Flask 的配置加载与 from_pretrained 调用
+70445a7b | pallets/flask | waiting_input/partial_report | stop=BUDGET_EXHAUSTED | model=10 tool=10 tokens=52709 | cost=17470 | 说明 Flask RequestContext 的 push 与 pop
+TOTAL_MICROS 243745 USD 0.243745

@@ -1,0 +1,75 @@
+{
+  "baseline": "A",
+  "cache_state_mismatch_pairs": 0,
+  "candidate": "C",
+  "case_count": 30,
+  "comparison_sha256": "514ae56286cdf8785d568e1eaf7e697d40f7d537ffb0681ec760492de37364f0",
+  "config_hash": "75774ed08b3a5702da1e5101c1b998f5ef22c4f37bbbb63fcf813741d5539983",
+  "cost_difference": {
+    "ci95": [
+      200.22916666666669,
+      424.3366666666666
+    ],
+    "iterations": 10000,
+    "mean_difference": 317.56666666666666,
+    "method": "paired_bootstrap_percentile",
+    "n_pairs": 30,
+    "scope": "eligible pairs; candidate minus baseline cost_micros per case",
+    "seed": 20261108
+  },
+  "coverage": {
+    "exclusion_reasons": {},
+    "pairs_eligible": 30,
+    "pairs_excluded": 0,
+    "pairs_total": 30,
+    "scope": "all paired (case_id, repeat_index) keys present in both arms"
+  },
+  "dataset_hash": "9ce3bc4762aacd2d738f8dc79ecea19a9a9e1f5f483b71e65d8b43319d9d36f9",
+  "decision": "NOT_EVALUATED_IN_QEV-02",
+  "decision_note": "QEV-02 provides measurement infrastructure only; no rollout threshold was predeclared and no recommendation is made here",
+  "experiment_id": "qev-02-rehearsal",
+  "latency_difference_by_cache": {
+    "none": {
+      "ci95": [
+        294.70366666666666,
+        1906.5317499999996
+      ],
+      "iterations": 10000,
+      "mean_difference": 1244.53,
+      "method": "paired_bootstrap_percentile",
+      "n_pairs": 30,
+      "scope": "eligible pairs with cache_state=none; candidate minus baseline latency_ms",
+      "seed": 20261108
+    }
+  },
+  "schema": "mgar-quality-eval-comparison-v1",
+  "success": {
+    "baseline": {
+      "denominator": 30,
+      "interval95": [
+        0.8865,
+        1.0
+      ],
+      "numerator": 30,
+      "scope": "eligible paired cases where both arms have status PASS or FAIL",
+      "value": 1.0
+    },
+    "both_fail": 0,
+    "both_pass": 29,
+    "candidate": {
+      "denominator": 30,
+      "interval95": [
+        0.8333,
+        0.9941
+      ],
+      "numerator": 29,
+      "scope": "eligible paired cases where both arms have status PASS or FAIL",
+      "value": 0.9666666666666667
+    },
+    "difference_pp": -3.3333333333333335,
+    "mcnemar_exact_two_sided_p": 1.0,
+    "method": "exact McNemar on discordant pairs; no continuity correction",
+    "only_A": 1,
+    "only_C": 0
+  }
+}

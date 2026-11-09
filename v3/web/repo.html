@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RepoSage · GitHub 仓库分析</title>
+    <link rel="stylesheet" href="/static/repo.css" />
+  </head>
+  <body>
+    <header>
+      <h1>RepoSage V3.2 · GitHub 仓库分析</h1>
+      <p class="muted">
+        只读分析：固定 Repository + Commit，工具调用受预算、Scope 与 Run Epoch 约束。
+        远端 README、Issue、代码一律视为不可信数据。
+      </p>
+      <nav><a href="/">返回 V3 工作台</a></nav>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>本机鉴权</h2>
+        <label>X-MGAR-Token
+          <input id="token" type="password" autocomplete="off" placeholder="MGAR_V3_LOCAL_TOKEN" />
+        </label>
+        <div class="row">
+          <button id="save-token">保存到本页</button>
+          <button id="load-profile">读取分析授权</button>
+        </div>
+        <pre id="profile" class="output"></pre>
+      </section>
+
+      <section class="card">
+        <h2>新建仓库分析</h2>
+        <form id="create-form">
+          <label>GitHub Repository URL
+            <input id="repo-url" required placeholder="https://github.com/owner/repository" />
+          </label>
+          <label>自然语言任务
+            <textarea id="task" rows="3" required placeholder="例如：说明这个项目的请求处理链路，并指出入口文件与关键模块。"></textarea>
+          </label>
+          <div class="grid3">
+            <label>Branch / Tag（可选）
+              <input id="ref" placeholder="main" />
+            </label>
+            <label>Commit SHA（可选，40 位）
+              <input id="commit" placeholder="full sha" />
+            </label>
+            <label>执行模式
+              <select id="execution-mode">
+                <option value="live" selected>live（真实 DeepSeek + GitHub）</option>
+                <option value="fixture">fixture（离线工程测试）</option>
+              </select>
+            </label>
+          </div>
+          <div class="grid5">
+            <label>模型轮数<input id="model-calls" type="number" min="1" max="12" value="6" /></label>
+            <label>工具次数<input id="tool-calls" type="number" min="1" max="40" value="20" /></label>
+            <label>输入 Token<input id="input-tokens" type="number" min="4096" max="262144" value="60000" /></label>
+            <label>预算 µUSD<input id="cost-micros" type="number" min="1" max="10000000" value="500000" /></label>
+            <label>总期限（秒）<input id="seconds" type="number" min="30" max="3600" value="600" /></label>
+          </div>
+          <div class="row">
+            <button type="submit">提交分析任务</button>
+            <button type="button" id="refresh">刷新列表</button>
+          </div>
+        </form>
+        <pre id="create-result" class="output"></pre>
+      </section>
+
+      <section class="card">
+        <h2>分析任务</h2>
+        <div id="runs" class="runs"></div>
+      </section>
+
+      <section class="card" id="detail-card" hidden>
+        <h2>任务详情</h2>
+        <div class="row">
+          <button id="pause">暂停</button>
+          <button id="resume">恢复</button>
+          <button id="cancel">取消</button>
+        </div>
+        <pre id="detail" class="output"></pre>
+        <h3>继续追问</h3>
+        <textarea id="follow-up" rows="2" placeholder="在同一 Thread 中继续追问；已落库证据会被复用。"></textarea>
+        <div class="row">
+          <button id="send-follow-up">提交追问</button>
+        </div>
+        <pre id="follow-up-result" class="output"></pre>
+        <h3>报告</h3>
+        <pre id="report" class="output report"></pre>
+      </section>
+    </main>
+    <script src="/static/repo.js"></script>
+  </body>
+</html>

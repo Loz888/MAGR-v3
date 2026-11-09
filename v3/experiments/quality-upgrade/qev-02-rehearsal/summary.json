@@ -1,0 +1,201 @@
+{
+  "arms": {
+    "A": {
+      "arm": "A",
+      "case_count": 30,
+      "cost_per_completed_case_micros": {
+        "denominator": 30,
+        "numerator": 13151,
+        "scope": "sum(cost_micros) of eligible cases divided by eligible case count",
+        "value": 438.3666666666667
+      },
+      "failure_kinds": {},
+      "failure_rate": {
+        "denominator": 30,
+        "interval95": [
+          -0.0,
+          0.1135
+        ],
+        "numerator": 0,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": 0.0
+      },
+      "latency_by_cache": {
+        "none": {
+          "method": "linear_interpolation",
+          "n": 30,
+          "p50_ms": 1704.15,
+          "p95_ms": 27593.719999999998,
+          "scope": "completed cases (PASS|FAIL) with cache_state=none"
+        }
+      },
+      "not_run_reasons": {},
+      "records": 30,
+      "status_counts": {
+        "fail": 0,
+        "not_run": 0,
+        "pass": 30,
+        "unknown": 0
+      },
+      "success_rate": {
+        "denominator": 30,
+        "interval95": [
+          0.8865,
+          1.0
+        ],
+        "numerator": 30,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": 1.0
+      },
+      "totals": {
+        "completion_tokens": 3628,
+        "cost_micros": 13151,
+        "model_calls": 27,
+        "prompt_tokens": 29296
+      },
+      "usage_sources": {
+        "actual_provider_usage": 25,
+        "not_applicable": 5
+      }
+    },
+    "B": {
+      "arm": "B",
+      "case_count": 30,
+      "cost_per_completed_case_micros": {
+        "denominator": 30,
+        "numerator": 25058,
+        "scope": "sum(cost_micros) of eligible cases divided by eligible case count",
+        "value": 835.2666666666667
+      },
+      "failure_kinds": {
+        "business": 2
+      },
+      "failure_rate": {
+        "denominator": 30,
+        "interval95": [
+          0.0185,
+          0.2132
+        ],
+        "numerator": 2,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": 0.06666666666666667
+      },
+      "latency_by_cache": {
+        "none": {
+          "method": "linear_interpolation",
+          "n": 30,
+          "p50_ms": 3802.5,
+          "p95_ms": 29471.785,
+          "scope": "completed cases (PASS|FAIL) with cache_state=none"
+        }
+      },
+      "not_run_reasons": {},
+      "records": 30,
+      "status_counts": {
+        "fail": 2,
+        "not_run": 0,
+        "pass": 28,
+        "unknown": 0
+      },
+      "success_rate": {
+        "denominator": 30,
+        "interval95": [
+          0.7868,
+          0.9815
+        ],
+        "numerator": 28,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": 0.9333333333333333
+      },
+      "totals": {
+        "completion_tokens": 9568,
+        "cost_micros": 25058,
+        "model_calls": 75,
+        "prompt_tokens": 45146
+      },
+      "usage_sources": {
+        "actual_provider_usage": 25,
+        "not_applicable": 5
+      }
+    },
+    "C": {
+      "arm": "C",
+      "case_count": 30,
+      "cost_per_completed_case_micros": {
+        "denominator": 30,
+        "numerator": 22678,
+        "scope": "sum(cost_micros) of eligible cases divided by eligible case count",
+        "value": 755.9333333333333
+      },
+      "failure_kinds": {
+        "business": 1
+      },
+      "failure_rate": {
+        "denominator": 30,
+        "interval95": [
+          0.0059,
+          0.1667
+        ],
+        "numerator": 1,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": 0.03333333333333333
+      },
+      "latency_by_cache": {
+        "none": {
+          "method": "linear_interpolation",
+          "n": 30,
+          "p50_ms": 3737.3999999999996,
+          "p95_ms": 29719.789999999997,
+          "scope": "completed cases (PASS|FAIL) with cache_state=none"
+        }
+      },
+      "not_run_reasons": {},
+      "records": 30,
+      "status_counts": {
+        "fail": 1,
+        "not_run": 0,
+        "pass": 29,
+        "unknown": 0
+      },
+      "success_rate": {
+        "denominator": 30,
+        "interval95": [
+          0.8333,
+          0.9941
+        ],
+        "numerator": 29,
+        "scope": "eligible cases = status PASS or FAIL; NOT_RUN and UNKNOWN excluded",
+        "value": 0.9666666666666667
+      },
+      "totals": {
+        "completion_tokens": 8511,
+        "cost_micros": 22678,
+        "model_calls": 60,
+        "prompt_tokens": 41465
+      },
+      "usage_sources": {
+        "actual_provider_usage": 25,
+        "not_applicable": 5
+      }
+    }
+  },
+  "case_count": 30,
+  "config_hash": "75774ed08b3a5702da1e5101c1b998f5ef22c4f37bbbb63fcf813741d5539983",
+  "dataset_hash": "9ce3bc4762aacd2d738f8dc79ecea19a9a9e1f5f483b71e65d8b43319d9d36f9",
+  "experiment_id": "qev-02-rehearsal",
+  "method": {
+    "bootstrap_iterations": 10000,
+    "bootstrap_seed": 20261108,
+    "excluded_from_denominator": [
+      "NOT_RUN",
+      "UNKNOWN"
+    ],
+    "interval": "wilson_95",
+    "percentile": "linear_interpolation"
+  },
+  "not_run_records": 0,
+  "record_count": 90,
+  "schema": "mgar-quality-eval-summary-v1",
+  "summary_sha256": "fbaee9d9b8a9181adc4b097502081c2c901bad92c29f53d19b6f88b5d8e4beee",
+  "unknown_records": 0
+}

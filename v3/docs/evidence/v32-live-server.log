@@ -1,0 +1,265 @@
+﻿python : INFO:     Started server process [38212]
+所在位置 行:15 字符: 1078
++ ... PATH="src"; python -m uvicorn mgar_v3.api:create_app --factory --host ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (INFO:     Started server process [38212]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+INFO:     Waiting for application startup.
+StreamableHTTP session manager started
+StreamableHTTP session manager started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18081 (Press CTRL+C to quit)
+INFO:     127.0.0.1:60451 - "GET /api/v3/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61860 - "GET /api/v3/repository-analyses/profile HTTP/1.1" 200 OK
+HTTP Request: POST https://api.githubcopilot.com/mcp/ "HTTP/1.1 401 Unauthorized"
+INFO:     127.0.0.1:64875 - "POST /api/v3/repository-analyses HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+  + Exception Group Traceback (most recent call last):
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\uvicorn\protocols\http\h11_impl.py", line 411
+, in run_asgi
+  |     result = await app(  # type: ignore[func-returns-value]
+  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |         self.scope, self.receive, self.send
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |     )
+  |     ^
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\uvicorn\middleware\proxy_headers.py", line 63
+, in __call__
+  |     return await self.app(scope, receive, send)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\fastapi\applications.py", line 1194, in __cal
+l__
+  |     await super().__call__(scope, receive, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\applications.py", line 96, in __cal
+l__
+  |     await self.middleware_stack(scope, receive, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 186, in
+ __call__
+  |     raise exc
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\errors.py", line 164, in
+ __call__
+  |     await self.app(scope, receive, _send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\fastapi\telemetry\_asgi.py", line 151, in __c
+all__
+  |     await self.app(scope, receive, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\trustedhost.py", line 57
+, in __call__
+  |     await self.app(scope, receive, send)
+  |   File "C:\Users\imini\Documents\Trae-CN\temp_20261108_01\work\src\MAGR-v3-5edad21e42bab401efbf36b484aae47dc0a0622b
+\v3\src\mgar_v3\api.py", line 79, in __call__
+  |     await self.app(scope, replay, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\middleware\exceptions.py", line 63,
+ in __call__
+  |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in
+ wrapped_app
+  |     raise exc
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in
+ wrapped_app
+  |     await app(scope, receive, sender)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\fastapi\middleware\asyncexitstack.py", line 1
+8, in __call__
+  |     await self.app(scope, receive, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 683, in __call__
+  |     await self.middleware_stack(scope, receive, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 2811, in app
+  |     await route.handle(scope, receive, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 1330, in handle
+  |     await super().handle(scope, receive, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\routing.py", line 289, in handle
+  |     await self.app(scope, receive, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 166, in app
+  |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 53, in
+ wrapped_app
+  |     raise exc
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\_exception_handler.py", line 42, in
+ wrapped_app
+  |     await app(scope, receive, sender)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 152, in app
+  |     response = await f(request)
+  |                ^^^^^^^^^^^^^^^^
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 745, in app
+  |     raw_response = await run_endpoint_function(
+  |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |     ...<3 lines>...
+  |     )
+  |     ^
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\fastapi\routing.py", line 374, in run_endpoin
+t_function
+  |     return await run_in_threadpool(
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^
+  |         _run_sync_endpoint, function=dependant.call, arguments=values
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |     )
+  |     ^
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\starlette\concurrency.py", line 34, in run_in
+_threadpool
+  |     return await anyio.to_thread.run_sync(func)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\anyio\to_thread.py", line 65, in run_sync
+  |     return await get_async_backend().run_sync_in_worker_thread(
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |         func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+  |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |     )
+  |     ^
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\anyio\_backends\_asyncio.py", line 2779, in r
+un_sync_in_worker_thread
+  |     return await future
+  |            ^^^^^^^^^^^^
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\anyio\_backends\_asyncio.py", line 1124, in r
+un
+  |     result = context.run(func, *args)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\fastapi\telemetry\_api.py", line 244, in _run
+_sync_endpoint
+  |     return function(**arguments)
+  |   File "C:\Users\imini\Documents\Trae-CN\temp_20261108_01\work\src\MAGR-v3-5edad21e42bab401efbf36b484aae47dc0a0622b
+\v3\src\mgar_v3\api.py", line 432, in create_repository_analysis
+  |     return jsonable_encoder(service.create(body, actor=configuration.local_actor))
+  |                             ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "C:\Users\imini\Documents\Trae-CN\temp_20261108_01\work\src\MAGR-v3-5edad21e42bab401efbf36b484aae47dc0a0622b
+\v3\src\mgar_v3\repository_analysis\service.py", line 187, in create
+  |     commit = run_sync(tools.resolve_commit(commit_hint or ref))
+  |   File "C:\Users\imini\Documents\Trae-CN\temp_20261108_01\work\src\MAGR-v3-5edad21e42bab401efbf36b484aae47dc0a0622b
+\v3\src\mgar_v3\repository_analysis\agent.py", line 84, in run_sync
+  |     return asyncio.run(value)
+  |            ~~~~~~~~~~~^^^^^^^
+  |   File "C:\Users\imini\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 196, in run
+  |     return runner.run(main)
+  |            ~~~~~~~~~~^^^^^^
+  |   File "C:\Users\imini\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py", line 119, in run
+  |     return self._loop.run_until_complete(task)
+  |            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  |   File "C:\Users\imini\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py", line 726, in run_until_
+complete
+  |     return future.result()
+  |            ~~~~~~~~~~~~~^^
+  |   File "C:\Users\imini\Documents\Trae-CN\temp_20261108_01\work\src\MAGR-v3-5edad21e42bab401efbf36b484aae47dc0a0622b
+\v3\src\mgar_v3\repository_analysis\tools.py", line 118, in resolve_commit
+  |     metadata = await self.metadata()
+  |                ^^^^^^^^^^^^^^^^^^^^^
+  |   File "C:\Users\imini\Documents\Trae-CN\temp_20261108_01\work\src\MAGR-v3-5edad21e42bab401efbf36b484aae47dc0a0622b
+\v3\src\mgar_v3\repository_analysis\tools.py", line 146, in metadata
+  |     texts, structured, _ = await self._call(
+  |                            ^^^^^^^^^^^^^^^^^
+  |     ...<2 lines>...
+  |     )
+  |     ^
+  |   File "C:\Users\imini\Documents\Trae-CN\temp_20261108_01\work\src\MAGR-v3-5edad21e42bab401efbf36b484aae47dc0a0622b
+\v3\src\mgar_v3\repository_analysis\tools.py", line 89, in _call
+  |     async with client.session() as session:
+  |                ~~~~~~~~~~~~~~^^
+  |   File "C:\Users\imini\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 214, in __aenter__
+  |     return await anext(self.gen)
+  |            ^^^^^^^^^^^^^^^^^^^^^
+  |   File "C:\Users\imini\Documents\Trae-CN\temp_20261108_01\work\src\MAGR-v3-5edad21e42bab401efbf36b484aae47dc0a0622b
+\v3\src\mgar_v3\mcp\client.py", line 96, in session
+  |     async with streamable_http_client(self.url, http_client=client) as (read, write, _):
+  |                ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "C:\Users\imini\AppData\Local\Programs\Python\Python313\Lib\contextlib.py", line 235, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\mcp\client\streamable_http.py", line 672, in 
+streamable_http_client
+  |     async with anyio.create_task_group() as tg:
+  |                ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\anyio\_backends\_asyncio.py", line 871, in __
+aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     ) from None
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "C:\Users\imini\Documents\Trae-CN\temp_20261108_01\work\src\MAGR-v3-5edad21e42bab401efbf36b484aae47dc0a062
+2b\v3\src\mgar_v3\repository_analysis\agent.py", line 82, in run_sync
+    |     asyncio.get_running_loop()
+    |     ~~~~~~~~~~~~~~~~~~~~~~~~^^
+    | RuntimeError: no running event loop
+    | 
+    | During handling of the above exception, another exception occurred:
+    | 
+    | Traceback (most recent call last):
+    |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\anyio\_core\_tasks.py", line 327, in _run_c
+oro
+    |     retval = await self._coro
+    |              ^^^^^^^^^^^^^^^^
+    |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\mcp\client\streamable_http.py", line 583, i
+n handle_request_async
+    |     await self._handle_post_request(ctx)
+    |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\mcp\client\streamable_http.py", line 381, i
+n _handle_post_request
+    |     response.raise_for_status()
+    |     ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+    |   File "C:\Users\imini\AppData\Roaming\Python\Python313\site-packages\httpx\_models.py", line 829, in raise_for_s
+tatus
+    |     raise HTTPStatusError(message, request=request, response=self)
+    | httpx.HTTPStatusError: Client error '401 Unauthorized' for url 'https://api.githubcopilot.com/mcp/'
+    | For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401
+    +------------------------------------
+INFO:     127.0.0.1:54575 - "POST /api/v3/repository-analyses HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:58266 - "GET /api/v3/repository-analyses/b1a7b242-cf83-43dc-b357-82cdd98d3842 HTTP/1.1" 200 OK
+python : INFO:     Started server process [35908]
+所在位置 行:15 字符: 1078
++ ... PATH="src"; python -m uvicorn mgar_v3.api:create_app --factory --host ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (INFO:     Started server process [35908]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+INFO:     Waiting for application startup.
+StreamableHTTP session manager started
+StreamableHTTP session manager started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18081 (Press CTRL+C to quit)
+INFO:     127.0.0.1:63091 - "GET /api/v3/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63093 - "GET /api/v3/repository-analyses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55506 - "GET /api/v3/repository-analyses HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50595 - "GET /api/v3/repository-analyses/0274db4f-7c93-4339-9e00-7b2eaeec9d8b/report HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50596 - "GET /repo HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50596 - "GET /static/repo.js HTTP/1.1" 200 OK
+python : INFO:     Started server process [34060]
+所在位置 行:15 字符: 1078
++ ... PATH="src"; python -m uvicorn mgar_v3.api:create_app --factory --host ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (INFO:     Started server process [34060]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+INFO:     Waiting for application startup.
+StreamableHTTP session manager started
+StreamableHTTP session manager started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18081 (Press CTRL+C to quit)
+INFO:     127.0.0.1:52134 - "GET /api/v3/healthz HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49680 - "POST /api/v3/repository-analyses HTTP/1.1" 202 Accepted
+INFO:     127.0.0.1:56051 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59631 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59643 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52985 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:65317 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51624 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50920 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64482 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58428 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58431 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59785 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60473 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60475 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63747 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50904 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52831 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:52833 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60510 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50063 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:50065 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53077 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58737 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54395 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55192 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:49813 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60649 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57428 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57434 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54839 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60397 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57300 - "GET /api/v3/repository-analyses/58ebd90e-77a4-4656-b842-51596e3ac108 HTTP/1.1" 200 OK

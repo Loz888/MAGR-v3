@@ -39,7 +39,7 @@ Connection = psycopg.Connection[Row]
 ENGINE_LOCK = 31010002
 COMMAND = "/mgar investigate "
 TERMINAL = {"succeeded", "failed", "cancelled"}
-DUPLEX_VERSIONS = {"r2-mailbox-v1", "r4-experts-v1", "r5-repair-v1"}
+DUPLEX_VERSIONS = {"r2-mailbox-v1", "r4-experts-v1", "r5-repair-v1", "v32-repo-v1"}
 
 
 class Engine:
@@ -1414,7 +1414,11 @@ class Engine:
                     "AND status IN ('dispatching','outcome_unknown') UNION ALL "
                     "SELECT 1 FROM app.usage_calls WHERE run_id=%s "
                     "AND (status IN ('reserved','unknown') OR (result IS NULL AND %s))",
-                    (run_id, run_id, run["graph_version"] != "r5-repair-v1"),
+                    (
+                        run_id,
+                        run_id,
+                        run["graph_version"] not in ("r5-repair-v1", "v32-repo-v1"),
+                    ),
                 ).fetchone()
                 if unresolved:
                     raise DomainError("RECOVERY_BLOCKED", "Unresolved calls or effects need review")

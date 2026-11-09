@@ -1,0 +1,17 @@
+﻿python : INFO:     Started server process [31232]
+所在位置 行:15 字符: 1078
++ ... PATH='src'; python -m uvicorn mgar_v3.api:create_app --factory --host ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (INFO:     Started server process [31232]:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+INFO:     Waiting for application startup.
+StreamableHTTP session manager started
+StreamableHTTP session manager started
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:18081 (Press CTRL+C to quit)
+INFO:     127.0.0.1:61080 - "POST /api/v3/repository-analyses/0d943ba2-e110-4498-b195-0492057ae79a/messages HTTP/1.1" 202 Accepted
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+HTTP Request: POST https://api.deepseek.com/v1/chat/completions "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:60217 - "GET /api/v3/repository-analyses/f2bdf5a1-a859-4793-a5a6-533848276626 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64536 - "GET /api/v3/repository-analyses/f2bdf5a1-a859-4793-a5a6-533848276626/report HTTP/1.1" 404 Not Found

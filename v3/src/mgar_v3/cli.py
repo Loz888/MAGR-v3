@@ -105,6 +105,26 @@ def main(argv: list[str] | None = None) -> int:
     )
     repair.add_argument("--client-request-id")
     repair.add_argument("--execution-mode", choices=["fixture", "live"], default="fixture")
+    commands.add_parser("repo-profile")
+    repo = commands.add_parser("repo-analyze")
+    repo.add_argument("--repo-url", required=True, help="https://github.com/<owner>/<repo>")
+    repo.add_argument("--task", required=True)
+    repo.add_argument("--ref", default=None)
+    repo.add_argument("--commit", default=None)
+    repo.add_argument("--execution-mode", choices=["fixture", "live"], default="fixture")
+    repo.add_argument("--model-calls", type=int, default=6)
+    repo.add_argument("--tool-calls", type=int, default=20)
+    repo.add_argument("--input-tokens", type=int, default=60000)
+    repo.add_argument("--cost-micros", type=int, default=500000)
+    repo.add_argument("--seconds", type=int, default=600)
+    repo.add_argument("--client-request-id", default=None)
+    commands.add_parser("repo-list")
+    for name in ["repo-status", "repo-report", "repo-message", "repo-pause", "repo-resume", "repo-cancel"]:
+        command = commands.add_parser(name)
+        command.add_argument("run_id")
+        if name == "repo-message":
+            command.add_argument("--body", required=True)
+            command.add_argument("--client-request-id", default=None)
     for name in [
         "status",
         "report",
@@ -200,6 +220,52 @@ def main(argv: list[str] | None = None) -> int:
                     + ("repair" if args.command == "commerce-repair" else "messages"),
                     json=payload,
                 )
+            elif args.command == "repo-profile":
+                response = client.get("/api/v3/repository-analyses/profile")
+            elif args.command == "repo-list":
+                response = client.get("/api/v3/repository-analyses")
+            elif args.command == "repo-analyze":
+                response = client.post(
+                    "/api/v3/repository-analyses",
+                    json={
+                        "repository_url": args.repo_url,
+                        "task": args.task,
+                        "ref": args.ref,
+                        "commit": args.commit,
+                        "execution_mode": args.execution_mode,
+                        "client_request_id": args.client_request_id or str(uuid4()),
+                        "limits": {
+                            "max_model_calls": args.model_calls,
+                            "max_tool_calls": args.tool_calls,
+                            "max_input_tokens": args.input_tokens,
+                            "max_cost_micros": args.cost_micros,
+                            "max_seconds": args.seconds,
+                        },
+                    },
+                )
+            elif args.command in {
+                "repo-status",
+                "repo-report",
+                "repo-message",
+                "repo-pause",
+                "repo-resume",
+                "repo-cancel",
+            }:
+                base = "/api/v3/repository-analyses/" + args.run_id
+                if args.command == "repo-status":
+                    response = client.get(base)
+                elif args.command == "repo-report":
+                    response = client.get(base + "/report")
+                elif args.command == "repo-message":
+                    response = client.post(
+                        base + "/messages",
+                        json={
+                            "client_request_id": args.client_request_id or str(uuid4()),
+                            "body": args.body,
+                        },
+                    )
+                else:
+                    response = client.post(base + "/" + args.command.removeprefix("repo-"))
             elif args.command == "recovery-requests":
                 response = client.get("/api/v3/recovery-requests")
             elif args.command == "recovery-decision":

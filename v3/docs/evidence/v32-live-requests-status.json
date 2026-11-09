@@ -1,0 +1,535 @@
+﻿{
+    "run":  {
+                "run_id":  "aee90fa7-e292-459b-aac5-ae69b6a250d4",
+                "thread_id":  "3d1334f6-d5cd-45a7-a63a-710e17c3a761",
+                "ticket_id":  "a447d4ec-e796-43c3-abd1-3bec8f227fca",
+                "repository":  "psf/requests",
+                "requested_ref":  null,
+                "commit":  "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+                "task":  "è¯´æ requests ä¸­ Session.request å°éé\u0085å¨åéçè°ç¨é¾ï¼Session.requestãSession.sendãHTTPAdapter.send ä¸ urllib3 è¿æ¥æ± çå\u0085³é®è°ç¨å\u0085³ç³»ä¸å\u0085¥å£æä»¶",
+                "execution_mode":  "live",
+                "limits":  {
+                               "max_model_calls":  10,
+                               "max_tool_calls":  20,
+                               "max_input_tokens":  120000,
+                               "max_cost_micros":  800000,
+                               "max_seconds":  600
+                           },
+                "model":  {
+                              "model_id":  "deepseek-flash",
+                              "price_version":  "deepseek-flash-v1",
+                              "input_micros_per_million":  300000,
+                              "output_micros_per_million":  1200000,
+                              "context_tokens":  131072,
+                              "max_output_tokens":  4096
+                          },
+                "deadline_at":  "2026-11-09T04:32:14.248179Z",
+                "model_calls_used":  5,
+                "tool_calls_used":  8,
+                "input_tokens_used":  35448,
+                "stop_reason":  "complete",
+                "report_hash":  "b0c9e6b012012d8a5e24c032d83beed52827c51805125241c2e6f18b4a028933",
+                "authorization_hash":  "a0f6cadef210ced684b8e5b913f9053848636324faeaafcba4a4e54a240629a3",
+                "profile_hash":  "056581a9459ddf2d8b7018f5ef636b1a2e0ac2e03f15f379709e8a7620b473ef",
+                "parent_run_id":  null,
+                "prior_report_hash":  null,
+                "prior_evidence_map":  {
+
+                                       },
+                "execution_epoch":  1,
+                "run_status":  "succeeded",
+                "run_reason_code":  null,
+                "outcome":  "internal_report"
+            },
+    "events":  [
+                   {
+                       "kind":  "repository_analysis_accepted",
+                       "payload":  {
+                                       "commit":  "3c7baaa05ab4aa49cc819ce3a819d260de19c157",
+                                       "limits":  {
+                                                      "max_seconds":  600,
+                                                      "max_tool_calls":  20,
+                                                      "max_cost_micros":  800000,
+                                                      "max_model_calls":  10,
+                                                      "max_input_tokens":  120000
+                                                  },
+                                       "repository":  "psf/requests",
+                                       "task_digest":  "0ec2e232fe31cbb25aeccb290a059f2f298204fcc06c3aa220c757472c71ced7",
+                                       "execution_mode":  "live"
+                                   },
+                       "created_at":  "2026-11-09T04:22:14.242191+00:00"
+                   },
+                   {
+                       "kind":  "run_started",
+                       "payload":  {
+                                       "execution_epoch":  1
+                                   },
+                       "created_at":  "2026-11-09T04:22:14.441255+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r1",
+                                       "content_hash":  "55e3dfb3dfa6cf326c32f5049995652d09e47075212df649864abbf9f6b961eb"
+                                   },
+                       "created_at":  "2026-11-09T04:22:14.476979+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "ef1171c3-dfff-424c-9e4e-f1174586587a",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:22:15.068545+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "ef1171c3-dfff-424c-9e4e-f1174586587a",
+                                       "http_status":  200,
+                                       "content_hash":  "797c559efaeb6c2f9b30bcb1d79bf7bcd1d213a5b97dc21dd038acf2cad6eba6"
+                                   },
+                       "created_at":  "2026-11-09T04:22:15.821287+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "ef1171c3-dfff-424c-9e4e-f1174586587a",
+                                       "settled_micros":  388
+                                   },
+                       "created_at":  "2026-11-09T04:22:15.829109+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "efac899c-b312-460d-baad-5462d2f19623",
+                                       "step_key":  "tool:r1:0"
+                                   },
+                       "created_at":  "2026-11-09T04:22:15.842004+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "efac899c-b312-460d-baad-5462d2f19623",
+                                       "byte_count":  4501,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:22:21.474549+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "9ced4c91-62ef-4f7e-bda4-67b901d2d52e",
+                                       "step_key":  "tool:r1:1"
+                                   },
+                       "created_at":  "2026-11-09T04:22:21.490265+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "9ced4c91-62ef-4f7e-bda4-67b901d2d52e",
+                                       "byte_count":  1189,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:22:27.374443+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "a2a68839-a6dd-496c-83ae-3e9ad2557358",
+                                       "step_key":  "tool:r1:2"
+                                   },
+                       "created_at":  "2026-11-09T04:22:27.389348+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "search_code",
+                                       "call_id":  "a2a68839-a6dd-496c-83ae-3e9ad2557358",
+                                       "byte_count":  2159,
+                                       "evidence_id":  null
+                                   },
+                       "created_at":  "2026-11-09T04:22:33.262655+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r2",
+                                       "content_hash":  "603590a0918bb04d56bb5ac9091f150044a70eaffe9f29c3650cffb055367ff1"
+                                   },
+                       "created_at":  "2026-11-09T04:22:33.293072+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "3326ff53-9981-47b1-b1bc-0fa059f6774f",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:22:33.874951+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "3326ff53-9981-47b1-b1bc-0fa059f6774f",
+                                       "http_status":  200,
+                                       "content_hash":  "6a5813983c8e976c5dbc86b59da73c002607305b57eb29961f2ff888fe279352"
+                                   },
+                       "created_at":  "2026-11-09T04:22:36.059339+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "3326ff53-9981-47b1-b1bc-0fa059f6774f",
+                                       "settled_micros":  1466
+                                   },
+                       "created_at":  "2026-11-09T04:22:36.069179+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "5a395c40-a896-480a-97d6-7a21d4cee7a7",
+                                       "step_key":  "tool:r2:0"
+                                   },
+                       "created_at":  "2026-11-09T04:22:36.081136+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "5a395c40-a896-480a-97d6-7a21d4cee7a7",
+                                       "byte_count":  9637,
+                                       "evidence_id":  "452208a4-c3f7-44ea-a420-6385cb5bd39d"
+                                   },
+                       "created_at":  "2026-11-09T04:22:41.892920+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "df6cce8b-5f81-45a3-b975-700a695a51ea",
+                                       "step_key":  "tool:r2:1"
+                                   },
+                       "created_at":  "2026-11-09T04:22:41.920485+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "df6cce8b-5f81-45a3-b975-700a695a51ea",
+                                       "byte_count":  3208,
+                                       "evidence_id":  "944c6989-f53c-4781-8bab-d9cb3de63606"
+                                   },
+                       "created_at":  "2026-11-09T04:22:47.401972+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "7f8047e9-62f5-4eb2-970a-6ba65c71909d",
+                                       "step_key":  "tool:r2:2"
+                                   },
+                       "created_at":  "2026-11-09T04:22:47.433876+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "7f8047e9-62f5-4eb2-970a-6ba65c71909d",
+                                       "byte_count":  10780,
+                                       "evidence_id":  "250a5c36-208b-4223-aff7-c0825445b91c"
+                                   },
+                       "created_at":  "2026-11-09T04:22:53.210625+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r3",
+                                       "content_hash":  "30c7bf3842e6c52624b50a1b8c560a720c99113201dd36d06be43ad264b9295d"
+                                   },
+                       "created_at":  "2026-11-09T04:22:53.256547+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "7ff10194-fa93-4f5a-8784-9636024f2a2f",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:22:53.829587+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "7ff10194-fa93-4f5a-8784-9636024f2a2f",
+                                       "http_status":  200,
+                                       "content_hash":  "cad1033b1374f2fd7b59903b0d4d4e60e90e844567aaf27c7d3fb206afdbb97a"
+                                   },
+                       "created_at":  "2026-11-09T04:22:56.170146+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "7ff10194-fa93-4f5a-8784-9636024f2a2f",
+                                       "settled_micros":  2785
+                                   },
+                       "created_at":  "2026-11-09T04:22:56.184176+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "b7e12c68-7069-46df-9b63-2bbad248bfa4",
+                                       "step_key":  "tool:r3:0"
+                                   },
+                       "created_at":  "2026-11-09T04:22:56.201322+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "b7e12c68-7069-46df-9b63-2bbad248bfa4",
+                                       "byte_count":  3001,
+                                       "evidence_id":  "dc4881c1-1a84-4ef2-8597-d58bb71d100e"
+                                   },
+                       "created_at":  "2026-11-09T04:23:01.723009+00:00"
+                   },
+                   {
+                       "kind":  "tool_reserved",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "d9320b79-3ef6-4ef8-97c4-b038d56fc6eb",
+                                       "step_key":  "tool:r3:1"
+                                   },
+                       "created_at":  "2026-11-09T04:23:01.743789+00:00"
+                   },
+                   {
+                       "kind":  "tool_observed",
+                       "payload":  {
+                                       "tool":  "read_file",
+                                       "call_id":  "d9320b79-3ef6-4ef8-97c4-b038d56fc6eb",
+                                       "byte_count":  7370,
+                                       "evidence_id":  "5fbacbd1-58e9-4571-b967-e5572f46e001"
+                                   },
+                       "created_at":  "2026-11-09T04:23:07.530057+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r4",
+                                       "content_hash":  "683523d347810f9ee3497e181f8a2601f4688d59bb14e262a25e6f1bf240a3d6"
+                                   },
+                       "created_at":  "2026-11-09T04:23:07.573123+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "355e1d56-8588-4793-94be-6e4b012f69b0",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:23:08.089209+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "355e1d56-8588-4793-94be-6e4b012f69b0",
+                                       "http_status":  200,
+                                       "content_hash":  "5416e01ce8c751243e55043307dd9bf99fe9a48c94b23b1f3e197a4fd1dceeda"
+                                   },
+                       "created_at":  "2026-11-09T04:23:10.086094+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "355e1d56-8588-4793-94be-6e4b012f69b0",
+                                       "settled_micros":  3534
+                                   },
+                       "created_at":  "2026-11-09T04:23:10.094042+00:00"
+                   },
+                   {
+                       "kind":  "model_input_recorded",
+                       "payload":  {
+                                       "step_key":  "reason:r4:retry",
+                                       "content_hash":  "9257c64f483f9e00e666032838094d87769dc875ea7467afeb559f5f366ba4b6"
+                                   },
+                       "created_at":  "2026-11-09T04:23:10.110387+00:00"
+                   },
+                   {
+                       "kind":  "model_reserved",
+                       "payload":  {
+                                       "call_id":  "db8ca0b3-b57b-4d48-b40b-9f6f12e0e919",
+                                       "reserved_micros":  44237
+                                   },
+                       "created_at":  "2026-11-09T04:23:10.704252+00:00"
+                   },
+                   {
+                       "kind":  "model_response_recorded",
+                       "payload":  {
+                                       "call_id":  "db8ca0b3-b57b-4d48-b40b-9f6f12e0e919",
+                                       "http_status":  200,
+                                       "content_hash":  "dea9afeb690fbbf2e6b844120e81f43b0c99e01f2a4992620635699269dfbcba"
+                                   },
+                       "created_at":  "2026-11-09T04:23:16.526324+00:00"
+                   },
+                   {
+                       "kind":  "model_settled",
+                       "payload":  {
+                                       "call_id":  "db8ca0b3-b57b-4d48-b40b-9f6f12e0e919",
+                                       "settled_micros":  4320
+                                   },
+                       "created_at":  "2026-11-09T04:23:16.534987+00:00"
+                   },
+                   {
+                       "kind":  "readonly_report_completed",
+                       "payload":  {
+                                       "report_hash":  "b0c9e6b012012d8a5e24c032d83beed52827c51805125241c2e6f18b4a028933"
+                                   },
+                       "created_at":  "2026-11-09T04:23:16.581182+00:00"
+                   }
+               ],
+    "tool_calls":  [
+                       {
+                           "step_key":  "tool:r1:0",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157?search=def request(",
+                           "result_version":  null,
+                           "byte_count":  4501,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:22:15.842004+00:00",
+                           "finished_at":  "2026-11-09T04:22:21.474549+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r1:1",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157?search=def send(self, request, stream",
+                           "result_version":  null,
+                           "byte_count":  1189,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:22:21.490265+00:00",
+                           "finished_at":  "2026-11-09T04:22:27.374443+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r1:2",
+                           "tool":  "search_code",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157?search=class HTTPAdapter",
+                           "result_version":  null,
+                           "byte_count":  2159,
+                           "evidence_id":  null,
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:22:27.389348+00:00",
+                           "finished_at":  "2026-11-09T04:22:33.262655+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r2:0",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/sessions.py",
+                           "result_version":  "d11355be668b2dc03da02feb83c61ff24cc741f5",
+                           "byte_count":  9637,
+                           "evidence_id":  "452208a4-c3f7-44ea-a420-6385cb5bd39d",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:22:36.081136+00:00",
+                           "finished_at":  "2026-11-09T04:22:41.892920+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r2:1",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/sessions.py",
+                           "result_version":  "d11355be668b2dc03da02feb83c61ff24cc741f5",
+                           "byte_count":  3208,
+                           "evidence_id":  "944c6989-f53c-4781-8bab-d9cb3de63606",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:22:41.920485+00:00",
+                           "finished_at":  "2026-11-09T04:22:47.401972+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r2:2",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/adapters.py",
+                           "result_version":  "79ed426566a482698dce24aac3fbfa4211a80d76",
+                           "byte_count":  10780,
+                           "evidence_id":  "250a5c36-208b-4223-aff7-c0825445b91c",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:22:47.433876+00:00",
+                           "finished_at":  "2026-11-09T04:22:53.210625+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r3:0",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/sessions.py",
+                           "result_version":  "d11355be668b2dc03da02feb83c61ff24cc741f5",
+                           "byte_count":  3001,
+                           "evidence_id":  "dc4881c1-1a84-4ef2-8597-d58bb71d100e",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:22:56.201322+00:00",
+                           "finished_at":  "2026-11-09T04:23:01.723009+00:00"
+                       },
+                       {
+                           "step_key":  "tool:r3:1",
+                           "tool":  "read_file",
+                           "status":  "succeeded",
+                           "result_uri":  "github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/adapters.py",
+                           "result_version":  "79ed426566a482698dce24aac3fbfa4211a80d76",
+                           "byte_count":  7370,
+                           "evidence_id":  "5fbacbd1-58e9-4571-b967-e5572f46e001",
+                           "error_code":  null,
+                           "created_at":  "2026-11-09T04:23:01.743789+00:00",
+                           "finished_at":  "2026-11-09T04:23:07.530057+00:00"
+                       }
+                   ],
+    "claims":  [
+                   {
+                       "section":  "findings",
+                       "statement":  "HTTPAdapter.send æç»éè¿ urllib3 è¿æ¥ç urlopen åéè¯·æ±ä½ä¸å¤´é¨ã",
+                       "evidence_id":  "5fbacbd1-58e9-4571-b967-e5572f46e001",
+                       "quote":  "resp = conn.urlopen(\n                method=request.method,\n                url=url,",
+                       "start_line":  696,
+                       "end_line":  698
+                   },
+                   {
+                       "section":  "key_files",
+                       "statement":  "sessions.py å®ä¹ Session.request ä¸ Session.sendï¼å¹¶é»è®¤æè½½ HTTPAdapterã",
+                       "evidence_id":  "452208a4-c3f7-44ea-a420-6385cb5bd39d",
+                       "quote":  "self.mount(\"https://\", HTTPAdapter())\n        self.mount(\"http://\", HTTPAdapter())",
+                       "start_line":  502,
+                       "end_line":  503
+                   },
+                   {
+                       "section":  "key_files",
+                       "statement":  "adapters.py å®ä¹ HTTPAdapter.sendï¼ç»ç±è¿æ¥æ± è¿æ¥è°ç¨ urllib3 ç urlopenã",
+                       "evidence_id":  "5fbacbd1-58e9-4571-b967-e5572f46e001",
+                       "quote":  "conn = self.get_connection_with_tls_context(\n                request, verify, proxies=proxies, cert=cert\n            )",
+                       "start_line":  662,
+                       "end_line":  664
+                   },
+                   {
+                       "section":  "call_chains",
+                       "statement":  "Session.request åå¤å¥½ PreparedRequest åè°ç¨ Session.sendã",
+                       "evidence_id":  "dc4881c1-1a84-4ef2-8597-d58bb71d100e",
+                       "quote":  "resp = self.send(prep, **send_kwargs)",
+                       "start_line":  651,
+                       "end_line":  651
+                   },
+                   {
+                       "section":  "call_chains",
+                       "statement":  "Session.send ç¨ get_adapter éæ©éé\u0085å¨å¹¶è°ç¨ adapter.sendã",
+                       "evidence_id":  "944c6989-f53c-4781-8bab-d9cb3de63606",
+                       "quote":  "adapter = self.get_adapter(url=request.url)",
+                       "start_line":  778,
+                       "end_line":  778
+                   }
+               ],
+    "report":  "# RepoSage ä»åºåææ¥å\n\n- Repository: `psf/requests`\n- Commit: `3c7baaa05ab4aa49cc819ce3a819d260de19c157`\n- æ§è¡æ¨¡å¼: `live`\n- ä»»å¡: è¯´æ requests ä¸­ Session.request å°éé\u0085å¨åéçè°ç¨é¾ï¼Session.requestãSession.sendãHTTPAdapter.send ä¸ urllib3 è¿æ¥æ± çå\u0085³é®è°ç¨å\u0085³ç³»ä¸å\u0085¥å£æä»¶\n\n## 1. é®é¢ç»è®º\n\nSession.request è´è´£æé å¹¶åå¤ PreparedRequestï¼ç¶åè°ç¨ Session.sendï¼Session.send æ URL åç¼éè¿ get_adapter éåºéé\u0085å¨å¹¶è°ç¨ adapter.sendï¼HTTPAdapter.send éè¿è¿æ¥æ± ç®¡çå¨åå¾è¿æ¥ï¼connï¼ï¼åè°ç¨ conn.urlopen åéè¯·æ±ãå\u0085¥å£æä»¶æ¯ src/requests/sessions.py ä¸ src/requests/adapters.pyã\n\n## 2. ä»åºæ»ä½ç»æ\n\nsessions.py: Session.__init__ æè½½ HTTPAdapterï¼prepare_request çæ PreparedRequestï¼request() åå¹¶ç¯å¢è®¾ç½®å¹¶è°ç¨ self.send(prep,...)ï¼send() éè¿ self.get_adapter(url=request.url) éæ©éé\u0085å¨å¹¶è°ç¨ adapter.send(request,...)ãadapters.py: HTTPAdapter.send() è°ç¨ get_connection_with_tls_context åå¾ urllib3 è¿æ¥ï¼éå conn.urlopen(...) ååºè¯·æ±ï¼åç± build_response å\u0085è£\u0085æ Responseã\n\n## 3. å\u0085³é®ä»£ç æä»¶ä¸è°ç¨å\u0085³ç³»\n\n- **sessions.py å®ä¹ Session.request ä¸ Session.sendï¼å¹¶é»è®¤æè½½ HTTPAdapterã**\n  - æºç ä½ç½®ï¼`github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/sessions.py` Â· [L502-L503](https://github.com/psf/requests/blob/3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/sessions.py#L502-L503)\n  - è¯æ® IDï¼`452208a4-c3f7-44ea-a420-6385cb5bd39d`\n  - åæï¼\n\n    ```text\n    self.mount(\"https://\", HTTPAdapter())\n            self.mount(\"http://\", HTTPAdapter())\n    ```\n\n- **adapters.py å®ä¹ HTTPAdapter.sendï¼ç»ç±è¿æ¥æ± è¿æ¥è°ç¨ urllib3 ç urlopenã**\n  - æºç ä½ç½®ï¼`github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/adapters.py` Â· [L662-L664](https://github.com/psf/requests/blob/3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/adapters.py#L662-L664)\n  - è¯æ® IDï¼`5fbacbd1-58e9-4571-b967-e5572f46e001`\n  - åæï¼\n\n    ```text\n    conn = self.get_connection_with_tls_context(\n                    request, verify, proxies=proxies, cert=cert\n                )\n    ```\n\n\n### è°ç¨å\u0085³ç³»\n\n- **Session.request åå¤å¥½ PreparedRequest åè°ç¨ Session.sendã**\n  - æºç ä½ç½®ï¼`github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/sessions.py` Â· [L651-L651](https://github.com/psf/requests/blob/3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/sessions.py#L651-L651)\n  - è¯æ® IDï¼`dc4881c1-1a84-4ef2-8597-d58bb71d100e`\n  - åæï¼\n\n    ```text\n    resp = self.send(prep, **send_kwargs)\n    ```\n\n- **Session.send ç¨ get_adapter éæ©éé\u0085å¨å¹¶è°ç¨ adapter.sendã**\n  - æºç ä½ç½®ï¼`github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/sessions.py` Â· [L778-L778](https://github.com/psf/requests/blob/3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/sessions.py#L778-L778)\n  - è¯æ® IDï¼`944c6989-f53c-4781-8bab-d9cb3de63606`\n  - åæï¼\n\n    ```text\n    adapter = self.get_adapter(url=request.url)\n    ```\n\n\n## 4. å®é\u0085ä»£ç è¯æ®\n\n- **HTTPAdapter.send æç»éè¿ urllib3 è¿æ¥ç urlopen åéè¯·æ±ä½ä¸å¤´é¨ã**\n  - æºç ä½ç½®ï¼`github://psf/requests@3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/adapters.py` Â· [L696-L698](https://github.com/psf/requests/blob/3c7baaa05ab4aa49cc819ce3a819d260de19c157/src/requests/adapters.py#L696-L698)\n  - è¯æ® IDï¼`5fbacbd1-58e9-4571-b967-e5572f46e001`\n  - åæï¼\n\n    ```text\n    resp = conn.urlopen(\n                    method=request.method,\n                    url=url,\n    ```\n\n\n## 5. ä¸ç¡®å®çç»è®º\n\n- æªéè¡è¯»å get_connection_with_tls_context å\u0085é¨ï¼å\u0085¶å¯¹ poolmanager.connection_from_pool_key çè°ç¨ç»èæªç´æ¥å¼ç¨ã\n- proxy_manager åæ¯çå»ºæ± ä»£ç åªè§å°çæ®µï¼æªå®æ´å¼ç¨ã\n\n## 6. å»ºè®®ç»§ç»­è°æ¥çæ¹å\n\n- å¯è¯»å adapters.py ç get_connection_with_tls_context ä¸ init_poolmanager è¡èå´ï¼è¡¥å\u0085\u0085 ConnectionPool éæ©ç»èã\n\n---\n\n\u003e æºæ¢°æ ¸éªåªéªè¯æºç å¼ç¨å­å¨ãéå­å¹é\u0085å¹¶å®ä½è¡å·ï¼ä¸è¯æä¸å¡è¯­ä¹ææ¶ææ¨æ­æ¬èº«æ­£ç¡®ã\n"
+}

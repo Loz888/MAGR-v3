@@ -1,0 +1,331 @@
+{
+  "run": {
+    "run_id": "20ec67f3-b944-4115-9950-1434ed30dc33",
+    "thread_id": "5cbc7f7c-2e77-4196-99b9-c952e4dd2ca1",
+    "ticket_id": "f30f4dcc-2e94-4675-ab8b-cb2e260b5a4e",
+    "repository": "pallets/flask",
+    "requested_ref": null,
+    "commit": "49943b5a94413a530761350f04e896f76e8d620e",
+    "task": "说明 HTTP 请求进入 Flask 应用后的处理链路：入口文件、WSGI 调用、请求上下文与路由分发的关键调用关系",
+    "execution_mode": "live",
+    "limits": {
+      "max_model_calls": 6,
+      "max_tool_calls": 20,
+      "max_input_tokens": 60000,
+      "max_cost_micros": 500000,
+      "max_seconds": 600
+    },
+    "model": {
+      "model_id": "deepseek-flash",
+      "price_version": "deepseek-flash-v1",
+      "input_micros_per_million": 300000,
+      "output_micros_per_million": 1200000,
+      "context_tokens": 131072,
+      "max_output_tokens": 4096
+    },
+    "deadline_at": "2026-11-09T03:56:01.604684Z",
+    "model_calls_used": 3,
+    "tool_calls_used": 5,
+    "input_tokens_used": 3925,
+    "stop_reason": "MODEL_INVALID_RESPONSE",
+    "report_hash": null,
+    "authorization_hash": "9f81b5cb0d447b36b3372563749328f07b814c0d226a1b2c7e6a62302f1e7ed0",
+    "profile_hash": "e670f3b3f9d24eace6e98fd60de43744ae4233ec9d384b130845148f01f84669",
+    "parent_run_id": null,
+    "prior_report_hash": null,
+    "prior_evidence_map": {},
+    "execution_epoch": 2,
+    "run_status": "failed",
+    "run_reason_code": "MODEL_INVALID_RESPONSE",
+    "outcome": null
+  },
+  "events": [
+    {
+      "kind": "repository_analysis_accepted",
+      "payload": {
+        "commit": "49943b5a94413a530761350f04e896f76e8d620e",
+        "limits": {
+          "max_seconds": 600,
+          "max_tool_calls": 20,
+          "max_cost_micros": 500000,
+          "max_model_calls": 6,
+          "max_input_tokens": 60000
+        },
+        "repository": "pallets/flask",
+        "task_digest": "27cee5e4544d2d3f5801752c57d3af4c1ed976a8781c9bc5d0c1e6d091081a27",
+        "execution_mode": "live"
+      },
+      "created_at": "2026-11-09T03:46:01.599559+00:00"
+    },
+    {
+      "kind": "run_started",
+      "payload": {
+        "execution_epoch": 1
+      },
+      "created_at": "2026-11-09T03:46:01.644766+00:00"
+    },
+    {
+      "kind": "model_input_recorded",
+      "payload": {
+        "step_key": "reason:r1",
+        "content_hash": "905ed2d7b8f571d8ccf5ab4e8609414cf9abcbe5f8cacd671677462e422e6b73"
+      },
+      "created_at": "2026-11-09T03:46:01.680527+00:00"
+    },
+    {
+      "kind": "model_reserved",
+      "payload": {
+        "call_id": "1bbcccb6-366b-44eb-abb6-2fc1e7f2d9f6",
+        "reserved_micros": 44237
+      },
+      "created_at": "2026-11-09T03:46:02.238774+00:00"
+    },
+    {
+      "kind": "model_response_recorded",
+      "payload": {
+        "call_id": "1bbcccb6-366b-44eb-abb6-2fc1e7f2d9f6",
+        "http_status": 200,
+        "content_hash": "6cc8db33fb6c9990cf08f341ee6d604975a9998a7e00d6f3ff4e0a88a3372743"
+      },
+      "created_at": "2026-11-09T03:46:03.311795+00:00"
+    },
+    {
+      "kind": "model_settled",
+      "payload": {
+        "call_id": "1bbcccb6-366b-44eb-abb6-2fc1e7f2d9f6",
+        "settled_micros": 320
+      },
+      "created_at": "2026-11-09T03:46:03.317934+00:00"
+    },
+    {
+      "kind": "tool_reserved",
+      "payload": {
+        "tool": "list_directory",
+        "call_id": "a3ec1d01-6f36-4d5e-8dee-6e3533a7d237",
+        "step_key": "tool:r1:0"
+      },
+      "created_at": "2026-11-09T03:46:03.336227+00:00"
+    },
+    {
+      "kind": "tool_observed",
+      "payload": {
+        "tool": "list_directory",
+        "call_id": "a3ec1d01-6f36-4d5e-8dee-6e3533a7d237",
+        "byte_count": 3784,
+        "evidence_id": null
+      },
+      "created_at": "2026-11-09T03:46:10.219566+00:00"
+    },
+    {
+      "kind": "tool_reserved",
+      "payload": {
+        "tool": "read_file",
+        "call_id": "6d9d504e-07ef-48ff-bcbc-28e7cc97e3a5",
+        "step_key": "tool:r1:1"
+      },
+      "created_at": "2026-11-09T03:46:10.236816+00:00"
+    },
+    {
+      "kind": "tool_observed",
+      "payload": {
+        "tool": "read_file",
+        "call_id": "6d9d504e-07ef-48ff-bcbc-28e7cc97e3a5",
+        "byte_count": 2072,
+        "evidence_id": "f78ab0fb-ff8b-43c0-bb55-7572b688eae0"
+      },
+      "created_at": "2026-11-09T03:46:16.302975+00:00"
+    },
+    {
+      "kind": "model_input_recorded",
+      "payload": {
+        "step_key": "reason:r2",
+        "content_hash": "e219a747b039f0b2306fad5dc995b7733ae517efe34933c1d54ece2608545687"
+      },
+      "created_at": "2026-11-09T03:46:16.344264+00:00"
+    },
+    {
+      "kind": "model_reserved",
+      "payload": {
+        "call_id": "97858e27-082a-4b96-87ed-e51ee12cd14e",
+        "reserved_micros": 44237
+      },
+      "created_at": "2026-11-09T03:46:16.851632+00:00"
+    },
+    {
+      "kind": "model_response_recorded",
+      "payload": {
+        "call_id": "97858e27-082a-4b96-87ed-e51ee12cd14e",
+        "http_status": 200,
+        "content_hash": "f6717da473a2fe03cd2858ca67fa6fd604b3df6c828eda60d43b34c108f97a3d"
+      },
+      "created_at": "2026-11-09T03:46:20.093696+00:00"
+    },
+    {
+      "kind": "model_settled",
+      "payload": {
+        "call_id": "97858e27-082a-4b96-87ed-e51ee12cd14e",
+        "settled_micros": 1537
+      },
+      "created_at": "2026-11-09T03:46:20.100248+00:00"
+    },
+    {
+      "kind": "tool_reserved",
+      "payload": {
+        "tool": "read_file",
+        "call_id": "509d724e-accf-4dac-9b10-7f944c933113",
+        "step_key": "tool:r2:0"
+      },
+      "created_at": "2026-11-09T03:46:20.117675+00:00"
+    },
+    {
+      "kind": "tool_failed",
+      "payload": {
+        "call_id": "509d724e-accf-4dac-9b10-7f944c933113",
+        "error_code": "MCP_RESULT_TOO_LARGE"
+      },
+      "created_at": "2026-11-09T03:46:26.603159+00:00"
+    },
+    {
+      "kind": "tool_reserved",
+      "payload": {
+        "tool": "read_file",
+        "call_id": "4a66062d-baca-4ffd-9e6f-0042619a3649",
+        "step_key": "tool:r2:1"
+      },
+      "created_at": "2026-11-09T03:46:26.612293+00:00"
+    },
+    {
+      "kind": "tool_observed",
+      "payload": {
+        "tool": "read_file",
+        "call_id": "4a66062d-baca-4ffd-9e6f-0042619a3649",
+        "byte_count": 18261,
+        "evidence_id": "55bceb9d-6751-4e61-b4a2-21ad01cc9835"
+      },
+      "created_at": "2026-11-09T03:46:33.010334+00:00"
+    },
+    {
+      "kind": "tool_reserved",
+      "payload": {
+        "tool": "read_file",
+        "call_id": "5407f319-45cc-4e74-b589-b82b594664d6",
+        "step_key": "tool:r2:2"
+      },
+      "created_at": "2026-11-09T03:46:33.041686+00:00"
+    },
+    {
+      "kind": "tool_observed",
+      "payload": {
+        "tool": "read_file",
+        "call_id": "5407f319-45cc-4e74-b589-b82b594664d6",
+        "byte_count": 2414,
+        "evidence_id": "53a0a7a0-b0ed-4d36-a046-77b118308aa8"
+      },
+      "created_at": "2026-11-09T03:46:39.207328+00:00"
+    },
+    {
+      "kind": "model_input_recorded",
+      "payload": {
+        "step_key": "reason:r3",
+        "content_hash": "e6295ba2ce305009abfc5bc863d07b443465dd8923573328b3150e5af91a4ad1"
+      },
+      "created_at": "2026-11-09T03:46:39.254096+00:00"
+    },
+    {
+      "kind": "model_reserved",
+      "payload": {
+        "call_id": "b294f9de-ac9c-4bd6-989e-bbd258c0b493",
+        "reserved_micros": 44237
+      },
+      "created_at": "2026-11-09T03:46:39.806889+00:00"
+    },
+    {
+      "kind": "model_response_recorded",
+      "payload": {
+        "call_id": "b294f9de-ac9c-4bd6-989e-bbd258c0b493",
+        "http_status": 200,
+        "content_hash": "1f68149e63d3661a7edb5235a28ec7d962596da0a268cc9972617fd896cfb2ab"
+      },
+      "created_at": "2026-11-09T03:46:45.534615+00:00"
+    },
+    {
+      "kind": "model_settled",
+      "payload": {
+        "call_id": "b294f9de-ac9c-4bd6-989e-bbd258c0b493",
+        "settled_micros": 2691
+      },
+      "created_at": "2026-11-09T03:46:45.539393+00:00"
+    },
+    {
+      "kind": "run_failed",
+      "payload": {
+        "reason_code": "MODEL_INVALID_RESPONSE"
+      },
+      "created_at": "2026-11-09T03:46:45.550179+00:00"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step_key": "tool:r1:0",
+      "tool": "list_directory",
+      "status": "succeeded",
+      "result_uri": "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask",
+      "result_version": null,
+      "byte_count": 3784,
+      "evidence_id": null,
+      "error_code": null,
+      "created_at": "2026-11-09T03:46:03.336227+00:00",
+      "finished_at": "2026-11-09T03:46:10.219566+00:00"
+    },
+    {
+      "step_key": "tool:r1:1",
+      "tool": "read_file",
+      "status": "succeeded",
+      "result_uri": "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/__init__.py",
+      "result_version": "30dce6fd7d6b3b388c52a3c0b4893f0cff8e6007",
+      "byte_count": 2072,
+      "evidence_id": "f78ab0fb-ff8b-43c0-bb55-7572b688eae0",
+      "error_code": null,
+      "created_at": "2026-11-09T03:46:10.236816+00:00",
+      "finished_at": "2026-11-09T03:46:16.302975+00:00"
+    },
+    {
+      "step_key": "tool:r2:0",
+      "tool": "read_file",
+      "status": "failed",
+      "result_uri": null,
+      "result_version": null,
+      "byte_count": null,
+      "evidence_id": null,
+      "error_code": "MCP_RESULT_TOO_LARGE",
+      "created_at": "2026-11-09T03:46:20.117675+00:00",
+      "finished_at": "2026-11-09T03:46:26.603159+00:00"
+    },
+    {
+      "step_key": "tool:r2:1",
+      "tool": "read_file",
+      "status": "succeeded",
+      "result_uri": "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/ctx.py",
+      "result_version": "d4d0de651951f7fa5cf5186847dc1c1189406e29",
+      "byte_count": 18261,
+      "evidence_id": "55bceb9d-6751-4e61-b4a2-21ad01cc9835",
+      "error_code": null,
+      "created_at": "2026-11-09T03:46:26.612293+00:00",
+      "finished_at": "2026-11-09T03:46:33.010334+00:00"
+    },
+    {
+      "step_key": "tool:r2:2",
+      "tool": "read_file",
+      "status": "succeeded",
+      "result_uri": "github://pallets/flask@49943b5a94413a530761350f04e896f76e8d620e/src/flask/globals.py",
+      "result_version": "f4a7298ed45b92365267190c7e3e96f319e8c7e9",
+      "byte_count": 2414,
+      "evidence_id": "53a0a7a0-b0ed-4d36-a046-77b118308aa8",
+      "error_code": null,
+      "created_at": "2026-11-09T03:46:33.041686+00:00",
+      "finished_at": "2026-11-09T03:46:39.207328+00:00"
+    }
+  ],
+  "claims": [],
+  "report": null
+}
