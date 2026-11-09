@@ -1,0 +1,268 @@
+{
+  "card": "E01",
+  "title": "Real Repository Evaluation",
+  "commit": "19c6ff29c107a4d94d4ed903b222988873ffcb07",
+  "commit_note": "单次本地提交：v3.4 真实仓库评测数据集（4 个公开仓库、18 个任务、3 个 holdout）、固定 commit 快照与逐文件 SHA-256、12 份真实 upstream fix patch、3 个独立 regression test、4 个行为验证器、v34 判定与汇总模块、quality_eval 命令行扩展、tests/test_v34_evaluation.py、设计说明与 config/verification.json 注册；未 push",
+  "base_commit": "b4f7e24726bf2fef9552a66f24f0c64dc81f73cc",
+  "accepted_at": "2026-11-09T12:03:48Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.7 (--frozen)",
+    "ruff": "0.17.3（E,F,I,UP,B；line-length 100）",
+    "mypy": "strict（src/mgar_v3/quality_eval/v34.py）",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "postgres": "NOT_USED by E01 tests",
+    "redis": "NOT_USED by E01 tests",
+    "docker": "NOT_USED by E01 tests",
+    "model": "not_used（未授权，model_calls=0）",
+    "network": "NOT_USED during acceptance（快照与 patch 已固化在仓库内）",
+    "github": "read_only_public_data；未执行任何写入"
+  },
+  "worktree_at_acceptance": "实现提交为 19c6ff2；accept.json 是本次验收唯一新增文件；evidence/ 已 gitignore",
+  "commands": [
+    {
+      "name": "static-ruff-mypy",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "src/mgar_v3/quality_eval/v34.py",
+        "scripts/quality_eval.py",
+        "tests/test_v34_evaluation.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/mypy",
+        "--strict",
+        "src/mgar_v3/quality_eval/v34.py"
+      ],
+      "exit_code": 0,
+      "purpose": "新增与修改文件 ruff 零告警；mypy strict 覆盖 v34 判定模块",
+      "log": "evidence/E01/20261109T115728Z-19b41c79/01-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "v34-tests",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v34_evaluation.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 14.16,
+      "counts": {"tests": 18, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "数据集下限、holdout 隔离、快照与 quote hash、A/B/C 配对、NOT_RUN 诚实门、判定数学、补丁应用与路径穿越防护",
+      "log": "evidence/E01/20261109T115728Z-19b41c79/02-acceptance.log",
+      "status": "PASS"
+    },
+    {
+      "name": "quality-eval-validate",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/quality_eval.py",
+        "validate",
+        "--experiment",
+        "experiments/v34-audit-repair",
+        "--root",
+        ".",
+        "--check-files"
+      ],
+      "exit_code": 0,
+      "result": {
+        "status": "PASS",
+        "records": 54,
+        "cases": 18,
+        "manifest_sha256": "c63c439943db0b2e4e4498e84c6da70c4ed8a2bfddbf8446cca8317c3dd876f2"
+      },
+      "purpose": "Manifest/记录一致性、A/B/C 三臂齐全、v34 资产 hash、快照文件、quote 区间与 fix patch 证据",
+      "log": "evidence/E01/20261109T115728Z-19b41c79/02-acceptance.log",
+      "status": "PASS"
+    },
+    {
+      "name": "quality-eval-summarize",
+      "argv": [
+        "uv",
+        "run",
+        "--frozen",
+        "python",
+        "scripts/quality_eval.py",
+        "summarize",
+        "--experiment",
+        "experiments/v34-audit-repair"
+      ],
+      "exit_code": 0,
+      "result": {
+        "records": 54,
+        "unique_cases": 18,
+        "dataset_hash": "29b14ee695cb6c5d9bc8254744cdd1fec6d78deffd7ae2161750601bdd2230ee",
+        "config_hash": "62119c069fca7f17ad8afb3f5aa52affac0f2ab9a19edebcabe78d5ff1cd9c32",
+        "summary_sha256": "f8d0a2feaa35410861f2db040c0caf0f6e620da490b73abf280ca8ef7fa82775",
+        "per_arm": {
+          "A": {"PASS": 0, "FAIL": 0, "NOT_RUN": 18},
+          "B": {"PASS": 0, "FAIL": 0, "NOT_RUN": 18},
+          "C": {"PASS": 0, "FAIL": 0, "NOT_RUN": 18}
+        },
+        "live_arms_status": "NOT_RUN"
+      },
+      "purpose": "生成 summary.json/summary.md，并附加 v34 数据集、holdout、Harness 自检与未执行指标段落",
+      "log": "evidence/E01/20261109T115728Z-19b41c79/02-acceptance.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "E01"],
+      "exit_code": 0,
+      "duration_seconds": 20.793,
+      "counts": {"tests": 18, "failures": 0, "errors": 0, "skipped": 0},
+      "source_sha256": "1b4ed85e3d256c3a2385bbb1ab39230be313abbc5d4990acebef38075743fa03",
+      "finished_source_sha256": "1b4ed85e3d256c3a2385bbb1ab39230be313abbc5d4990acebef38075743fa03",
+      "git_commit": "19c6ff29c107a4d94d4ed903b222988873ffcb07",
+      "attempt": "evidence/E01/20261109T115728Z-19b41c79",
+      "log": "evidence/E01/20261109T115728Z-19b41c79/command.log",
+      "junit": "evidence/E01/20261109T115728Z-19b41c79/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "regression",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_v34_repair_handoff.py",
+        "tests/test_v34_patch_workspace.py",
+        "tests/test_v34_sandbox_executor.py",
+        "tests/test_v34_repair_agent.py",
+        "tests/test_v34_pr_delivery.py",
+        "-q"
+      ],
+      "counts": {"tests": 46, "failures": 0, "errors": 0, "skipped": 0},
+      "duration_seconds": 132.89,
+      "purpose": "R01/R02/R03/R04/R05 回归；确认评测扩展没有改变修复交接、补丁工作区、沙箱、修复循环与发布语义",
+      "log": "evidence/E01/20261109T115728Z-19b41c79/03-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "result": "仅 .push-staging/（本地临时脚本，未提交）",
+      "purpose": "确认验收命令未修改受版本控制的源工作区",
+      "log": "evidence/E01/20261109T115728Z-19b41c79/04-git-after.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_RUN",
+  "live_gate_note": "E01 的 A/B/C 三臂全部记录为 NOT_RUN：真实模型调用需要逐次明确的付费授权并在每次实验记录费用，GitHub 写入需要独立的写权限与人工授权；两者均未获得。离线 Harness 自检只证明判定管线与固定答案一致，不是模型能力成绩，也不计入成功率。",
+  "must_pass": [
+    {
+      "item": "≥3 个不同结构真实公开仓库，覆盖 Go 与 Python",
+      "result": "PASS",
+      "evidence": "4 个仓库：pallets/click、psf/requests（python），spf13/pflag、golang/example（go）；12 个 python 任务 + 6 个 go 任务；repositories.json 记录 URL、license、固定 commit 与逐文件 SHA-256。"
+    },
+    {
+      "item": "≥10 个有可核验答案的代码审查/缺陷任务",
+      "result": "PASS",
+      "evidence": "12 个 review 任务（10 dev + 2 holdout），每个 finding 有 file/symbol/category/行号区间/原文 quote 与 quote_sha256，以及必须同时出现在 fix patch 两侧的 token；validate --check-files 重算全部 hash。"
+    },
+    {
+      "item": "≥3 个可复现真实修复任务",
+      "result": "PASS",
+      "evidence": "click-sentinel-repair、click-short-help-repair、click-help-name-repair：真实 upstream bug commit 与 fix patch；离线自检确认独立测试在 buggy 快照失败、fixed 快照通过、应用 reference patch 后与 fixed 文件逐字节一致且测试通过。"
+    },
+    {
+      "item": "≥2 个负例",
+      "result": "PASS",
+      "evidence": "3 个 negative：click core.py 无进程执行、requests utils.py 无动态求值（dev，自检确认禁止模式不存在）、pflag string.go 无 unsafe/uintptr（holdout）；伪造 finding 会被 unverified_false_positives 判失败。"
+    },
+    {
+      "item": "保留未参与调试的 holdout",
+      "result": "PASS",
+      "evidence": "holdout/tasks.jsonl 3 个任务与 dev 不相交；harness-selftest.json 记录 holdout_executed=false 且 holdout_task_count=3；test_holdout_is_isolated_from_development 守护。"
+    },
+    {
+      "item": "每项保存真实来源 commit、任务描述、测试脚本、评测口径",
+      "result": "PASS",
+      "evidence": "tasks.jsonl 含 repo_id/commit/prompt/scope_paths/budget/grading；provenance 含 fix_commit/fix_subject/source_url/fix_patch；repair 含 buggy/fixed 快照、patch_sha256 与 tests/repair/*.py；口径写在 config/evaluation.json 与 docs/v33/E01-real-repository-evaluation.md。"
+    },
+    {
+      "item": "Finding Precision@K、指定缺陷 Recall@Budget、未验证误报数、扫描覆盖、Source Citation Validity、关键调用链正确性",
+      "result": "PASS",
+      "evidence": "grade_review 实现并测试：precision 分母为实际 top-k，recall 分母为 gold 总数，误报按 quote 无效性计数，citation/call-chain/coverage 逐项返回；test_review_grading_* 覆盖满分、伪造额外 finding、单 gold 命中。"
+    },
+    {
+      "item": "修复指标：Bug Reproduction、Patch Validation、Independent Test、Regression、Draft PR、Cost/Tokens/Latency/Model/Tool Calls",
+      "result": "PASS",
+      "evidence": "grade_repair 返回四个二元门 + regression_failures + cost_micros/latency_ms/model_calls/tool_calls/tokens；任一为假或 regression>0 即 PASS 失败；test_repair_grading_requires_all_binary_gates 逐门验证。"
+    },
+    {
+      "item": "Memory：Recall@K、Stale Rejection、Contamination Rate、Token Reduction、Repeated Tool Call Reduction、With/Without Memory、Retrieval Cost",
+      "result": "PASS",
+      "evidence": "grade_memory 与 correctness_delta 实现全部指标；test_memory_metrics_are_computed_from_answer 与 test_correctness_delta_pairs_by_case 覆盖公式（recall 1.0、stale 0.5、contamination 0.25、token 0.4、tool call 0.6、差值 50pp）。"
+    },
+    {
+      "item": "A/B/C 配对：同任务、同 commit、同模型、同预算、独立判定",
+      "result": "PASS",
+      "evidence": "18 个任务 × 3 臂 = 54 条记录，pair_coverage complete=true，pairing_key=(case_id, repeat_index)；三臂共享 baseline/candidate commit、dataset_hash、config_hash 与判定器；config 声明 A 无记忆、B 仅检索、C 记忆+压缩。"
+    },
+    {
+      "item": "没有执行不能填入通过结果",
+      "result": "PASS",
+      "evidence": "54 条记录全部 status=NOT_RUN、model_calls=0、usage_source=not_applicable、latency/cost 为空，并带 not_run_reason；test_all_live_arms_are_not_run 断言不存在 PASS/FAIL；summary 的成功率分母为 0，显示 n/a。"
+    },
+    {
+      "item": "三条验收命令原样通过",
+      "result": "PASS",
+      "evidence": "pytest 18 passed；validate status=PASS（54 records / 18 cases / holdout 3）；summarize 生成带 v34 段的 summary。日志见 02-acceptance.log。"
+    },
+    {
+      "item": "旧版核心功能无回归",
+      "result": "PASS",
+      "evidence": "R01–R05 共 46 passed，0 failed，0 skipped（132.89s）。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "真实模型与 GitHub 实验未执行",
+      "handling": "A/B/C 全部 NOT_RUN，并写明缺 paid_model_calls 与 github_draft_pr_writes 授权；获得逐次授权后才能填入真实记录与费用。"
+    },
+    {
+      "issue": "离线 Harness 自检不是模型能力成绩",
+      "handling": "scope=harness_conformance_not_model_capability，只跑 15 个 dev 任务，summary 明确标注不计入 A/B/C 成功率。"
+    },
+    {
+      "issue": "快照不是整仓克隆",
+      "handling": "只保留任务相关文件与 license，逐文件 SHA-256 固化；repositories.json 记录的是快照内文件，不声称覆盖整仓。"
+    },
+    {
+      "issue": "3 个 repair 的独立测试由本轮编写",
+      "handling": "不复用 upstream 测试以避免答案泄漏；测试只断言 buggy 失败与 fixed 通过，且 reference patch 应用结果与 fixed 文件逐字节一致。"
+    },
+    {
+      "issue": "pflag-native-int-overflow 涉及两个文件",
+      "handling": "同一任务包含 int.go 与 uint.go 两个 gold finding，recall 分母为 2；只报一个时 recall=0.5，不能通过。"
+    }
+  ],
+  "artifacts": [
+    "src/mgar_v3/quality_eval/v34.py",
+    "scripts/quality_eval.py（validate/summarize 的 v34 扩展）",
+    "experiments/v34-audit-repair/manifest.json",
+    "experiments/v34-audit-repair/dataset.json",
+    "experiments/v34-audit-repair/tasks.jsonl",
+    "experiments/v34-audit-repair/holdout/tasks.jsonl",
+    "experiments/v34-audit-repair/repositories.json",
+    "experiments/v34-audit-repair/config/evaluation.json",
+    "experiments/v34-audit-repair/cases.jsonl",
+    "experiments/v34-audit-repair/harness-selftest.json",
+    "experiments/v34-audit-repair/summary.json",
+    "experiments/v34-audit-repair/summary.md",
+    "experiments/v34-audit-repair/snapshots/（4 仓库固定 commit 快照）",
+    "experiments/v34-audit-repair/fixes/（12 份真实 upstream patch）",
+    "experiments/v34-audit-repair/tests/repair/（3 个独立 regression test）",
+    "experiments/v34-audit-repair/verifiers/behaviors.py",
+    "tests/test_v34_evaluation.py",
+    "docs/v33/E01-real-repository-evaluation.md",
+    "config/verification.json（E01 条目）",
+    "docs/v33/accept/E01/accept.json"
+  ],
+  "next_card": "E02"
+}
