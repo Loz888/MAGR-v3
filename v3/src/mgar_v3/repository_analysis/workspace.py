@@ -433,13 +433,13 @@ class RepositoryWorkspace:
                     "Repository remote is not a canonical GitHub URL",
                     403,
                 ) from exc
-            if identity.full_name != self.repository:
+            if identity.full_name.lower() != self.repository:
                 raise DomainError(
                     "WORKSPACE_REMOTE_MISMATCH",
                     "Remote does not match the requested repository",
                     403,
                 )
-            return f"https://github.com/{identity.full_name}", "github"
+            return f"https://github.com/{identity.full_name.lower()}", "github"
         if value.startswith("file://"):
             path = Path(value[7:])
             if path.is_absolute() and path.is_dir():
