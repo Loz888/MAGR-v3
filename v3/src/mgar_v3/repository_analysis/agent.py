@@ -13,6 +13,13 @@ from uuid import UUID
 from langgraph.graph import END, START, StateGraph
 from pydantic import TypeAdapter
 
+from mgar_v3.context.builder import (
+    ContextBuilder,
+    ContextRequest,
+    EvidenceRef,
+    RemainingBudget,
+)
+from mgar_v3.context.compactor import Observation, PermissionSnapshot, estimate_tokens
 from mgar_v3.domain import DomainError
 from mgar_v3.repository_analysis.domain import (
     AgentDecision,
@@ -28,7 +35,7 @@ from mgar_v3.repository_analysis.report import (
     render_report,
     verify_report,
 )
-from mgar_v3.repository_analysis.tools import TOOL_CATALOG, ToolOutcome
+from mgar_v3.repository_analysis.tools import TOOL_NAMES, ToolOutcome
 
 TOOL_ADAPTER = TypeAdapter(ToolCall)
 MAX_OBSERVATION_CHARS = 6000
@@ -73,6 +80,14 @@ def _tool_args_hash(call: Any) -> str:
     ).hexdigest()
 
 
+def _call_locator(call: Any) -> dict[str, int] | None:
+    start = getattr(call, "start_line", None)
+    end = getattr(call, "end_line", None)
+    if isinstance(start, int) and isinstance(end, int):
+        return {"start_line": start, "end_line": end}
+    return None
+
+
 def run_sync(value: Any) -> Any:
     """Execute a possibly-async tool call from a synchronous LangGraph node."""
 
@@ -114,7 +129,12 @@ class RepoAnalysisAgent:
         except DomainError as exc:
             return self._stop(state, exc.code)
         system = self.runtime.system_prompt(spec)
-        payload = self._payload(spec, state, current_round)
+        try:
+            payload = self._payload(spec, state, current_round)
+        except DomainError as exc:
+            if exc.code in {"CONTEXT_BUDGET_EXCEEDED", "CONTEXT_BOUND"}:
+                return self._stop(state, "INPUT_TOKEN_BUDGET")
+            raise
         encoded_chars = len((system + json.dumps(payload, ensure_ascii=False)).encode())
         if spec.input_tokens_used + (encoded_chars // 3) > spec.limits.max_input_tokens:
             return self._stop(state, "INPUT_TOKEN_BUDGET")
@@ -177,26 +197,88 @@ class RepoAnalysisAgent:
             "thought": decision.thought,
         }
 
+    def _permissions(self, spec: AnalysisSpec) -> PermissionSnapshot:
+        store = getattr(self.runtime, "store", None)
+        settings = getattr(getattr(store, "engine", None), "settings", None)
+        return PermissionSnapshot(
+            project_id=str(getattr(settings, "project_id", "")),
+            repository=spec.repository,
+            commit=spec.commit,
+            actor=str(getattr(settings, "local_actor", "")),
+            read_only=True,
+            allowed_tools=list(TOOL_NAMES),
+            budgets={
+                "max_model_calls": spec.limits.max_model_calls,
+                "max_tool_calls": spec.limits.max_tool_calls,
+                "max_input_tokens": spec.limits.max_input_tokens,
+            },
+        )
+
     def _payload(self, spec: AnalysisSpec, state: AnalysisState, round_no: int) -> dict[str, Any]:
-        history = list(state.get("history", []))
+        observations = [
+            Observation.from_mapping(item) for item in state.get("history", [])
+        ]
+        evidence = [
+            EvidenceRef(
+                evidence_id=item.evidence_id,
+                source_uri=item.reference,
+                source_version=item.source_version,
+                artifact_hash=item.artifact_hash,
+                locator=item.locator,
+            )
+            for item in observations
+            if item.evidence_id is not None
+        ]
         prior = self.runtime.prior_report_text(spec)
-        budget_chars = max(4000, spec.limits.max_input_tokens * 3 - 4000)
-        while history and len(json.dumps(history, ensure_ascii=False)) > budget_chars:
-            history = history[1:]
         if prior and len(prior) > MAX_PRIOR_REPORT_CHARS:
             prior = prior[:MAX_PRIOR_REPORT_CHARS] + "\n…(prior report truncated)"
-        return {
-            "task": spec.task,
-            "repository": spec.repository,
-            "commit": spec.commit,
-            "round": round_no,
-            "remaining_model_calls": spec.limits.max_model_calls - spec.model_calls_used,
-            "remaining_tool_calls": spec.limits.max_tool_calls - spec.tool_calls_used,
-            "remaining_input_tokens": spec.limits.max_input_tokens - spec.input_tokens_used,
-            "prior_report": prior,
-            "prior_evidence_id_map": spec.prior_evidence_map if prior else {},
-            "history": history,
-        }
+        remaining_tokens = max(0, spec.limits.max_input_tokens - spec.input_tokens_used)
+        request = ContextRequest(
+            system_instructions=self.runtime.system_prompt(spec),
+            task=spec.task,
+            repository=spec.repository,
+            commit=spec.commit,
+            permissions=self._permissions(spec),
+            remaining_budget=RemainingBudget(
+                model_calls=max(
+                    0, spec.limits.max_model_calls - spec.model_calls_used
+                ),
+                tool_calls=max(0, spec.limits.max_tool_calls - spec.tool_calls_used),
+                input_tokens=remaining_tokens,
+            ),
+            current_plan=[state["thought"]] if state.get("thought") else [],
+            observations=observations,
+            evidence=evidence,
+            available_tools=list(TOOL_NAMES),
+        )
+        bundle = ContextBuilder(
+            max_tokens=max(
+                512,
+                remaining_tokens - (estimate_tokens(prior) if prior else 0) - 64,
+            ),
+            recent_window=6,
+        ).build(request)
+        history = [
+            item.model_dump(mode="json") for item in bundle.recent_observations
+        ]
+        payload = bundle.to_payload()
+        payload.pop("recent_observations")
+        payload.update(
+            {
+                "round": round_no,
+                "remaining_model_calls": max(
+                    0, spec.limits.max_model_calls - spec.model_calls_used
+                ),
+                "remaining_tool_calls": max(
+                    0, spec.limits.max_tool_calls - spec.tool_calls_used
+                ),
+                "remaining_input_tokens": remaining_tokens,
+                "prior_report": prior,
+                "prior_evidence_id_map": spec.prior_evidence_map if prior else {},
+                "history": history,
+            }
+        )
+        return payload
 
     def tools(self, state: AnalysisState) -> AnalysisState:
         try:
@@ -214,9 +296,12 @@ class RepoAnalysisAgent:
                     {
                         "tool": "tool_error",
                         "reference": "",
-                        "content": "Tool call failed strict schema validation and was not executed.",
+                        "content": (
+                            "Tool call failed strict schema validation and was not executed."
+                        ),
                         "evidence_id": None,
                         "truncated": False,
+                        "error_code": "TOOL_SCHEMA_INVALID",
                     }
                 )
                 continue
@@ -235,6 +320,7 @@ class RepoAnalysisAgent:
                         "content": f"{exc.code}: the tool step was not retried.",
                         "evidence_id": None,
                         "truncated": False,
+                        "error_code": exc.code,
                     }
                 )
                 continue
@@ -261,6 +347,7 @@ class RepoAnalysisAgent:
                             ),
                             "evidence_id": None,
                             "truncated": False,
+                            "error_code": exc.code,
                         }
                     )
                     continue
@@ -275,6 +362,7 @@ class RepoAnalysisAgent:
                             "content": "TOOL_INTERNAL_ERROR: tool outcome was not recorded.",
                             "evidence_id": None,
                             "truncated": False,
+                            "error_code": "TOOL_INTERNAL_ERROR",
                         }
                     )
                     continue
@@ -303,6 +391,7 @@ class RepoAnalysisAgent:
                 "evidence_id": str(evidence_id) if evidence_id else None,
                 "source_version": source_version,
                 "truncated": truncated,
+                "locator": _call_locator(call),
             }
             history.append(item)
             if evidence_id is not None:

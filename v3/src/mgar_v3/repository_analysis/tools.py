@@ -500,6 +500,15 @@ class RepositoryAnalysisTools:
         )
 
 
+TOOL_NAMES = (
+    "read_file",
+    "list_directory",
+    "search_code",
+    "repository_metadata",
+    "read_issue",
+    "read_pull_request",
+)
+
 TOOL_CATALOG = """Available read-only tools (no other tool or repository is reachable):
 - read_file {"tool":"read_file","path":"repo/relative/path","start_line":120,"end_line":200} — exact file bytes at the fixed commit. start_line/end_line are optional 1-based inclusive line numbers; use them to page through long files because observations are truncated.
 - list_directory {"tool":"list_directory","path":"optional/repo/relative/dir"} — directory entries.

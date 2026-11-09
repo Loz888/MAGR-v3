@@ -125,6 +125,24 @@
     ],
     "timeout_seconds": 300
   },
+  "M04": {
+    "components": {
+      "artifact": "content_addressed_immutable_bytes_verified_and_paginated_with_forward_backward_cursors",
+      "budget": "deterministic_section_allocation_with_pinned_constraints_and_recent_window",
+      "compaction": "dedupe_long_segment_references_structured_summary_and_invariant_check",
+      "evidence": "evidence_ids_and_artifact_hashes_pinned_across_compaction",
+      "model": "fixture_no_network",
+      "network": "not_used",
+      "permissions": "no_permission_or_tool_escalation_possible_after_compaction",
+      "postgres": "not_used",
+      "redis": "not_used"
+    },
+    "tests": [
+      "tests/test_v33_context_compaction.py",
+      "tests/test_v32_repository_analysis.py"
+    ],
+    "timeout_seconds": 300
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
