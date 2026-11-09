@@ -237,6 +237,24 @@
     ],
     "timeout_seconds": 300
   },
+  "R05": {
+    "components": {
+      "approval": "binds_repository_base_commit_tested_tree_and_payload_hash",
+      "diff": "complete_diff_review_before_any_write",
+      "draft_only": "creates_draft_pull_requests_and_never_merges",
+      "fallback": "exports_patch_when_write_credential_is_missing",
+      "memory": "publication_episodes_for_success_and_failure",
+      "reconcile": "read_only_lookup_after_unknown_result_without_replay",
+      "steps": "branch_commit_and_pull_request_written_and_receipted_separately",
+      "tokens": "github_write_credential_is_separate_from_read_only_token",
+      "tests": "fixture_mcp_real_draft_pr_publication",
+      "verification": "base_commit_rechecked_before_first_write"
+    },
+    "tests": [
+      "tests/test_v34_pr_delivery.py"
+    ],
+    "timeout_seconds": 300
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
