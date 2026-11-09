@@ -13,6 +13,21 @@
     ],
     "timeout_seconds": 120
   },
+  "A01": {
+    "components": {
+      "docker": "not_used",
+      "git": "real_local_fixture_repositories_fixed_commit",
+      "manifest": "deterministic_content_addressed",
+      "model": "not_used",
+      "network": "not_used",
+      "postgres": "not_used",
+      "redis": "not_used"
+    },
+    "tests": [
+      "tests/test_v33_workspace.py"
+    ],
+    "timeout_seconds": 120
+  },
   "V31-P0-IMPLEMENT": {
     "components": {
       "final_scope": "P0_only_patch_schema_exhaustion_classification_and_acceptance_startup_recovery",
