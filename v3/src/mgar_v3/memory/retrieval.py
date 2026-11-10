@@ -98,6 +98,7 @@ class MemoryHit(Model):
     verification_status: MemoryVerification
     confidence: float
     evidence_ids: list[UUID]
+    artifact_hashes: list[str]
     source_uris: list[str]
     relevance: float
     lexical_score: float
@@ -405,6 +406,7 @@ class MemoryRetriever:
             verification_status=record.verification_status,
             confidence=record.confidence,
             evidence_ids=list(record.evidence_ids),
+            artifact_hashes=list(record.artifact_hashes),
             source_uris=list(uris),
             relevance=round(relevance, 6),
             lexical_score=round(lexical_score, 6),

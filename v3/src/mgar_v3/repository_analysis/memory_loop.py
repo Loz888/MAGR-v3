@@ -76,6 +76,7 @@ class MemoryAdvisory(Model):
     score: float
     reference_only: Literal[True] = True
     evidence_ids: list[str] = Field(default_factory=list)
+    artifact_hashes: list[str] = Field(default_factory=list)
     source_uris: list[str] = Field(default_factory=list)
     text: str
 
@@ -407,6 +408,7 @@ class AnalysisMemory:
             confidence=record.confidence,
             score=hit.score,
             evidence_ids=[str(item) for item in record.evidence_ids],
+            artifact_hashes=[str(item) for item in record.artifact_hashes],
             source_uris=list(hit.source_uris),
             text=self._content(record),
         )

@@ -861,5 +861,28 @@
       "tests/test_v34_repository_api.py"
     ],
     "timeout_seconds": 900
+  },
+  "V35-M01": {
+    "components": {
+      "audit": "failed_writes_persisted_in_memory_write_attempts_with_candidate_jsonb_and_retry",
+      "contract": "existing_four_memory_kinds_and_knowledge_schema_no_fifth_store",
+      "gates": "secret_prompt_injection_low_confidence_and_scope_mismatch_rejected_and_audited",
+      "historical": "cross_commit_recall_marked_historical_with_requires_reverification",
+      "live_agent": "NOT_RUN_no_paid_model",
+      "live_github_write": "NOT_RUN_no_authorized_test_repository",
+      "live_model": "NOT_RUN_no_paid_model",
+      "postgres": "real_disposable_database_0026_memory_write_attempts",
+      "publication": "release_receipts_recorded_for_published_and_write_denied_outcomes",
+      "trace": "task_run_finding_evidence_repair_attempt_test_receipt_to_memory_chain",
+      "workbench": "fixture_task_memory_bound_to_the_real_audit_run_and_evidence",
+      "working_memory": "never_surfaces_as_a_cross_task_fact"
+    },
+    "tests": [
+      "tests/test_v35_m01.py",
+      "tests/test_v33_memory_write.py",
+      "tests/test_v33_memory_retrieval.py",
+      "tests/test_v33_memory_agent.py"
+    ],
+    "timeout_seconds": 900
   }
 }

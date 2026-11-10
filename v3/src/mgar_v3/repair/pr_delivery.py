@@ -36,6 +36,7 @@ DeliveryStatus = Literal[
     "write_permission_required",
     "base_changed",
     "outcome_unknown",
+    "failed",
 ]
 StepKind = Literal["branch", "commit", "pull_request"]
 StepStatus = Literal["succeeded", "already_present"]

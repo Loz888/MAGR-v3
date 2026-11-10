@@ -17,6 +17,7 @@ from __future__ import annotations
 import difflib
 import hashlib
 import json
+import logging
 import os
 import re
 import subprocess
@@ -35,6 +36,12 @@ from mgar_v3.coordination.engine import Engine
 from mgar_v3.domain import DomainError, digest
 from mgar_v3.effects.dispatcher import PublicationDispatcher
 from mgar_v3.findings.model import Finding, FindingEvidence, normalize_path
+from mgar_v3.memory.loop import (
+    MemoryContext,
+    PersistentMemoryLoop,
+    PersistentPublicationMemory,
+    PersistentRepairMemory,
+)
 from mgar_v3.repair.handoff import (
     ParentAnalysisRun,
     RepairAuthorization,
@@ -43,6 +50,7 @@ from mgar_v3.repair.handoff import (
 )
 from mgar_v3.repair.pr_delivery import (
     PublicationApproval,
+    PublicationEpisode,
     PublicationFile,
     ReviewBundle,
     seal_bundle,
@@ -97,6 +105,8 @@ from mgar_v3.workbench.publication import (
     record_from_row,
 )
 from mgar_v3.workbench.store import WorkbenchStore
+
+_LOGGER = logging.getLogger(__name__)
 
 DISPATCHER_PATH = "src/dispatcher.py"
 TEST_FILE = "tests/test_dispatcher.py"
@@ -1002,7 +1012,7 @@ class WorkbenchService:
         orchestrator = AuthorizedRepairOrchestrator(
             ledger=WorkbenchRepairLedger(self.store),
             allowed_actors=self.settings.allowed_actors,
-            runtime=runtime,
+            runtime=runtime or SnapshotRepairRuntime(memory=self._repair_memory(current, finding)),
         )
         outcome = orchestrator.run(
             job,
@@ -1011,6 +1021,7 @@ class WorkbenchService:
             current_commit=current_commit,
         )
         self._record_repair_outcome(current, finding, outcome)
+        self._remember_repair_outcome(current, finding, outcome)
         return {
             "outcome": outcome.model_dump(mode="json"),
             "task": self.view(task_id),
@@ -1170,6 +1181,119 @@ class WorkbenchService:
                 409,
             )
         return current
+
+    def _memory_loop(self) -> PersistentMemoryLoop:
+        return PersistentMemoryLoop(self.settings, engine=self.engine)
+
+    def _memory_context(
+        self, task: dict[str, Any], finding: WorkbenchFinding
+    ) -> MemoryContext | None:
+        """Build the Task/Run → Finding → Evidence trace for memory writes.
+
+        Fixture tasks have no analysis run and therefore no durable evidence
+        chain; memory is skipped instead of inventing provenance.
+        """
+        run_id = task.get("repair_run_id") or task.get("audit_run_id")
+        if run_id is None:
+            return None
+        try:
+            spec = self.repo.store.spec(UUID(str(run_id)))
+            task_id = UUID(str(task["task_id"]))
+            ticket_id = UUID(str(spec.ticket_id))
+            run_uuid = UUID(str(spec.run_id))
+        except (DomainError, KeyError, TypeError, ValueError):
+            return None
+        evidence_ids: list[UUID] = []
+        try:
+            evidence_ids.append(UUID(str(finding.source.evidence_id)))
+        except (AttributeError, ValueError):
+            pass
+        return MemoryContext(
+            project_id=self.settings.project_id,
+            repository=str(task["repository"]),
+            commit=str(spec.commit or task["commit"]),
+            actor=self.settings.local_actor,
+            ticket_id=ticket_id,
+            run_id=run_uuid,
+            task_id=task_id,
+            finding_id=str(finding.finding_id),
+            evidence_ids=evidence_ids,
+        )
+
+    def _repair_memory(
+        self, task: dict[str, Any], finding: WorkbenchFinding
+    ) -> PersistentRepairMemory | None:
+        context = self._memory_context(task, finding)
+        if context is None:
+            return None
+        return PersistentRepairMemory(self._memory_loop(), context)
+
+    def _remember_repair_outcome(
+        self,
+        task: dict[str, Any],
+        finding: WorkbenchFinding,
+        outcome: RepairOutcome,
+    ) -> None:
+        """Persist the verified/failed repair outcome; never break the task."""
+        try:
+            context = self._memory_context(task, finding)
+            if context is None:
+                return
+            self._memory_loop().record_repair_outcome(context, outcome)
+        except Exception:
+            _LOGGER.exception(
+                "repair outcome memory write failed for task %s", task.get("task_id")
+            )
+
+    def _remember_publication(
+        self,
+        task_id: UUID,
+        finding_id: str,
+        *,
+        row: Mapping[str, Any],
+        finding: WorkbenchFinding,
+        publication: Any,
+    ) -> None:
+        """Persist one terminal publication receipt; never break the task."""
+        try:
+            if row["status"] not in {"succeeded", "exported", "failed"}:
+                return
+            task = self.store.task(task_id)
+            context = self._memory_context(task, finding)
+            if context is None:
+                return
+            status = (
+                "published"
+                if row["status"] == "succeeded"
+                else "write_permission_required"
+                if row["status"] == "exported"
+                else "failed"
+            )
+            pull_request = (
+                publication.pull_request.number
+                if publication.pull_request is not None
+                else None
+            )
+            episode = PublicationEpisode(
+                episode_id=f"{row['publication_id']}:{row['status']}",
+                repository=str(row["repository"]),
+                proposal_id=str(row["proposal_id"]),
+                branch=str(row["branch"]),
+                base_sha=str(row["base_sha"]),
+                tree_hash=str(row["tree_hash"]),
+                payload_hash=str(row["payload_hash"]),
+                status=status,
+                reason=str(row["reason"] or row["status"])[:1000],
+                pull_request=pull_request,
+                draft=True,
+            )
+            PersistentPublicationMemory(self._memory_loop(), context).record(episode)
+        except Exception:
+            _LOGGER.exception(
+                "publication memory write failed for task %s finding %s",
+                task_id,
+                finding_id,
+            )
 
     def _record_repair_outcome(
         self,
@@ -1701,6 +1825,13 @@ class WorkbenchService:
                     f"{row['payload_hash']}:{row['status']}"
                 ),
             )
+        self._remember_publication(
+            task_id,
+            finding_id,
+            row=row,
+            finding=updated,
+            publication=publication,
+        )
         return updated
 
     # -- controls --------------------------------------------------------
