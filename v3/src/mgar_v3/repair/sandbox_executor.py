@@ -364,6 +364,38 @@ class GoAdapter:
         return _parse_go(raw, exit_code)
 
 
+def _is_type_checking(test: ast.expr) -> bool:
+    if isinstance(test, ast.Name):
+        return test.id == "TYPE_CHECKING"
+    return isinstance(test, ast.Attribute) and test.attr == "TYPE_CHECKING"
+
+
+def _runtime_imports(parsed: ast.Module) -> set[str]:
+    """Top-level imports that actually execute when the module is imported.
+
+    Type-checking-only branches and lazy imports inside functions never run at
+    import time, so they must not block a workspace that is otherwise
+    standard-library-only.
+    """
+
+    imported: set[str] = set()
+
+    def visit(node: ast.AST) -> None:
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)):
+                continue
+            if isinstance(child, ast.If) and _is_type_checking(child.test):
+                continue
+            if isinstance(child, ast.Import):
+                imported.update(alias.name.split(".")[0] for alias in child.names)
+            elif isinstance(child, ast.ImportFrom) and child.level == 0 and child.module:
+                imported.add(child.module.split(".")[0])
+            visit(child)
+
+    visit(parsed)
+    return imported
+
+
 def _python_requirements(files: Mapping[str, str]) -> list[str]:
     locals_ = {path.split("/")[0].removesuffix(".py") for path in files}
     imported: set[str] = set()
@@ -374,11 +406,7 @@ def _python_requirements(files: Mapping[str, str]) -> list[str]:
             parsed = ast.parse(content)
         except SyntaxError:
             continue
-        for node in ast.walk(parsed):
-            if isinstance(node, ast.Import):
-                imported.update(alias.name.split(".")[0] for alias in node.names)
-            elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
-                imported.add(node.module.split(".")[0])
+        imported.update(_runtime_imports(parsed))
     standard = set(sys.stdlib_module_names) | {"__future__"}
     external = {name for name in imported if name not in standard and name not in locals_}
     requirements = set(external)

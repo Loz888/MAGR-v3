@@ -1,0 +1,24 @@
+{
+  "budget": {
+    "deadline_seconds": 600,
+    "max_attempts": 3,
+    "max_cost_micros": 2000000,
+    "max_model_calls": 4,
+    "max_test_runs": 8
+  },
+  "experiment_id": "v35-end-to-end-real-repository-harness",
+  "gates": {
+    "engineering_gate_implies_live_agent_gate": false,
+    "fixture_counts_towards": "engineering_gate",
+    "live_counts_towards": "live_agent_gate"
+  },
+  "holdout": {
+    "executed_by_default": false,
+    "task_count": 1
+  },
+  "modes": {
+    "fixture": "scripted_provider_engineering_gate_only",
+    "live": "real_model_provider_live_agent_gate"
+  },
+  "schema": "mgar-v35-eval-config-v1"
+}

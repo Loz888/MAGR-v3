@@ -18,7 +18,7 @@
 | V35-M01 | 跨阶段持久经验闭环 | R03 | DONE | PASS | NOT_RUN |
 | V35-M02 | Context Budget、Compaction 与恢复一致性 | M01 | DONE | PASS | NOT_RUN |
 | V35-X01 | 按需启用 R4 Experts | R05、M02 | DONE | PASS | NOT_RUN |
-| V35-E01 | 重建端到端真实仓库评测 Harness | R05、M01 | TODO | NOT_RUN | NOT_RUN |
+| V35-E01 | 重建端到端真实仓库评测 Harness | R05、M01 | DONE | PASS | NOT_RUN |
 | V35-E02 | Memory / Compaction / Expert 消融实验 | E01、M02、X01 | TODO | NOT_RUN | NOT_RUN |
 | V35-E03 | 端到端安全、并发与灾难恢复 | R04、M02、E01 | TODO | NOT_RUN | NOT_RUN |
 | V35-D01 | 产品说明、演示脚本、部署与最终验收 | 前述必须卡 | TODO | NOT_RUN | NOT_RUN |
@@ -33,7 +33,7 @@ B00 ── U01 ── U02 ── R01 ── R02 ── R03 ── R04 ── R05
                                   └─ E01 ── E02 ── E03 ── D01
 ```
 
-- 当前无 `READY` 卡：V35-X01 已完成并通过工程门；V35-E01 的依赖已满足，V35-E02 需等待 E01，下一张须另行确认后开始。
+- 当前无 `READY` 卡：V35-X01 与 V35-E01 已完成并通过工程门；V35-E02 的依赖已满足但仍须另行确认后开始，真实 Agent 门仍为 `NOT_RUN`。
 - 任何卡的依赖未通过验收时，该卡标记 `BLOCKED`，不得假装 PASS。
 
 ## 每卡交付物

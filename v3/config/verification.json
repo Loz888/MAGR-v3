@@ -938,5 +938,29 @@
       "tests/test_v32_repository_analysis.py"
     ],
     "timeout_seconds": 1200
+  },
+  "V35-E01": {
+    "components": {
+      "adversarial": "first_patch_fails_public_tests_then_second_patch_after_feedback",
+      "budget": "attempts_model_calls_test_runs_and_deadline_are_hard_caps",
+      "cost": "model_calls_cost_latency_recorded_per_task_and_aggregated",
+      "coverage": "known_bug_regression_multifile_and_adversarial_with_pinned_commit_initial_failure_hidden_verification_and_success_criteria",
+      "dataset": "pinned_snapshots_public_hidden_split_gold_patch_without_holdout_contamination",
+      "grader": "reproduction_fix_regression_scope_cost_calls_publication_and_failure_mode_separation",
+      "holdout": "isolated_not_loaded_by_development_requires_explicit_evaluate_holdout",
+      "live_agent": "NOT_RUN_no_paid_model_authorization",
+      "live_github_write": "NOT_RUN_no_authorized_test_repository",
+      "live_model": "NOT_RUN_no_paid_model",
+      "publication": "waiting_approval_only_no_draft_pr",
+      "resume": "interrupted_provider_call_refused_without_duplicate_model_calls",
+      "runtime": "authorized_orchestrator_snapshot_runtime_r03_docker_network_none",
+      "sandbox": "pinned_r03_image_real_write_patch_test_and_hidden_verification",
+      "scoring": "public_and_hidden_pass_with_zero_unrelated_or_out_of_scope_changes"
+    },
+    "tests": [
+      "tests/test_v35_e01.py",
+      "tests/test_v34_sandbox_executor.py"
+    ],
+    "timeout_seconds": 1800
   }
 }
