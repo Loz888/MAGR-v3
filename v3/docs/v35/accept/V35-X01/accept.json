@@ -1,0 +1,177 @@
+{
+  "card": "V35-X01",
+  "title": "按需启用 R4 Experts，而非默认三专家",
+  "status": "PASS",
+  "commit": "41cd37486b3ea43b99d67d00b088e93a35f23914",
+  "result_commit": "41cd37486b3ea43b99d67d00b088e93a35f23914",
+  "commit_note": "两次本地提交：第一次包含 routing/experts.py、graph/experts.py、repository_analysis/agent.py、tests/test_v35_x01.py 与卡片/队列/verification 更新；第二次仅记录本 accept.json。用户已明确要求推送，accept 提交后执行 git push（不使用 force）。",
+  "parent_commit": "7238a4c267fab95589c643ee85f639d354ed86bf",
+  "dependency_commit": "7238a4c267fab95589c643ee85f639d354ed86bf",
+  "base_commit": "7238a4c267fab95589c643ee85f639d354ed86bf",
+  "accepted_at": "2026-11-10T06:19:30Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (make doctor PASS; migration check applied nothing because V35-X01 adds no schema; R4 expert graph regression used the real disposable database)",
+    "redis": "real (make doctor PASS; tests do not use it)",
+    "docker": "not_used",
+    "model": "fixture_only_no_paid_calls",
+    "network": "not_used",
+    "github": "read_only_existing_fixture_paths_no_publication"
+  },
+  "worktree_at_acceptance": "实现、测试、卡片与队列已提交于 41cd374；accept.json 待提交；evidence/（gitignore）与本地脚本不在版本控制内。",
+  "commands": [
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/routing/experts.py", "src/mgar_v3/graph/experts.py", "src/mgar_v3/repository_analysis/agent.py", "tests/test_v35_x01.py"],
+      "exit_code": 0,
+      "result": "All checks passed",
+      "purpose": "本卡改动文件的静态检查",
+      "log": "evidence/v35/X01/20261110T061807Z-x01/05-ruff-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/routing/experts.py", "src/mgar_v3/graph/experts.py", "src/mgar_v3/repository_analysis/agent.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 3 source files",
+      "purpose": "本卡改动模块的类型检查",
+      "log": "evidence/v35/X01/20261110T061807Z-x01/06-mypy-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "card-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v35_x01.py", "tests/test_r4_experts.py", "tests/test_r4_recovery.py", "tests/test_v35_m02.py", "tests/test_v32_repository_analysis.py", "-q", "-p", "no:warnings"],
+      "exit_code": 0,
+      "counts": {"tests": 61, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "X01 路由/预算/去重/降级 + R4 专家图与恢复 + M02 Context payload + V3.2 仓库分析回归",
+      "log": "evidence/v35/X01/20261110T061807Z-x01/07-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["uv", "run", "--frozen", "python", "-m", "mgar_v3.store.migrate"],
+      "exit_code": 0,
+      "result": {"applied": []},
+      "purpose": "本卡不新增表；迁移保持幂等",
+      "log": "evidence/v35/X01/20261110T061807Z-x01/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["uv", "run", "--frozen", "mgar", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用与真实 GitHub 写入）",
+      "log": "evidence/v35/X01/20261110T061807Z-x01/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/X01/20261110T061807Z-x01/03-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "V35-X01"],
+      "exit_code": 0,
+      "counts": {"tests": 61, "failures": 0, "errors": 0, "skipped": 0},
+      "duration_seconds": 45.189,
+      "source_sha256": "f1102c608e9bb484788e0afcc3ac9ab94399d901d1a39c9c8a0f98896e4ddc82",
+      "finished_source_sha256": "f1102c608e9bb484788e0afcc3ac9ab94399d901d1a39c9c8a0f98896e4ddc82",
+      "git_commit": "7238a4c267fab95589c643ee85f639d354ed86bf",
+      "attempt": "evidence/V35-X01/20261110T061813Z-9ec971dd",
+      "note": "verify 记录的是提交前 HEAD；source_sha256 对应实现提交的源码/测试指纹。",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_RUN",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "NOT_RUN",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡没有付费模型调用、真实 GitHub 写入或网络依赖。专家路由为确定性规则；专家只返回只读 advisory，模型与测试双重拒绝 read_only=False / may_write=True / main_agent_decides=False / write_access=True；超时、异常、空结论、冲突、无效证据、缺失 provider 与 revision 漂移只产生降级建议，不修改主状态、不绕过测试。live 门保持 NOT_RUN，engineering_gate=PASS 不蕴含任何 live 门 PASS。真实双臂消融与端到端长任务由 V35-E02/E01 负责。",
+  "must_pass": [
+    {
+      "item": "路由基于证据的确定性判断（多文件/依赖/验证失败/安全问题/信息冲突/用户请求）",
+      "result": "PASS",
+      "evidence": "ExpertRouter.route 只读 ExpertContext，不调用模型；::test_deterministic_triggers_map_to_expected_roles、::test_single_failed_file_does_not_trigger_verification_experts、::test_documented_data_question_selects_three_roles_and_cross_source 覆盖。"
+    },
+    {
+      "item": "简单 Bug 不为形式调用专家",
+      "result": "PASS",
+      "evidence": "单文件 Go 修复返回 mode=single_agent、roles=[]、signals=[]；RepoAnalysisAgent 无 expert hook 时 payload 为 single_agent 且零额外调用；::test_single_file_bug_keeps_one_main_agent、::test_repo_agent_defaults_to_single_agent_without_expert_hook 覆盖。"
+    },
+    {
+      "item": "专家只作只读调查；写权限与最终决策归主 Agent",
+      "result": "PASS",
+      "evidence": "ExpertAdvisory 固定 read_only=True / may_write=False / main_agent_decides=True，ExpertDecision 固定 write_access=False / main_agent_decides=True；ExpertOutcome.main_state_mutated=False；::test_experts_cannot_escalate_permissions_or_decision_ownership、::test_provider_failure_is_degraded_and_cannot_mutate_main_state 覆盖。"
+    },
+    {
+      "item": "触发标准、预算硬上限、停止条件与去重；并行子任务由同一权威状态派生",
+      "result": "PASS",
+      "evidence": "ExpertBudget 对 max_experts/max_rounds/max_calls_per_revision/timeout 设硬上限；ROUND_BUDGET/EXPERT_BUDGET/CALL_BUDGET 显式停止；(role, revision, question) 去重且不占预算；三角色并行共享同一 input_revision；::test_round_budget_and_expert_cap_stop_selection、::test_call_budget_truncates_roles_and_keeps_cached_results、::test_repeated_consult_deduplicates_without_new_calls_or_budget、::test_experts_run_in_parallel_on_one_revision 覆盖。"
+    },
+    {
+      "item": "超时、空结论、冲突、失败不得改写主 Agent 状态或绕过测试",
+      "result": "PASS",
+      "evidence": "超时/异常/空结论/冲突/无效证据/缺失 provider/revision 不一致均返回结构化降级 advisory，degraded=True，主状态逐字段相等；::test_timeout_empty_conflict_and_invalid_evidence_degrade、::test_unavailable_provider_and_stale_revision_degrade 覆盖。"
+    },
+    {
+      "item": "同一评测集比较单 Agent 与按需专家：成功率、成本、延迟、重复工作有数据；无收益时诚实说明",
+      "result": "PASS",
+      "evidence": "BenchmarkRow/summarize_benchmark 输出双臂成功率、成本比、延迟比、简单任务专家额外成本、重复调用与结论；无收益时明确 keep single-agent；本卡只消费已记录测量，live 消融延后 V35-E02；::test_benchmark_reports_both_arms_without_faking_live_results 覆盖。"
+    },
+    {
+      "item": "R4 图与既有三专家评测路径不回退",
+      "result": "PASS",
+      "evidence": "graph/experts.py 在计划阶段接入 ExpertRouter 并写 expert_route 事件；无触发时退化为单 repo 角色以满足 InvestigationPlan 至少 1 个 task 的约束；既有 fixture 问题仍选择三专家，tests/test_r4_experts.py 与 test_r4_recovery.py 全部通过。"
+    },
+    {
+      "item": "负向测试：单个 Go 小修复默认触发专家、专家无限循环/重复派发、专家失败后主流程被污染、专家尝试扩权",
+      "result": "PASS",
+      "evidence": "tests/test_v35_x01.py 覆盖默认单 Agent、轮数/调用预算阻断无限派发、去重与缓存、失败/超时/空结论/冲突/无效证据不污染主状态、扩权构造被 pydantic 拒绝。"
+    },
+    {
+      "item": "工程门禁命令原样通过（tests/test_v35_x01.py + tests/test_r4_experts.py + tests/test_r4_recovery.py + tests/test_v35_m02.py + tests/test_v32_repository_analysis.py）",
+      "result": "PASS",
+      "evidence": "verify TASK=V35-X01：61 passed / 0 failed / 0 skipped；scoped ruff 与 mypy exit 0；migrate applied []；doctor PG/Redis PASS；git diff --check exit 0。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "workbench/orchestrator.py 未直接修改",
+      "handling": "R03 验收明确专家辅助是上层可选编排，修复编排只依赖 provider。X01 通过共享 ExpertCoordinator 与 RepoAnalysisAgent 的可选 expert_advice hook 暴露能力，避免在编排层引入第二套专家/截断规则；卡片记录如需在 Workbench 任务启用应另立卡片。"
+    },
+    {
+      "issue": "R4 图在路由结果为 single_agent 时仍运行一个 repo 角色",
+      "handling": "graph/experts.py 本身就是专家子图，InvestigationPlan 要求至少 1 个 task/role；无触发时退化为单 repo 角色而非伪造三专家。V3.5 主 Agent 路径仍默认单 Agent、零专家调用。"
+    },
+    {
+      "issue": "benchmark 不是 live 双臂消融",
+      "handling": "本卡实现的是对已记录结果的离线比较器并通过测试证明诚实结论；没有付费模型与真实长任务数据，因此 live 门保持 NOT_RUN，真实消融由 V35-E02 负责。"
+    },
+    {
+      "issue": "未推送时曾出现本地提交身份缺失",
+      "handling": "仅通过单次 git -c user.name/user.email 使用仓库既有作者身份提交，未修改任何全局或仓库 git config。"
+    },
+    {
+      "issue": "实现与 accept 文档分两次本地提交",
+      "handling": "第一次提交实现、测试、卡片/队列/verification（41cd374）；第二次仅提交本 accept.json；随后按用户明确要求执行普通 git push，不使用 force。"
+    }
+  ],
+  "artifacts": {
+    "expert_routing": "src/mgar_v3/routing/experts.py",
+    "r4_graph": "src/mgar_v3/graph/experts.py",
+    "analysis_agent": "src/mgar_v3/repository_analysis/agent.py",
+    "tests": "tests/test_v35_x01.py",
+    "card": "docs/v35/cards/V35-X01.md",
+    "verification": "config/verification.json",
+    "evidence": "evidence/v35/X01/20261110T061807Z-x01/"
+  }
+}
