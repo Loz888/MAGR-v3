@@ -33,6 +33,7 @@ from psycopg.errors import UniqueViolation
 
 from mgar_v3.coordination.engine import Engine
 from mgar_v3.domain import DomainError, digest
+from mgar_v3.effects.dispatcher import PublicationDispatcher
 from mgar_v3.findings.model import Finding, FindingEvidence, normalize_path
 from mgar_v3.repair.handoff import (
     ParentAnalysisRun,
@@ -41,8 +42,6 @@ from mgar_v3.repair.handoff import (
     RepairHandoffBuilder,
 )
 from mgar_v3.repair.pr_delivery import (
-    DraftPRPublisher,
-    MemoryPublicationLog,
     PublicationApproval,
     PublicationFile,
     ReviewBundle,
@@ -90,6 +89,12 @@ from mgar_v3.workbench.orchestrator import (
     RepairCancelToken,
     RepairOutcome,
     WorkbenchRepairLedger,
+)
+from mgar_v3.workbench.publication import (
+    PublicationWriteScope,
+    WorkbenchDraftTransport,
+    WorkbenchPublicationLedger,
+    record_from_row,
 )
 from mgar_v3.workbench.store import WorkbenchStore
 
@@ -247,11 +252,15 @@ class WorkbenchService:
         engine: Engine,
         settings: Settings,
         repo_service: RepositoryAnalysisService | None = None,
+        *,
+        publication_write_scope: PublicationWriteScope | None = None,
     ):
         self.engine = engine
         self.settings = settings
         self.store = WorkbenchStore(engine)
         self.repo = repo_service or RepositoryAnalysisService(engine, settings)
+        self.publications = WorkbenchPublicationLedger(engine)
+        self.publication_write_scope = publication_write_scope
 
     # -- create ----------------------------------------------------------
     def create(self, request: CreateWorkbenchTask, *, actor: str | None = None) -> dict[str, Any]:
@@ -1433,79 +1442,238 @@ class WorkbenchService:
             },
             idempotency_key=f"approval-approved:{task_id}:{payload_hash}",
         )
-        approval = PublicationApproval.grant(
-            finding.fix.bundle, actor=actor, approved_at=_now()
-        )
+        current = finding.approval
+        if (
+            current.status == "approved"
+            and current.approval_id is not None
+            and current.approved_at is not None
+        ):
+            approval = PublicationApproval.grant(
+                finding.fix.bundle,
+                actor=current.actor or actor,
+                approved_at=current.approved_at,
+            )
+        else:
+            approval = PublicationApproval.grant(
+                finding.fix.bundle, actor=actor, approved_at=_now()
+            )
         approved_record = ApprovalRecord(
             status="approved",
             payload_hash=payload_hash,
-            requested_at=finding.approval.requested_at,
-            actor=actor,
+            requested_at=current.requested_at,
+            actor=approval.actor,
             approved_at=approval.approved_at,
             approval_id=approval.approval_id,
         )
         with_approval = advance_finding(finding, approval=approved_record)
         self._persist_finding(task_id, with_approval)
-        remote = _InMemoryRemote(
-            repository=task["repository"],
-            base_branch="main",
-            base_sha=task["commit"],
-            files=self._fixture_files(patched=False),
+        live = task["execution_mode"] == "live"
+        scope = self.publication_write_scope
+        write_authorized = (
+            live
+            and scope is not None
+            and not scope.revoked
+            and scope.repository == finding.fix.bundle.repository
+            and scope.writer.scope == "write"
         )
-        publisher = DraftPRPublisher(remote, remote, memory=MemoryPublicationLog())
-        outcome = publisher.publish(finding.fix.bundle, approval)
-        from mgar_v3.workbench.domain import PublicationRecord
-
-        publication = PublicationRecord(
-            status=outcome.status,
-            reason=outcome.reason,
-            steps=outcome.steps,
-            pull_request=outcome.pull_request,
-            pull_request_url=(
-                f"fixture://github/{task['repository']}/pull/{outcome.pull_request.number}"
-                if outcome.pull_request is not None
-                else None
-            ),
-            remote="in_memory_fixture",
-            published_at=_now() if outcome.status == "published" else None,
-        )
-        updated = advance_finding(with_approval, publication=publication)
-        self._persist_finding(task_id, updated)
-        published = updated.stage == "pr_created"
-        current = self.store.task(task_id)
-        self._transition(
-            current,
-            "pr_created" if published else "waiting_approval",
-            status="completed" if published else "waiting_approval",
-            stage=updated.stage,
+        exported = live and not write_authorized
+        self.publications.enqueue(
+            task=task,
+            finding_id=finding_id,
+            bundle=finding.fix.bundle,
+            approval=approval,
+            mode="live" if live else "fixture",
+            status="exported" if exported else "ready",
+            reason_code="WRITE_PERMISSION_REQUIRED" if exported else "",
             reason=(
-                "draft PR receipted in the fixture remote"
-                if published
-                else f"publication did not create a Draft PR: {outcome.reason}"
+                "GitHub write authorization is absent; the full reviewed patch is exported"
+                if exported
+                else ""
             ),
-            event={
-                "stage": "publication",
-                "status": "published" if published else outcome.status,
-                "summary": (
-                    "Draft PR receipted in the fixture remote"
-                    if published
-                    else f"Publication did not create a Draft PR: {outcome.reason}"
-                ),
-                "payload": {
-                    "finding_id": finding_id,
-                    "status": outcome.status,
-                    "steps": [step.model_dump(mode="json") for step in outcome.steps],
-                    "pull_request": (
-                        outcome.pull_request.model_dump(mode="json")
-                        if outcome.pull_request is not None
-                        else None
-                    ),
-                },
-                "kind": "pr.receipt",
-            },
-            idempotency_key=f"publication:{task_id}:{approval.approval_id}",
         )
+        if not live:
+            remote = _InMemoryRemote(
+                repository=task["repository"],
+                base_branch="main",
+                base_sha=task["commit"],
+                files=self._fixture_files(patched=False),
+            )
+            transport = WorkbenchDraftTransport(
+                self.publications, mode="fixture", reader=remote, writer=remote
+            )
+            PublicationDispatcher(self.engine, transport).tick()
+        # Live approval only enqueues.  The GitHub write happens in the
+        # separate dispatcher, never inside this request.
+        updated = self._sync_publication(task_id, finding_id, approval.approval_id)
         return updated.view()
+
+    def publish(self, task_id: UUID, finding_id: str) -> dict[str, Any]:
+        """Dispatch a live publication outside the approval request."""
+        task = self.store.task(task_id)
+        finding = self.store.finding(task_id, finding_id)
+        if finding.approval is None or finding.approval.status != "approved":
+            raise DomainError(
+                "APPROVAL_REQUIRED", "Publication requires an approved review", 409
+            )
+        row = self.publications.find(task_id, finding_id, finding.approval.payload_hash)
+        if row is None:
+            raise DomainError(
+                "PUBLICATION_NOT_QUEUED", "Approve the reviewed patch before publishing", 409
+            )
+        if row["status"] == "succeeded":
+            return finding.view()
+        if row["status"] == "outcome_unknown":
+            raise DomainError(
+                "PUBLICATION_OUTCOME_UNKNOWN",
+                "Reconcile the unknown remote outcome before any retry",
+                409,
+            )
+        scope = self.publication_write_scope
+        if row["status"] == "exported":
+            if scope is None:
+                raise DomainError(
+                    "PUBLICATION_WRITE_REQUIRED",
+                    "No independent GitHub write authorization is configured",
+                    403,
+                )
+            self.publications.rearm(row["publication_id"])
+        if task["execution_mode"] == "live":
+            self.dispatch_publications()
+        else:
+            remote = _InMemoryRemote(
+                repository=task["repository"],
+                base_branch="main",
+                base_sha=task["commit"],
+                files=self._fixture_files(patched=False),
+            )
+            transport = WorkbenchDraftTransport(
+                self.publications, mode="fixture", reader=remote, writer=remote
+            )
+            PublicationDispatcher(self.engine, transport).tick()
+        return self._sync_publication(task_id, finding_id).view()
+
+    def dispatch_publications(self, *, limit: int = 10) -> list[str]:
+        """Drain the live publication outbox.  Called by a worker, not a request."""
+        scope = self.publication_write_scope
+        if scope is None:
+            return []
+        transport = WorkbenchDraftTransport(
+            self.publications,
+            mode="live",
+            reader=scope.reader,
+            writer=scope.writer,
+            scope=scope,
+        )
+        dispatcher = PublicationDispatcher(self.engine, transport)
+        dispatched: list[str] = []
+        for _ in range(max(1, limit)):
+            publication_id = dispatcher.tick()
+            if publication_id is None:
+                break
+            row = self.publications.get(publication_id)
+            self._sync_publication(row["task_id"], row["finding_id"])
+            dispatched.append(str(publication_id))
+        return dispatched
+
+    def reconcile_publication(self, task_id: UUID, finding_id: str) -> dict[str, Any]:
+        """Resolve an unknown remote outcome through read-only lookups only."""
+        row = self.publications.latest(task_id, finding_id)
+        if row is None:
+            raise DomainError("NOT_FOUND", "Workbench publication was not found", 404)
+        if row["status"] != "outcome_unknown":
+            raise DomainError(
+                "PUBLICATION_NOT_UNKNOWN",
+                "Only an unknown publication needs reconciliation",
+                409,
+            )
+        scope = self.publication_write_scope
+        if scope is None:
+            raise DomainError(
+                "PUBLICATION_READ_REQUIRED",
+                "Reconciliation requires a configured GitHub read transport",
+                403,
+            )
+        transport = WorkbenchDraftTransport(
+            self.publications,
+            mode=str(row["execution_mode"]),  # type: ignore[arg-type]
+            reader=scope.reader,
+            writer=scope.writer,
+            scope=scope,
+        )
+        PublicationDispatcher(self.engine, transport).reconcile(row["publication_id"])
+        return self._sync_publication(task_id, finding_id).view()
+
+    def _sync_publication(
+        self,
+        task_id: UUID,
+        finding_id: str,
+        approval_id: str | None = None,
+    ) -> WorkbenchFinding:
+        finding = self.store.finding(task_id, finding_id)
+        payload_hash = finding.approval.payload_hash if finding.approval is not None else None
+        row = self.publications.find(task_id, finding_id, payload_hash)
+        if row is None:
+            return finding
+        publication = record_from_row(row, self.publications.steps(row["publication_id"]))
+        updated = advance_finding(finding, publication=publication)
+        if updated != finding:
+            self._persist_finding(task_id, updated)
+        published = updated.stage == "pr_created"
+        exported = row["status"] == "exported"
+        in_flight = row["status"] in {"ready", "dispatching", "outcome_unknown"}
+        target: Any = (
+            "pr_created"
+            if published
+            else "publishing"
+            if in_flight
+            else "waiting_approval"
+        )
+        status: TaskStatus = (
+            "completed" if published else "publishing" if in_flight else "waiting_approval"
+        )
+        current = self.store.task(task_id)
+        if current["status"] != status:
+            summary = (
+                "Draft PR receipted through the Workbench outbox"
+                if published
+                else "Reviewed patch exported; GitHub write authorization is required"
+                if exported
+                else "Publication recorded a terminal failure; the reviewed patch is retained"
+                if row["status"] == "failed"
+                else "Publication is queued for the GitHub dispatcher"
+            )
+            current = self._transition(
+                current,
+                target,
+                status=status,
+                stage=updated.stage,
+                reason=summary,
+                event={
+                    "stage": "publication",
+                    "status": row["status"],
+                    "summary": summary,
+                    "payload": {
+                        "finding_id": finding_id,
+                        "status": publication.status,
+                        "approval_id": row["approval_id"],
+                        "payload_hash": row["payload_hash"],
+                        "steps": [
+                            step.model_dump(mode="json") for step in publication.steps
+                        ],
+                        "pull_request": (
+                            publication.pull_request.model_dump(mode="json")
+                            if publication.pull_request is not None
+                            else None
+                        ),
+                    },
+                    "kind": "pr.receipt",
+                },
+                idempotency_key=(
+                    f"publication:{task_id}:{approval_id or row['approval_id']}:"
+                    f"{row['payload_hash']}:{row['status']}"
+                ),
+            )
+        return updated
 
     # -- controls --------------------------------------------------------
     def pause(self, task_id: UUID) -> dict[str, Any]:
@@ -1568,6 +1736,11 @@ class WorkbenchService:
                 self.repo.cancel(task["audit_run_id"])
             except DomainError:
                 pass
+        self.publications.cancel_task(
+            task_id,
+            reason_code="TASK_CANCELLED",
+            reason="The workbench task was cancelled before publication completed",
+        )
         self._transition(
             task,
             "cancelled",
@@ -2611,6 +2784,8 @@ class WorkbenchService:
             return "wait"
         if task["status"] == "waiting_approval":
             return "approve"
+        if task["status"] == "publishing":
+            return "publish"
         if task["status"] == "completed":
             return "none"
         if any(finding.stage == "suspected" and finding.reproduction_plan for finding in findings):
@@ -2628,6 +2803,7 @@ class WorkbenchService:
             "can_cancel": status not in {"completed", "cancelled"},
             "can_run": status in {"queued", "ready", "failed"},
             "can_approve": status == "waiting_approval",
+            "can_publish": status == "publishing",
         }
 
 

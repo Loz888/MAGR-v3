@@ -635,6 +635,28 @@ def create_app(
         )
 
     @app.post(
+        "/api/v3/workbench/tasks/{task_id}/findings/{finding_id}/publish",
+        dependencies=[Depends(authenticated)],
+    )
+    def publish_workbench_finding(
+        task_id: UUID,
+        finding_id: str,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(service.publish(task_id, finding_id))
+
+    @app.post(
+        "/api/v3/workbench/tasks/{task_id}/findings/{finding_id}/reconcile",
+        dependencies=[Depends(authenticated)],
+    )
+    def reconcile_workbench_publication(
+        task_id: UUID,
+        finding_id: str,
+        service: Annotated[WorkbenchService, Depends(workbench_service)],
+    ) -> Any:
+        return jsonable_encoder(service.reconcile_publication(task_id, finding_id))
+
+    @app.post(
         "/api/v3/workbench/tasks/{task_id}/messages",
         status_code=202,
         dependencies=[Depends(authenticated)],

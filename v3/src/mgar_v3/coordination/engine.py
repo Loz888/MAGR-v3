@@ -1323,6 +1323,106 @@ class Engine:
             self._event(conn, run["run_id"], "action_reconciled", action_id=str(action_id))
             return True
 
+    # -- workbench publication outbox (V3.5 R04) -------------------------
+    def publication(self, publication_id: UUID) -> Row:
+        with self.transaction() as conn:
+            row = conn.execute(
+                "SELECT * FROM app.workbench_publications WHERE publication_id=%s",
+                (publication_id,),
+            ).fetchone()
+        if row is None:
+            raise DomainError("NOT_FOUND", "Workbench publication was not found", 404)
+        return row
+
+    def claim_publication(self, execution_mode: str) -> Row | None:
+        """Lease one ready workbench publication without holding the remote call."""
+        with self.transaction() as conn:
+            row = conn.execute(
+                "SELECT * FROM app.workbench_publications "
+                "WHERE status='ready' AND execution_mode=%s AND next_retry_at<=now() "
+                "ORDER BY created_at FOR UPDATE SKIP LOCKED LIMIT 1",
+                (execution_mode,),
+            ).fetchone()
+            if row is None:
+                return None
+            lease_token = uuid4()
+            conn.execute(
+                "UPDATE app.workbench_publications SET status='dispatching',"
+                "lease_token=%s,lease_until=now()+interval '5 minutes',"
+                "attempts=attempts+1,updated_at=now() WHERE publication_id=%s",
+                (lease_token, row["publication_id"]),
+            )
+        return {**row, "lease_token": lease_token}
+
+    def publication_result(
+        self,
+        publication_id: UUID,
+        lease_token: UUID,
+        *,
+        external_id: str | None = None,
+        unknown: bool = False,
+        failed: bool = False,
+        reason_code: str = "",
+        reason: str = "",
+    ) -> str:
+        if sum([external_id is not None, unknown, failed]) != 1:
+            raise ValueError("Exactly one publication outcome is required")
+        status = "outcome_unknown" if unknown else "failed" if failed else "succeeded"
+        with self.transaction() as conn:
+            row = conn.execute(
+                "SELECT * FROM app.workbench_publications "
+                "WHERE publication_id=%s FOR UPDATE",
+                (publication_id,),
+            ).fetchone()
+            if row is None:
+                raise DomainError("NOT_FOUND", "Workbench publication was not found", 404)
+            if row["status"] != "dispatching" or row["lease_token"] != lease_token:
+                raise DomainError("FENCED", "Publication claim is no longer current")
+            conn.execute(
+                "UPDATE app.workbench_publications SET status=%s,external_id=%s,"
+                "reason_code=%s,reason=%s,lease_token=NULL,lease_until=NULL,"
+                "updated_at=now() WHERE publication_id=%s",
+                (
+                    status,
+                    external_id,
+                    reason_code[:100],
+                    reason[:1000],
+                    publication_id,
+                ),
+            )
+            if unknown:
+                conn.execute(
+                    "UPDATE app.workbench_publication_steps SET status='outcome_unknown' "
+                    "WHERE publication_id=%s AND status='dispatching'",
+                    (publication_id,),
+                )
+        return status
+
+    def reconcile_publication(self, publication_id: UUID, external_id: str | None) -> bool:
+        if external_id is None:
+            # Absence in a bounded read-only query never proves nothing happened.
+            return False
+        with self.transaction() as conn:
+            row = conn.execute(
+                "SELECT * FROM app.workbench_publications "
+                "WHERE publication_id=%s FOR UPDATE",
+                (publication_id,),
+            ).fetchone()
+            if row is None:
+                raise DomainError("NOT_FOUND", "Workbench publication was not found", 404)
+            if row["status"] != "outcome_unknown":
+                raise DomainError("NOT_UNKNOWN", "Only unknown publications can be reconciled")
+            conn.execute(
+                "UPDATE app.workbench_publications SET status='succeeded',external_id=%s,"
+                "reason_code='RECONCILED',reason=%s,updated_at=now() WHERE publication_id=%s",
+                (
+                    external_id,
+                    "Read-only reconciliation proved the exact approved Draft PR",
+                    publication_id,
+                ),
+            )
+        return True
+
     def recover(self) -> dict[str, int]:
         """Startup recovery, before starting any Dispatcher or Worker."""
         with self.transaction() as conn:
@@ -1336,6 +1436,15 @@ class Engine:
             )
             conn.execute(
                 "UPDATE app.repair_publication_steps SET status='outcome_unknown' "
+                "WHERE status='dispatching'"
+            )
+            publications = conn.execute(
+                "UPDATE app.workbench_publications SET status='outcome_unknown',"
+                "reason_code='PROCESS_RESTARTED',lease_token=NULL,lease_until=NULL,"
+                "updated_at=now() WHERE status='dispatching' RETURNING publication_id"
+            ).fetchall()
+            conn.execute(
+                "UPDATE app.workbench_publication_steps SET status='outcome_unknown' "
                 "WHERE status='dispatching'"
             )
             for row in unknown:
@@ -1372,6 +1481,7 @@ class Engine:
                 "paused_runs": len(paused),
                 "unknown_usage": len(usage),
                 "requeued_read_jobs": len(jobs),
+                "unknown_publications": len(publications),
             }
 
     def cancel(self, run_id: UUID) -> Row:

@@ -13,8 +13,8 @@
 | V35-R01 | 结构化模型补丁提供方 | U02 | DONE | PASS | NOT_RUN |
 | V35-R02 | 真实仓库源文件与 Docker Sandbox 统一执行 | R01 | DONE | PASS | NOT_RUN |
 | V35-R03 | 统一 Audit & Repair 多轮编排 | R02 | DONE | PASS | NOT_RUN |
-| V35-R04 | 真实 Draft PR 发布接入 Outbox/Dispatcher | R03 | **READY** | NOT_RUN | NOT_RUN（写权限独立审批） |
-| V35-R05 | 统一 Web / CLI / API 产品交互 | R04 | TODO | NOT_RUN | NOT_RUN |
+| V35-R04 | 真实 Draft PR 发布接入 Outbox/Dispatcher | R03 | DONE | PASS | NOT_RUN（写权限独立审批） |
+| V35-R05 | 统一 Web / CLI / API 产品交互 | R04 | **READY** | NOT_RUN | NOT_RUN |
 | V35-M01 | 跨阶段持久经验闭环 | R03 | TODO | NOT_RUN | NOT_RUN |
 | V35-M02 | Context Budget、Compaction 与恢复一致性 | M01 | TODO | NOT_RUN | NOT_RUN |
 | V35-X01 | 按需启用 R4 Experts | R05、M02 | TODO | NOT_RUN | NOT_RUN |
@@ -33,7 +33,7 @@ B00 ── U01 ── U02 ── R01 ── R02 ── R03 ── R04 ── R05
                                   └─ E01 ── E02 ── E03 ── D01
 ```
 
-- 当前唯一 `READY`：**V35-R04**。开始前须复核 `accept/V35-R03/accept.json` 的 `result_commit` 与当前 HEAD。
+- 当前唯一 `READY`：**V35-R05**。开始前须复核 `accept/V35-R04/accept.json` 的 `result_commit` 与当前 HEAD。
 - 任何卡的依赖未通过验收时，该卡标记 `BLOCKED`，不得假装 PASS。
 
 ## 每卡交付物

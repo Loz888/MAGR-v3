@@ -317,6 +317,33 @@ def _approval_identity(
     )
 
 
+def verify_approval(bundle: ReviewBundle, approval: PublicationApproval) -> None:
+    """Reject an approval that does not bind this exact reviewed bundle."""
+    current_diff = hashlib.sha256(bundle.diff.encode()).hexdigest()
+    expected = _approval_identity(
+        actor=approval.actor,
+        repository=approval.repository,
+        base_sha=approval.base_sha,
+        tree_hash=approval.tree_hash,
+        payload_hash=approval.payload_hash,
+        diff_sha256=approval.diff_sha256,
+        approved_at=approval.approved_at,
+    )
+    if (
+        approval.approval_id != expected
+        or approval.repository != bundle.repository
+        or approval.base_sha != bundle.base_sha
+        or approval.tree_hash != bundle.tree_hash
+        or approval.payload_hash != bundle.payload_hash
+        or approval.diff_sha256 != current_diff
+    ):
+        raise DomainError(
+            "APPROVAL_STALE",
+            "Approval does not match the reviewed patch, tested tree or base commit",
+            409,
+        )
+
+
 class _MCPTransport:
     def __init__(self, client: ReadOnlyGitHubMCP) -> None:
         self.client = client
@@ -550,7 +577,7 @@ class DraftPRPublisher:
 
     def publish(self, bundle: ReviewBundle, approval: PublicationApproval) -> PublicationOutcome:
         review = self.review(bundle)
-        self._authorize(bundle, approval)
+        verify_approval(bundle, approval)
         if self.writer.scope != "write":
             return self._finish(
                 bundle,
@@ -659,7 +686,7 @@ class DraftPRPublisher:
         self, bundle: ReviewBundle, approval: PublicationApproval
     ) -> PublicationOutcome:
         review = self.review(bundle)
-        self._authorize(bundle, approval)
+        verify_approval(bundle, approval)
         steps: list[PublicationStep] = []
         try:
             head = self.reader.branch_sha(bundle.repository, bundle.branch)
@@ -722,31 +749,6 @@ class DraftPRPublisher:
                     f"{type(exc).__name__}: {exc}"
                 ),
                 steps=steps,
-            )
-
-    def _authorize(self, bundle: ReviewBundle, approval: PublicationApproval) -> None:
-        current_diff = hashlib.sha256(bundle.diff.encode()).hexdigest()
-        expected = _approval_identity(
-            actor=approval.actor,
-            repository=approval.repository,
-            base_sha=approval.base_sha,
-            tree_hash=approval.tree_hash,
-            payload_hash=approval.payload_hash,
-            diff_sha256=approval.diff_sha256,
-            approved_at=approval.approved_at,
-        )
-        if (
-            approval.approval_id != expected
-            or approval.repository != bundle.repository
-            or approval.base_sha != bundle.base_sha
-            or approval.tree_hash != bundle.tree_hash
-            or approval.payload_hash != bundle.payload_hash
-            or approval.diff_sha256 != current_diff
-        ):
-            raise DomainError(
-                "APPROVAL_STALE",
-                "Approval does not match the reviewed patch, tested tree or base commit",
-                409,
             )
 
     def _commit_matches(self, bundle: ReviewBundle, sha: str) -> bool:

@@ -355,9 +355,13 @@ class ApprovalRecord(Model):
 class PublicationRecord(Model):
     status: Literal[
         "not_started",
+        "dispatching",
+        "exported",
         "published",
         "write_permission_required",
         "base_changed",
+        "failed",
+        "cancelled",
         "outcome_unknown",
     ] = "not_started"
     reason: str = Field(default="", max_length=1000)

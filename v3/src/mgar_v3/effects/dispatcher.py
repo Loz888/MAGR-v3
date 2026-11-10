@@ -63,3 +63,73 @@ class Dispatcher:
         # No business transaction remains open during a remote lookup.
         external_id = self.transport.find(action)
         return self.engine.reconcile_effect(action_id, external_id)
+
+
+class PublicationTransport(Protocol):
+    mode: str
+
+    def send(self, action: Row) -> str: ...
+
+    def find(self, action: Row) -> str | None: ...
+
+
+class PublicationDispatcher:
+    """Leased dispatcher for Workbench Draft PR publication (V3.5 R04).
+
+    The Web request only enqueues; this dispatcher owns the remote write.
+    A definitive rejection is recorded as failed, an unknown outcome is
+    recorded as unknown and never retried, and reconciliation is read-only.
+    """
+
+    def __init__(self, engine: Engine, transport: PublicationTransport):
+        self.engine = engine
+        self.transport = transport
+
+    def tick(self) -> UUID | None:
+        action = self.engine.claim_publication(self.transport.mode)
+        if action is None:
+            return None
+        publication_id = UUID(str(action["publication_id"]))
+        lease = UUID(str(action["lease_token"]))
+        try:
+            external_id = self.transport.send(action)
+        except DefinitiveFailure as exc:
+            self.engine.publication_result(
+                publication_id,
+                lease,
+                failed=True,
+                reason_code=str(getattr(exc, "code", "DEFINITIVE_REJECTION")),
+                reason=str(exc),
+            )
+        except (httpx.HTTPError, OSError, TimeoutError) as exc:
+            self.engine.publication_result(
+                publication_id,
+                lease,
+                unknown=True,
+                reason_code="OUTCOME_UNKNOWN",
+                reason=f"Remote result is unknown: {type(exc).__name__}: {exc}",
+            )
+        except Exception as exc:
+            self.engine.publication_result(
+                publication_id,
+                lease,
+                unknown=True,
+                reason_code="OUTCOME_UNKNOWN",
+                reason=f"Remote result is unknown: {type(exc).__name__}: {exc}",
+            )
+            raise
+        else:
+            self.engine.publication_result(
+                publication_id, lease, external_id=external_id
+            )
+        return publication_id
+
+    def reconcile(self, publication_id: UUID) -> bool:
+        action = self.engine.publication(publication_id)
+        if action["execution_mode"] != self.transport.mode:
+            raise DomainError(
+                "EXECUTION_MODE_MISMATCH", "Reconciliation transport mode differs"
+            )
+        # No business transaction remains open during the read-only lookup.
+        external_id = self.transport.find(action)
+        return self.engine.reconcile_publication(publication_id, external_id)

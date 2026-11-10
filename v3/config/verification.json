@@ -815,5 +815,29 @@
       "tests/test_v34_repository_api.py"
     ],
     "timeout_seconds": 1200
+  },
+  "V35-R04": {
+    "components": {
+      "approval": "binds_repository_base_commit_tested_tree_diff_sha_full_files_and_payload_hash",
+      "concurrency": "leased_claim_under_skip_locked_publishes_one_approval_once",
+      "dispatch": "http_requests_only_enqueue_a_durable_publication_outbox_row",
+      "idempotency": "unique_task_finding_payload_hash_with_reused_approval_identity",
+      "invalidation": "payload_change_marks_queued_publication_stale_and_revocation_fails_before_write",
+      "live_github_write": "NOT_RUN_no_authorized_test_repository",
+      "model": "not_used",
+      "postgres": "real_disposable_database_0025_migration_publications_and_step_receipts",
+      "reconcile": "read_only_lookup_after_unknown_and_never_replay",
+      "recovery": "restart_marks_in_flight_publication_outcome_unknown_without_retry",
+      "steps": "branch_then_commit_then_draft_pull_request_receipted_separately",
+      "tokens": "separate_read_and_write_transports_with_write_scope_revalidation",
+      "write_denied": "full_patch_exported_as_exported_or_waiting_approval_never_claimed_published"
+    },
+    "tests": [
+      "tests/test_v35_r04.py",
+      "tests/test_v34_pr_delivery.py",
+      "tests/test_v34_repository_api.py",
+      "tests/test_recovery.py"
+    ],
+    "timeout_seconds": 900
   }
 }
