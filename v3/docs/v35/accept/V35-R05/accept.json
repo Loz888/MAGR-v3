@@ -1,0 +1,190 @@
+{
+  "card": "V35-R05",
+  "title": "统一 Web / CLI / API 产品交互",
+  "status": "PASS",
+  "commit": "97930fbf9aed5418bae1d02d1a2882d4c92c95d3",
+  "result_commit": "97930fbf9aed5418bae1d02d1a2882d4c92c95d3",
+  "commit_note": "两次本地提交：第一次包含任务视图 usage/pending/failure、依赖等待语义、CLI publish/reconcile、Web 完整 Diff 审查、测试与卡片/verification 更新；第二次仅记录本 accept.json。两次提交均推送到 origin/main。",
+  "parent_commit": "105c9fd8ef0aada4bc287c4e4f4c9b47d9700c92",
+  "dependency_commit": "105c9fd8ef0aada4bc287c4e4f4c9b47d9700c92",
+  "base_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+  "accepted_at": "2026-11-10T05:20:05Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (make doctor PASS; tests use a disposable database with migration 0025)",
+    "redis": "real (make doctor PASS; tests do not use it)",
+    "docker": "not_used",
+    "model": "not_used",
+    "network": "not_used",
+    "github": "not_used; fixture publication uses the in-process recording transport only"
+  },
+  "worktree_at_acceptance": "实现完成、卡片与队列已更新；accept.json 待提交；evidence/（gitignore）与本地脚本不在版本控制内。",
+  "commands": [
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/workbench/service.py", "src/mgar_v3/workbench/domain.py", "src/mgar_v3/workbench/publication.py", "src/mgar_v3/cli.py", "tests/test_v35_r05.py"],
+      "exit_code": 0,
+      "result": "All checks passed",
+      "purpose": "本卡改动文件的静态检查",
+      "log": "evidence/v35/R05/20261110T051521Z-r05/05-ruff-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/workbench/service.py", "src/mgar_v3/workbench/domain.py", "src/mgar_v3/workbench/publication.py", "src/mgar_v3/cli.py", "tests/test_v35_r05.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 5 source files",
+      "purpose": "本卡改动模块的类型检查",
+      "log": "evidence/v35/R05/20261110T051521Z-r05/06-mypy-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "combined-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v35_r05.py", "tests/test_v34_repository_api.py", "tests/test_v35_u01.py", "tests/test_v35_u02.py", "tests/test_v35_r03.py", "tests/test_v35_r04.py"],
+      "exit_code": 0,
+      "duration_seconds": 343.37,
+      "counts": {"tests": 72, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "R05 产品交互 + V3.4 Repository API 回归 + U01/U02 生命周期 + R03 编排 + R04 发布",
+      "log": "evidence/v35/R05/20261110T051521Z-r05/07-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["uv", "run", "--frozen", "python", "-m", "mgar_v3.store.migrate"],
+      "exit_code": 0,
+      "result": {"applied": []},
+      "purpose": "本卡无 schema 变更；迁移幂等空跑",
+      "log": "evidence/v35/R05/20261110T051521Z-r05/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["uv", "run", "--frozen", "mgar", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用与真实 GitHub 写入）",
+      "log": "evidence/v35/R05/20261110T051521Z-r05/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/R05/20261110T051521Z-r05/03-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "V35-R05"],
+      "exit_code": 0,
+      "duration_seconds": 53.501,
+      "counts": {"tests": 27, "failures": 0, "errors": 0, "skipped": 0},
+      "source_sha256": "db1d12bc279e016239d4a59d3bcacbdddc7f0e24e8cda2638bdec25d4655b4ea",
+      "finished_source_sha256": "db1d12bc279e016239d4a59d3bcacbdddc7f0e24e8cda2638bdec25d4655b4ea",
+      "git_commit": "105c9fd8ef0aada4bc287c4e4f4c9b47d9700c92",
+      "attempt": "evidence/V35-R05/20261110T051528Z-f220b523",
+      "note": "verify 记录的是提交前 HEAD；source_sha256 对应实现提交的源码/测试指纹。",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_RUN",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "NOT_RUN",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡没有付费模型调用、真实 GitHub 写入或网络依赖安装。统一交互由 API/CLI 测试与静态 UI 契约检查证明；live 依赖缺失通过数据库边界克隆任务模拟，不调用真实许可。真实 Draft PR 仍须单独授权测试仓库，故 live_github_write_gate = NOT_RUN；未调用付费模型与真实 Agent，live_model_gate / live_agent_gate = NOT_RUN。security_gate 仅覆盖本卡不变量：未登录 401、审批 API 强制 waiting_approval + payload_hash、旧 hash 拒绝、取消后不可发布、fixture PR 不生成 GitHub 链接、视图不含 Token；端到端安全与并发汇总由 V35-E03 完成。",
+  "must_pass": [
+    {
+      "item": "显示固定 Commit、扫描范围、实际已读/未读文件、风险排序 Finding、Evidence、测试回执、Diff、费用、Run/Retry 数与下一步动作",
+      "result": "PASS",
+      "evidence": "WorkbenchService.view() 新增 usage（app.workbench_run_links 计数、app.runs.attempt_no 与 publication attempts 推导 retry、app.usage_calls.settled_micros 汇总费用与调用数）与 failure/pending；原 commit、coverage.observed、findings（risk_rank 1..n）、timeline、next_action 保持。::test_view_exposes_commit_scope_coverage_findings_usage_and_next_action 断言全部字段。"
+    },
+    {
+      "item": "明确区分 Suspected / Reproduced / Patch Verified / Waiting Approval / PR Created；不得把建议补丁显示为修复成功",
+      "result": "PASS",
+      "evidence": "STAGE_LABELS 五标签未变，view.labels 原样输出；suggested_fix_is_not_applied 仅在无 fix 时为 True，建议补丁 finding 的 label 只能是 Suspected/Reproduced。::test_suggested_patch_is_never_presented_as_fixed 并静态断言 UI 不出现 'Fixed' 标签。"
+    },
+    {
+      "item": "支持 pause/resume/cancel/follow_up、历史任务、失败原因",
+      "result": "PASS",
+      "evidence": "既有控制端点与 follow-up 保持；view 新增 failure（stage/kind/reason_code/reason/at）来自最近 failed 事件，history 保留任务行。::test_failure_reason_is_visible_in_view_and_history 断言 AUDIT_EXECUTION_FAILED 原因与历史记录。"
+    },
+    {
+      "item": "页面提供完整 Diff 审查，由用户对 payload_hash 授权；不展示或写入真实 Token",
+      "result": "PASS",
+      "evidence": "工作台新增“加载完整 Diff”按钮，调用 GET .../diff 展示 unified diff、payload_hash、diff_sha256 与前后回执；approve 按钮只在 reviewedDiff.payload_hash 与 finding.approval.payload_hash 一致时启用，确认框展示该 hash。每次重渲染清空已审查状态。UI 不渲染 Token，Token 仅存 sessionStorage 并进请求头。::test_direct_approve_api_cannot_bypass_the_reviewed_hash 证明 API 是强制点。"
+    },
+    {
+      "item": "不支持的真实依赖或 GitHub 授权显示 waiting_for_dependencies / waiting_approval，而非执行失败",
+      "result": "PASS",
+      "evidence": "_DEPENDENCY_CODES 命中时 _start_audit 将任务迁到 waiting_input（status=ready）并写 dependencies.waiting 事件；view.pending.state=waiting_for_dependencies、next_action=wait_for_dependencies，failure 为空。exported 发布派生 pending.state=waiting_approval、reason_code=WRITE_PERMISSION_REQUIRED。::test_missing_live_dependencies_wait_instead_of_failing 与 ::test_missing_github_authorization_reports_waiting_approval 覆盖。"
+    },
+    {
+      "item": "负向测试：未登录、绕过页面直接调用审批 API、旧 Diff 审批、刷新重复提交、取消后状态仍变成功、UI 把 fixture PR 显示为 GitHub 链接",
+      "result": "PASS",
+      "evidence": "六项分别由 test_unauthenticated_requests_are_rejected、test_direct_approve_api_cannot_bypass_the_reviewed_hash、test_stale_diff_hash_is_rejected_after_a_newer_review、test_refresh_resubmission_is_idempotent、test_cancelled_task_cannot_become_a_publication、test_fixture_publication_is_never_a_github_link 覆盖；最后一项同时断言 API pull_request_link=null 与 UI 只使用 pull_request_link。"
+    },
+    {
+      "item": "Fixture 用户流程完整；Live 只读演示与受控真实修复路径在 UI/CLI 呈现一致；截图不得替代 API 验收",
+      "result": "PASS",
+      "evidence": "Web 与 CLI 的 status/list/publish/reconcile 都走同一 /api/v3/workbench/tasks 契约；::test_web_and_cli_use_the_same_api_contract 静态校验 Web 路由并以伪 httpx.Client 断言 CLI publish/reconcile 命中同一端点。fixture 用户流程完整；live 侧只验证了 waiting_for_dependencies / waiting_approval 与同一视图呈现，真实 live 只读演示与受控真实修复未执行（live 门 NOT_RUN）。本卡验收均为 API/CLI 测试，未使用截图。"
+    },
+    {
+      "item": "工程门禁命令原样通过（含 tests/test_v35_r05.py + tests/test_v34_repository_api.py）",
+      "result": "PASS",
+      "evidence": "verify TASK=V35-R05：27 passed / 0 failed / 0 skipped；组合回归 72 passed；scoped ruff 与 mypy exit 0；迁移幂等 applied=[]；doctor PG/Redis PASS；git diff --check exit 0。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "waiting_for_dependencies 以派生 pending 状态 + waiting_input phase 表达，未新增 task status 枚举",
+      "handling": "避免为本卡引入 schema 迁移与状态机扩张；任务仍保持 status=ready、phase=waiting_input，UI/CLI 通过 pending.state 显示依赖等待，恢复依赖后可直接 run 再次进入 investigating。"
+    },
+    {
+      "issue": "费用仅来自 app.usage_calls 已结算 micros；fixture 审计的金额为 0",
+      "handling": "fixture 无付费模型调用，但视图仍报告 calls 与 unknown_calls，金额如实为 0.000000；live 预算与成本口径沿用既有 usage ledger，不新增计费逻辑。"
+    },
+    {
+      "issue": "未执行真实 live 只读演示与真实修复路径",
+      "handling": "本卡无真实仓库/模型授权；缺依赖场景通过复制任务行模拟并在 API 上验证 waiting 语义，live_model_gate / live_github_write_gate / live_agent_gate 均保持 NOT_RUN。"
+    },
+    {
+      "issue": "UI 验收为静态契约检查而非浏览器截图",
+      "handling": "按卡内“截图不得替代 API 验收”要求，使用 API 测试 + JS 静态路由/标签/pull_request_link 断言；运行环境无 node，未执行浏览器端到端。"
+    },
+    {
+      "issue": "实现与 accept 文档分两次本地提交并推送",
+      "handling": "第一次提交实现、测试与卡片/队列；第二次仅提交本 accept.json；两次均以 fast-forward 推送到 origin/main，未使用强制推送。"
+    },
+    {
+      "issue": "仓库级 ruff / mypy 仍存在本卡之外的既有问题",
+      "handling": "全仓 25 个 ruff / 22 个 mypy，与 R04 基线一致；按既有口径使用 scoped ruff/mypy 核验本卡文件。"
+    }
+  ],
+  "artifacts": {
+    "workbench_service": "src/mgar_v3/workbench/service.py",
+    "workbench_domain": "src/mgar_v3/workbench/domain.py",
+    "workbench_publication": "src/mgar_v3/workbench/publication.py",
+    "cli": "src/mgar_v3/cli.py",
+    "web_html": "web/workbench.html",
+    "web_css": "web/workbench.css",
+    "web_js": "web/workbench.js",
+    "tests": "tests/test_v35_r05.py",
+    "verification": "config/verification.json",
+    "card": "docs/v35/cards/V35-R05.md",
+    "queue": "docs/v35/TASK_QUEUE.md",
+    "final_evidence": "evidence/v35/R05/20261110T051521Z-r05/",
+    "verify_attempt": "evidence/V35-R05/20261110T051528Z-f220b523/"
+  },
+  "next_card": "V35-M01",
+  "next_card_prerequisites": [
+    "复核 accept 提交后的 HEAD 与 config/verification.json 的 V35-R05 条目",
+    "M01 只能消费已结构化的 Workbench 事件与 Finding/Run 证据，不得绕过统一任务视图新造第二套状态",
+    "保持 waiting_for_dependencies / waiting_approval 与五个阶段标签语义，不要用 fixture 回执冒充 GitHub 链接",
+    "真实模型、GitHub 写与 Agent 门仍需分别授权；engineering_gate=PASS 不蕴含任何 live 门 PASS"
+  ]
+}
