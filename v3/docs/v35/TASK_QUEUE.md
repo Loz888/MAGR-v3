@@ -40,7 +40,7 @@ B00 ── U01 ── U02 ── R01 ── R02 ── R03 ── R04 ── R05
 
 1. 代码与测试（`tests/test_v35_<card>.py`），注册 `v3/config/verification.json` 的 `V35-<CARD>` 条目。
 2. `v3/docs/v35/cards/V35-<CARD>.md` 状态更新与实现说明。
-3. `v3/docs/v35/accept/V35-<CARD>/accept.json`（`engineering_gate` / `live_model_gate` / `live_github_write_gate` / `security_gate` 分开）。
+3. `v3/docs/v35/accept/V35-<CARD>/accept.json`（`engineering_gate` / `live_model_gate` / `live_github_write_gate` / `live_agent_gate` / `security_gate` 分开）。
 4. `v3/evidence/v35/<CARD>/<UTC_TIME>-<RUN_ID>/` 原始日志（`.gitignore`，不入库）。
 
 ## 门禁口径
@@ -48,4 +48,5 @@ B00 ── U01 ── U02 ── R01 ── R02 ── R03 ── R04 ── R05
 - 工程门：卡内 pytest + 相关回归 + `ruff` + `mypy` + `make doctor` + `git diff --check`，全部 exit 0 且无 skipped。
 - Live 模型门：必须单独授权文件、预算、有效期；未授权一律 `NOT_RUN`。
 - Live GitHub 写门：必须独立审批并绑定 `payload_hash`；未授权一律 `NOT_RUN`，不得用 fixture PR 冒充。
+- 真实 Agent 门（`live_agent_gate`）：仅当 V35-E01 的强制验收协议六条全部满足时可为 `PASS`；未执行真实模型实验一律 `NOT_RUN`。`engineering_gate = PASS` 不蕴含 `live_agent_gate = PASS`，不得以 fixture/ScriptedProvider 结果宣称真实 Agent 能力已验收。
 - 安全门：越权写 0 次、未知副作用 0 次盲重试；由 E03 汇总验证。
