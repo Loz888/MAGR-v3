@@ -739,5 +739,23 @@
       "tests/test_v32_repository_analysis.py"
     ],
     "timeout_seconds": 600
+  },
+  "V35-U02": {
+    "components": {
+      "artifact": "handoff_serialized_by_sha256_and_registered_in_app_artifacts",
+      "evidence_binding": "evidence_id_source_uri_line_range_and_commit_required",
+      "handoff_gate": "reproduced_receipt_or_static_confirmation_only",
+      "ledger": "workbench_handoffs_append_only_bound_to_task_and_finding",
+      "live_auto_repair": "no_fixture_dispatcher_and_waiting_input_without_handoff",
+      "model": "not_used",
+      "postgres": "real_disposable_database_0024_migration",
+      "resume": "same_handoff_reused_after_evidence_and_authorization_revalidation"
+    },
+    "tests": [
+      "tests/test_v35_u02.py",
+      "tests/test_v34_repair_handoff.py",
+      "tests/test_v33_defect_verifier.py"
+    ],
+    "timeout_seconds": 600
   }
 }

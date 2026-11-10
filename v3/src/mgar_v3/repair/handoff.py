@@ -229,7 +229,7 @@ class RepairHandoff(Model):
 class RepairHandoffBuilder:
     """Validate every gate and mint one content-addressed repair handoff."""
 
-    def __init__(self, store: FindingStore, *, allowed_actors: Sequence[str]):
+    def __init__(self, store: FindingStore | None = None, *, allowed_actors: Sequence[str]):
         self.store = store
         self.allowed_actors = [str(actor) for actor in allowed_actors]
 
@@ -244,7 +244,128 @@ class RepairHandoffBuilder:
         allowed_paths: Sequence[str] | None = None,
         execution_mode: Literal["fixture", "live"] = "fixture",
     ) -> RepairHandoff:
+        if self.store is None:
+            raise DomainError(
+                "HANDOFF_STORE_REQUIRED",
+                "A stored finding is required for a store-backed handoff",
+                409,
+            )
         finding = self.store.get(finding_id)
+        self._precheck(finding, parent)
+        return self.build_from_snapshot(
+            finding,
+            self._evidence(finding),
+            parent=parent,
+            objective=objective,
+            budget=budget,
+            authorization=authorization,
+            allowed_paths=allowed_paths,
+            execution_mode=execution_mode,
+        )
+
+    def build_from_snapshot(
+        self,
+        finding: Finding,
+        evidence: Sequence[FindingEvidence],
+        *,
+        parent: ParentAnalysisRun,
+        objective: str,
+        budget: AnalysisLimits,
+        authorization: RepairAuthorization,
+        allowed_paths: Sequence[str] | None = None,
+        execution_mode: Literal["fixture", "live"] = "fixture",
+    ) -> RepairHandoff:
+        """Mint a handoff from an already-validated finding snapshot.
+
+        The workbench keeps its own ledger; this entry point lets it reuse the
+        same gates without opening a second FindingStore.  Evidence must be
+        supplied explicitly, so a finding without retained proofs still fails.
+        """
+
+        registry: dict[str, FindingEvidence] = {}
+        base_commit = self._precheck(finding, parent)
+        for item in evidence:
+            known = registry.get(item.evidence_id)
+            if known is not None and known.model_dump(mode="json") != item.model_dump(
+                mode="json"
+            ):
+                raise DomainError(
+                    "HANDOFF_EVIDENCE_CONFLICT",
+                    "Evidence id is bound to two different payloads",
+                    409,
+                )
+            registry[item.evidence_id] = item
+        if not finding.evidence_ids:
+            raise DomainError("HANDOFF_EVIDENCE_MISSING", "Finding has no retained evidence", 409)
+        missing = [item for item in finding.evidence_ids if item not in registry]
+        if missing:
+            raise DomainError(
+                "HANDOFF_EVIDENCE_MISSING",
+                "Finding references evidence outside its registry",
+                409,
+            )
+        ordered = [registry[item] for item in finding.evidence_ids]
+        reproduction = self._reproduction(finding, ordered)
+        paths = self._paths(finding, allowed_paths)
+        cleaned = " ".join(objective.split())
+        if not cleaned:
+            raise DomainError("HANDOFF_OBJECTIVE_REQUIRED", "Repair objective cannot be empty", 400)
+        authorization.validate_scope(
+            repository=finding.repository,
+            budget=budget,
+            allowed_actors=self.allowed_actors,
+        )
+        assert parent.report_hash is not None
+        authorization_hash = authorization.authorization_hash
+        handoff_id = digest(
+            {
+                "schema_version": HANDOFF_SCHEMA,
+                "repository": finding.repository,
+                "base_commit": base_commit,
+                "finding_id": finding.finding_id,
+                "parent_run_id": str(parent.run_id),
+                "parent_report_hash": parent.report_hash,
+                "evidence": [item.model_dump(mode="json") for item in ordered],
+                "reproduction": reproduction.model_dump(mode="json"),
+                "objective": cleaned,
+                "allowed_paths": paths,
+                "execution_budget": budget.model_dump(mode="json"),
+                "authorization": authorization.model_dump(mode="json"),
+                "authorization_hash": authorization_hash,
+                "execution_mode": execution_mode,
+                "graph_version": "r5-repair-v1",
+                "read_only": False,
+                "finding_lifecycle": finding.lifecycle_status,
+            }
+        )
+        return RepairHandoff(
+            handoff_id=handoff_id,
+            repository=finding.repository,
+            base_commit=base_commit,
+            finding_id=finding.finding_id,
+            parent_run_id=parent.run_id,
+            parent_report_hash=parent.report_hash,
+            evidence=ordered,
+            reproduction=reproduction,
+            objective=cleaned,
+            allowed_paths=paths,
+            execution_budget=budget,
+            authorization=authorization,
+            authorization_hash=authorization_hash,
+            execution_mode=execution_mode,
+            finding_lifecycle=finding.lifecycle_status,
+        )
+
+    @staticmethod
+    def _require_parent(parent: ParentAnalysisRun) -> None:
+        if parent.status not in SETTLED_PARENT_STATUSES or parent.report_hash is None:
+            raise DomainError(
+                "HANDOFF_PARENT_NOT_SETTLED",
+                "Repair requires a settled parent analysis with a verified report",
+                409,
+            )
+
+    def _precheck(self, finding: Finding, parent: ParentAnalysisRun) -> str:
         self._require_parent(parent)
         if parent.repository.lower() != finding.repository:
             raise DomainError(
@@ -265,66 +386,7 @@ class RepairHandoffBuilder:
                 409,
             )
         self._require_verified(finding)
-        evidence = self._evidence(finding)
-        reproduction = self._reproduction(finding, evidence)
-        paths = self._paths(finding, allowed_paths)
-        cleaned = " ".join(objective.split())
-        if not cleaned:
-            raise DomainError("HANDOFF_OBJECTIVE_REQUIRED", "Repair objective cannot be empty", 400)
-        authorization.validate_scope(
-            repository=finding.repository,
-            budget=budget,
-            allowed_actors=self.allowed_actors,
-        )
-        assert parent.report_hash is not None
-        authorization_hash = authorization.authorization_hash
-        handoff_id = digest(
-            {
-                "schema_version": HANDOFF_SCHEMA,
-                "repository": finding.repository,
-                "base_commit": base_commit,
-                "finding_id": finding.finding_id,
-                "parent_run_id": str(parent.run_id),
-                "parent_report_hash": parent.report_hash,
-                "evidence": [item.model_dump(mode="json") for item in evidence],
-                "reproduction": reproduction.model_dump(mode="json"),
-                "objective": cleaned,
-                "allowed_paths": paths,
-                "execution_budget": budget.model_dump(mode="json"),
-                "authorization": authorization.model_dump(mode="json"),
-                "authorization_hash": authorization_hash,
-                "execution_mode": execution_mode,
-                "graph_version": "r5-repair-v1",
-                "read_only": False,
-                "finding_lifecycle": finding.lifecycle_status,
-            }
-        )
-        return RepairHandoff(
-            handoff_id=handoff_id,
-            repository=finding.repository,
-            base_commit=base_commit,
-            finding_id=finding.finding_id,
-            parent_run_id=parent.run_id,
-            parent_report_hash=parent.report_hash,
-            evidence=evidence,
-            reproduction=reproduction,
-            objective=cleaned,
-            allowed_paths=paths,
-            execution_budget=budget,
-            authorization=authorization,
-            authorization_hash=authorization_hash,
-            execution_mode=execution_mode,
-            finding_lifecycle=finding.lifecycle_status,
-        )
-
-    @staticmethod
-    def _require_parent(parent: ParentAnalysisRun) -> None:
-        if parent.status not in SETTLED_PARENT_STATUSES or parent.report_hash is None:
-            raise DomainError(
-                "HANDOFF_PARENT_NOT_SETTLED",
-                "Repair requires a settled parent analysis with a verified report",
-                409,
-            )
+        return base_commit
 
     @staticmethod
     def _require_verified(finding: Finding) -> None:
@@ -347,6 +409,12 @@ class RepairHandoffBuilder:
         )
 
     def _evidence(self, finding: Finding) -> list[FindingEvidence]:
+        if self.store is None:
+            raise DomainError(
+                "HANDOFF_STORE_REQUIRED",
+                "Evidence lookup requires a stored finding",
+                409,
+            )
         registry = {item.evidence_id: item for item in self.store.evidence()}
         if not finding.evidence_ids:
             raise DomainError("HANDOFF_EVIDENCE_MISSING", "Finding has no retained evidence", 409)

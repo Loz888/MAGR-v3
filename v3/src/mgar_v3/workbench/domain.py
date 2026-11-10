@@ -21,6 +21,7 @@ from uuid import UUID
 from pydantic import Field, field_validator, model_validator
 
 from mgar_v3.domain import DomainError, Model
+from mgar_v3.findings.model import FindingEvidence
 from mgar_v3.repair.pr_delivery import DraftPullRequest, PublicationStep, ReviewBundle
 from mgar_v3.repository_analysis.domain import parse_repository_url, validate_repo_path
 
@@ -285,6 +286,31 @@ class FindingSource(Model):
     evidence_id: str = Field(min_length=1, max_length=100)
     quote: str = Field(default="", max_length=2000)
     content_hash: str = Field(default="", max_length=64)
+    commit: Annotated[str, Field(pattern=r"^(|[a-f0-9]{40})$")] = ""
+
+
+class StaticConfirmation(Model):
+    """An existing static-analysis proof that a suspected finding is real.
+
+    Static confirmation never pretends the defect was executed: the referenced
+    evidence must already be scanner/static-analysis/investigation evidence.
+    """
+
+    evidence: FindingEvidence
+    rationale: Annotated[str, Field(min_length=8, max_length=1000)]
+    confirmed_at: Annotated[str, Field(min_length=1, max_length=40)]
+
+
+def derive_verification(
+    *,
+    reproduction: ReproductionRecord | None,
+    static_confirmation: StaticConfirmation | None,
+) -> Literal["suspected", "reproduced", "confirmed_static"]:
+    if reproduction is not None and reproduction.status == "reproduced":
+        return "reproduced"
+    if static_confirmation is not None:
+        return "confirmed_static"
+    return "suspected"
 
 
 class ReproductionPlan(Model):
@@ -424,6 +450,8 @@ class WorkbenchFinding(Model):
     fix_risk: FixRisk = "low"
     confidence: float = Field(default=0.5, ge=0, le=1)
     source: FindingSource
+    verification: Literal["suspected", "reproduced", "confirmed_static"] = "suspected"
+    static_confirmation: StaticConfirmation | None = None
     stage: FindingStage = "suspected"
     suggested_fix: str = Field(default="", max_length=4000)
     reproduction_plan: ReproductionPlan | None = None
@@ -433,6 +461,29 @@ class WorkbenchFinding(Model):
     publication: PublicationRecord | None = None
     risk_score: int = Field(default=0, ge=0, le=1000)
     risk_rank: int = Field(default=0, ge=0)
+
+    @model_validator(mode="before")
+    @classmethod
+    def infer_verification(cls, data: Any) -> Any:
+        """Keep legacy payloads without ``verification`` loadable.
+
+        A payload that states a verification value is still checked against
+        its evidence below, so this inference can never widen authority.
+        """
+
+        if not isinstance(data, dict) or "verification" in data:
+            return data
+        reproduction = data.get("reproduction")
+        status = (
+            reproduction.get("status")
+            if isinstance(reproduction, dict)
+            else getattr(reproduction, "status", None)
+        )
+        if status == "reproduced":
+            return {**data, "verification": "reproduced"}
+        if data.get("static_confirmation") is not None:
+            return {**data, "verification": "confirmed_static"}
+        return data
 
     @model_validator(mode="after")
     def stage_is_evidence_backed(self) -> WorkbenchFinding:
@@ -445,6 +496,15 @@ class WorkbenchFinding(Model):
         if self.stage != expected:
             raise ValueError(
                 f"stage {self.stage} is not supported by evidence; expected {expected}"
+            )
+        verification = derive_verification(
+            reproduction=self.reproduction,
+            static_confirmation=self.static_confirmation,
+        )
+        if self.verification != verification:
+            raise ValueError(
+                f"verification {self.verification} is not supported by evidence; "
+                f"expected {verification}"
             )
         return self
 
@@ -517,6 +577,15 @@ def advance_finding(finding: WorkbenchFinding, **updates: Any) -> WorkbenchFindi
         if data.get("publication") is not None
         else None
     )
+    static_confirmation = (
+        StaticConfirmation.model_validate(data["static_confirmation"])
+        if data.get("static_confirmation") is not None
+        else None
+    )
+    data["verification"] = derive_verification(
+        reproduction=reproduction,
+        static_confirmation=static_confirmation,
+    )
     data["stage"] = derive_stage(
         reproduction=reproduction,
         fix=fix,
@@ -569,6 +638,7 @@ __all__ = [
     "ReproductionRecord",
     "STAGE_LABELS",
     "STAGE_RANK",
+    "StaticConfirmation",
     "TaskStatus",
     "TestReceipt",
     "WorkbenchFinding",
@@ -576,6 +646,7 @@ __all__ = [
     "WorkbenchMode",
     "advance_finding",
     "derive_stage",
+    "derive_verification",
     "new_finding_id",
     "rank_findings",
     "score_finding",

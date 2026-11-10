@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import difflib
 import hashlib
+import json
 import os
 import re
 import subprocess
@@ -31,6 +32,13 @@ from psycopg.errors import UniqueViolation
 
 from mgar_v3.coordination.engine import Engine
 from mgar_v3.domain import DomainError, digest
+from mgar_v3.findings.model import Finding, FindingEvidence, normalize_path
+from mgar_v3.repair.handoff import (
+    ParentAnalysisRun,
+    RepairAuthorization,
+    RepairHandoff,
+    RepairHandoffBuilder,
+)
 from mgar_v3.repair.pr_delivery import (
     DraftPRPublisher,
     MemoryPublicationLog,
@@ -47,7 +55,9 @@ from mgar_v3.repository_analysis.domain import (
 )
 from mgar_v3.repository_analysis.fixture import FIXTURE_FILES, fixture_commit
 from mgar_v3.repository_analysis.service import RepositoryAnalysisService
+from mgar_v3.scanners.domain import ScanLocation
 from mgar_v3.settings import Settings
+from mgar_v3.verification.verifier import STATIC_EVIDENCE_KINDS
 from mgar_v3.workbench.domain import (
     STAGE_LABELS,
     STAGE_RANK,
@@ -57,6 +67,7 @@ from mgar_v3.workbench.domain import (
     FindingSource,
     ReproductionPlan,
     ReproductionRecord,
+    StaticConfirmation,
     TaskPhase,
     TaskStatus,
     TestReceipt,
@@ -83,6 +94,11 @@ FIXED_DISPATCHER = (
     "    return 'handled:' + request\n"
 )
 _PYTEST = re.compile(r"(\d+) (passed|failed|skipped|error)")
+_HASH = re.compile(r"^[a-f0-9]{64}$")
+_EVIDENCE_URI = re.compile(
+    r"^github://(?P<repository>[^/@\s]+/[^/@\s]+)@(?P<commit>[a-f0-9]{40})(?:/(?P<path>.+))?$"
+)
+_VERIFIED_STATES = frozenset({"reproduced", "confirmed_static"})
 
 
 def _now() -> str:
@@ -319,15 +335,15 @@ class WorkbenchService:
 
     # -- execution -------------------------------------------------------
     def run(self, task_id: UUID) -> dict[str, Any]:
-        task = self.store.task(task_id)
+        task = self._sync_live_audit(self.store.task(task_id))
         if task["status"] in {"paused", "cancelled", "completed", "waiting_approval", "publishing"}:
             raise DomainError(
                 "TASK_NOT_RUNNABLE", f"Task status {task['status']} cannot be started", 409
             )
-        if task["execution_mode"] == "live" and task["mode"] != "audit":
+        if task["execution_mode"] == "live" and task["mode"] == "issue_repair":
             raise DomainError(
                 "WORKBENCH_LIVE_REPAIR_PROFILE_REQUIRED",
-                "Live repair and publication remain behind the R05 profile flow",
+                "Live issue repair and publication remain behind the R05 profile flow",
                 403,
             )
         task = self.store.bump_epoch(task_id, expected_epoch=task["execution_epoch"])
@@ -401,6 +417,9 @@ class WorkbenchService:
 
     def _auto_repair(self, task: dict[str, Any]) -> None:
         task_id = task["task_id"]
+        if task["execution_mode"] == "live":
+            self._live_repair_gate(task)
+            return
         findings = self.store.findings(task_id)
         if task["mode"] == "issue_repair" and not findings:
             finding = self._seed_issue_finding(task)
@@ -421,11 +440,204 @@ class WorkbenchService:
         if candidate.stage == "reproduced":
             self._prepare_repair(self.store.task(task_id), candidate)
 
+    def _live_repair_gate(self, task: dict[str, Any]) -> None:
+        """Live repair never invents a Dispatcher target or bypasses a handoff."""
+
+        task_id = task["task_id"]
+        findings = self.store.findings(task_id)
+        candidate = next(
+            (
+                item
+                for item in findings
+                if item.verification in {"reproduced", "confirmed_static"}
+            ),
+            None,
+        )
+        if candidate is None:
+            if task["status"] == "auditing":
+                return
+            self._wait_for_handoff(
+                task,
+                "No reproduced or statically confirmed finding can start a live repair",
+            )
+            return
+        stored = self.store.handoff(task_id, candidate.finding_id)
+        if stored is None:
+            self._wait_for_handoff(
+                task,
+                "A live repair requires an authorization-bound RepairHandoff",
+                payload={"finding_id": candidate.finding_id},
+            )
+            return
+        handoff = self.handoff(
+            task_id,
+            candidate.finding_id,
+            authorization=RepairAuthorization.model_validate(
+                stored["payload"]["authorization"]
+            ),
+        )
+        self._wait_for_handoff(
+            task,
+            f"Handoff {handoff['handoff_id'][:12]} is ready; repair execution is not enabled",
+            payload={
+                "finding_id": candidate.finding_id,
+                "handoff_id": handoff["handoff_id"],
+            },
+        )
+
+    def _wait_for_handoff(
+        self,
+        task: dict[str, Any],
+        reason: str,
+        *,
+        payload: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        current = self.store.task(task["task_id"])
+        if current["phase"] == "waiting_input":
+            return current
+        return self._transition(
+            current,
+            "waiting_input",
+            status="ready",
+            reason=reason,
+            event={
+                "stage": "repair",
+                "status": "waiting_input",
+                "summary": reason,
+                "payload": payload or {},
+                "kind": "handoff.waiting",
+            },
+            idempotency_key=f"handoff-waiting:{task['task_id']}",
+        )
+
     def reproduce(self, task_id: UUID, finding_id: str) -> dict[str, Any]:
         task = self.store.task(task_id)
         finding = self.store.finding(task_id, finding_id)
         updated = self._reproduce(task, finding)
         return updated.view()
+
+    def confirm_static(
+        self,
+        task_id: UUID,
+        finding_id: str,
+        *,
+        evidence: FindingEvidence,
+        rationale: str = "The read-only audit evidence was statically confirmed.",
+    ) -> dict[str, Any]:
+        """Confirm a suspected finding with retained static evidence, never a guess."""
+
+        task = self.store.task(task_id)
+        finding = self.store.finding(task_id, finding_id)
+        if finding.verification == "reproduced":
+            return finding.view()
+        if evidence.kind not in STATIC_EVIDENCE_KINDS:
+            raise DomainError(
+                "STATIC_EVIDENCE_REQUIRED",
+                "Static confirmation needs scanner, static-analysis or investigation evidence",
+                409,
+            )
+        source = finding.source
+        if not source.commit or source.commit != task["commit"]:
+            raise DomainError(
+                "HANDOFF_VERSION_MISMATCH",
+                "Finding evidence is not bound to the task commit",
+                409,
+            )
+        if (
+            evidence.evidence_id != source.evidence_id
+            or evidence.source_uri != source.uri
+            or evidence.content_hash != source.content_hash
+        ):
+            raise DomainError(
+                "FINDING_EVIDENCE_MISMATCH",
+                "Static evidence does not match the finding's bound source",
+                409,
+            )
+        location = evidence.location
+        if (
+            location is None
+            or location.path != finding.path
+            or (location.line or finding.start_line) != finding.start_line
+            or (location.end_line or finding.end_line) != finding.end_line
+        ):
+            raise DomainError(
+                "FINDING_EVIDENCE_MISMATCH",
+                "Static evidence line range does not match the finding",
+                409,
+            )
+        if finding.static_confirmation is not None:
+            return finding.view()
+        confirmation = StaticConfirmation(
+            evidence=evidence,
+            rationale=rationale.strip(),
+            confirmed_at=_now(),
+        )
+        updated = advance_finding(finding, static_confirmation=confirmation)
+        self._persist_finding(task_id, updated)
+        self._event(
+            task_id,
+            stage="finding",
+            status="confirmed_static",
+            summary=f"Finding {finding.finding_id[:12]} statically confirmed",
+            payload={
+                "finding_id": finding.finding_id,
+                "evidence_id": evidence.evidence_id,
+                "evidence_kind": evidence.kind,
+            },
+        )
+        return updated.view()
+
+    def handoff(
+        self,
+        task_id: UUID,
+        finding_id: str,
+        *,
+        authorization: RepairAuthorization,
+    ) -> dict[str, Any]:
+        """Mint or reuse the one content-addressed handoff bound to a finding."""
+
+        task = self.store.task(task_id)
+        finding = self.store.finding(task_id, finding_id)
+        stored = self.store.handoff(task_id, finding_id)
+        if stored is not None:
+            return self._reuse_handoff(task, finding, stored)
+        handoff = self._build_handoff(task, finding, authorization)
+        payload = handoff.model_dump(mode="json")
+        content = json.dumps(
+            handoff.content(), sort_keys=True, separators=(",", ":"), ensure_ascii=False
+        ).encode()
+        content_hash = self.store.put_artifact(content)
+        if content_hash != handoff.handoff_id:
+            raise DomainError(
+                "HANDOFF_ARTIFACT_MISMATCH",
+                "Serialized handoff bytes do not match the computed identity",
+                409,
+            )
+        stored = self.store.save_handoff(
+            task_id,
+            finding_id,
+            handoff_id=handoff.handoff_id,
+            content_hash=content_hash,
+            payload=payload,
+        )
+        self._event(
+            task_id,
+            stage="handoff",
+            status="created",
+            summary=f"RepairHandoff {handoff.handoff_id[:12]} bound to finding",
+            payload={
+                "finding_id": finding_id,
+                "handoff_id": handoff.handoff_id,
+                "content_hash": content_hash,
+                "allowed_paths": list(handoff.allowed_paths),
+                "parent_run_id": str(handoff.parent_run_id),
+            },
+        )
+        return self._handoff_view(handoff, stored, reused=False)
+
+    def stored_handoff(self, task_id: UUID, finding_id: str) -> dict[str, Any] | None:
+        stored = self.store.handoff(task_id, finding_id)
+        return None if stored is None else stored
 
     def _reproduce(self, task: dict[str, Any], finding: WorkbenchFinding) -> WorkbenchFinding:
         task_id = task["task_id"]
@@ -534,6 +746,12 @@ class WorkbenchService:
         self, task: dict[str, Any], finding: WorkbenchFinding
     ) -> WorkbenchFinding:
         task_id = task["task_id"]
+        if task["execution_mode"] != "fixture":
+            raise DomainError(
+                "LIVE_REPAIR_EXECUTION_NOT_ENABLED",
+                "Live repair requires the handoff-driven runtime, not the fixture dispatcher",
+                403,
+            )
         if finding.stage != "reproduced" or finding.reproduction is None:
             raise DomainError(
                 "FINDING_NOT_REPRODUCED",
@@ -984,6 +1202,7 @@ class WorkbenchService:
             "revision": task["revision"],
             "run_links": self.store.run_links(task_id),
             "transitions": self.store.transitions(task_id),
+            "handoffs": self.store.handoffs(task_id),
             "audit_run_id": task["audit_run_id"],
             "repair_run_id": task["repair_run_id"],
             "verifier_run_id": task["verifier_run_id"],
@@ -1075,10 +1294,10 @@ class WorkbenchService:
 
     # -- internals -------------------------------------------------------
     def _authority_check(self, request: CreateWorkbenchTask) -> None:
-        if request.execution_mode == "live" and request.mode != "audit":
+        if request.execution_mode == "live" and request.mode == "issue_repair":
             raise DomainError(
                 "WORKBENCH_LIVE_REPAIR_PROFILE_REQUIRED",
-                "Live repair and publication remain behind the R05 profile flow",
+                "Live issue repair and publication remain behind the R05 profile flow",
                 403,
             )
 
@@ -1135,6 +1354,329 @@ class WorkbenchService:
                 pass
         return self.store.task(task["task_id"])
 
+    def _build_handoff(
+        self,
+        task: dict[str, Any],
+        finding: WorkbenchFinding,
+        authorization: RepairAuthorization,
+    ) -> RepairHandoff:
+        if finding.verification not in _VERIFIED_STATES:
+            raise DomainError(
+                "HANDOFF_TARGET_UNVERIFIED",
+                "Only a reproduced or statically confirmed finding can start a repair",
+                409,
+            )
+        parent = self._parent_analysis(task)
+        if parent.repository != task["repository"].lower():
+            raise DomainError(
+                "HANDOFF_REPOSITORY_MISMATCH",
+                "Audit parent belongs to a different repository",
+                409,
+            )
+        if parent.commit != task["commit"]:
+            raise DomainError(
+                "HANDOFF_VERSION_MISMATCH",
+                "Audit parent reviewed a different commit",
+                409,
+            )
+        evidence = self._verification_evidence(task, finding)
+        snapshot = self._snapshot_finding(task, finding, evidence)
+        objective = (finding.suggested_fix.strip() or f"Repair: {finding.title}").strip()
+        budget = AnalysisLimits.model_validate(task["limits"] or {})
+        bundle = RepairHandoffBuilder(None, allowed_actors=self.settings.allowed_actors)
+        return bundle.build_from_snapshot(
+            snapshot,
+            evidence,
+            parent=parent,
+            objective=objective,
+            budget=budget,
+            authorization=authorization,
+            allowed_paths=None,
+            execution_mode=task["execution_mode"],
+        )
+
+    def _reuse_handoff(
+        self,
+        task: dict[str, Any],
+        finding: WorkbenchFinding,
+        stored: dict[str, Any],
+    ) -> dict[str, Any]:
+        try:
+            handoff = RepairHandoff.model_validate(stored["payload"])
+        except ValueError as exc:
+            raise DomainError(
+                "HANDOFF_CORRUPTED", "Stored handoff payload is invalid", 409
+            ) from exc
+        if (
+            handoff.handoff_id != stored["handoff_id"]
+            or handoff.computed_id() != handoff.handoff_id
+            or handoff.handoff_id != stored["content_hash"]
+        ):
+            raise DomainError(
+                "HANDOFF_CORRUPTED", "Stored handoff identity does not match its content", 409
+            )
+        self.engine.artifacts.read(stored["content_hash"])
+        if handoff.finding_id != finding.finding_id:
+            raise DomainError(
+                "HANDOFF_STALE", "Stored handoff targets a different finding", 409
+            )
+        if handoff.repository != task["repository"].lower():
+            raise DomainError(
+                "HANDOFF_REPOSITORY_MISMATCH", "Stored handoff targets another repository", 409
+            )
+        if handoff.base_commit != task["commit"]:
+            raise DomainError(
+                "HANDOFF_VERSION_MISMATCH", "Stored handoff targets another commit", 409
+            )
+        current = self._verification_evidence(task, finding)
+        if [item.model_dump(mode="json") for item in current] != [
+            item.model_dump(mode="json") for item in handoff.evidence
+        ]:
+            raise DomainError(
+                "HANDOFF_STALE",
+                "Finding evidence changed after the handoff was minted",
+                409,
+            )
+        parent = self._parent_analysis(task)
+        if (
+            parent.run_id != handoff.parent_run_id
+            or parent.report_hash != handoff.parent_report_hash
+            or parent.status != "succeeded"
+        ):
+            raise DomainError(
+                "HANDOFF_PARENT_NOT_SETTLED",
+                "The parent analysis no longer matches the handoff",
+                409,
+            )
+        if handoff.execution_budget != AnalysisLimits.model_validate(task["limits"] or {}):
+            raise DomainError(
+                "HANDOFF_STALE", "Task limits changed after the handoff was minted", 409
+            )
+        handoff.authorization.validate_scope(
+            repository=handoff.repository,
+            budget=handoff.execution_budget,
+            allowed_actors=self.settings.allowed_actors,
+        )
+        return self._handoff_view(handoff, stored, reused=True)
+
+    def _parent_analysis(self, task: dict[str, Any]) -> ParentAnalysisRun:
+        run_id = task["audit_run_id"]
+        if run_id is None:
+            raise DomainError(
+                "HANDOFF_PARENT_NOT_SETTLED",
+                "A repair handoff requires a completed read-only audit",
+                409,
+            )
+        try:
+            spec = self.repo.store.spec(run_id)
+            return ParentAnalysisRun.from_spec(spec)
+        except DomainError as exc:
+            if exc.code == "HANDOFF_PARENT_NOT_SETTLED":
+                raise
+            raise DomainError(
+                "HANDOFF_PARENT_NOT_SETTLED",
+                "The parent audit is not available for a handoff",
+                409,
+            ) from exc
+
+    def _bound_source_evidence(
+        self, task: dict[str, Any], finding: WorkbenchFinding
+    ) -> FindingEvidence:
+        source = finding.source
+        if not source.evidence_id or not _HASH.fullmatch(source.content_hash):
+            raise DomainError(
+                "HANDOFF_EVIDENCE_MISSING",
+                "A handoff needs retained evidence with a content hash",
+                409,
+            )
+        if not source.commit or source.commit != task["commit"]:
+            raise DomainError(
+                "HANDOFF_VERSION_MISMATCH",
+                "Finding evidence is not bound to the task commit",
+                409,
+            )
+        match = _EVIDENCE_URI.match(source.uri)
+        if match is None:
+            raise DomainError(
+                "HANDOFF_EVIDENCE_MISSING",
+                "Finding evidence is not a commit-addressed repository URI",
+                409,
+            )
+        if match.group("repository").lower() != task["repository"].lower():
+            raise DomainError(
+                "HANDOFF_REPOSITORY_MISMATCH",
+                "Finding evidence comes from another repository",
+                409,
+            )
+        if match.group("commit") != source.commit:
+            raise DomainError(
+                "HANDOFF_VERSION_MISMATCH",
+                "Finding evidence URI names a different commit",
+                409,
+            )
+        uri_path = normalize_path(match.group("path") or "")
+        if (
+            not finding.path
+            or len(finding.path) > 400
+            or (uri_path and normalize_path(finding.path) != uri_path)
+        ):
+            raise DomainError(
+                "HANDOFF_PATH_DENIED",
+                "Finding evidence does not point at the finding's allowed path",
+                409,
+            )
+        if finding.start_line < 1 or finding.end_line < finding.start_line:
+            raise DomainError(
+                "HANDOFF_EVIDENCE_MISSING", "Finding line range is invalid", 409
+            )
+        description = (source.quote.strip() or finding.summary.strip() or finding.title)[:1000]
+        return FindingEvidence(
+            evidence_id=source.evidence_id,
+            kind="investigation",
+            source_uri=source.uri,
+            description=description,
+            content_hash=source.content_hash,
+            location=ScanLocation(
+                path=finding.path,
+                line=finding.start_line,
+                end_line=finding.end_line,
+            ),
+        )
+
+    def _verification_evidence(
+        self, task: dict[str, Any], finding: WorkbenchFinding
+    ) -> list[FindingEvidence]:
+        bound = self._bound_source_evidence(task, finding)
+        if finding.verification == "reproduced":
+            receipt = (
+                finding.reproduction.receipt
+                if finding.reproduction is not None
+                else None
+            )
+            if receipt is None or receipt.passed:
+                raise DomainError(
+                    "HANDOFF_REPRODUCTION_PROOF_MISSING",
+                    "A reproduced finding needs a failing execution receipt",
+                    409,
+                )
+            return [
+                bound,
+                FindingEvidence(
+                    evidence_id=receipt.receipt_id,
+                    kind="test_run",
+                    source_uri=f"receipt://{receipt.receipt_id}",
+                    description=f"reproduced: {receipt.command}"[:1000],
+                    content_hash=receipt.receipt_id,
+                    location=bound.location,
+                ),
+            ]
+        if finding.verification == "confirmed_static":
+            confirmation = finding.static_confirmation
+            if confirmation is None:
+                raise DomainError(
+                    "HANDOFF_REPRODUCTION_PROOF_MISSING",
+                    "Static confirmation evidence is missing",
+                    409,
+                )
+            static = confirmation.evidence
+            if static.kind not in STATIC_EVIDENCE_KINDS:
+                raise DomainError(
+                    "HANDOFF_REPRODUCTION_PROOF_MISSING",
+                    "Static confirmation needs scanner or static-analysis evidence",
+                    409,
+                )
+            if (
+                static.evidence_id != bound.evidence_id
+                or static.source_uri != bound.source_uri
+                or static.content_hash != bound.content_hash
+            ):
+                raise DomainError(
+                    "HANDOFF_EVIDENCE_MISSING",
+                    "Static evidence does not match the finding's bound source",
+                    409,
+                )
+            location = static.location
+            if (
+                location is None
+                or location.path != finding.path
+                or (location.line or finding.start_line) != finding.start_line
+                or (location.end_line or finding.end_line) != finding.end_line
+            ):
+                raise DomainError(
+                    "HANDOFF_EVIDENCE_MISSING",
+                    "Static evidence line range does not match the finding",
+                    409,
+                )
+            return [static]
+        raise DomainError(
+            "HANDOFF_TARGET_UNVERIFIED",
+            "Only a reproduced or statically confirmed finding can start a repair",
+            409,
+        )
+
+    def _snapshot_finding(
+        self,
+        task: dict[str, Any],
+        finding: WorkbenchFinding,
+        evidence: list[FindingEvidence],
+    ) -> Finding:
+        reproduced = finding.verification == "reproduced"
+        rule_id = finding.rule_id or "workbench"
+        return Finding(
+            finding_id=finding.finding_id,
+            run_id=str(task["task_id"]),
+            repository=task["repository"].lower(),
+            commit=finding.source.commit,
+            category=rule_id[:60],
+            classification=finding.classification,
+            severity=finding.severity,
+            confidence=finding.confidence,
+            summary=(finding.summary.strip() or finding.title)[:2000],
+            source_locations=[
+                ScanLocation(
+                    path=finding.path,
+                    line=finding.start_line,
+                    end_line=finding.end_line,
+                )
+            ],
+            evidence_ids=[item.evidence_id for item in evidence],
+            reproduction_status="reproduced" if reproduced else "static_only",
+            suggested_fix=finding.suggested_fix,
+            lifecycle_status="reproduced" if reproduced else "confirmed_static",
+            uncertainty=(
+                "Verified by the workbench ledger; the handoff inherits no "
+                "natural-language authority."
+            ),
+            fix_risk=finding.fix_risk,
+            origin="investigation",
+            dedupe_key=f"{finding.path}|{rule_id}|{finding.finding_id}"[:1000],
+            rule_ids=[rule_id[:200]],
+        )
+
+    @staticmethod
+    def _handoff_view(
+        handoff: RepairHandoff, stored: dict[str, Any], *, reused: bool
+    ) -> dict[str, Any]:
+        return {
+            "handoff_id": handoff.handoff_id,
+            "content_hash": stored["content_hash"],
+            "artifact_verified": True,
+            "reused": reused,
+            "finding_id": handoff.finding_id,
+            "repository": handoff.repository,
+            "base_commit": handoff.base_commit,
+            "parent_run_id": str(handoff.parent_run_id),
+            "parent_report_hash": handoff.parent_report_hash,
+            "allowed_paths": list(handoff.allowed_paths),
+            "evidence_ids": [item.evidence_id for item in handoff.evidence],
+            "reproduction": handoff.reproduction.model_dump(mode="json"),
+            "authorization_hash": handoff.authorization_hash,
+            "execution_budget": handoff.execution_budget.model_dump(mode="json"),
+            "execution_mode": handoff.execution_mode,
+            "created_at": stored["created_at"],
+            "handoff": handoff.model_dump(mode="json"),
+        }
+
     def _import_audit(
         self,
         task_id: UUID,
@@ -1172,6 +1714,7 @@ class WorkbenchService:
                         evidence_id=str(claim["evidence_id"]),
                         quote=str(claim["quote"])[:2000],
                         content_hash=str(evidence["content_hash"]),
+                        commit=task["commit"],
                     ),
                 )
             )
@@ -1343,6 +1886,7 @@ class WorkbenchService:
             evidence_id=str(uuid5(NAMESPACE_URL, f"{task['task_id']}|{rule_id}|{path}")),
             quote="\n".join(content.splitlines()[:5])[:1000],
             content_hash=hashlib.sha256(content.encode()).hexdigest(),
+            commit=task["commit"],
         )
 
     def _finding(

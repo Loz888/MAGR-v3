@@ -394,6 +394,72 @@ class WorkbenchStore:
             raise DomainError("NOT_FOUND", "Finding was not found", 404)
         return WorkbenchFinding.model_validate(row["payload"])
 
+    def put_artifact(self, content: bytes) -> str:
+        """Persist bytes by hash and mirror the row the ledger points at."""
+
+        content_hash = self.engine.artifacts.put(content)
+        with self.engine.transaction() as conn:
+            conn.execute(
+                "INSERT INTO app.artifacts(content_hash,byte_count) VALUES (%s,%s) "
+                "ON CONFLICT DO NOTHING",
+                (content_hash, len(content)),
+            )
+        return content_hash
+
+    def save_handoff(
+        self,
+        task_id: UUID,
+        finding_id: str,
+        *,
+        handoff_id: str,
+        content_hash: str,
+        payload: dict[str, Any],
+    ) -> dict[str, Any]:
+        if handoff_id != content_hash:
+            raise DomainError(
+                "HANDOFF_ARTIFACT_MISMATCH",
+                "Handoff identity is not the artifact content hash",
+                409,
+            )
+        with self.engine.transaction() as conn:
+            conn.execute(
+                "INSERT INTO app.workbench_handoffs(task_id,finding_id,handoff_id,"
+                "content_hash,payload) VALUES (%s,%s,%s,%s,%s) ON CONFLICT DO NOTHING",
+                (task_id, finding_id, handoff_id, content_hash, Jsonb(payload)),
+            )
+            row = conn.execute(
+                "SELECT task_id,finding_id,handoff_id,content_hash,payload,created_at "
+                "FROM app.workbench_handoffs WHERE task_id=%s AND finding_id=%s",
+                (task_id, finding_id),
+            ).fetchone()
+        if row is None:
+            raise DomainError("NOT_FOUND", "Handoff was not found", 404)
+        if row["handoff_id"] != handoff_id or row["content_hash"] != content_hash:
+            raise DomainError(
+                "HANDOFF_CONFLICT",
+                "This finding is already bound to a different handoff",
+                409,
+            )
+        return self._handoff(row)
+
+    def handoff(self, task_id: UUID, finding_id: str) -> dict[str, Any] | None:
+        with self.engine.transaction() as conn:
+            row = conn.execute(
+                "SELECT task_id,finding_id,handoff_id,content_hash,payload,created_at "
+                "FROM app.workbench_handoffs WHERE task_id=%s AND finding_id=%s",
+                (task_id, finding_id),
+            ).fetchone()
+        return self._handoff(row) if row is not None else None
+
+    def handoffs(self, task_id: UUID) -> list[dict[str, Any]]:
+        with self.engine.transaction() as conn:
+            rows = conn.execute(
+                "SELECT task_id,finding_id,handoff_id,content_hash,payload,created_at "
+                "FROM app.workbench_handoffs WHERE task_id=%s ORDER BY created_at,finding_id",
+                (task_id,),
+            ).fetchall()
+        return [self._handoff(row) for row in rows]
+
     def set_memory(self, task_id: UUID, payload: dict[str, Any]) -> None:
         with self.engine.transaction() as conn:
             conn.execute(
@@ -473,6 +539,17 @@ class WorkbenchStore:
             "revision": row["revision"],
             "created_at": row["created_at"].isoformat(),
             "updated_at": row["updated_at"].isoformat(),
+        }
+
+    @staticmethod
+    def _handoff(row: Any) -> dict[str, Any]:
+        return {
+            "task_id": row["task_id"],
+            "finding_id": row["finding_id"],
+            "handoff_id": row["handoff_id"],
+            "content_hash": row["content_hash"],
+            "payload": dict(row["payload"]),
+            "created_at": row["created_at"].isoformat(),
         }
 
     @staticmethod
