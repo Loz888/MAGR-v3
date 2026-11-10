@@ -1,0 +1,195 @@
+{
+  "card": "V35-R01",
+  "title": "结构化模型补丁提供方",
+  "status": "PASS",
+  "commit": "80d9e6f8407a0efc8741c0fbd975e73c18596e75",
+  "result_commit": "80d9e6f8407a0efc8741c0fbd975e73c18596e75",
+  "commit_note": "单次本地提交：新增 repair/providers/{__init__,structured}.py、扩展 repair_agent.py 的 RepairPrompt/PatchProposalRejected/provider_error 路径、复用并公开 worktree.py 的路径/保护/预算校验、新增 tests/test_v35_r01.py、注册 verification.json V35-R01、更新卡片与 TASK_QUEUE；未推送。accept.json 为紧随其后的独立文档提交。",
+  "parent_commit": "ebe514d0f35b4bf87514191cfedc839daa20bc39",
+  "dependency_commit": "5e5b412df7bbcfcd6dfb58a014befcd05523f157",
+  "base_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+  "accepted_at": "2026-11-10T02:54:20Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (mgar-v3-postgres-1, 127.0.0.1:55433)",
+    "redis": "real (mgar-v3-redis-1, 127.0.0.1:56379)",
+    "model": "mock_structured_no_network",
+    "network": "not_used for paid model or GitHub",
+    "github": "not_used",
+    "docker": "not_used"
+  },
+  "worktree_at_acceptance": "实现提交 80d9e6f 后仅 accept.json 待提交；evidence/（gitignore）与 .push-staging/ 本地脚本不在版本控制内。",
+  "commands": [
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/repair", "tests/test_v35_r01.py"],
+      "exit_code": 0,
+      "result": "All checks passed",
+      "purpose": "本卡改动文件的静态检查",
+      "log": "evidence/v35/R01/20261110T025001Z-final/05-ruff.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/repair/providers", "src/mgar_v3/repair/repair_agent.py", "src/mgar_v3/repair/worktree.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 4 source files",
+      "purpose": "本卡改动模块的类型检查",
+      "log": "evidence/v35/R01/20261110T025001Z-final/06-mypy.log",
+      "status": "PASS"
+    },
+    {
+      "name": "combined-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "-q", "tests/test_v35_r01.py", "tests/test_v34_patch_workspace.py", "tests/test_v34_repair_agent.py", "tests/test_v34_security_recovery.py", "tests/test_v35_u02.py", "tests/test_v35_u01.py", "tests/test_v34_repair_handoff.py", "tests/test_v33_defect_verifier.py"],
+      "exit_code": 0,
+      "duration_seconds": 144.48,
+      "counts": {"tests": 105, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "R01 新增测试 + U02/U01 ledger/handoff + v34 patch/agent/security/handoff + v33 verifier 回归",
+      "log": "evidence/v35/R01/regression/03-combined-final.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["make", "migrate"],
+      "exit_code": 0,
+      "result": {"applied": [], "migration_head": "0024_workbench_handoffs.sql"},
+      "purpose": "本卡无 schema 变更；确认迁移 head 保持 0024 且重复执行为幂等",
+      "log": "evidence/v35/R01/20261110T025001Z-final/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["make", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用）",
+      "log": "evidence/v35/R01/20261110T025001Z-final/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/R01/20261110T025001Z-final/04-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["make", "verify", "TASK=V35-R01"],
+      "exit_code": 0,
+      "duration_seconds": 63.396,
+      "counts": {"tests": 40, "failures": 0, "errors": 0, "skipped": 0},
+      "breakdown": {"tests/test_v35_r01.py": 23, "tests/test_v34_repair_agent.py": 9, "tests/test_v34_patch_workspace.py": 8},
+      "source_sha256": "cc3e1eacb818897e99480a1fbc0d3dbd92980f148a4b5a9f22de831ebbc64b8e",
+      "finished_source_sha256": "cc3e1eacb818897e99480a1fbc0d3dbd92980f148a4b5a9f22de831ebbc64b8e",
+      "git_commit": "ebe514d0f35b4bf87514191cfedc839daa20bc39",
+      "attempt": "evidence/V35-R01/20261110T025002Z-49918968",
+      "log": "evidence/v35/R01/20261110T025001Z-final/03-verify.log",
+      "note": "verify 记录的是提交前 HEAD；同一 source_sha256 即实现提交 80d9e6f 的源码指纹。",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_RUN",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "NOT_RUN",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡禁止且未发生任何付费模型调用或 GitHub 写入；模型为本地 Mock，仅用于结构化 JSON 校验。verify.py 对非 V31-R0 卡静态写 live_gate=NOT_RUN。engineering_gate=PASS 不蕴含 live_agent_gate=PASS：真实模型 Agent 评测尚未执行，按 E01 强制协议标记 NOT_RUN。security_gate 仅覆盖本卡不变量（不执行模型文本、路径与保护文件校验、无越权写、未知付费结果不重发），端到端安全门由 V35-E03 汇总。",
+  "must_pass": [
+    {
+      "item": "实现 RepairProvider.propose(RepairPrompt) -> PatchPlan，严格 JSON 校验为 FileEdit(path, operation, expected_sha256, content)",
+      "result": "PASS",
+      "evidence": "repair/providers/structured.py 的 StructuredPatchProvider.propose 只接受 {summary, edits[]}，每条 edit 必须为完整文件内容与前置 SHA；返回 PatchPlan(FileEdit)。tests/test_v35_r01.py::test_structured_update_is_validated_applied_and_accounted 用真实 PatchWorktree 应用并核对结果。"
+    },
+    {
+      "item": "绝不执行模型 Shell 文本",
+      "result": "PASS",
+      "evidence": "提供方无 subprocess/exec/eval 路径；命令字段 command/shell/argv/exec/script 一律 PATCH_COMMAND_REJECTED；测试在 monkeypatch subprocess.run/Popen 为抛错后仍正常完成拒绝。"
+    },
+    {
+      "item": "Prompt 只含最小目标源码片段、只读证据、允许路径、失败测试摘要与最新文件 SHA；不得暴露隐藏测试",
+      "result": "PASS",
+      "evidence": "_payload 只包含 objective/language/attempt/allowed_paths/这些文件的 sha256 与内容/feedback/schema；RepairPrompt 无 verification_files 字段；test_prompt_is_minimal_and_never_contains_hidden_verification 断言隐藏测试正文不在载荷中。"
+    },
+    {
+      "item": "校验文件存在性、相对路径、权限、保护文件、变更行数/字节、版本前置条件；拒绝新增依赖清单与隐式扩围",
+      "result": "PASS",
+      "evidence": "路径经 validate_patch_path；allowed_paths 精确授权；is_protected_path 拒绝依赖清单/配置/锁文件；create/update/delete 存在性与 expected_sha256 均校验；max_files/max_changed_lines/max_total_bytes/max_file_bytes/max_deleted_files 全部生效。对应负向用例覆盖路径逃逸、越权、清单、陈旧、预算、存在性。"
+    },
+    {
+      "item": "PATCH_STALE、格式不合规、内容无效返回机器可读反馈；预算内允许重新读取真实文件后再提案，不重复已未知结果的工具",
+      "result": "PASS",
+      "evidence": "PatchProposalRejected(code, retryable, details) 被 RepairAgent 转为 RepairFeedback 并进入下一轮 Prompt；test_agent_feeds_a_structured_rejection_back_into_the_next_attempt 首轮 PATCH_STALE、次轮成功且 feedback 出现在第二次载荷；PATCH_USAGE_MISSING/USAGE_UNKNOWN 标记 unknown，同 attempt 再调用返回 PATCH_OUTCOME_UNKNOWN 且模型调用数不增加；test_agent_stops_on_a_non_retryable_provider_error 断言 agent 以 provider_error 停止。"
+    },
+    {
+      "item": "Unified Diff 仅作审查输出；不把模型 Hunk 行号当作变更事实",
+      "result": "PASS",
+      "evidence": "模型 diff/patch/hunks 字段返回 PATCH_DIFF_UNSUPPORTED；变更事实仅来自 FileEdit 全文件内容，审查 diff 由 PatchWorktree.get_diff() 生成。"
+    },
+    {
+      "item": "记录真实 Token/费用、解析错误与结构化补丁成功率；敏感内容脱敏",
+      "result": "PASS",
+      "evidence": "ProviderStats 汇总 calls/accepted/rejected/parse_errors/unknown_outcomes/prompt_tokens/completion_tokens/cost_micros/success_rate；ProviderCall 只保留 code/Token/费用/延迟/response_sha256/edit 数，不保存 Prompt 或源码；测试断言调用记录不含源码正文。ModelPricing 可推导费用，Usage 缺失即拒绝。"
+    },
+    {
+      "item": "选取 E01 原来的 3 个补丁失败样例，达到可正确应用或报告结构化可恢复错误；未过隐藏验证不得记修复成功",
+      "result": "PASS",
+      "evidence": "test_e01_patch_failures_replay_to_applied_or_recoverable 对 click-sentinel-repair、click-short-help-repair、click-help-name-repair 的真实 buggy/fixed 快照回放：正确全文件编辑经 PatchWorktree 应用后与 fixed 完全一致；陈旧前置条件返回可恢复 PATCH_STALE。本项为提供方级回放，未执行独立隐藏验证，accept 不记修复成功。"
+    },
+    {
+      "item": "工程门禁命令原样通过",
+      "result": "PASS",
+      "evidence": "make verify TASK=V35-R01：40 passed / 0 failed / 0 skipped；组合回归 105 passed / 0 skipped；scoped ruff 与 mypy exit 0；make migrate exit 0（无新迁移，head 0024）；make doctor PG/Redis PASS；git diff --check exit 0。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "全仓 make lint / make typecheck 存在与 V35-R01 无关的既有历史债务",
+      "handling": "scoped ruff（repair 包 + R01 测试）与 scoped mypy（providers、repair_agent、worktree，4 个源文件）均 exit 0；未扩大修改范围。"
+    },
+    {
+      "issue": "verify.py 对非 V31-R0 卡静态写入 live_gate=NOT_RUN",
+      "handling": "以 accept.json 的 live_model_gate / live_github_write_gate / live_agent_gate 为准；本卡未发生付费模型调用或 GitHub 写入。"
+    },
+    {
+      "issue": "本卡未执行真实模型 Agent 评测",
+      "handling": "模型为本地 Mock；按 V35-E01 强制验收协议，live_agent_gate 标记 NOT_RUN；不得以 Mock/Scripted 结果宣称真实 Agent 能力已验收。"
+    },
+    {
+      "issue": "E01 三个补丁失败样例仅做提供方级回放",
+      "handling": "只证明结构化补丁可正确应用或返回可恢复错误，未运行独立的隐藏验证，也未记修复成功率；真实修复闭环留给 R02/R03。"
+    },
+    {
+      "issue": "真实 DeepSeek 调用与 Engine 付费台账未接线",
+      "handling": "R01 的模型接缝是 RepairModel 协议（complete(system, payload) -> content/usage/latency/finish_reason），生产模型适配与 Engine 台账在 R03 编排卡接入；本卡不发起任何网络请求。"
+    },
+    {
+      "issue": "默认 PatchLimits 单文件/总字节上限为 64 KiB，E01 的 click/core.py 约 142 KiB",
+      "handling": "回放使用显式更宽的 PatchLimits(max_file_bytes=262144, max_total_bytes=262144)，默认值未放宽；真实任务由 R02/R03 按 Handoff 预算显式配置。"
+    }
+  ],
+  "artifacts": {
+    "providers": "src/mgar_v3/repair/providers/__init__.py",
+    "provider": "src/mgar_v3/repair/providers/structured.py",
+    "agent": "src/mgar_v3/repair/repair_agent.py",
+    "worktree": "src/mgar_v3/repair/worktree.py",
+    "tests": "tests/test_v35_r01.py",
+    "verification": "config/verification.json",
+    "card": "docs/v35/cards/V35-R01.md",
+    "queue": "docs/v35/TASK_QUEUE.md",
+    "final_evidence": "evidence/v35/R01/20261110T025001Z-final/",
+    "regression_evidence": "evidence/v35/R01/regression/03-combined-final.log",
+    "verify_attempt": "evidence/V35-R01/20261110T025002Z-49918968/"
+  },
+  "next_card": "V35-R02",
+  "next_card_prerequisites": [
+    "复核 accept 提交后的 HEAD 与 config/verification.json 的 V35-R01 条目",
+    "R02 必须让真实仓库源文件与 Docker Sandbox 共用同一执行链路，不得回退到 fixture dispatcher 或宿主 pytest",
+    "R02 应通过 Handoff/RepairRequest 显式传入 allowed_paths 与 PatchLimits，不得放宽默认保护清单与预算",
+    "真实模型与 GitHub 写入仍须独立授权；未授权时 live_model_gate / live_github_write_gate / live_agent_gate 保持 NOT_RUN"
+  ]
+}
