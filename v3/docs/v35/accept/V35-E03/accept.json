@@ -1,0 +1,194 @@
+{
+  "card": "V35-E03",
+  "title": "端到端安全、并发与灾难恢复",
+  "status": "PASS",
+  "commit": "67bddea",
+  "result_commit": "67bddea",
+  "commit_note": "两次本地提交：第一次包含 security.py 场景登记、scripts/run_e03.py、tests/test_v35_e03.py、verification.json、卡片与队列；第二次仅记录本 accept.json。用户明确要求推送到 GitHub，因此完成后执行 git push origin main。",
+  "parent_commit": "85d3d8b9ec0ec72932344cbbbf14c2976505a61b",
+  "dependency_commit": "85d3d8b9ec0ec72932344cbbbf14c2976505a61b",
+  "base_commit": "85d3d8b9ec0ec72932344cbbbf14c2976505a61b",
+  "accepted_at": "2026-11-10T08:15:00Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (migrate applied []; doctor PASS; injection, memory, publication and outage probes use the real acceptance database)",
+    "redis": "real (doctor PASS; rate limit test acquires the real Redis key and verifies RATE_LIMITED; unreachable port verifies RATE_LIMIT_UNAVAILABLE)",
+    "docker": "real R03 sandbox image sha256:75ff415b813cad5a2d61d418dfaaf33d1f6e7e56b0a4bb386624f0cf1a92b3c1, network none, non-root; adversarial two-round task ran once",
+    "model": "no paid model call; 429/500/truncation/connection-loss probes use httpx.MockTransport at the real DeepSeekCompletion boundary",
+    "network": "sandbox network none; no external network dependency",
+    "github": "no live GitHub read or write; expired-token/archived/rate-limit behavior injected at the DraftPRPublisher transport boundary"
+  },
+  "worktree_at_acceptance": "实现、测试、场景登记、配置、卡片与队列将提交于第一次提交；accept.json 在第二次提交；evidence/ 与 .local/ 在 gitignore 内，不入库。",
+  "commands": [
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/quality_eval/v35/security.py", "scripts/run_e03.py", "tests/test_v35_e03.py"],
+      "exit_code": 0,
+      "result": "All checks passed!",
+      "purpose": "本卡新增与修改文件的静态检查",
+      "log": "evidence/v35/E03/20261110T080849Z-e03/05-ruff-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/quality_eval/v35/security.py", "scripts/run_e03.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 2 source files",
+      "purpose": "场景登记与 CLI 的严格类型检查",
+      "log": "evidence/v35/E03/20261110T080849Z-e03/06-mypy-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["uv", "run", "--frozen", "python", "-m", "mgar_v3.store.migrate"],
+      "exit_code": 0,
+      "result": {"applied": []},
+      "purpose": "本卡不新增表；迁移保持幂等",
+      "log": "evidence/v35/E03/20261110T080849Z-e03/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["uv", "run", "--frozen", "mgar", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "真实 PostgreSQL/Redis 可用；doctor 的 live 探测不发起付费调用",
+      "log": "evidence/v35/E03/20261110T080849Z-e03/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/E03/20261110T080849Z-e03/03-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "V35-E03"],
+      "exit_code": 0,
+      "counts": {"tests": 36, "failures": 0, "errors": 0, "skipped": 0},
+      "duration_seconds": 62.707,
+      "source_sha256": "e9069f6f9cd9b1a33c18b96e44702395ee418a61bd293dcbe3112cf5edd74325",
+      "finished_source_sha256": "e9069f6f9cd9b1a33c18b96e44702395ee418a61bd293dcbe3112cf5edd74325",
+      "git_commit": "85d3d8b9ec0ec72932344cbbbf14c2976505a61b",
+      "attempt": "evidence/V35-E03/20261110T080855Z-022f3184",
+      "note": "注册的 36 项为 tests/test_v35_e03.py 18 项与 tests/test_v34_security_recovery.py 18 项；source_sha256 运行前后一致。",
+      "status": "PASS"
+    },
+    {
+      "name": "v34-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v34_security_recovery.py", "-q", "-p", "no:warnings"],
+      "exit_code": 0,
+      "counts": {"tests": 18, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "保留 V3.4 E02 的 18 类场景作为回归子集",
+      "log": "evidence/v35/E03/20261110T080849Z-e03/07-v34-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "scenario-report",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/run_e03.py", "--out", "evidence/v35/E03/20261110T081039Z-e03-scenarios"],
+      "exit_code": 0,
+      "result": {
+        "security_gate": "PASS",
+        "scenarios": 35,
+        "covered": 34,
+        "not_run": 1,
+        "failed_scenarios": [],
+        "by_category": {
+          "1_prompt_injection": {"covered": 4, "not_run": 0},
+          "2_filesystem_escape": {"covered": 5, "not_run": 0},
+          "3_concurrency": {"covered": 4, "not_run": 0},
+          "4_disaster_recovery": {"covered": 8, "not_run": 1},
+          "5_stale_state": {"covered": 8, "not_run": 0},
+          "6_external_write": {"covered": 5, "not_run": 0}
+        }
+      },
+      "purpose": "按登记的 pytest node id 执行全部覆盖场景，JUnit 回填每条场景的真实结果并写不可变报告",
+      "log": "evidence/v35/E03/20261110T080849Z-e03/08-scenario-report.log",
+      "report": "evidence/v35/E03/20261110T081039Z-e03-scenarios/",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_RUN",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "NOT_RUN",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡没有付费模型调用、真实 GitHub 写入或外网依赖。真实 Docker、PostgreSQL 与 Redis 参与了执行；模型 429/500/截断/连接中断与 GitHub Token 过期、仓库归档、Rate Limit 在真实代码路径的传输边界注入，仅证明 fail-closed 与不重放，不代表真实模型 Agent 能力或真实 GitHub 写入已完成。因此 live_model_gate、live_github_write_gate 与 live_agent_gate 均为 NOT_RUN。",
+  "must_pass": [
+    {
+      "item": "在完整产品链路中验证 V3.4 E02 的 18 类场景依然成立",
+      "result": "PASS",
+      "evidence": "tests/test_v34_security_recovery.py 18/18 通过；场景登记表静态校验其函数集合与 18 条登记完全一致，改名或漏项会导致 tests/test_v35_e03.py 失败。"
+    },
+    {
+      "item": "增加跨阶段、多轮与真实重启测试",
+      "result": "PASS",
+      "evidence": "跨阶段：注入 README 被 MemoryWriter 拒绝后上下文记忆为空，恶意 observation 只进入 authority_claims，权限摘要/工具/待审批不变，过期上下文修订被 assert_current 拒绝。多轮：真实 Docker adversarial 两轮 attempts=2、第二轮 compaction 保留安全字段、专家建议只读且主 Agent 决策。重启：检查点复制后中断恢复与分叉恢复 provider_calls=0 且不进入 waiting_approval。"
+    },
+    {
+      "item": "必须覆盖第 1 类：提示注入、恶意 README/Issue/PR/Repository",
+      "result": "PASS",
+      "evidence": "S01-S04：README/评论注入被记忆门拒绝、污染记忆不召回、跨阶段上下文不携带、恶意 observation 不能扩权。"
+    },
+    {
+      "item": "必须覆盖第 2 类：路径穿越、符号链接、Hook/配置篡改、伪造测试/日志/配置、.git 逃逸",
+      "result": "PASS",
+      "evidence": "S05-S09：PATCH_PATH_DENIED 覆盖穿越与符号链接；恶意测试无法触达宿主文件/凭证；无缺陷不得被报告为已修复；非法/未知成本配置 fail-closed；.git 配置与 Hook 不可读不可写，.github 工作流不能进入发布载荷。"
+    },
+    {
+      "item": "必须覆盖第 3 类：并发补丁、重复派发、Action/Approval 重复、Outbox 重放、审批后篡改",
+      "result": "PASS",
+      "evidence": "S10-S13：同文件并发补丁冲突而非丢更新；重复 Action/Outbox 只执行一次；审批后篡改抛 APPROVAL_STALE；同一审批重复发布第二次全部 already_present，写入序列不增加。"
+    },
+    {
+      "item": "必须覆盖第 4 类：SIGKILL、断电、Redis 丢失、PostgreSQL 重启、Docker 不可用、网络中断、模型 429/5xx/截断、GitHub 不确定结果",
+      "result": "PASS",
+      "evidence": "S14-S22：真实 SIGKILL 恢复无重复写；未知结果恢复与分叉恢复零模型调用；Redis 丢失 RATE_LIMIT_UNAVAILABLE、真实 Redis 触发 RATE_LIMITED；PostgreSQL 连接中断无本地回退；Docker 不可用返回 sandbox_error；模型 429/500/连接中断/截断各单次派发；GitHub 不确定结果只读对账。真实 PostgreSQL 服务重启单列为 S19 NOT_RUN。"
+    },
+    {
+      "item": "必须覆盖第 5 类：旧 Epoch 回写、取消后继续、过期审批、Checkpoint 分叉、Memory 污染、Compaction 信息丢失",
+      "result": "PASS",
+      "evidence": "S23-S30：旧 Epoch 与取消后回写被拒绝；过期付费授权 LiveNotAuthorized；跨提交记忆需复验、跨仓库记忆不可读；Compaction 保留失败尝试/待审批/待执行/未决问题/证据/权限摘要；第二轮专家只读；预算耗尽停止且无提案。"
+    },
+    {
+      "item": "必须覆盖第 6 类：外部写只读对账、base 漂移、Token 过期、仓库归档、Rate Limit",
+      "result": "PASS",
+      "evidence": "S31-S35：丢失 PR 回执只读对账且零重放；base 漂移在首次写前阻断；Token 过期与仓库归档均 outcome_unknown 且无 PR；GitHub Rate Limit 归类 429 且不写。"
+    },
+    {
+      "item": "每条场景有可复现脚本、失败点、观测状态与恢复结果；无盲重试、无越权写入、无伪造成功",
+      "result": "PASS",
+      "evidence": "security.py 35 条场景均带 pytest node id（NOT_RUN 除外）、failure_point、observed_state、recovery_result；run_e03.py 用 JUnit XML 回填真实结果；报告 failed_scenarios=[]；模型故障单次派发；重复审批写入序列不变；Docker 不可用 0 passed；没有任何 live 门被伪造成 PASS。"
+    },
+    {
+      "item": "全链路（含真实 Docker、PostgreSQL、Redis；GitHub 写可 Mock 或显式授权）跑通或记录 NOT_RUN",
+      "result": "PASS",
+      "evidence": "真实 Docker R03 跑通 adversarial 两轮任务；真实 PostgreSQL 参与记忆门、发布与故障探针；真实 Redis 触发限流；GitHub 写入未授权，行为在 DraftPRPublisher 传输边界注入并记录 live_github_write_gate=NOT_RUN；真实 PostgreSQL 服务重启记录为 S19 NOT_RUN。"
+    },
+    {
+      "item": "工程门禁命令原样通过（tests/test_v35_e03.py + tests/test_v34_security_recovery.py）",
+      "result": "PASS",
+      "evidence": "verify TASK=V35-E03：36 passed / 0 failed / 0 skipped，62.7s；ruff 与 mypy exit 0；migrate applied []；doctor PG/Redis PASS；git diff --check exit 0；V3.4 单独回归 18 passed；场景报告 security_gate=PASS。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "真实 PostgreSQL 服务重启未在共享验收库上执行",
+      "handling": "S19 记录 NOT_RUN 并给出原因；连接中断路径由 S18 用真实不可达端口验证，直接抛 psycopg.OperationalError 且无本地回退。真实服务重启保留为发布环境检查，不冒充已执行。"
+    },
+    {
+      "issue": "没有可授权的测试仓库，未执行真实 GitHub 写入",
+      "handling": "Token 过期、仓库归档、Rate Limit 与不确定结果在 DraftPRPublisher 的真实代码路径上注入；live_github_write_gate 记录 NOT_RUN，不把 Mock 结果写成 live PASS。"
+    },
+    {
+      "issue": "模型 429/500/截断/连接中断未发起真实外网付费请求",
+      "handling": "使用 httpx.MockTransport 在 DeepSeekCompletion 真实调用边界注入故障，验证单次派发与 fail-closed；live_model_gate 记录 NOT_RUN。"
+    }
+  ]
+}
