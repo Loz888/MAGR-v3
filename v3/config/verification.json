@@ -253,6 +253,25 @@
     ],
     "timeout_seconds": 600
   },
+  "E02": {
+    "components": {
+      "approval": "stale_tree_hash_approval_rejected_before_any_write",
+      "dispatch": "eight_concurrent_ticks_deliver_one_outbox_effect",
+      "injection": "readme_comment_untrusted_data_never_enters_trusted_memory_or_system_instructions",
+      "memory": "repository_scoped_reads_commit_scoped_stale_reverification_and_cross_repo_isolation",
+      "model": "malformed_truncated_and_unmetered_responses_fail_closed_with_usage_status",
+      "patch": "path_traversal_symlink_escape_and_stale_expected_hash_denied",
+      "publication": "lost_draft_pr_receipt_reconciled_read_only_without_replaying_writes",
+      "recovery": "real_sigkill_pauses_run_fences_old_epoch_and_resumes_without_duplicate_actions",
+      "repair": "budget_exhaustion_and_absent_defect_stop_without_proposal",
+      "sandbox": "hostile_repository_tests_cannot_reach_host_files_credentials_or_network",
+      "tests": "eighteen_security_failure_and_recovery_scenarios"
+    },
+    "tests": [
+      "tests/test_v34_security_recovery.py"
+    ],
+    "timeout_seconds": 600
+  },
   "R05": {
     "components": {
       "approval": "binds_repository_base_commit_tested_tree_and_payload_hash",
