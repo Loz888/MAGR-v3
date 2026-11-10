@@ -1,0 +1,191 @@
+{
+  "card": "V35-R04",
+  "title": "把真实 Draft PR 发布接入 Outbox/Dispatcher",
+  "status": "PASS",
+  "commit": "b61470cb4f82196447cdaa21e40ce1d6ed6344c2",
+  "result_commit": "b61470cb4f82196447cdaa21e40ce1d6ed6344c2",
+  "commit_note": "两次本地提交：第一次包含发布 outbox、迁移 0025、Service/API 接入、测试与卡片/verification 更新；第二次仅记录本 accept.json。均未推送。",
+  "parent_commit": "2d74d211b13399fb332a38f97880dc2c662f3f8d",
+  "dependency_commit": "2d74d211b13399fb332a38f97880dc2c662f3f8d",
+  "base_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+  "accepted_at": "2026-11-10T04:50:24Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (make doctor PASS; tests use a disposable database with migration 0025)",
+    "redis": "real (make doctor PASS; tests do not use it)",
+    "docker": "not_used",
+    "model": "not_used",
+    "network": "not_used",
+    "github": "not_used; in-process recording transport only"
+  },
+  "worktree_at_acceptance": "实现完成、卡片与队列已更新；accept.json 待提交；evidence/（gitignore）与本地脚本不在版本控制内。",
+  "commands": [
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/workbench/publication.py", "src/mgar_v3/workbench/service.py", "src/mgar_v3/workbench/domain.py", "src/mgar_v3/coordination/engine.py", "src/mgar_v3/effects/dispatcher.py", "src/mgar_v3/repair/pr_delivery.py", "src/mgar_v3/api.py", "tests/test_v35_r04.py"],
+      "exit_code": 0,
+      "result": "All checks passed",
+      "purpose": "本卡改动文件的静态检查",
+      "log": "evidence/v35/R04/20261110T044519Z-r04/05-ruff-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/workbench/publication.py", "src/mgar_v3/workbench/service.py", "src/mgar_v3/workbench/domain.py", "src/mgar_v3/coordination/engine.py", "src/mgar_v3/effects/dispatcher.py", "src/mgar_v3/repair/pr_delivery.py", "src/mgar_v3/api.py", "tests/test_v35_r04.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 8 source files",
+      "purpose": "本卡改动模块的类型检查",
+      "log": "evidence/v35/R04/20261110T044519Z-r04/06-mypy-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "combined-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v35_r04.py", "tests/test_v34_pr_delivery.py", "tests/test_v34_repository_api.py", "tests/test_recovery.py"],
+      "exit_code": 0,
+      "duration_seconds": 96.07,
+      "counts": {"tests": 45, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "R04 发布测试 + R05 PR 交付回归 + V3.4 Workbench approve 回归 + 既有 Dispatcher 恢复测试",
+      "log": "evidence/v35/R04/20261110T044519Z-r04/07-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["make", "migrate"],
+      "exit_code": 0,
+      "result": {"applied": []},
+      "first_application": {
+        "result": {"applied": ["0025_workbench_publications.sql"]},
+        "log": "evidence/v35/R04/20261110T043555Z-r04/01-migrate.log"
+      },
+      "purpose": "首次执行应用 0025；再次执行幂等（本卡最终 evidence 目录记录 applied=[]）",
+      "log": "evidence/v35/R04/20261110T044519Z-r04/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["make", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用与真实 GitHub 写入）",
+      "log": "evidence/v35/R04/20261110T044519Z-r04/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/R04/20261110T044519Z-r04/03-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["make", "verify", "TASK=V35-R04"],
+      "exit_code": 0,
+      "duration_seconds": 103.768,
+      "counts": {"tests": 45, "failures": 0, "errors": 0, "skipped": 0},
+      "source_sha256": "535d73de177e2f39fa49bee20553f5636ddf5e4825fd77aacd70e4582e16ea24",
+      "finished_source_sha256": "535d73de177e2f39fa49bee20553f5636ddf5e4825fd77aacd70e4582e16ea24",
+      "git_commit": "2d74d211b13399fb332a38f97880dc2c662f3f8d",
+      "attempt": "evidence/V35-R04/20261110T044525Z-e285c13a",
+      "note": "verify 记录的是提交前 HEAD；source_sha256 对应实现提交的源码/测试指纹。",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_RUN",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "NOT_RUN",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡没有付费模型调用、真实 GitHub 写入或网络依赖安装。发布链路用内存 recording transport 证明：HTTP 请求只入队、租约 dispatcher 顺序执行 branch→commit→Draft PR、只读对账、幂等与失效语义。真实 Draft PR 必须在单独授权测试仓库执行，故 live_github_write_gate = NOT_RUN；未调用付费模型与真实 Agent，live_model_gate / live_agent_gate = NOT_RUN。security_gate 仅覆盖本卡不变量：审批内容寻址绑定、默认拒绝写、只读凭据不写、写权限撤销即失效、base 前移拒绝、未知结果只读对账且不重放、payload 变化使旧发布 stale；端到端安全汇总由 V35-E03 完成。",
+  "must_pass": [
+    {
+      "item": "复用 R05 ReviewBundle + PublicationApproval，发布统一到 Engine 审批的 Action/Outbox/Dispatcher，HTTP 请求内不直接调用 GitHub 写 API",
+      "result": "PASS",
+      "evidence": "migration 0025 新增 app.workbench_publications / app.workbench_publication_steps；WorkbenchPublicationLedger.enqueue() 只落库，PublicationDispatcher.tick() 经 Engine.claim_publication() 租约领取后才调用 WorkbenchDraftTransport.send()。::test_fixture_approval_is_dispatched_through_the_engine_outbox 断言状态、attempts 与三步骤回执均来自 outbox 行。"
+    },
+    {
+      "item": "审批绑定 repository、base Commit、tested Tree、Diff SHA、完整文件内容与 Payload Hash",
+      "result": "PASS",
+      "evidence": "PublicationApproval.grant() 与 verify_approval() 以 actor/repository/base_sha/tree_hash/payload_hash/diff_sha256/approved_at 内容寻址 approval_id；ReviewBundle 校验 payload_hash 来自完整 files 与 diff。::test_approval_must_bind_the_exact_reviewed_bundle 断言篡改后的 bundle 以 APPROVAL_STALE 被拒。"
+    },
+    {
+      "item": "读写 Token 分离；首次写前复查 base SHA；顺序 branch → commit → Draft PR（不 merge）；步骤回执写 PG",
+      "result": "PASS",
+      "evidence": "PublicationWriteScope 分离 reader/writer 并校验 writer.scope；send() 在 DraftPRPublisher.review 后复查 base SHA，再按 ordinal 0/1/2 写 branch/commit/pull_request 并逐步骤回执。::test_base_branch_move_is_refused_before_any_write 断言零远端写与 BASE_CHANGED；::test_read_only_credential_never_writes 断言只读凭据零写。"
+    },
+    {
+      "item": "结果未知时只读对账，查不到也不得盲目重试",
+      "result": "PASS",
+      "evidence": "写后异常与回执写失败升级为 PublicationUncertain → outcome_unknown；Engine.reconcile_publication() 只接受外部 ID 且 transport.find() 全程只读。::test_write_timeout_after_remote_success_is_reconciled_without_replay 断言 writes 不变、pulls 仍为 1、状态转 published 且 reason_code=RECONCILED。"
+    },
+    {
+      "item": "每个审批有稳定幂等键；相同审批并发只发布一次；撤销或 Payload 变化即失效",
+      "result": "PASS",
+      "evidence": "UNIQUE(task_id, finding_id, payload_hash) + ON CONFLICT DO NOTHING；不同 payload 的旧行置 stale（PAYLOAD_CHANGED）；revoke() 后写前校验拒绝。::test_duplicate_approval_is_idempotent_and_publishes_once 断言只有一行且并发两次 publish 仅产生 branch/commit/pull_request 各一次；::test_payload_change_invalidates_a_queued_publication 断言旧行 stale 且只有新行到达远端；::test_revoked_write_scope_is_refused_before_dispatch 断言 PUBLICATION_WRITE_REVOKED 且零写。"
+    },
+    {
+      "item": "无 GitHub 写授权时输出完整 Patch/Bundle，状态为 exported 或 waiting_approval，不得声称已发布",
+      "result": "PASS",
+      "evidence": "approve() 在 live 且无独立写授权时以 exported 入队；view 保持 waiting_approval、next_action=approve、pull_request 为空且 diff 完整。::test_live_approval_without_write_authorization_exports_the_full_patch 断言 attempts=0 与 reason_code=WRITE_PERMISSION_REQUIRED。"
+    },
+    {
+      "item": "负向测试：Payload 变更、base 前移、重复审批、写 API 超时且远端已成功、Token 只读、写权限撤销、并发两次发布",
+      "result": "PASS",
+      "evidence": "七项分别由 test_payload_change_invalidates_a_queued_publication、test_base_branch_move_is_refused_before_any_write、test_duplicate_approval_is_idempotent_and_publishes_once、test_write_timeout_after_remote_success_is_reconciled_without_replay、test_read_only_credential_never_writes、test_revoked_write_scope_is_refused_before_dispatch 与重复审批用例中的并发 publish 覆盖；另有 test_recovery_marks_in_flight_publication_unknown_without_retry 覆盖重启恢复。"
+    },
+    {
+      "item": "工程门禁命令原样通过",
+      "result": "PASS",
+      "evidence": "make verify TASK=V35-R04：45 passed / 0 failed / 0 skipped；组合回归 45 passed；scoped ruff 与 mypy exit 0；make migrate 首次应用 0025、重复执行幂等；make doctor PG/Redis PASS；git diff --check exit 0。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "发布 outbox 使用独立 app.workbench_publications 表而非 app.actions",
+      "handling": "app.actions.run_id 强制引用 app.runs，而 Workbench 任务没有 Engine run；新表沿用相同的 claim/lease/result/reconcile/recover 语义，并由 Engine 提供事务边界，避免伪造 Run。"
+    },
+    {
+      "issue": "fixture 模式仍在 approve 请求内完成发布",
+      "handling": "为保持 V3.4 Workbench 同步 pr_created 契约，请求内使用内存 transport 驱动同一个 PublicationDispatcher.tick()，仍经过 outbox 行、租约与步骤回执；live 模式请求内绝不写远端。"
+    },
+    {
+      "issue": "未执行真实 GitHub Draft PR 写入",
+      "handling": "无用户单独授权的测试仓库与写凭据；按卡内验收口径 live_github_write_gate = NOT_RUN，发布顺序、回执、对账与幂等仅由内存 recording transport 证明。"
+    },
+    {
+      "issue": "实现与 accept 文档分两次本地提交",
+      "handling": "第一次提交实现、测试与卡片/队列；第二次仅提交本 accept.json；均未推送，result_commit 取实现提交。"
+    },
+    {
+      "issue": "仓库级 make lint / make typecheck 仍存在本卡之外的既有问题",
+      "handling": "失败集中在 quality_eval、repository_analysis 等未改动模块（25 个 ruff / 22 个 mypy，与 R03 基线一致）；按既有口径使用 scoped ruff/mypy 核验本卡文件。"
+    }
+  ],
+  "artifacts": {
+    "publication": "src/mgar_v3/workbench/publication.py",
+    "workbench": "src/mgar_v3/workbench/service.py",
+    "domain": "src/mgar_v3/workbench/domain.py",
+    "engine": "src/mgar_v3/coordination/engine.py",
+    "dispatcher": "src/mgar_v3/effects/dispatcher.py",
+    "pr_delivery": "src/mgar_v3/repair/pr_delivery.py",
+    "api": "src/mgar_v3/api.py",
+    "migration": "migrations/0025_workbench_publications.sql",
+    "tests": "tests/test_v35_r04.py",
+    "verification": "config/verification.json",
+    "card": "docs/v35/cards/V35-R04.md",
+    "queue": "docs/v35/TASK_QUEUE.md",
+    "final_evidence": "evidence/v35/R04/20261110T044519Z-r04/",
+    "verify_attempt": "evidence/V35-R04/20261110T044525Z-e285c13a/"
+  },
+  "next_card": "V35-R05",
+  "next_card_prerequisites": [
+    "复核 accept 提交后的 HEAD 与 config/verification.json 的 V35-R04 条目",
+    "R05 只能消费已审批的 PublicationRecord 与 Review Bundle，不得绕过 Workbench 发布 outbox 直接写 GitHub",
+    "真实 GitHub 写入仍需单独 live_github_write_gate 审批；engineering_gate=PASS 不蕴含 live_github_write_gate=PASS",
+    "保持默认拒绝写、只读对账不重放、payload 变化即失效与 waiting_approval/exported 语义"
+  ]
+}
