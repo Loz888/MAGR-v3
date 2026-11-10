@@ -34,6 +34,7 @@ from mgar_v3.repair.runtime import SnapshotRepairRuntime
 from mgar_v3.repair.sandbox_executor import (
     GO_COMMAND,
     SandboxExecutor,
+    SandboxLimits,
 )
 from mgar_v3.repair.workspace import tree
 from mgar_v3.repair.worktree import FileEdit, PatchWorktree, sha256_text
@@ -379,6 +380,18 @@ def test_snapshot_refuses_bytes_tampered_after_materialization(tmp_path: Path) -
     assert caught.value.code == "WORKSPACE_FILE_MISMATCH"
 
 
+def test_snapshot_rejects_a_symlink_that_escapes_the_workspace(tmp_path: Path) -> None:
+    workspace, _ = _workspace(tmp_path, _go_files(GO_BUGGY), "golang/example")
+    target = workspace.worktree / "internal/cmd/weave/weave.go"
+    target.unlink()
+    target.symlink_to("/etc/hostname")
+
+    with pytest.raises(DomainError) as caught:
+        workspace.snapshot()
+
+    assert caught.value.code == "WORKSPACE_SYMLINK_DENIED"
+
+
 def test_handoff_worktree_rebuilds_the_fixed_snapshot_tree(tmp_path: Path) -> None:
     files = _go_files(GO_BUGGY)
     workspace, commit = _workspace(tmp_path, files, "golang/example")
@@ -432,6 +445,10 @@ def test_go_snapshot_repair_runs_in_the_restricted_sandbox(tmp_path: Path) -> No
     assert report.baseline.policy.network == "none"
     assert report.baseline.policy.read_only is True
     assert report.baseline.policy.secrets_injected is False
+    assert report.baseline.policy.user == "65532:65532"
+    assert report.baseline.policy.cap_drop == ["ALL"]
+    assert report.baseline.policy.pids_limit > 0
+    assert report.baseline.policy.memory_bytes > 0
     assert report.baseline.workspace_tree == tree(files)
     assert report.proposal is not None
     assert report.proposal.verified is True
@@ -583,6 +600,17 @@ def test_host_is_unreachable():
         )
         assert timed_out.status == "timeout"
     assert executor.cleanup() == 0
+
+
+def test_sandbox_output_is_bounded_and_truncated() -> None:
+    flood = "def test_flood():\n    for _ in range(200):\n        print('x' * 100)\n"
+    with SandboxExecutor(limits=SandboxLimits(output_bytes=4096)) as executor:
+        receipt, _ = executor.run({"tests/test_flood.py": flood}, _python_adapter(), timeout=10)
+
+    assert receipt.status == "sandbox_error"
+    assert receipt.error == "Sandbox output exceeded its bound"
+    assert receipt.log_truncated is True
+    assert receipt.log_bytes <= 4096
 
 
 def test_stale_sandbox_containers_are_reclaimed_by_owner_label() -> None:
