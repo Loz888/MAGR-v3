@@ -12,6 +12,7 @@ from mgar_v3.agents.verify import render, verify_findings
 from mgar_v3.domain import DomainError, digest
 from mgar_v3.graph.checkpoints import checkpoint_saver
 from mgar_v3.mcp.r4 import TaskTools
+from mgar_v3.routing.experts import ExpertContext, ExpertRouter
 
 if TYPE_CHECKING:
     from mgar_v3.graph.runner import Runner
@@ -96,6 +97,14 @@ def execute_experts(
 
     def plan(state: ExpertState) -> ExpertState:
         context = engine.tools.bind_context(run_id, epoch, state["input_revision"])
+        decision = ExpertRouter().route(
+            ExpertContext(
+                task=state["question"],
+                question=state["question"],
+                input_revision=state["input_revision"],
+            )
+        )
+        roles = decision.roles or ["repo"]
         tasks = [
             Assignment(
                 task_id=f"r{state['input_revision']}:0:{role}",
@@ -105,13 +114,22 @@ def execute_experts(
                 input_revision=state["input_revision"],
                 snapshot_ids=[UUID(s) for s in context["knowledge_snapshot_ids"]],
             )
-            for role in ("knowledge", "repo", "data")
+            for role in roles
         ]
         value = InvestigationPlan(
-            question=state["question"], tasks=tasks, required_roles=["knowledge", "repo", "data"]
+            question=state["question"], tasks=tasks, required_roles=roles
         )
         with engine.transaction() as conn:
             engine._run(conn, run_id, epoch)
+            engine._event(
+                conn,
+                run_id,
+                "expert_route",
+                mode=decision.mode,
+                roles=list(roles),
+                signals=[item.kind for item in decision.signals],
+                reason=decision.reason,
+            )
             engine._event(
                 conn,
                 run_id,

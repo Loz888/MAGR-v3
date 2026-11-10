@@ -910,5 +910,33 @@
       "tests/test_v32_repository_analysis.py"
     ],
     "timeout_seconds": 900
+  },
+  "V35-X01": {
+    "components": {
+      "benchmark": "offline_recorded_arms_success_cost_latency_simple_overhead_and_honest_conclusion",
+      "budget": "max_experts_rounds_calls_per_revision_and_timeout_hard_caps",
+      "dedupe": "same_revision_and_question_reuses_cached_advice_without_new_calls_or_budget",
+      "degradation": "timeout_failure_empty_conflict_invalid_evidence_and_missing_provider_degrade_without_blocking",
+      "dispatch": "parallel_experts_share_one_authoritative_input_revision",
+      "experts": "read_only_advisory_without_write_access_or_main_state_mutation",
+      "live_agent": "NOT_RUN_no_paid_model",
+      "live_github_write": "NOT_RUN_no_authorized_test_repository",
+      "live_model": "NOT_RUN_no_paid_model",
+      "main_agent": "payload_exposes_optional_expert_advice_with_main_agent_decides_and_write_access_false",
+      "model": "fixture_deterministic_no_network",
+      "postgres": "real_disposable_database_r4_expert_graph_regression",
+      "r4_graph": "expert_route_event_and_on_demand_role_plan_keep_existing_fixture_three_role_question",
+      "redis": "not_used",
+      "routing": "deterministic_triggers_only_no_model_decision",
+      "triggers": "multi_file_dependency_verification_failure_security_conflict_user_request_and_documented_data_cross_source"
+    },
+    "tests": [
+      "tests/test_v35_x01.py",
+      "tests/test_r4_experts.py",
+      "tests/test_r4_recovery.py",
+      "tests/test_v35_m02.py",
+      "tests/test_v32_repository_analysis.py"
+    ],
+    "timeout_seconds": 1200
   }
 }

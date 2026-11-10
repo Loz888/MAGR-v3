@@ -126,12 +126,71 @@ def run_sync(value: Any) -> Any:
         return pool.submit(asyncio.run, value).result()  # type: ignore[arg-type]
 
 
-
 class RepoAnalysisAgent:
     def __init__(self, runtime: AgentRuntime):
         self.runtime = runtime
         self._recall_cache: dict[str, dict[str, Any] | None] = {}
         self._failure_cache: dict[tuple[str, str], list[dict[str, Any]]] = {}
+        self._expert_cache: dict[str, dict[str, Any]] = {}
+
+    def _expert_advice(
+        self, spec: AnalysisSpec, revision: str
+    ) -> dict[str, Any] | None:
+        """Optional read-only expert advice for the current revision.
+
+        The main agent keeps the final decision and every permission.  When the
+        runtime has no expert hook, the default is a single agent and no extra
+        model call is made.
+        """
+
+        hook = getattr(self.runtime, "expert_advice", None)
+        if not callable(hook):
+            return None
+        cached = self._expert_cache.get(revision)
+        if cached is not None:
+            return cached
+        try:
+            result = hook(spec, revision)
+        except Exception:
+            result = {
+                "mode": "experts",
+                "advisories": [],
+                "degraded": True,
+                "stopped_reason": "EXPERT_FAILED",
+            }
+        if not isinstance(result, dict):
+            result = {
+                "mode": "experts",
+                "advisories": [],
+                "degraded": True,
+                "stopped_reason": "EXPERT_SCHEMA",
+            }
+        compact = {
+            "mode": result.get("mode", "single_agent"),
+            "roles": list(result.get("roles") or [])[:3],
+            "degraded": bool(result.get("degraded", False)),
+            "stopped_reason": result.get("stopped_reason"),
+            "advisories": [
+                {
+                    "role": item.get("role"),
+                    "status": item.get("status"),
+                    "summary": str(item.get("summary") or "")[:600],
+                    "facts": list(item.get("facts") or [])[:4],
+                    "verification_suggestions": list(
+                        item.get("verification_suggestions") or []
+                    )[:4],
+                    "evidence_ids": list(item.get("evidence_ids") or [])[:16],
+                    "read_only": True,
+                    "may_write": False,
+                }
+                for item in list(result.get("advisories") or [])[:3]
+                if isinstance(item, dict)
+            ],
+            "main_agent_decides": True,
+            "write_access": False,
+        }
+        self._expert_cache[revision] = compact
+        return compact
 
     def _spec_epoch(self, state: AnalysisState) -> tuple[AnalysisSpec, int]:
         spec = self.runtime.store.spec(UUID(state["run_id"]))
@@ -346,6 +405,7 @@ class RepoAnalysisAgent:
             recent_window=6,
         ).build(request)
         bundle.assert_current(revision)
+        expert_advice = self._expert_advice(spec, revision)
         history = [
             item.model_dump(mode="json") for item in bundle.recent_observations
         ]
@@ -368,6 +428,13 @@ class RepoAnalysisAgent:
                 "prior_experience": list(recall.get("plan_hints") or []),
                 "confirmed_facts": list(recall.get("confirmed_facts") or []),
                 "known_failures": list(state.get("known_failures") or []),
+                "expert_advice": expert_advice
+                or {
+                    "mode": "single_agent",
+                    "advisories": [],
+                    "main_agent_decides": True,
+                    "write_access": False,
+                },
                 "context_metrics": (
                     {
                         "input_tokens": metrics.input_tokens,
