@@ -47,6 +47,7 @@ RepairStatus = Literal[
     "exhausted",
     "budget_exhausted",
     "deadline_exceeded",
+    "provider_error",
 ]
 EpisodeStatus = Literal[
     "succeeded",
@@ -59,6 +60,7 @@ EpisodeStatus = Literal[
     "patch_rejected",
     "public_tests_failed",
     "verification_failed",
+    "provider_error",
 ]
 FeedbackStage = Literal["patch", "public_tests", "verification"]
 
@@ -93,6 +95,26 @@ class RepairFeedback(Model):
     failed_tests: Annotated[list[str], Field(max_length=64)] = Field(default_factory=list)
 
 
+class PatchProposalRejected(DomainError):
+    """A provider rejection that the repair loop can feed back to the next try.
+
+    ``retryable=False`` means the call must not be repeated: a paid outcome is
+    unknown, usage could not be accounted, or the model interface is unavailable.
+    """
+
+    def __init__(
+        self,
+        code: str,
+        message: str,
+        *,
+        retryable: bool = True,
+        details: Mapping[str, object] | None = None,
+    ) -> None:
+        super().__init__(code, message, 422)
+        self.retryable = retryable
+        self.details = dict(details or {})
+
+
 class RepairPrompt(Model):
     """The public view of a repair: no hidden verification content."""
 
@@ -102,6 +124,8 @@ class RepairPrompt(Model):
     attempt: Annotated[int, Field(ge=1, le=10)]
     max_attempts: Annotated[int, Field(ge=1, le=10)]
     files: dict[str, str]
+    allowed_paths: Annotated[list[str], Field(min_length=1, max_length=200)]
+    limits: PatchLimits = Field(default_factory=PatchLimits)
     feedback: Annotated[list[RepairFeedback], Field(max_length=10)] = Field(default_factory=list)
 
 
@@ -370,18 +394,48 @@ class RepairAgent:
                         "Repair test-run budget exhausted",
                         baseline,
                     )
-                plan = provider.propose(
-                    RepairPrompt(
-                        repository=request.repository,
-                        objective=request.objective,
-                        language=request.language,
-                        attempt=attempt,
-                        max_attempts=request.budget.max_attempts,
-                        files=worktree.snapshot(),
-                        feedback=list(feedback),
-                    )
-                )
                 tree_before = worktree.tree_hash()
+                try:
+                    plan = provider.propose(
+                        RepairPrompt(
+                            repository=request.repository,
+                            objective=request.objective,
+                            language=request.language,
+                            attempt=attempt,
+                            max_attempts=request.budget.max_attempts,
+                            files=worktree.snapshot(),
+                            allowed_paths=list(request.allowed_paths),
+                            limits=request.patch_limits,
+                            feedback=list(feedback),
+                        )
+                    )
+                except PatchProposalRejected as exc:
+                    reason = f"{exc.code}: {exc}"
+                    item = RepairFeedback(
+                        attempt=attempt,
+                        stage="patch",
+                        code=exc.code,
+                        message=str(exc)[:1000],
+                    )
+                    feedback.append(item)
+                    attempts.append(
+                        _attempt_record(
+                            attempt=attempt,
+                            plan_summary=f"Provider rejected: {exc.code}",
+                            accepted=False,
+                            patch=None,
+                            tree_before=tree_before,
+                            public=None,
+                            verification=None,
+                            feedback=item,
+                        )
+                    )
+                    self._remember(
+                        request, "patch_rejected", attempt, tree_before, reason, []
+                    )
+                    if not exc.retryable:
+                        return stop("provider_error", "patch", reason, baseline)
+                    continue
                 try:
                     frozen = sorted(
                         edit.path for edit in plan.edits if edit.path in set(request.frozen_paths)

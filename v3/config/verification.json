@@ -757,5 +757,23 @@
       "tests/test_v33_defect_verifier.py"
     ],
     "timeout_seconds": 600
+  },
+  "V35-R01": {
+    "components": {
+      "accounting": "usage_required_prompt_completion_tokens_cost_parse_errors_and_success_rate",
+      "e01_replay": "three_click_patch_failures_provider_level_applied_or_recoverable",
+      "model": "mock_structured_no_network",
+      "postgres": "not_used",
+      "prompt": "allowed_paths_only_with_latest_sha_and_no_hidden_tests",
+      "provider": "strict_json_full_file_edits_with_preimage_sha_no_shell_no_diff",
+      "redis": "not_used",
+      "worktree": "real_local_temp_worktree_apply"
+    },
+    "tests": [
+      "tests/test_v35_r01.py",
+      "tests/test_v34_patch_workspace.py",
+      "tests/test_v34_repair_agent.py"
+    ],
+    "timeout_seconds": 600
   }
 }

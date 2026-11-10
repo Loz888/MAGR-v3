@@ -53,7 +53,7 @@ DEFAULT_PROTECTED_GLOBS = [
 ]
 
 
-def _validated_path(value: str) -> str:
+def validate_patch_path(value: str) -> str:
     """Reject anything that is not a safe, visible, repository-relative path."""
 
     try:
@@ -69,11 +69,18 @@ def _validated_path(value: str) -> str:
     return value
 
 
-def _sha256(value: str) -> str:
+def is_protected_path(path: str, globs: Sequence[str]) -> bool:
+    """Report whether an edit target is a protected configuration or manifest."""
+
+    pure = PurePosixPath(path)
+    return any(pure.match(pattern) for pattern in globs)
+
+
+def sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode()).hexdigest()
 
 
-def _line_delta(before: str, after: str) -> tuple[int, int]:
+def line_delta(before: str, after: str) -> tuple[int, int]:
     before_lines = before.splitlines()
     after_lines = after.splitlines()
     added = removed = 0
@@ -172,15 +179,15 @@ class PatchWorktree:
         worktree_root: str | Path | None = None,
     ):
         self.limits = limits or PatchLimits()
-        self.allowed_paths = {_validated_path(path) for path in allowed_paths}
+        self.allowed_paths = {validate_patch_path(path) for path in allowed_paths}
         if not self.allowed_paths:
             raise DomainError("PATCH_PATH_DENIED", "At least one allowed path is required", 403)
         initial: dict[str, str] = {}
         for path, content in files.items():
-            normalized = _validated_path(path)
+            normalized = validate_patch_path(path)
             if not isinstance(content, str):
                 raise DomainError("PATCH_FORMAT", "Worktree files must be text", 415)
-            _validate_content(normalized, content, self.limits)
+            validate_patch_content(normalized, content, self.limits)
             initial[normalized] = content
         parent = Path(worktree_root) if worktree_root is not None else None
         self.root = Path(
@@ -228,7 +235,7 @@ class PatchWorktree:
     # -- tools ---------------------------------------------------------
 
     def read_worktree_file(self, path: str, *, max_bytes: int | None = None) -> FileView:
-        normalized = _validated_path(path)
+        normalized = validate_patch_path(path)
         target = self._target(normalized)
         if not target.is_file():
             raise DomainError(
@@ -245,7 +252,7 @@ class PatchWorktree:
         return FileView(
             path=normalized,
             content=content,
-            sha256=_sha256(content),
+            sha256=sha256_text(content),
             bytes=len(raw),
             lines=len(content.splitlines()),
         )
@@ -271,7 +278,7 @@ class PatchWorktree:
         added_lines = removed_lines = 0
         written = 0
         for edit in edits:
-            path = _validated_path(edit.path)
+            path = validate_patch_path(edit.path)
             self._require_authorized(path)
             self._require_unprotected(path)
             before = files.get(path)
@@ -281,9 +288,9 @@ class PatchWorktree:
                 if before is not None:
                     raise DomainError("PATCH_CONFLICT", f"{path!r} already exists", 409)
                 assert edit.content is not None
-                _validate_content(path, edit.content, self.limits)
+                validate_patch_content(path, edit.content, self.limits)
                 files[path] = edit.content
-                added, removed = _line_delta("", edit.content)
+                added, removed = line_delta("", edit.content)
                 changed.append(
                     ChangedFile(
                         path=path,
@@ -291,19 +298,19 @@ class PatchWorktree:
                         lines_added=added,
                         lines_removed=removed,
                         bytes=len(edit.content.encode()),
-                        sha256=_sha256(edit.content),
+                        sha256=sha256_text(edit.content),
                     )
                 )
                 written += len(edit.content.encode())
             elif edit.operation == "update":
                 if before is None:
                     raise DomainError("PATCH_NOT_FOUND", f"{path!r} does not exist", 404)
-                if _sha256(before) != edit.expected_sha256:
+                if sha256_text(before) != edit.expected_sha256:
                     raise DomainError("PATCH_STALE", f"{path!r} changed since it was read", 409)
                 assert edit.content is not None
-                _validate_content(path, edit.content, self.limits)
+                validate_patch_content(path, edit.content, self.limits)
                 files[path] = edit.content
-                added, removed = _line_delta(before, edit.content)
+                added, removed = line_delta(before, edit.content)
                 changed.append(
                     ChangedFile(
                         path=path,
@@ -311,17 +318,17 @@ class PatchWorktree:
                         lines_added=added,
                         lines_removed=removed,
                         bytes=len(edit.content.encode()),
-                        sha256=_sha256(edit.content),
+                        sha256=sha256_text(edit.content),
                     )
                 )
                 written += len(edit.content.encode())
             else:
                 if before is None:
                     raise DomainError("PATCH_NOT_FOUND", f"{path!r} does not exist", 404)
-                if _sha256(before) != edit.expected_sha256:
+                if sha256_text(before) != edit.expected_sha256:
                     raise DomainError("PATCH_STALE", f"{path!r} changed since it was read", 409)
                 del files[path]
-                added, removed = _line_delta(before, "")
+                added, removed = line_delta(before, "")
                 changed.append(
                     ChangedFile(
                         path=path,
@@ -419,7 +426,7 @@ class PatchWorktree:
                 continue
             if before is None:
                 assert after is not None
-                added, removed = _line_delta("", after)
+                added, removed = line_delta("", after)
                 changed.append(
                     ChangedFile(
                         path=path,
@@ -427,11 +434,11 @@ class PatchWorktree:
                         lines_added=added,
                         lines_removed=removed,
                         bytes=len(after.encode()),
-                        sha256=_sha256(after),
+                        sha256=sha256_text(after),
                     )
                 )
             elif after is None:
-                added, removed = _line_delta(before, "")
+                added, removed = line_delta(before, "")
                 changed.append(
                     ChangedFile(
                         path=path,
@@ -443,7 +450,7 @@ class PatchWorktree:
                     )
                 )
             else:
-                added, removed = _line_delta(before, after)
+                added, removed = line_delta(before, after)
                 changed.append(
                     ChangedFile(
                         path=path,
@@ -451,7 +458,7 @@ class PatchWorktree:
                         lines_added=added,
                         lines_removed=removed,
                         bytes=len(after.encode()),
-                        sha256=_sha256(after),
+                        sha256=sha256_text(after),
                     )
                 )
         return changed
@@ -482,8 +489,7 @@ class PatchWorktree:
             )
 
     def _require_unprotected(self, path: str) -> None:
-        pure = PurePosixPath(path)
-        if any(pure.match(pattern) for pattern in self.limits.protected_globs):
+        if is_protected_path(path, self.limits.protected_globs):
             raise DomainError("PATCH_PROTECTED", f"{path!r} is a protected configuration file", 403)
 
     def _target(self, path: str) -> Path:
@@ -539,7 +545,7 @@ class PatchWorktree:
             raise DomainError("PATCH_IO", "Worktree bytes diverged after writing", 500)
 
 
-def _validate_content(path: str, content: str, limits: PatchLimits) -> None:
+def validate_patch_content(path: str, content: str, limits: PatchLimits) -> None:
     if "\0" in content:
         raise DomainError("PATCH_FORMAT", f"{path!r} contains NUL bytes", 415)
     if len(content.encode()) > limits.max_file_bytes:
