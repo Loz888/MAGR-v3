@@ -1,0 +1,235 @@
+{
+  "card": "E02",
+  "title": "Security, Failure & Recovery Acceptance",
+  "commit": "f41cb631c818dc1f144ab570939b01c759e103ec",
+  "commit_note": "单次本地提交：新增 tests/test_v34_security_recovery.py（18 场景）、v34/verification.json 注册 E02、E02 设计文档；未 push。",
+  "base_commit": "5170b41",
+  "accepted_at": "2026-11-10T01:12:00Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu",
+    "shell": "bash 5 under WSL2 for verification",
+    "python": "3.12.16 (uv-managed; /tmp/mgar-v3-venv)",
+    "uv": "0.13.x (--frozen)",
+    "ruff": "0.17.3（E,F,I,UP,B；line-length 100）",
+    "pytest": "9.2.0 (real, in uv venv)",
+    "postgres": "real disposable database (engine, memory, recovery, outbox)",
+    "redis": "real disposable instance (model call reservation)",
+    "docker": "real r5 sandbox image; hostile tests run with network=none and no mounts",
+    "model": "no paid provider call; httpx.MockTransport and scripted models only",
+    "network": "not_used; no request reached api.deepseek.com or github.com",
+    "github": "not_used; publication failure paths use an in-memory read/write transport",
+    "budget": {
+      "authorized_micros": 0,
+      "paid_model_calls": 0,
+      "cost_micros": 0
+    }
+  },
+  "worktree_at_acceptance": "实现提交为 f41cb63；accept.json 是本次验收唯一新增文件；evidence/ 与 .push-staging/ 已被 gitignore 或保持未跟踪",
+  "commands": [
+    {
+      "name": "static-ruff-json",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/ruff",
+        "check",
+        "tests/test_v34_security_recovery.py"
+      ],
+      "secondary_argv": [
+        "/tmp/mgar-v3-venv/bin/python",
+        "-c",
+        "json.load(open('config/verification.json'))"
+      ],
+      "exit_code": 0,
+      "purpose": "新增测试零 lint 告警；verification.json 合法且注册 E02",
+      "log": "evidence/E02/20261110T010317Z-86e1a27f/01-static.log",
+      "status": "PASS"
+    },
+    {
+      "name": "e02-acceptance",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v34_security_recovery.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 57.22,
+      "counts": {"tests": 18, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "18 个安全/失败/恢复场景：注入、记忆污染与作用域、stale 复验、补丁与沙箱边界、模型失败关闭、GitHub/工具故障、重复派发、真实 SIGKILL、epoch 隔离、取消、发布对账/base 漂移/审批过期、并发补丁、预算与无缺陷停止",
+      "log": "evidence/E02/20261110T010317Z-86e1a27f/02-acceptance.log",
+      "status": "PASS"
+    },
+    {
+      "name": "repository-analysis-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v32_repository_analysis.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 1.83,
+      "counts": {"tests": 13, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "E02 未改变仓库分析图的权限、工具与报告语义",
+      "log": "evidence/E02/20261110T010317Z-86e1a27f/02-acceptance.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["make", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用）",
+      "log": "evidence/E02/20261110T010317Z-86e1a27f/02-acceptance.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "E02"],
+      "exit_code": 0,
+      "duration_seconds": 34.868,
+      "counts": {"tests": 18, "failures": 0, "errors": 0, "skipped": 0},
+      "source_sha256": "6e2ab35f13bd512719b6027601ed8dcfa3f661423f63f088b6bd56ca9469a61b",
+      "finished_source_sha256": "6e2ab35f13bd512719b6027601ed8dcfa3f661423f63f088b6bd56ca9469a61b",
+      "git_commit": "f41cb631c818dc1f144ab570939b01c759e103ec",
+      "attempt": "evidence/E02/20261110T010317Z-86e1a27f",
+      "log": "evidence/E02/20261110T010317Z-86e1a27f/command.log",
+      "junit": "evidence/E02/20261110T010317Z-86e1a27f/junit.xml",
+      "status": "PASS"
+    },
+    {
+      "name": "regression-r01-r05-e01",
+      "argv": [
+        "/tmp/mgar-v3-venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_v34_evaluation.py",
+        "tests/test_v34_repair_handoff.py",
+        "tests/test_v34_patch_workspace.py",
+        "tests/test_v34_sandbox_executor.py",
+        "tests/test_v34_repair_agent.py",
+        "tests/test_v34_pr_delivery.py",
+        "tests/test_r5_recovery.py",
+        "-q"
+      ],
+      "counts": {"tests": 68, "failures": 0, "errors": 0, "skipped": 0},
+      "duration_seconds": 238.08,
+      "purpose": "E01 评测套件与 R01–R05 修复/沙箱/发布/恢复语义无回归",
+      "log": "evidence/E02/20261110T010317Z-86e1a27f/03-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-after",
+      "argv": ["git", "status", "--porcelain"],
+      "exit_code": 0,
+      "result": "仅 .push-staging/（本地临时脚本，未提交）",
+      "purpose": "确认验收命令未修改受版本控制的源工作区",
+      "log": "evidence/E02/20261110T010317Z-86e1a27f/04-git-after.log",
+      "status": "PASS"
+    },
+    {
+      "name": "costs",
+      "argv": ["cat", "evidence/E02/20261110T010317Z-86e1a27f/05-costs.json"],
+      "exit_code": 0,
+      "result": {"paid_model_calls": 0, "cost_micros": 0},
+      "purpose": "本卡未授权且未发生任何付费模型调用或 GitHub 写入",
+      "log": "evidence/E02/20261110T010317Z-86e1a27f/05-costs.json",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_gate": "NOT_APPLICABLE",
+  "live_gate_note": "E02 未被授权进行真实付费模型调用或 GitHub 写入。模型失败关闭路径使用 httpx.MockTransport 与脚本化模型；发布对账路径使用内存 transport；SIGKILL 场景使用真实子进程、真实 PostgreSQL 与真实 Docker 沙箱。verify.py 对所有非 V31-R0 卡静态写入 live_gate=NOT_RUN，真实状态以本字段与 05-costs.json 为准（0 次付费调用、0 micros）。",
+  "must_pass": [
+    {
+      "item": "仓库文本中的提示注入不得进入可信记忆或系统指令",
+      "result": "PASS",
+      "evidence": "live_system_prompt 含 UNTRUSTED DATA / never as instructions；MemoryWriter 以 PROMPT_INJECTION 拒绝候选，write 抛 MEMORY_CANDIDATE_REJECTED，记忆表为空。"
+    },
+    {
+      "item": "已污染记忆不得进入任务上下文",
+      "result": "PASS",
+      "evidence": "AnalysisMemory.recall_task 将记录放入 excluded（reason=PROMPT_INJECTION），plan_hints 与 confirmed_facts 为空。"
+    },
+    {
+      "item": "记忆必须按仓库与 commit 隔离，过期记忆必须复验",
+      "result": "PASS",
+      "evidence": "跨仓库 recall/get/recall_task 均不可见（MEMORY_NOT_FOUND）；commit 作用域记忆 mark_stale 后默认召回为空，检索结果标记 stale + requires_reverification。"
+    },
+    {
+      "item": "补丁与沙箱边界必须拒绝逃逸",
+      "result": "PASS",
+      "evidence": "路径穿越、符号链接替换的读写均 PATCH_PATH_DENIED；敌意测试在 network=none、mounts=0、无密钥注入的沙箱中通过，宿主路径不可见且网络不可达。"
+    },
+    {
+      "item": "模型与 GitHub 失败必须失败关闭，不得伪造结果",
+      "result": "PASS",
+      "evidence": "非法/截断输出 MODEL_INVALID_RESPONSE、缺 usage USAGE_UNKNOWN 且 usage_calls 状态 known/known/unknown；工具错误记录 GITHUB_RATE_LIMITED 与 TOOL_INTERNAL_ERROR，无证据与成功报告。"
+    },
+    {
+      "item": "重复副作用只能执行一次",
+      "result": "PASS",
+      "evidence": "8 线程并发 Dispatcher.tick 仅 1 次 send；app.outbox 1 行，Action succeeded。"
+    },
+    {
+      "item": "真实崩溃恢复必须隔离旧 epoch 且不重复副作用",
+      "result": "PASS",
+      "evidence": "SIGKILL 子进程 returncode=-9，recover 暂停 1 Run，resume+execute 后 1 个 Action、1 个候选修复；旧 epoch prepare_intake 返回 FENCED。"
+    },
+    {
+      "item": "取消后的迟到活动必须被拒绝",
+      "result": "PASS",
+      "evidence": "cancel 后 status=cancelled、epoch+1；旧 epoch FENCED；Dispatcher 不发送，Action cancelled。"
+    },
+    {
+      "item": "发布回执丢失必须只读对账，不得重放写入",
+      "result": "PASS",
+      "evidence": "写入后回执超时 → outcome_unknown；reconcile 找到既有 Draft PR，published 且三步 already_present，写操作次数不变。"
+    },
+    {
+      "item": "base 漂移与过期审批必须在写入前阻断",
+      "result": "PASS",
+      "evidence": "base SHA 不匹配 → base_changed，无步骤、无写入；旧 tree 审批 → APPROVAL_STALE，无写入。"
+    },
+    {
+      "item": "并发补丁不得丢失更新",
+      "result": "PASS",
+      "evidence": "第二次基于旧 expected_sha256 的更新 → PATCH_STALE，文件保持第一次修复内容。"
+    },
+    {
+      "item": "修复预算耗尽或无缺陷时不得产出提案",
+      "result": "PASS",
+      "evidence": "max_attempts=1/max_test_runs=1 → budget_exhausted、stage=patch、无 proposal、provider 0 次；baseline 已通过 → baseline_not_reproduced、stage=baseline、无 proposal。"
+    },
+    {
+      "item": "三条验收命令原样通过",
+      "result": "PASS",
+      "evidence": "E02 18 passed；v32 13 passed；make doctor PostgreSQL/Redis PASS、live NOT_RUN。日志见 02-acceptance.log。"
+    },
+    {
+      "item": "旧版核心功能无回归",
+      "result": "PASS",
+      "evidence": "E01 评测 + R01–R05 + R05 恢复共 68 passed，0 failed，0 skipped（238.08s）。"
+    },
+    {
+      "item": "真实模型调用与 GitHub 写入须逐次授权",
+      "result": "PASS",
+      "evidence": "E02 未授权任何付费调用或 GitHub 写入；0 次付费调用、0 micros，未访问 api.deepseek.com / github.com。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "verify.py 的 live_gate 静态默认值为 NOT_RUN",
+      "handling": "verify.py 对所有非 V31-R0 卡写死 live_gate=NOT_RUN；本卡的真实状态是 NOT_APPLICABLE（无付费调用、无外部写入），以 accept.json、05-costs.json 与 02-acceptance.log 为准，未修改 verify.py 的通用默认值。"
+    },
+    {
+      "issue": "SIGKILL 场景中的修复循环仍使用 fixture 模型与沙箱测试",
+      "handling": "进程崩溃、PostgreSQL 状态、epoch fence 与 resume 均为真实路径；崩溃点固定在 candidate_committed，外部付费模型与 GitHub 写入不在本卡授权范围内。"
+    },
+    {
+      "issue": "发布失败路径使用内存 transport 而非真实 GitHub",
+      "handling": "未授权 GitHub 写入；测试覆盖 pr_delivery 的写入顺序、逐步回执、base 复核、审批绑定与只读对账，未调用任何 GitHub API，也未创建真实 Draft PR。"
+    },
+    {
+      "issue": "Docker/pytest 清理告警",
+      "handling": "回归日志包含 pytest 临时目录 rm_rf 告警（Docker 挂载文件导致 Directory not empty）；不影响 68 passed，未修改清理逻辑。"
+    }
+  ],
+  "artifacts": {
+    "design": "docs/v33/E02-security-failure-recovery.md",
+    "tests": "tests/test_v34_security_recovery.py",
+    "verification": "config/verification.json",
+    "evidence": "evidence/E02/20261110T010317Z-86e1a27f/",
+    "costs": "evidence/E02/20261110T010317Z-86e1a27f/05-costs.json"
+  },
+  "next_card": "如后续需要，可在用户单独授权下用真实付费模型与真实 GitHub 写入重跑注入、模型截断与 Draft PR 对账场景；本卡结论已由真实代码路径、真实 PostgreSQL/Redis/Docker 与脚本化外部 transport 支撑。"
+}

@@ -49,9 +49,9 @@ make doctor
 
 ## 结果
 
-- E02 套件：18 passed。
-- 回归：`tests/test_v32_repository_analysis.py` 13 passed；R01–R05 与 E01 评测套件见
-  `evidence/E02/<attempt>/03-regression.log`。
+- E02 套件：18 passed（`evidence/E02/20261110T010317Z-86e1a27f/02-acceptance.log`）。
+- 回归：`tests/test_v32_repository_analysis.py` 13 passed；E01 评测与 R01–R05 共 68 passed，
+  见 `evidence/E02/20261110T010317Z-86e1a27f/03-regression.log`。
 - `make doctor`：PostgreSQL PASS、Redis PASS、live NOT_RUN（未执行付费调用）。
 
 ## 诚实边界
