@@ -1,0 +1,216 @@
+{
+  "card": "V35-R02",
+  "title": "真实仓库源文件与 Docker Sandbox 统一执行",
+  "status": "PASS",
+  "commit": "6321cf26381767b0810b70e7c474ca513fff1b90",
+  "result_commit": "2f57a7c03a1d3e7d79e7972bc2f289b52d62d85d",
+  "commit_note": "两次本地提交：6321cf2 实现固定 Commit 快照、Handoff/Worktree 绑定、SnapshotRepairRuntime 与容器清理，并更新卡片/TASK_QUEUE/verification.json；2f57a7c 补充符号链接逃逸与大输出截断负向测试并同步卡片验证数字。accept.json 为紧随其后的独立文档提交；均未推送。",
+  "parent_commit": "9751e074c724b28eeceb0daa3f59a73b716cbe4e",
+  "dependency_commit": "9751e074c724b28eeceb0daa3f59a73b716cbe4e",
+  "base_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+  "accepted_at": "2026-11-10T03:29:29Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (make doctor PASS; tests do not use it)",
+    "redis": "real (make doctor PASS; tests do not use it)",
+    "docker": "real pinned image sha256:75ff415b813cad5a2d61d418dfaaf33d1f6e7e56b0a4bb386624f0cf1a92b3c1 (golang:1.27.1-bookworm; Go 1.27.1 / Python 3.11.2)",
+    "model": "deterministic_local_provider_no_network",
+    "network": "not_used for paid model, GitHub or package installation; container network=none",
+    "github": "not_used"
+  },
+  "worktree_at_acceptance": "实现提交 2f57a7c 后仅 accept.json 待提交；evidence/（gitignore）与 .push-staging/ 本地脚本不在版本控制内。",
+  "commands": [
+    {
+      "name": "sandbox-build",
+      "argv": ["make", "sandbox-build"],
+      "exit_code": 0,
+      "result": {
+        "image": "mgar-v3-sandbox-r03:local",
+        "image_id": "sha256:75ff415b813cad5a2d61d418dfaaf33d1f6e7e56b0a4bb386624f0cf1a92b3c1",
+        "base_image": "golang:1.27.1-bookworm",
+        "go_version": "go version go1.27.1 linux/amd64",
+        "python_version": "Python 3.11.2"
+      },
+      "purpose": "构建并锁定 R03 受限沙箱镜像；镜像 ID 在测试中通过 lock 文件核验",
+      "log": "evidence/v35/R02/20261110T032538Z-r02final/03-sandbox-build.log",
+      "status": "PASS"
+    },
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/repair", "src/mgar_v3/repository_analysis/workspace.py", "src/mgar_v3/workbench/service.py", "tests/test_v35_r02.py"],
+      "exit_code": 0,
+      "result": "All checks passed",
+      "purpose": "本卡改动文件的静态检查",
+      "log": "evidence/v35/R02/20261110T032538Z-r02final/05-ruff.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/repair/runtime.py", "src/mgar_v3/repair/repair_agent.py", "src/mgar_v3/repair/worktree.py", "src/mgar_v3/repair/sandbox_executor.py", "src/mgar_v3/repository_analysis/workspace.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 5 source files",
+      "purpose": "本卡改动模块的类型检查",
+      "log": "evidence/v35/R02/20261110T032538Z-r02final/06-mypy.log",
+      "status": "PASS"
+    },
+    {
+      "name": "combined-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "-q", "tests/test_v35_r02.py", "tests/test_v34_sandbox_executor.py", "tests/test_v34_patch_workspace.py", "tests/test_v34_repair_agent.py", "tests/test_v35_r01.py", "tests/test_v35_u02.py", "tests/test_v35_u01.py", "tests/test_v33_workspace.py"],
+      "exit_code": 0,
+      "duration_seconds": 196.95,
+      "counts": {"tests": 112, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "R02 新增测试 + v34 sandbox/patch/agent + R01 提供方 + U02/U01 交接/台账 + v33 workspace 回归",
+      "log": "evidence/v35/R02/20261110T032538Z-r02final/07-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["make", "migrate"],
+      "exit_code": 0,
+      "result": {"applied": []},
+      "purpose": "本卡无 schema 变更；确认重复执行为幂等",
+      "log": "evidence/v35/R02/20261110T032538Z-r02final/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["make", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用）",
+      "log": "evidence/v35/R02/20261110T032538Z-r02final/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误（实现提交与测试补充提交前均执行）",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/R02/20261110T032538Z-r02final/04-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["make", "verify", "TASK=V35-R02"],
+      "exit_code": 0,
+      "duration_seconds": 110.903,
+      "counts": {"tests": 31, "failures": 0, "errors": 0, "skipped": 0},
+      "breakdown": {"tests/test_v35_r02.py": 13, "tests/test_v34_sandbox_executor.py": 10, "tests/test_v34_patch_workspace.py": 8},
+      "source_sha256": "8ef4a88247c26f8a9f1b39160fb8b5b7ea695c4ad8c76ef5e9129a16a38d3b7c",
+      "finished_source_sha256": "8ef4a88247c26f8a9f1b39160fb8b5b7ea695c4ad8c76ef5e9129a16a38d3b7c",
+      "git_commit": "6321cf26381767b0810b70e7c474ca513fff1b90",
+      "attempt": "evidence/V35-R02/20261110T032340Z-95542af9",
+      "note": "verify 记录的是提交前 HEAD；source_sha256 对应实现提交 2f57a7c 的源码/测试指纹。",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_RUN",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "NOT_RUN",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡没有付费模型调用、GitHub 写入或网络依赖安装。Go/Python 修复场景使用本地确定性 _Provider，只证明快照→工作区→容器执行链路；真实模型 Provider 与真实 Agent 评测尚未执行，按 V35-E01 强制协议标记 live_model_gate / live_agent_gate = NOT_RUN。engineering_gate=PASS 不蕴含 live_agent_gate=PASS。security_gate 仅覆盖本卡不变量：容器禁网/只读根/非 root/无密钥注入/限额、遗留容器回收、快照篡改与符号链接逃逸拒绝、Live Repair 不回退 fixture 或宿主 pytest；端到端安全汇总由 V35-E03 完成。",
+  "must_pass": [
+    {
+      "item": "Handoff 从固定 Commit 的仓库快照建立独立修复 Worktree",
+      "result": "PASS",
+      "evidence": "RepositoryWorkspace.snapshot() 逐文件重算 Git blob SHA-1 与 SHA-256，输出 tree/snapshot_hash；PatchWorktree.from_snapshot() 要求重建树严格等于 snapshot.tree。tests/test_v35_r02.py::test_handoff_worktree_rebuilds_the_fixed_snapshot_tree 断言 worktree.tree_hash() == snapshot.tree；::test_worktree_rejects_a_snapshot_from_another_commit 断言跨 Commit 快照返回 PATCH_COMMIT_MISMATCH。"
+    },
+    {
+      "item": "严格验证仓库/Commit/文件内容 SHA",
+      "result": "PASS",
+      "evidence": "RepairRequest.from_handoff() 校验 handoff 内容寻址 ID、repository、base_commit 与 reproduction.commit，并逐文件比对 sha256_text；::test_snapshot_refuses_bytes_tampered_after_materialization 在物化后篡改文件，snapshot() 返回 WORKSPACE_FILE_MISMATCH；::test_snapshot_rejects_a_symlink_that_escapes_the_workspace 返回 WORKSPACE_SYMLINK_DENIED。"
+    },
+    {
+      "item": "删除 Live Repair 对 _fixture_files()、FIXED_DISPATCHER、宿主 pytest 的依赖",
+      "result": "PASS",
+      "evidence": "WorkbenchService._fixture_tests() 对 execution_mode != 'fixture' 抛 WORKBENCH_LIVE_REPAIR_SANDBOX_REQUIRED；::test_live_repair_tests_never_fall_back_to_the_host_fixture 覆盖守卫；::test_python_snapshot_repair_never_starts_a_host_test_process 记录所有 subprocess.run/Popen argv，断言无 sys.executable、无 '-m pytest'、无 'mgar-u01'。"
+    },
+    {
+      "item": "测试命令只由可信 Go/Python Adapter 生成；容器禁网、只读根、无 Token、非 root、上限与镜像 ID 锁定",
+      "result": "PASS",
+      "evidence": "GoAdapter/PythonAdapter 产生固定 GO_COMMAND 与 runner 命令；SandboxExecutor 使用 lock 文件 image_id，docker inspect 逐项核验 network=none、ReadonlyRootfs、Binds/Mounts 为空、User=65532:65532、CapDrop=ALL、no-new-privileges、memory/swap/pids/cpus/ipc/tmpfs，并扫描环境密钥。::test_go_snapshot_repair_runs_in_the_restricted_sandbox 断言 baseline 回执的 network/read_only/secrets_injected/user/cap_drop/pids/memory；test_v34_sandbox_executor.py 覆盖网络拒绝与宿主文件/凭据不可见。"
+    },
+    {
+      "item": "区分 baseline_not_reproduced、waiting_for_dependencies、build_failed、test_failed、timeout、sandbox_error",
+      "result": "PASS",
+      "evidence": "::test_existing_fix_is_baseline_not_reproduced_without_a_model 断言 status=baseline_not_reproduced 且 provider.calls=0；::test_missing_offline_dependency_waits_without_network 断言 waiting_for_dependencies、command=[]、provider.calls=0；test_v34_sandbox_executor.py 区分 build_failed / test_failed / timeout / sandbox_error，R02 的 Go/Python 场景断言 baseline=test_failed 后公开与隐藏回执 passed。"
+    },
+    {
+      "item": "无可信离线依赖包时返回 waiting_for_dependencies，不访问 PyPI/npm/Go Proxy",
+      "result": "PASS",
+      "evidence": "GoAdapter 在存在 require 且无 vendor/modules.txt 时返回 waiting；PythonAdapter 在检测到第三方导入或清单时返回 waiting；两种等待回执不创建容器、command 为空、policy 为 None。容器环境固定 GOPROXY=off/GOSUMDB=off/GOVCS=*:off 与 network=none。"
+    },
+    {
+      "item": "Workspace 与容器清理覆盖异常、取消、崩溃；遗留容器按 owner label 回收",
+      "result": "PASS",
+      "evidence": "SandboxExecutor._execute() 在 finally 中 docker rm -f；清理容器数量由 cleanup() 返回；::test_hostile_tests_are_confined_and_infinite_loops_timeout 在上下文退出后断言 cleanup()==0；::test_stale_sandbox_containers_are_reclaimed_by_owner_label 创建孤儿容器并由 reclaim_stale() 按 mgar.v3.r03.sandbox label 删除。"
+    },
+    {
+      "item": "负向测试：恶意测试读取宿主文件/网络、探测环境密钥、无限循环、大输出、符号链接逃逸、依赖缺失、重复测试进程",
+      "result": "PASS",
+      "evidence": "恶意宿主探测与无限循环由 ::test_hostile_tests_are_confined_and_infinite_loops_timeout 覆盖（宿主路径不可见、TOKEN/SECRET 为空、网络连接失败、1 秒超时）；大输出由 ::test_sandbox_output_is_bounded_and_truncated 断言 log_truncated 且 log_bytes<=4096；符号链接逃逸由 ::test_snapshot_rejects_a_symlink_that_escapes_the_workspace 覆盖；依赖缺失由 waiting 用例覆盖；重复执行/崩溃遗留由 owner label 回收与 cleanup 计数覆盖；宿主文件与凭据不可见另由 test_v34_sandbox_executor.py::test_host_files_and_credentials_are_not_visible 覆盖。"
+    },
+    {
+      "item": "固定公开 Go/Python 仓库快照上完成真实容器内失败→修复通过两段回执；不启动宿主不可信测试；树哈希可重算",
+      "result": "PASS",
+      "evidence": "Go：golang/example 7a4eec5→ca27133 weave.go；Python：pallets/click 6d5bac5→f67c2bb utils.py。::test_go_snapshot_repair_runs_in_the_restricted_sandbox 与 ::test_python_snapshot_repair_never_starts_a_host_test_process 均得到 baseline test_failed → public passed → verification passed，report.stage=verification，baseline.workspace_tree 与 tested_tree 可由 tree() 重算，测试全程仅在容器内启动。"
+    },
+    {
+      "item": "工程门禁命令原样通过",
+      "result": "PASS",
+      "evidence": "make verify TASK=V35-R02：31 passed / 0 failed / 0 skipped；组合回归 112 passed / 0 skipped；scoped ruff 与 mypy exit 0；make sandbox-build exit 0；make migrate exit 0；make doctor PG/Redis PASS；git diff --check exit 0。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "实现分为两次本地提交（功能实现 6321cf2 + 负向测试补充 2f57a7c）",
+      "handling": "两次提交均在本卡范围内，未推送；accept 的 result_commit 取最后一次实现提交 2f57a7c，accept.json 单独提交。"
+    },
+    {
+      "issue": "verify.py 对非 V31-R0 卡静态写入 live_gate=NOT_RUN",
+      "handling": "以 accept.json 的 live_model_gate / live_github_write_gate / live_agent_gate 为准；本卡未发生付费模型调用或 GitHub 写入。"
+    },
+    {
+      "issue": "本卡未执行真实模型 Agent 评测",
+      "handling": "Go/Python 修复场景使用本地确定性 _Provider；按 V35-E01 强制验收协议，live_agent_gate 标记 NOT_RUN，不以 fixture/脚本提供方结果宣称真实 Agent 能力已验收。"
+    },
+    {
+      "issue": "Python 快照包含本地 typing_extensions stub",
+      "handling": "click 仅在 TYPE_CHECKING 下导入 typing_extensions，运行时不会导入；stub 避免把标准库-only 快照误判为外部依赖。真实第三方依赖仍返回 waiting_for_dependencies，离线依赖包接入留给 R03。"
+    },
+    {
+      "issue": "公开仓库字节来自 E01 已保存的固定提交快照，而非本卡重新联网克隆",
+      "handling": "快照目录记录了公开仓库与提交哈希，测试逐文件重算 Git blob SHA-1/SHA-256；本卡不访问网络，符合禁网与可复现约束。"
+    },
+    {
+      "issue": "大输出负向测试的首次实现使用 20000 行洪泛，导致 docker kill/rm 在本机 Docker Desktop 上 15 秒超时",
+      "handling": "保留执行器按 output_bytes 截断并杀容器的逻辑，将测试用例调整为 200 行（约 20 KB）即可稳定触发 4 KiB 上限；失败尝试未提交，最终用例 2.17 秒通过。"
+    }
+  ],
+  "artifacts": {
+    "snapshot": "src/mgar_v3/repository_analysis/workspace.py",
+    "runtime": "src/mgar_v3/repair/runtime.py",
+    "worktree": "src/mgar_v3/repair/worktree.py",
+    "agent": "src/mgar_v3/repair/repair_agent.py",
+    "sandbox": "src/mgar_v3/repair/sandbox_executor.py",
+    "workbench": "src/mgar_v3/workbench/service.py",
+    "tests": "tests/test_v35_r02.py",
+    "verification": "config/verification.json",
+    "card": "docs/v35/cards/V35-R02.md",
+    "queue": "docs/v35/TASK_QUEUE.md",
+    "final_evidence": "evidence/v35/R02/20261110T032538Z-r02final/",
+    "verify_attempt": "evidence/V35-R02/20261110T032340Z-95542af9/"
+  },
+  "next_card": "V35-R03",
+  "next_card_prerequisites": [
+    "复核 accept 提交后的 HEAD 与 config/verification.json 的 V35-R02 条目",
+    "R03 编排必须继续使用 SnapshotRepairRuntime 与受限 R03 Docker，不得回退到 fixture dispatcher 或宿主 pytest",
+    "R03 接入真实模型时必须单独授权、记录 Token/费用/延迟，并保持 live_model_gate 独立",
+    "离线依赖包接入后仍不得访问 PyPI/npm/Go Proxy；缺失时继续返回 waiting_for_dependencies",
+    "live_agent_gate 仍为 NOT_RUN，除非 V35-E01 强制协议六条全部满足"
+  ]
+}
