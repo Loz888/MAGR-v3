@@ -1,5 +1,7 @@
 # MGAR V3.5 · 持续研发 Agent
 
+**网页使用入口已统一：启动后打开首页，填写 GitHub 仓库 URL 和问题，即可在同一页提交真实分析、查看执行过程和继续追问。首次使用在连接设置中检查模型凭据与授权。[单页 Agent 使用说明](v3/docs/agent-ui.md)。**
+
 面向 GitHub 工单的事件驱动研发 Agent 原型，支持持续调查、跨知识库／SQL／代码取证、受限函数修复，以及经过人工审批的可恢复交付。
 
 V3.5 把“自然语言任务 → 固定 Commit 只读调查 → Finding/Evidence → 有授权修复 → 测试回执 → Review Bundle → 受控 Draft PR”收敛成一条可复核链路：PostgreSQL 是唯一事实源，外写必须经过 Action/Approval/Outbox，`fixture` 与 `live` 门禁严格分开。

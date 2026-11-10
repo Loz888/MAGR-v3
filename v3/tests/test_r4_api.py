@@ -73,7 +73,7 @@ def test_knowledge_api_auth_job_read_and_fixed_snapshot_duplicate(settings, engi
 
 def test_r4_web_exposes_sources_resolution_and_explicit_memory_confirmation(settings, engine):
     with client_for(settings, engine) as client:
-        html = client.get("/").text
+        html = client.get("/legacy").text
         assert "knowledge-form" in html and "memory-controls" in html and "search-form" in html
         js = client.get("/static/app.js").text
         assert "textContent" in js and "innerHTML" not in js

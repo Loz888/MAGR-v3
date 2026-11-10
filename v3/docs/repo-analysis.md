@@ -1,5 +1,9 @@
 # V3.2 通用 GitHub 仓库分析（repository_analysis）
 
+> 网页入口现已统一为 [单页 Agent](agent-ui.md)。首页 `/`、`/repo` 和
+> `/workbench` 均进入对话式分析页。本文的授权与 API/CLI 契约继续有效；
+> 下文旧版网页的按钮与字段说明以单页使用说明为准。
+
 本模块把 RepoSage 从固定电商 Case 扩展为通用、只读的 GitHub 仓库分析 Agent：
 用户给出 `https://github.com/<owner>/<repo>` 与自然语言任务，Agent 在固定 Commit
 上自行决定搜索、读目录、读文件、看 Issue/PR，并输出每条结论都可回溯到源码的

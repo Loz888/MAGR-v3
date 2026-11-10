@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>RepoSage · 仓库分析 Agent</title>
+    <link rel="icon" href="/static/agent-icon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/static/agent.css" />
+    <script src="/static/agent.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="/" aria-label="RepoSage 首页"
+        ><span class="brand-icon">R</span>RepoSage<span class="brand-tag"
+          >AGENT</span
+        ></a
+      >
+      <button class="new-chat" id="new-chat">
+        <span aria-hidden="true">＋</span> 新建分析
+      </button>
+      <div class="sidebar-label">
+        最近的对话
+        <button id="refresh-history" class="icon-button" aria-label="刷新历史">
+          ↻
+        </button>
+      </div>
+      <nav id="history" aria-label="分析历史">
+        <p class="sidebar-empty">连接后查看你的分析记录</p>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="private-note">源码阅读 · 搜索 · 证据核验</span>
+        <button id="open-settings" class="settings-button">
+          <span class="status-dot" id="connection-dot"></span
+          ><span id="connection-label">连接服务</span
+          ><span class="settings-icon" aria-hidden="true">⚙</span>
+        </button>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="topbar">
+        <button
+          id="toggle-sidebar"
+          class="icon-button mobile-only"
+          aria-label="切换侧栏"
+        >
+          ☰
+        </button>
+        <div>
+          <span id="page-title">新的仓库分析</span
+          ><span class="topbar-subtitle" id="model-label"
+            >REPOSITORY AGENT</span
+          >
+        </div>
+        <span class="mode-badge" id="mode-badge">真实仓库分析</span>
+      </header>
+      <div class="notice" id="notice" role="status" hidden></div>
+      <section class="welcome" id="welcome">
+        <span class="welcome-mark" aria-hidden="true">⌘</span>
+        <p class="eyebrow">从一个问题，读懂整个项目</p>
+        <h1>把仓库交给我，<br />从你的问题开始。</h1>
+        <p class="welcome-description">
+          提供 GitHub 地址和你想了解的问题。Agent 会搜索代码、阅读源码，<br
+            class="desktop-only"
+          />把执行过程和带来源的结论留在这次对话里。
+        </p>
+        <div class="suggestions" aria-label="问题示例">
+          <button
+            data-prompt="梳理项目的整体架构，说明入口文件、核心模块和主要调用链。"
+          >
+            <span aria-hidden="true">◈</span><strong>理解项目架构</strong
+            ><span>从入口到关键模块</span>
+          </button>
+          <button
+            data-prompt="调查项目中可能导致错误的边界条件，给出具体源码证据和可行的验证方法。"
+          >
+            <span aria-hidden="true">⌕</span><strong>排查潜在问题</strong
+            ><span>沿着证据定位原因</span>
+          </button>
+          <button
+            data-prompt="说明项目如何启动和运行测试，列出必需依赖，并根据源码核对文档中的步骤。"
+          >
+            <span aria-hidden="true">↗</span><strong>快速上手项目</strong
+            ><span>运行、依赖与测试</span>
+          </button>
+        </div>
+      </section>
+      <section
+        id="conversation"
+        class="conversation"
+        aria-label="分析对话"
+        hidden
+      ></section>
+      <div class="composer-wrap">
+        <form class="composer" id="composer">
+          <div class="repo-row">
+            <label for="repository-url" class="repo-label">仓库</label>
+            <input
+              id="repository-url"
+              type="url"
+              placeholder="https://github.com/owner/repository"
+              aria-label="GitHub 仓库 URL"
+              required
+              autocomplete="url"
+            />
+            <details class="ref-options">
+              <summary aria-label="选择分支或提交">分支 / 提交</summary>
+              <label for="repository-ref">分支、Tag 或 40 位 Commit</label
+              ><input
+                id="repository-ref"
+                placeholder="默认分支"
+                maxlength="200"
+              />
+            </details>
+          </div>
+          <label class="visually-hidden" for="question">问题或追问</label>
+          <textarea
+            id="question"
+            placeholder="你想了解这个项目的什么？描述问题，也可以贴入错误信息…"
+            rows="3"
+            maxlength="8000"
+            required
+          ></textarea>
+          <div class="composer-footer">
+            <span id="composer-hint"
+              >真实读取 GitHub · 使用服务器已授权的模型与预算</span
+            >
+            <button type="submit" class="send-button" id="send">
+              <span id="send-label">开始分析</span
+              ><span aria-hidden="true">↑</span>
+            </button>
+          </div>
+        </form>
+        <p class="footer-note">
+          分析固定在同一份代码版本上。关键结论附来源，仍需结合实际业务判断。
+        </p>
+      </div>
+    </main>
+    <dialog id="settings-dialog" aria-labelledby="settings-title">
+      <form id="connect-form">
+        <div class="dialog-heading">
+          <div>
+            <p class="eyebrow">一次连接，开始对话</p>
+            <h2 id="settings-title">服务连接</h2>
+          </div>
+          <button
+            type="button"
+            class="icon-button"
+            id="close-settings"
+            aria-label="关闭设置"
+          >
+            ×
+          </button>
+        </div>
+        <label for="access-token">本地访问令牌</label>
+        <p class="field-help">
+          使用服务器 <code>v3/.env</code> 中的
+          <code>MGAR_V3_LOCAL_TOKEN</code
+          >。仅保存在当前浏览器会话，不在页面显示。
+        </p>
+        <input
+          id="access-token"
+          type="password"
+          autocomplete="off"
+          placeholder="粘贴访问令牌"
+        />
+        <p id="connection-error" role="alert" class="error-text"></p>
+        <button class="primary-button" id="connect" type="submit">
+          连接并检查配置
+        </button>
+      </form>
+      <section id="readiness" hidden>
+        <h3>真实分析配置</h3>
+        <ul id="checklist" class="checklist"></ul>
+        <div id="setup-help"></div>
+        <p id="profile-summary" class="field-help"></p>
+      </section>
+      <details class="developer-settings">
+        <summary>开发与离线验证</summary>
+        <label class="checkbox-label"
+          ><input id="demo-mode" type="checkbox" />使用合成样例演示</label
+        >
+        <p class="field-help">
+          演示不会读取所填仓库，也不会调用模型。真实分析默认始终使用 live 模式。
+        </p>
+        <div class="legacy-links">
+          <a href="/legacy">旧版业务工作台</a
+          ><a href="/legacy/workbench">修复与审批工作台</a>
+        </div>
+      </details>
+    </dialog>
+  </body>
+</html>

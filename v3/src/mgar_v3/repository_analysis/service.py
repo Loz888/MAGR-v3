@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 from uuid import UUID
@@ -100,6 +101,9 @@ def live_system_prompt(spec: AnalysisSpec) -> str:
         '"uncertainties":["..."],"next_steps":["..."]},'
         '"insufficient_reason":"..."}\n'
         "Rules:\n"
+        "- Write the report in the language of the user's task.\n"
+        "- action=final requires at least one key_files item AND at least one findings item.\n"
+        "  Findings may be verified factual observations; do not invent defects.\n"
         "- Use action=tool when you need more code, directories, call sites, issues or PRs.\n"
         "- Return at most 4 tool_calls in one decision; prefer 1-3 focused calls.\n"
         "- Observations are truncated at 6000 characters. For any file longer than that,\n"
@@ -155,11 +159,59 @@ class RepositoryAnalysisService:
         return _StoredProfile(authorization, authorization.authorization_hash)
 
     def profile(self) -> dict[str, Any]:
+        model_key = self.settings.deepseek_api_key
+        github_token = self.settings.github_read_token
+        checks = {
+            "paid_enabled": self.settings.allow_paid,
+            "model_configured": bool(model_key and model_key.get_secret_value()),
+            "github_configured": (
+                bool(github_token and github_token.get_secret_value())
+                or self.settings.github_mcp_binary is not None
+            ),
+            "authorization_valid": False,
+        }
+        issues = []
+        for check, code, message, action in (
+            (
+                "paid_enabled", "PAID_DISABLED", "尚未启用真实模型调用",
+                "在服务器 .env 中设置 MGAR_V3_ALLOW_PAID=1，并重启服务。",
+            ),
+            (
+                "model_configured", "MODEL_CREDENTIAL_REQUIRED", "尚未配置 DeepSeek 密钥",
+                "在服务器 .env 中配置 MGAR_V3_DEEPSEEK_API_KEY，并重启服务。",
+            ),
+            (
+                "github_configured", "GITHUB_READ_CREDENTIAL_REQUIRED", "尚未配置 GitHub 只读凭据",
+                "配置 MGAR_V3_GITHUB_READ_TOKEN 或已锁定的 GitHub MCP，再重启服务。",
+            ),
+        ):
+            if not checks[check]:
+                issues.append({"code": code, "message": message, "action": action})
         try:
             stored = self.authorization()
         except DomainError as exc:
-            return {"available": False, "reason_code": exc.code}
+            issues.append({
+                "code": exc.code,
+                "message": "真实分析授权尚未配置或无效",
+                "action": (
+                    "按 docs/repo-analysis.md 配置包含仓库、预算和有效期的授权文件，"
+                    "并设置 MGAR_V3_REPO_ANALYSIS_AUTHORIZATION_PATH。"
+                ),
+            })
+            return {
+                "available": False, "ready": False, "reason_code": exc.code,
+                "checks": checks, "issues": issues,
+            }
         authorization = stored.authorization
+        checks["authorization_valid"] = (
+            authorization.allow_paid and authorization.expires_at > datetime.now(UTC)
+        )
+        if not checks["authorization_valid"]:
+            issues.append({
+                "code": "REPO_ANALYSIS_AUTHORIZATION_EXPIRED",
+                "message": "分析授权已过期或未允许模型调用",
+                "action": "请在服务器上由操作员更新授权文件的有效期与调用许可。",
+            })
         with self.engine.transaction() as conn:
             budget = conn.execute(
                 "SELECT used_calls,settled_micros,reserved_micros,limit_micros,"
@@ -168,6 +220,9 @@ class RepositoryAnalysisService:
             ).fetchone()
         return {
             "available": True,
+            "ready": all(checks.values()),
+            "checks": checks,
+            "issues": issues,
             "authorization_hash": stored.authorization_hash,
             "approved_by": authorization.approved_by,
             "expires_at": authorization.expires_at.isoformat(),
@@ -194,6 +249,11 @@ class RepositoryAnalysisService:
                 raise DomainError(
                     "REPO_ANALYSIS_SCOPE_DENIED", "Repository analysis is not authorized", 403
                 ) from exc
+            key = self.settings.deepseek_api_key
+            if key is None or not key.get_secret_value():
+                raise DomainError(
+                    "MODEL_CREDENTIAL_REQUIRED", "DeepSeek credential is missing", 403
+                )
             if (
                 self.settings.github_read_token is None
                 and self.settings.github_mcp_binary is None
@@ -250,10 +310,12 @@ class RepositoryAnalysisService:
         )
 
     def prior_report_text(self, spec: AnalysisSpec) -> str | None:
-        if not spec.prior_report_hash:
+        if not spec.prior_report_hash or spec.parent_run_id is None:
             return None
         try:
-            return self.store.artifact_bytes(spec.prior_report_hash).decode("utf-8", "replace")
+            return self.store.artifact_bytes(
+                spec.prior_report_hash, spec.parent_run_id
+            ).decode("utf-8", "replace")
         except DomainError:
             return None
 

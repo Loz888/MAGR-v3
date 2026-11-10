@@ -1,5 +1,11 @@
 # V3.5 本地运行与验证
 
+当前推荐入口是首页的**单页仓库分析 Agent**：连接一次，填写仓库 URL 和问题，
+在同一页面查看执行过程、报告和追问。`/repo`、`/workbench` 也是同一入口。
+首次真实调用需要服务端凭据与授权，设置面板会逐项说明缺失配置。
+完整步骤见 [单页 Agent 使用说明](docs/agent-ui.md)。旧业务与修复审批页面位于
+`/legacy`、`/legacy/workbench`。
+
 [项目首页](../README.md) · [V3.5 产品说明](docs/v35/PRODUCT.md) · [90 秒演示](docs/v35/DEMO.md) · [评测索引](docs/v35/EVALUATION_INDEX.md) · [完整技术报告](docs/TECHNICAL_REPORT.md) · [文档导航](docs/README.md)
 
 本页提供实际运行命令。V3.5 已把只读调查、Finding/Evidence、有授权修复、测试回执、Review Bundle 与受控 Draft PR 串成一条可复核链路；Web 与 CLI 调同一 API。工程门与安全门 `PASS`；E02 真实 live 四臂失败，`live_agent_gate=FAIL`；真实 GitHub 写入 `NOT_RUN`。电商Case工单、独立业务判定、API/CLI与工作台的历史交付见[P0运行手册](docs/p0-commerce-runbook.md)与[最终复验/交付](docs/repairs/P0-20261107/README.md)。历史阶段结果按记录时间理解。

@@ -1022,5 +1022,24 @@
       "tests/test_v35_d01.py"
     ],
     "timeout_seconds": 300
+  },
+  "AGENT-UI": {
+    "components": {
+      "postgres": "real_disposable_database",
+      "redis": "real_model_rate_limit",
+      "langgraph": "real_background_supervisor_and_postgres_checkpoints",
+      "model": "real_client_with_controlled_http_responses",
+      "github": "real_read_gateway_with_controlled_mcp_responses",
+      "live_model": "NOT_RUN_missing_runtime_credentials",
+      "live_github_write": "NOT_APPLICABLE_read_only_analysis"
+    },
+    "tests": [
+      "tests/test_agent_page.py",
+      "tests/test_api.py",
+      "tests/test_r4_api.py",
+      "tests/test_router_api.py",
+      "tests/test_v32_repository_analysis.py"
+    ],
+    "timeout_seconds": 180
   }
 }

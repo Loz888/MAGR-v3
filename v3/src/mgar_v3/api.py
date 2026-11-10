@@ -348,6 +348,23 @@ def create_app(
         return {"status": "alive", "release_status": "ENGINEERING_INCOMPLETE"}
 
     @app.get("/", include_in_schema=False)
+    @app.get("/repo", include_in_schema=False)
+    @app.get("/workbench", include_in_schema=False)
+    def agent_page() -> FileResponse:
+        return FileResponse(
+            ROOT / "web/agent.html",
+            headers={
+                "Content-Security-Policy": (
+                    "default-src 'self'; script-src 'self'; style-src 'self'; "
+                    "connect-src 'self'; frame-ancestors 'none'; object-src 'none'; "
+                    "base-uri 'none'; form-action 'self'"
+                ),
+                "Cache-Control": "no-store",
+                "X-Content-Type-Options": "nosniff",
+            },
+        )
+
+    @app.get("/legacy", include_in_schema=False)
     def index() -> FileResponse:
         return FileResponse(
             ROOT / "web/index.html",
@@ -409,7 +426,7 @@ def create_app(
             {"ticket_id": ticket_id, "run_id": result} if control == "resume" else result
         )
 
-    @app.get("/repo", include_in_schema=False)
+    @app.get("/legacy/repo", include_in_schema=False)
     def repository_analysis_page() -> FileResponse:
         return FileResponse(
             ROOT / "web/repo.html",
@@ -516,7 +533,7 @@ def create_app(
     ) -> dict[str, str]:
         return {"run_id": str(service.resume(run_id))}
 
-    @app.get("/workbench", include_in_schema=False)
+    @app.get("/legacy/workbench", include_in_schema=False)
     def workbench_page() -> FileResponse:
         return FileResponse(
             ROOT / "web/workbench.html",
