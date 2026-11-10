@@ -104,6 +104,98 @@ def validate_task_stage(current: TaskStatus, target: TaskStatus) -> None:
         )
 
 
+TaskPhase = Literal[
+    "queued",
+    "investigating",
+    "suspected",
+    "reproduced",
+    "repairing",
+    "patch_verified",
+    "waiting_approval",
+    "publishing",
+    "pr_created",
+    "completed",
+    "waiting_input",
+    "paused",
+    "failed",
+    "cancelled",
+]
+TERMINAL_PHASES: frozenset[TaskPhase] = frozenset({"pr_created", "completed", "cancelled"})
+# Mirrors app.workbench_phase_transitions (migration 0023).  The database
+# trigger is the final authority; this map keeps the Python and SQL views in
+# lockstep so a server-side rejection is never a surprise.
+ALLOWED_TASK_PHASES: dict[TaskPhase, set[TaskPhase]] = {
+    "queued": {"investigating", "suspected", "cancelled", "failed", "paused"},
+    "investigating": {
+        "suspected",
+        "failed",
+        "cancelled",
+        "paused",
+        "waiting_input",
+    },
+    "suspected": {
+        "reproduced",
+        "completed",
+        "failed",
+        "cancelled",
+        "paused",
+        "waiting_input",
+    },
+    "reproduced": {"repairing", "suspected", "failed", "cancelled", "paused"},
+    "repairing": {"patch_verified", "reproduced", "failed", "cancelled", "paused"},
+    "patch_verified": {
+        "waiting_approval",
+        "repairing",
+        "failed",
+        "cancelled",
+        "paused",
+    },
+    "waiting_approval": {"publishing", "failed", "cancelled", "paused"},
+    "publishing": {
+        "pr_created",
+        "waiting_approval",
+        "failed",
+        "cancelled",
+        "paused",
+    },
+    "pr_created": set(),
+    "completed": set(),
+    "waiting_input": {
+        "investigating",
+        "suspected",
+        "repairing",
+        "cancelled",
+        "failed",
+        "paused",
+    },
+    "paused": {
+        "queued",
+        "investigating",
+        "suspected",
+        "reproduced",
+        "repairing",
+        "patch_verified",
+        "waiting_approval",
+        "publishing",
+        "cancelled",
+        "failed",
+    },
+    "failed": {"queued", "cancelled"},
+    "cancelled": set(),
+}
+
+
+def validate_task_phase(current: TaskPhase, target: TaskPhase) -> None:
+    if target == current:
+        return
+    if target not in ALLOWED_TASK_PHASES[current]:
+        raise DomainError(
+            "TASK_PHASE_INVALID",
+            f"Task phase cannot move from {current} to {target}",
+            409,
+        )
+
+
 class CoverageRequest(Model):
     """The requested repository scan scope, validated as repository-relative."""
 

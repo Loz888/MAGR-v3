@@ -57,6 +57,7 @@ from mgar_v3.workbench.domain import (
     FindingSource,
     ReproductionPlan,
     ReproductionRecord,
+    TaskPhase,
     TaskStatus,
     TestReceipt,
     WorkbenchFinding,
@@ -64,7 +65,6 @@ from mgar_v3.workbench.domain import (
     new_finding_id,
     rank_findings,
     score_finding,
-    validate_task_stage,
 )
 from mgar_v3.workbench.store import WorkbenchStore
 
@@ -272,14 +272,23 @@ class WorkbenchService:
                 task_text=self._task_text(request),
                 limits=limits.model_dump(mode="json"),
             )
-            task = self.store.update(task["task_id"], status="auditing", audit_run_id=spec.run_id)
-            self._event(
-                task["task_id"],
-                stage="audit",
-                status="started",
-                summary="Live repository audit queued behind the read-only analysis profile",
-                payload={"run_id": str(spec.run_id)},
+            task = self._transition(
+                task,
+                "investigating",
+                status="auditing",
+                reason="live audit queued behind the read-only analysis profile",
+                event={
+                    "stage": "audit",
+                    "status": "started",
+                    "summary": (
+                        "Live repository audit queued behind the read-only analysis profile"
+                    ),
+                    "payload": {"run_id": str(spec.run_id)},
+                    "kind": "run.audit",
+                },
+                idempotency_key=f"audit-started:{task['task_id']}",
             )
+            self.store.link_run(task["task_id"], "audit", spec.run_id)
             return self.view(task["task_id"])
         commit = request.commit or fixture_commit(repository.full_name, request.ref)
         try:
@@ -321,9 +330,21 @@ class WorkbenchService:
                 "Live repair and publication remain behind the R05 profile flow",
                 403,
             )
+        task = self.store.bump_epoch(task_id, expected_epoch=task["execution_epoch"])
         if task["mode"] == "issue_repair" and task["status"] == "queued":
-            self._set_status(task_id, "ready")
-            task = self.store.task(task_id)
+            task = self._transition(
+                task,
+                "suspected",
+                status="ready",
+                reason="issue finding seeded from the requested report",
+                event={
+                    "stage": "task",
+                    "status": "ready",
+                    "summary": "Issue report accepted as a suspected finding",
+                    "kind": "task.state",
+                },
+                idempotency_key=f"issue-seeded:{task_id}",
+            )
         if task["mode"] in {"audit", "audit_and_repair"} and task["audit_run_id"] is None:
             self._start_audit(task)
             task = self.store.task(task_id)
@@ -333,12 +354,18 @@ class WorkbenchService:
 
     def _start_audit(self, task: dict[str, Any]) -> None:
         task_id = task["task_id"]
-        self._set_status(task_id, "auditing")
-        self._event(
-            task_id,
-            stage="audit",
-            status="started",
-            summary=f"Audit started for {task['repository']}@{task['commit'][:12]}",
+        task = self._transition(
+            task,
+            "investigating",
+            status="auditing",
+            reason=f"audit started for {task['repository']}@{task['commit'][:12]}",
+            event={
+                "stage": "audit",
+                "status": "started",
+                "summary": f"Audit started for {task['repository']}@{task['commit'][:12]}",
+                "kind": "run.audit",
+            },
+            idempotency_key=f"audit-started:{task_id}",
         )
         limits = AnalysisLimits.model_validate(task["limits"] or {})
         analysis_input = CreateAnalysisInput(
@@ -352,16 +379,22 @@ class WorkbenchService:
         try:
             spec = self.repo.create(analysis_input, actor=self.settings.local_actor)
         except DomainError as exc:
-            self._set_status(task_id, "failed")
-            self._event(
-                task_id,
-                stage="audit",
+            current = self.store.task(task_id)
+            self._transition(
+                current,
+                "failed",
                 status="failed",
-                summary=str(exc),
-                payload={"code": exc.code},
+                reason=str(exc),
+                event={
+                    "stage": "audit",
+                    "status": "failed",
+                    "summary": str(exc),
+                    "payload": {"code": exc.code},
+                    "kind": "run.audit",
+                },
             )
             raise
-        self.store.update(task_id, audit_run_id=spec.run_id)
+        self.store.link_run(task_id, "audit", spec.run_id)
         if task["execution_mode"] == "fixture":
             self.repo.execute(spec.run_id)
             self._import_audit(task_id, spec.run_id)
@@ -386,7 +419,7 @@ class WorkbenchService:
         if candidate.stage == "suspected":
             candidate = self._reproduce(task, candidate)
         if candidate.stage == "reproduced":
-            self._prepare_repair(task, candidate)
+            self._prepare_repair(self.store.task(task_id), candidate)
 
     def reproduce(self, task_id: UUID, finding_id: str) -> dict[str, Any]:
         task = self.store.task(task_id)
@@ -410,16 +443,22 @@ class WorkbenchService:
             )
         if finding.stage != "suspected":
             return finding
-        self._set_status(task_id, "reproducing")
-        self._event(
-            task_id,
-            stage="reproduce",
-            status="started",
-            summary=(
-                f"Reproducing {finding.finding_id[:12]} with "
-                f"{finding.reproduction_plan.test_node}"
-            ),
-            payload={"finding_id": finding.finding_id},
+        task = self._transition(
+            task,
+            "suspected",
+            status="reproducing",
+            reason=f"reproduction started for {finding.finding_id[:12]}",
+            event={
+                "stage": "reproduce",
+                "status": "started",
+                "summary": (
+                    f"Reproducing {finding.finding_id[:12]} with "
+                    f"{finding.reproduction_plan.test_node}"
+                ),
+                "payload": {"finding_id": finding.finding_id},
+                "kind": "test.reproduction",
+            },
+            idempotency_key=f"reproduce-started:{task_id}:{finding.finding_id}",
         )
         receipt, _ = self._run_tests(task, patched=False)
         if receipt.passed:
@@ -433,7 +472,20 @@ class WorkbenchService:
                 receipt=receipt,
             )
             self._persist_finding(task_id, advance_finding(finding, reproduction=record))
-            self._set_status(task_id, "ready")
+            current = self.store.task(task_id)
+            self._transition(
+                current,
+                "suspected",
+                status="ready",
+                reason="reproduction not observed on the unpatched tree",
+                event={
+                    "stage": "reproduce",
+                    "status": "not_observed",
+                    "summary": "The reproduction test passed on the unpatched tree",
+                    "payload": {"finding_id": finding.finding_id, "receipt_id": receipt.receipt_id},
+                    "kind": "test.reproduction",
+                },
+            )
             raise DomainError(
                 "REPRODUCTION_NOT_OBSERVED",
                 "The reproduction test passed on the unpatched tree",
@@ -448,21 +500,30 @@ class WorkbenchService:
             command=receipt.command,
             receipt=receipt,
         )
-        updated = advance_finding(finding, reproduction=record)
-        self._persist_finding(task_id, updated)
-        self._event(
-            task_id,
-            stage="reproduce",
-            status="reproduced",
-            summary=f"Finding {finding.finding_id[:12]} reproduced by a failing test receipt",
-            payload={
-                "finding_id": finding.finding_id,
-                "receipt_id": receipt.receipt_id,
-                "log_sha256": receipt.log_sha256,
+        updated_record = advance_finding(finding, reproduction=record)
+        self._persist_finding(task_id, updated_record)
+        current = self.store.task(task_id)
+        self._transition(
+            current,
+            "reproduced",
+            status="ready",
+            reason=f"finding {finding.finding_id[:12]} reproduced by a failing test",
+            event={
+                "stage": "reproduce",
+                "status": "reproduced",
+                "summary": (
+                    f"Finding {finding.finding_id[:12]} reproduced by a failing test receipt"
+                ),
+                "payload": {
+                    "finding_id": finding.finding_id,
+                    "receipt_id": receipt.receipt_id,
+                    "log_sha256": receipt.log_sha256,
+                },
+                "kind": "test.reproduction",
             },
+            idempotency_key=f"reproduced:{task_id}:{finding.finding_id}",
         )
-        self._set_status(task_id, "ready")
-        return updated
+        return updated_record
 
     def repair(self, task_id: UUID, finding_id: str) -> dict[str, Any]:
         task = self.store.task(task_id)
@@ -486,24 +547,39 @@ class WorkbenchService:
                 "A failing reproduction receipt is required before a patch is proposed",
                 409,
             )
-        self._set_status(task_id, "repairing")
-        self._event(
-            task_id,
-            stage="repair",
-            status="started",
-            summary=f"Preparing a verified patch for {finding.finding_id[:12]}",
-            payload={"finding_id": finding.finding_id},
+        task = self._transition(
+            task,
+            "repairing",
+            status="repairing",
+            reason=f"repair started for {finding.finding_id[:12]}",
+            event={
+                "stage": "repair",
+                "status": "started",
+                "summary": f"Preparing a verified patch for {finding.finding_id[:12]}",
+                "payload": {"finding_id": finding.finding_id},
+                "kind": "patch.repair",
+            },
+            idempotency_key=f"repair-started:{task_id}:{finding.finding_id}",
         )
         after, _ = self._run_tests(task, patched=True)
         if not after.passed:
-            self._event(
-                task_id,
-                stage="repair",
-                status="failed",
-                summary="The proposed patch did not pass the reproduction test",
-                payload={"finding_id": finding.finding_id, "receipt_id": after.receipt_id},
+            current = self.store.task(task_id)
+            self._transition(
+                current,
+                "reproduced",
+                status="ready",
+                reason="the proposed patch did not pass the reproduction test",
+                event={
+                    "stage": "repair",
+                    "status": "failed",
+                    "summary": "The proposed patch did not pass the reproduction test",
+                    "payload": {
+                        "finding_id": finding.finding_id,
+                        "receipt_id": after.receipt_id,
+                    },
+                    "kind": "patch.repair",
+                },
             )
-            self._set_status(task_id, "ready")
             raise DomainError(
                 "PATCH_DID_NOT_PASS",
                 "The proposed patch did not pass the reproduction test",
@@ -571,19 +647,46 @@ class WorkbenchService:
         )
         updated = advance_finding(verified, approval=approval)
         self._persist_finding(task_id, updated)
-        self._event(
-            task_id,
-            stage="repair",
-            status="waiting_approval",
-            summary=f"Patch verified for {finding.finding_id[:12]}; human approval required",
-            payload={
-                "finding_id": finding.finding_id,
-                "diff_sha256": diff_sha,
-                "payload_hash": bundle.payload_hash,
+        current = self.store.task(task_id)
+        current = self._transition(
+            current,
+            "patch_verified",
+            status="repairing",
+            reason=f"patch {proposal_id[:12]} verified against the reproduction test",
+            event={
+                "stage": "repair",
+                "status": "patch_verified",
+                "summary": f"Patch verified for {finding.finding_id[:12]}",
+                "payload": {
+                    "finding_id": finding.finding_id,
+                    "diff_sha256": diff_sha,
+                    "proposal_id": proposal_id,
+                },
+                "kind": "patch.verified",
             },
+            idempotency_key=f"patch-verified:{task_id}:{proposal_id}",
         )
-        self._set_status(task_id, "waiting_approval")
-        self.store.update(task_id, stage="waiting_approval")
+        self._transition(
+            current,
+            "waiting_approval",
+            status="waiting_approval",
+            stage="waiting_approval",
+            reason="human approval is required before publication",
+            event={
+                "stage": "repair",
+                "status": "waiting_approval",
+                "summary": (
+                    f"Patch verified for {finding.finding_id[:12]}; human approval required"
+                ),
+                "payload": {
+                    "finding_id": finding.finding_id,
+                    "diff_sha256": diff_sha,
+                    "payload_hash": bundle.payload_hash,
+                },
+                "kind": "approval.requested",
+            },
+            idempotency_key=f"approval-requested:{task_id}:{bundle.payload_hash}",
+        )
         return updated
 
     # -- approval and publication ---------------------------------------
@@ -615,7 +718,23 @@ class WorkbenchService:
             )
         if finding.publication is not None and finding.publication.status == "published":
             return finding.view()
-        self._set_status(task_id, "publishing")
+        task = self._transition(
+            task,
+            "publishing",
+            status="publishing",
+            reason=f"publication approved by {actor}",
+            event={
+                "stage": "approval",
+                "status": "approved",
+                "summary": f"Human approval recorded for {finding_id[:12]}",
+                "payload": {
+                    "finding_id": finding_id,
+                    "payload_hash": payload_hash,
+                },
+                "kind": "approval.approved",
+            },
+            idempotency_key=f"approval-approved:{task_id}:{payload_hash}",
+        )
         approval = PublicationApproval.grant(
             finding.fix.bundle, actor=actor, approved_at=_now()
         )
@@ -629,13 +748,6 @@ class WorkbenchService:
         )
         with_approval = advance_finding(finding, approval=approved_record)
         self._persist_finding(task_id, with_approval)
-        self._event(
-            task_id,
-            stage="approval",
-            status="approved",
-            summary=f"Human approval recorded for {finding_id[:12]}",
-            payload={"finding_id": finding_id, "approval_id": approval.approval_id},
-        )
         remote = _InMemoryRemote(
             repository=task["repository"],
             base_branch="main",
@@ -662,28 +774,39 @@ class WorkbenchService:
         updated = advance_finding(with_approval, publication=publication)
         self._persist_finding(task_id, updated)
         published = updated.stage == "pr_created"
-        self._event(
-            task_id,
-            stage="publication",
-            status="published" if published else outcome.status,
-            summary=(
-                "Draft PR receipted in the fixture remote"
+        current = self.store.task(task_id)
+        self._transition(
+            current,
+            "pr_created" if published else "waiting_approval",
+            status="completed" if published else "waiting_approval",
+            stage=updated.stage,
+            reason=(
+                "draft PR receipted in the fixture remote"
                 if published
-                else f"Publication did not create a Draft PR: {outcome.reason}"
+                else f"publication did not create a Draft PR: {outcome.reason}"
             ),
-            payload={
-                "finding_id": finding_id,
-                "status": outcome.status,
-                "steps": [step.model_dump(mode="json") for step in outcome.steps],
-                "pull_request": (
-                    outcome.pull_request.model_dump(mode="json")
-                    if outcome.pull_request is not None
-                    else None
+            event={
+                "stage": "publication",
+                "status": "published" if published else outcome.status,
+                "summary": (
+                    "Draft PR receipted in the fixture remote"
+                    if published
+                    else f"Publication did not create a Draft PR: {outcome.reason}"
                 ),
+                "payload": {
+                    "finding_id": finding_id,
+                    "status": outcome.status,
+                    "steps": [step.model_dump(mode="json") for step in outcome.steps],
+                    "pull_request": (
+                        outcome.pull_request.model_dump(mode="json")
+                        if outcome.pull_request is not None
+                        else None
+                    ),
+                },
+                "kind": "pr.receipt",
             },
+            idempotency_key=f"publication:{task_id}:{approval.approval_id}",
         )
-        self._set_status(task_id, "completed" if published else "waiting_approval")
-        self.store.update(task_id, stage=updated.stage)
         return updated.view()
 
     # -- controls --------------------------------------------------------
@@ -696,9 +819,19 @@ class WorkbenchService:
                 self.repo.pause(task["audit_run_id"])
             except DomainError:
                 pass
-        self._set_status(task_id, "paused")
-        self._event(
-            task_id, stage="control", status="paused", summary="Task paused by a human"
+        self._transition(
+            task,
+            "paused",
+            status="paused",
+            reason="paused by a human",
+            bump_epoch=True,
+            event={
+                "stage": "control",
+                "status": "paused",
+                "summary": "Task paused by a human",
+                "kind": "task.control",
+            },
+            idempotency_key=f"paused:{task_id}:{task['revision']}",
         )
         return self.view(task_id)
 
@@ -711,9 +844,20 @@ class WorkbenchService:
                 self.repo.resume(task["audit_run_id"])
             except DomainError:
                 pass
-        self._set_status(task_id, "queued")
-        self._event(
-            task_id, stage="control", status="resumed", summary="Task resumed by a human"
+        self._transition(
+            task,
+            task["resume_phase"],
+            status="queued",
+            reason="resumed by a human",
+            bump_epoch=True,
+            event={
+                "stage": "control",
+                "status": "resumed",
+                "summary": "Task resumed by a human",
+                "payload": {"phase": task["resume_phase"]},
+                "kind": "task.control",
+            },
+            idempotency_key=f"resumed:{task_id}:{task['revision']}",
         )
         return self.view(task_id)
 
@@ -726,9 +870,19 @@ class WorkbenchService:
                 self.repo.cancel(task["audit_run_id"])
             except DomainError:
                 pass
-        self._set_status(task_id, "cancelled")
-        self._event(
-            task_id, stage="control", status="cancelled", summary="Task cancelled by a human"
+        self._transition(
+            task,
+            "cancelled",
+            status="cancelled",
+            reason="cancelled by a human",
+            bump_epoch=True,
+            event={
+                "stage": "control",
+                "status": "cancelled",
+                "summary": "Task cancelled by a human",
+                "kind": "task.control",
+            },
+            idempotency_key=f"cancelled:{task_id}:{task['revision']}",
         )
         return self.view(task_id)
 
@@ -783,9 +937,21 @@ class WorkbenchService:
             except DomainError:
                 spec = None
             if spec is not None:
-                task = self.store.update(
-                    task["task_id"], audit_run_id=spec.run_id, status="auditing"
+                task = self._transition(
+                    task,
+                    "investigating",
+                    status="auditing",
+                    reason="follow-up audit started in the same thread",
+                    event={
+                        "stage": "audit",
+                        "status": "started",
+                        "summary": "Follow-up audit started",
+                        "payload": {"run_id": str(spec.run_id)},
+                        "kind": "run.audit",
+                    },
+                    idempotency_key=f"follow-up-started:{task['task_id']}",
                 )
+                self.store.link_run(task["task_id"], "audit", spec.run_id)
                 self.repo.execute(spec.run_id)
                 self._import_audit(task["task_id"], spec.run_id)
                 return self.view(task["task_id"])
@@ -810,9 +976,17 @@ class WorkbenchService:
             "execution_mode": task["execution_mode"],
             "fixture": task["execution_mode"] == "fixture",
             "status": task["status"],
+            "phase": task["phase"],
+            "resume_phase": task["resume_phase"],
+            "execution_epoch": task["execution_epoch"],
             "stage": stage,
             "stage_label": STAGE_LABELS[stage],
             "revision": task["revision"],
+            "run_links": self.store.run_links(task_id),
+            "transitions": self.store.transitions(task_id),
+            "audit_run_id": task["audit_run_id"],
+            "repair_run_id": task["repair_run_id"],
+            "verifier_run_id": task["verifier_run_id"],
             "created_at": task["created_at"],
             "updated_at": task["updated_at"],
             "coverage": {
@@ -850,6 +1024,7 @@ class WorkbenchService:
                     "commit": task["commit"],
                     "task": task["task"],
                     "status": task["status"],
+                    "phase": task["phase"],
                     "stage": self._task_stage(findings, task),
                     "stage_label": STAGE_LABELS[self._task_stage(findings, task)],
                     "execution_mode": task["execution_mode"],
@@ -942,7 +1117,20 @@ class WorkbenchService:
             return self.store.task(task["task_id"])
         if run["run_status"] in {"failed", "cancelled"}:
             try:
-                self._set_status(task["task_id"], "failed")
+                self._transition(
+                    task,
+                    "failed",
+                    status="failed",
+                    reason=f"live audit run ended as {run['run_status']}",
+                    event={
+                        "stage": "audit",
+                        "status": "failed",
+                        "summary": f"Live audit run ended as {run['run_status']}",
+                        "payload": {"run_id": str(task["audit_run_id"])},
+                        "kind": "run.audit",
+                    },
+                    idempotency_key=f"audit-failed:{task['task_id']}",
+                )
             except DomainError:
                 pass
         return self.store.task(task["task_id"])
@@ -994,13 +1182,22 @@ class WorkbenchService:
         self.store.upsert_findings(task_id, findings)
         self._store_memory(task_id, run_id)
         observed = self._observe_coverage(task, detail, findings)
-        self.store.update(task_id, observed_coverage=observed, status="ready")
-        self._event(
-            task_id,
-            stage="audit",
-            status="completed",
-            summary=f"Audit produced {len(findings)} finding(s); none is labelled fixed",
-            payload={"findings": len(findings), "coverage": observed},
+        task = self.store.update(task_id, observed_coverage=observed)
+        self._transition(
+            task,
+            "suspected",
+            status="ready",
+            reason=f"audit produced {len(findings)} finding(s); none is labelled fixed",
+            event={
+                "stage": "audit",
+                "status": "completed",
+                "summary": (
+                    f"Audit produced {len(findings)} finding(s); none is labelled fixed"
+                ),
+                "payload": {"findings": len(findings), "coverage": observed},
+                "kind": "audit.completed",
+            },
+            idempotency_key=f"audit-completed:{task_id}",
         )
         for event in detail["events"][:20]:
             self._event(
@@ -1278,12 +1475,36 @@ class WorkbenchService:
     def _persist_finding(self, task_id: UUID, finding: WorkbenchFinding) -> None:
         self.store.upsert_findings(task_id, [finding])
 
-    def _set_status(self, task_id: UUID, target: TaskStatus) -> None:
-        task = self.store.task(task_id)
-        if task["status"] == target:
-            return
-        validate_task_stage(task["status"], target)
-        self.store.update(task_id, status=target)
+    def _transition(
+        self,
+        task: dict[str, Any],
+        to_phase: TaskPhase,
+        *,
+        status: TaskStatus | None = None,
+        reason: str = "",
+        stage: str | None = None,
+        bump_epoch: bool = False,
+        event: dict[str, Any] | None = None,
+        idempotency_key: str | None = None,
+    ) -> dict[str, Any]:
+        """Advance one task through the server-validated phase machine.
+
+        Every write carries the caller's revision and execution epoch, so a
+        stale worker is fenced before it can change a task.
+        """
+        return self.store.transition(
+            task["task_id"],
+            to_phase=to_phase,
+            to_status=status,
+            expected_revision=task["revision"],
+            expected_epoch=task["execution_epoch"],
+            actor=self.settings.local_actor,
+            reason=reason,
+            stage=stage,
+            bump_epoch=bump_epoch,
+            event=event,
+            idempotency_key=idempotency_key,
+        )
 
     def _event(
         self,

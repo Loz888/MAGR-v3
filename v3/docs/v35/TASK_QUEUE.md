@@ -8,8 +8,8 @@
 | 卡 | 主题 | 依赖 | 状态 | 工程门 | live 门 |
 | --- | --- | --- | --- | --- | --- |
 | V35-B00 | 冻结 V3.4 并建立唯一实施真相 | 无 | DONE | PASS | NOT_APPLICABLE |
-| V35-U01 | 统一 Task / Run Ledger 与状态迁移 | B00 | **READY** | NOT_RUN | NOT_RUN |
-| V35-U02 | 统一 Finding → RepairHandoff 真实交接 | U01 | TODO | NOT_RUN | NOT_RUN |
+| V35-U01 | 统一 Task / Run Ledger 与状态迁移 | B00 | DONE | PASS | NOT_RUN |
+| V35-U02 | 统一 Finding → RepairHandoff 真实交接 | U01 | **READY** | NOT_RUN | NOT_RUN |
 | V35-R01 | 结构化模型补丁提供方 | U02 | TODO | NOT_RUN | NOT_RUN |
 | V35-R02 | 真实仓库源文件与 Docker Sandbox 统一执行 | R01 | TODO | NOT_RUN | NOT_RUN |
 | V35-R03 | 统一 Audit & Repair 多轮编排 | R02 | TODO | NOT_RUN | NOT_RUN |
@@ -33,7 +33,7 @@ B00 ── U01 ── U02 ── R01 ── R02 ── R03 ── R04 ── R05
                                   └─ E01 ── E02 ── E03 ── D01
 ```
 
-- 当前唯一 `READY`：**V35-U01**。开始前须复核 `accept/B00/accept.json` 的 `result_commit` 与当前 HEAD。
+- 当前唯一 `READY`：**V35-U02**。开始前须复核 `accept/U01/accept.json` 的 `result_commit` 与当前 HEAD。
 - 任何卡的依赖未通过验收时，该卡标记 `BLOCKED`，不得假装 PASS。
 
 ## 每卡交付物

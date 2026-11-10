@@ -720,5 +720,24 @@
       "tests/test_v32_repository_analysis.py"
     ],
     "timeout_seconds": 600
+  },
+  "V35-U01": {
+    "components": {
+      "cas": "revision_bound_transition_allows_exactly_one_worker",
+      "compatibility": "legacy_v34_status_and_repo_analysis_r5_contract_preserved",
+      "epoch_fence": "run_pause_resume_cancel_bump_execution_epoch_and_fence_old_writers",
+      "events": "append_only_with_task_scoped_idempotency_key",
+      "model": "not_used",
+      "phase_machine": "python_service_and_postgres_trigger_share_one_seed_table",
+      "postgres": "real_disposable_database_0023_migration",
+      "redis": "not_used",
+      "run_ledger": "audit_repair_verifier_runs_linked_to_one_task_id"
+    },
+    "tests": [
+      "tests/test_v35_u01.py",
+      "tests/test_v34_repository_api.py",
+      "tests/test_v32_repository_analysis.py"
+    ],
+    "timeout_seconds": 600
   }
 }

@@ -68,7 +68,7 @@ def settings(database: str, tmp_path) -> Settings:
             conn.execute(sql.SQL("DROP SCHEMA {} CASCADE").format(sql.Identifier(schema)))
         tables = conn.execute(
             "SELECT schemaname,tablename FROM pg_tables WHERE schemaname IN ('app','knowledge') "
-            "AND tablename!='schema_migrations'"
+            "AND tablename NOT IN ('schema_migrations','workbench_phase_transitions')"
         ).fetchall()
         conn.execute(
             sql.SQL("TRUNCATE {} RESTART IDENTITY CASCADE").format(
