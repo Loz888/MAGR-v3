@@ -18,6 +18,7 @@ from mgar_v3.coordination.engine import Engine
 from mgar_v3.domain import DomainError, Verification, digest
 from mgar_v3.repository_analysis.domain import (
     REPOSITORY_ANALYSIS_GRAPH,
+    AnalysisAuthorization,
     AnalysisLimits,
     AnalysisModelConfig,
     AnalysisSpec,
@@ -197,7 +198,13 @@ class RepositoryAnalysisStore:
             )
             return run_id
 
-    def follow_up(self, parent_run_id: UUID, request: FollowUpInput) -> UUID:
+    def follow_up(
+        self,
+        parent_run_id: UUID,
+        request: FollowUpInput,
+        *,
+        authorization: AnalysisAuthorization | None = None,
+    ) -> UUID:
         with self.engine.transaction() as conn:
             parent = conn.execute(
                 "SELECT s.*,r.ticket_id,r.execution_mode,r.report_hash AS run_report_hash,"
@@ -211,6 +218,26 @@ class RepositoryAnalysisStore:
             ).fetchone()
             if parent is None:
                 raise DomainError("NOT_FOUND", "Repository analysis run was not found", 404)
+            limits = AnalysisLimits.model_validate(parent["limits"])
+            model = AnalysisModelConfig.model_validate(parent["model"])
+            authorization_hash = parent["authorization_hash"]
+            actor = parent["actor"] or "repository-analysis-followup"
+            if parent["execution_mode"] == "live":
+                if authorization is None:
+                    raise DomainError(
+                        "REPO_ANALYSIS_PROFILE_REQUIRED", "追问需要当前有效的分析使用许可。", 403
+                    )
+                try:
+                    authorization.validate_scope(parent["repository"], authorization.limits)
+                except ValueError as exc:
+                    raise DomainError(
+                        "REPO_ANALYSIS_SCOPE_DENIED",
+                        "当前使用许可不允许分析此仓库，请检查模型与使用设置。",
+                        403,
+                    ) from exc
+                limits, model = authorization.limits, authorization.model
+                authorization_hash = authorization.authorization_hash
+                actor = authorization.approved_by
             if parent["run_status"] in {"running", "queued", "paused", "cancelled"}:
                 raise DomainError(
                     "RUN_NOT_SETTLED", "Follow-up requires a settled repository analysis", 409
@@ -227,8 +254,6 @@ class RepositoryAnalysisStore:
                         "IDEMPOTENCY_CONFLICT", "Follow-up id was reused with new text", 409
                     )
                 return UUID(str(existing["run_id"]))
-            limits = AnalysisLimits.model_validate(parent["limits"])
-            model = AnalysisModelConfig.model_validate(parent["model"])
             ticket_id = UUID(str(parent["ticket_id"]))
             thread_id = UUID(str(parent["thread_id"]))
             mandate_id, run_id = uuid4(), uuid4()
@@ -238,7 +263,7 @@ class RepositoryAnalysisStore:
                 commit=parent["resolved_commit"],
                 task=request.body,
                 limits=limits,
-                authorization_hash=parent["authorization_hash"],
+                authorization_hash=authorization_hash,
                 parent_run_id=parent_run_id,
             )
             revision = int(parent["revision"]) + 1
@@ -265,7 +290,7 @@ class RepositoryAnalysisStore:
                 (
                     mandate_id,
                     self.engine.settings.project_id,
-                    "repository-analysis-followup" if not parent["actor"] else parent["actor"],
+                    actor,
                     Jsonb(
                         mandate_scope(
                             repository=parent["repository"],
@@ -273,7 +298,7 @@ class RepositoryAnalysisStore:
                             task=request.body,
                             limits=limits,
                             model=model,
-                            authorization_hash=parent["authorization_hash"],
+                            authorization_hash=authorization_hash,
                             profile_hash=profile_hash,
                         )
                     ),
@@ -350,7 +375,7 @@ class RepositoryAnalysisStore:
                     Jsonb(limits.model_dump(mode="json")),
                     Jsonb(model.model_dump(mode="json")),
                     deadline,
-                    parent["authorization_hash"],
+                    authorization_hash,
                     profile_hash,
                     parent_run_id,
                     parent["run_report_hash"],
@@ -368,6 +393,7 @@ class RepositoryAnalysisStore:
                 "repository_analysis_followup_accepted",
                 parent_run_id=str(parent_run_id),
                 copied_evidence=len(mapping),
+                authorization_hash=authorization_hash,
             )
             return run_id
 

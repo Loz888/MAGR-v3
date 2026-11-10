@@ -38,7 +38,7 @@ const ERRORS = {
   REPO_ANALYSIS_PROFILE_INVALID:
     "服务器的分析授权无效，请检查授权人、预算和配置文件。",
   REPO_ANALYSIS_SCOPE_DENIED:
-    "该仓库或任务预算不在当前授权范围内，请核对服务器的分析授权。",
+    "当前许可未允许分析此仓库，请在模型与使用设置中检查仓库范围和有效期。",
   GITHUB_READ_CREDENTIAL_REQUIRED: "服务器尚未配置 GitHub 只读凭据。",
   GITHUB_NOT_FOUND: "没有找到仓库或指定文件，请检查 URL、分支和读取权限。",
   REPOSITORY_NOT_PUBLIC: "当前仅支持公开的 GitHub 仓库。",
@@ -124,7 +124,7 @@ function notify(message, error = false) {
 function explain(error) {
   return ERRORS[error.code] || error.message || "请求未完成，请检查服务连接。";
 }
-async function call(method, path, body) {
+async function call(method, path, body, refreshCsrf = true) {
   const response = await fetch(path, {
     method,
     credentials: "same-origin",
@@ -142,6 +142,21 @@ async function call(method, path, body) {
     data = text;
   }
   if (!response.ok) {
+    if (data?.code === "CSRF_REQUIRED" && refreshCsrf) {
+      // Authentication rejected the write before business handling. Refresh only
+      // this session check, once; never retry an ambiguous or unrelated failure.
+      const session = await call(
+        "GET",
+        "/api/v3/auth/session",
+        undefined,
+        false,
+      );
+      if (session.authenticated) {
+        state.csrf = session.csrf_token;
+        return call(method, path, body, false);
+      }
+      showLogin();
+    }
     const error = new Error(
       typeof data === "object"
         ? data.message
@@ -910,6 +925,18 @@ async function submit(event) {
     await loadHistory();
     notify("");
   } catch (error) {
+    if (
+      error.status === 403 &&
+      [
+        "REPO_ANALYSIS_SCOPE_DENIED",
+        "REPO_ANALYSIS_PROFILE_REQUIRED",
+        "REPO_ANALYSIS_PROFILE_INVALID",
+      ].includes(error.code)
+    ) {
+      state.pendingSubmit = true;
+      await showSettings();
+      $("settings-error").textContent = explain(error);
+    }
     notify(explain(error), true);
   } finally {
     state.busy = false;
@@ -1111,11 +1138,14 @@ $("demo-mode").addEventListener("change", () => {
 $("composer").addEventListener("submit", submit);
 $("question").addEventListener("keydown", (event) => {
   if (
-    (event.ctrlKey || event.metaKey) &&
-    event.key === "Enter" &&
-    !$("send").disabled
+    event.key !== "Enter" ||
+    event.shiftKey ||
+    event.isComposing ||
+    event.keyCode === 229
   )
-    $("composer").requestSubmit();
+    return;
+  event.preventDefault();
+  if (!event.repeat && !$("send").disabled) $("composer").requestSubmit();
 });
 for (const button of document.querySelectorAll("[data-prompt]"))
   button.addEventListener("click", () => {

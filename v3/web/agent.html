@@ -184,8 +184,12 @@
               placeholder="你想了解这个项目的什么？描述问题，也可以贴入错误信息…"
               rows="3"
               maxlength="8000"
+              aria-describedby="question-shortcuts"
               required
             ></textarea>
+            <span id="question-shortcuts" class="field-help"
+              >Enter 发送 · Shift+Enter 换行</span
+            >
             <div class="composer-footer">
               <span id="composer-hint"
                 >真实读取 GitHub · 使用服务器已授权的模型与预算</span

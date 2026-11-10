@@ -398,8 +398,13 @@ class RepositoryAnalysisService:
         return self.store.artifact_bytes(spec.report_hash, run_id)
 
     def follow_up(self, run_id: UUID, request: FollowUpInput) -> AnalysisSpec:
-        self._check_live_authorization(self.store.spec(run_id))
-        return self.store.spec(self.store.follow_up(run_id, request))
+        parent = self.store.spec(run_id)
+        # A follow-up is a new paid run. Bind it to today's explicit permission,
+        # while retaining the parent's pinned source and conversation context.
+        authorization = (
+            self.authorization().authorization if parent.execution_mode == "live" else None
+        )
+        return self.store.spec(self.store.follow_up(run_id, request, authorization=authorization))
 
     def pause(self, run_id: UUID) -> None:
         self.store.pause(run_id)

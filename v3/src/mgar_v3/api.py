@@ -302,6 +302,13 @@ def create_app(
 
     @app.exception_handler(DomainError)
     async def domain_error(request: Request, exc: DomainError) -> JSONResponse:
+        if exc.status == 403:
+            logging.getLogger("mgar_v3.api").warning(
+                "Request denied: method=%s path=%s code=%s",
+                request.method,
+                request.url.path,
+                exc.code,
+            )
         return JSONResponse(
             {
                 "code": exc.code,
