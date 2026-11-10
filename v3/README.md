@@ -1,14 +1,46 @@
-# V3.1 本地运行与验证
+# V3.5 本地运行与验证
 
-[项目首页](../README.md) · [完整技术报告](docs/TECHNICAL_REPORT.md) · [文档导航](docs/README.md) · [两项P0设计](docs/design/p0-commerce-v1/README.md)
+[项目首页](../README.md) · [V3.5 产品说明](docs/v35/PRODUCT.md) · [90 秒演示](docs/v35/DEMO.md) · [评测索引](docs/v35/EVALUATION_INDEX.md) · [完整技术报告](docs/TECHNICAL_REPORT.md) · [文档导航](docs/README.md)
 
-本页提供实际运行命令。电商Case工单、独立业务判定、API/CLI与工作台已经实施；固定场景内工程、真实报告/修复提案及三份获批Draft PR交付均通过。见[P0运行手册](docs/p0-commerce-runbook.md)、[实施档案](docs/repairs/P0-20261106/README.md)与[最终复验/交付](docs/repairs/P0-20261107/README.md)。历史阶段结果按记录时间理解。
+本页提供实际运行命令。V3.5 已把只读调查、Finding/Evidence、有授权修复、测试回执、Review Bundle 与受控 Draft PR 串成一条可复核链路；Web 与 CLI 调同一 API。工程门与安全门 `PASS`；E02 真实 live 四臂失败，`live_agent_gate=FAIL`；真实 GitHub 写入 `NOT_RUN`。电商Case工单、独立业务判定、API/CLI与工作台的历史交付见[P0运行手册](docs/p0-commerce-runbook.md)与[最终复验/交付](docs/repairs/P0-20261107/README.md)。历史阶段结果按记录时间理解。
 
 仓库地址为`https://github.com/Loz888/MAGR-v3.git`。所有make命令在你本机克隆后的`MAGR-v3/v3/`执行；`/workspace/MAGR-v3/v3`是开发云路径，在你的WSL上不会自动存在。
 
-依次执行`make setup`、`make deps-up`、`make migrate`、`make doctor`和`make dev`。工作台为`http://127.0.0.1:18080`，API文档为`/docs`。令牌从本机`.env`读取，页面仅在内存使用；不要公开密钥或令牌。setup仅生成缺失的0600配置，不覆盖既有值。
+依次执行`make setup`、`make deps-up`、`make migrate`、`make doctor`和`make dev`。工作台为`http://127.0.0.1:18080`（任务页 `/workbench`，仓库分析 `/repo`，API 文档 `/docs`）。令牌从本机`.env`读取，页面仅在内存使用；不要公开密钥或令牌。setup仅生成缺失的0600配置，不覆盖既有值。
 
 默认fixture模式不调用付费模型或向GitHub发布业务内容。PG端口55433、Redis端口56379仅绑定回环；停止依赖用`make deps-stop`，保留数据卷。真实执行必须具有匹配的有效profile、预算和许可。
+
+## V3.5 演示与验收
+
+```bash
+make demo          # 单任务 adversarial fixture 评测：真实 Docker，零付费
+make demo-repo     # 生成固定 Commit 的示例仓库与缺陷说明（不联网）
+make verify TASK=V35-D01
+```
+
+`make demo` 覆盖：固定 Commit 快照 → 基线复现 → 结构化补丁 → 首轮失败保留 → 二轮修复 → 公开/隐藏测试回执 → sealed Review Bundle → `waiting_approval`（禁止发布）。报告写入 `.local/demo-v35/report-<UTC>/`，目录不可覆盖。
+
+Web 与 CLI 的任务视图完全一致：
+
+```bash
+uv run --frozen mgar workbench --action create --repo-url https://github.com/pallets/click \
+  --mode audit_and_repair --task '参数名 help 与自动 help option 冲突，修复且不破坏 --help' \
+  --execution-mode fixture
+uv run --frozen mgar workbench --action status --task-id <task_id>
+uv run --frozen mgar workbench --action diff --task-id <task_id> --finding-id <finding_id>
+uv run --frozen mgar workbench --action approve --task-id <task_id> --finding-id <finding_id> \
+  --payload-hash <reviewed_hash>
+```
+
+受控 Draft PR 只在本地 fixture MCP 远端演示（真实 GitHub 写入未授权）：
+
+```bash
+make sandbox-build
+uv run --frozen python scripts/r5_demo.py
+uv run --frozen python scripts/r5_demo.py --run <run_id> --approve-payload-hash <hash>
+```
+
+门禁口径见[评测索引](docs/v35/EVALUATION_INDEX.md)：工程门与 live 门分开记录，`NOT_RUN` 不得改写为 `PASS`；fixture 发布回执永不显示为 GitHub 链接。
 
 ## V3.2 通用 GitHub 仓库分析
 

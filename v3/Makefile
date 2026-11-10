@@ -56,6 +56,13 @@ sandbox-build-r03:
 r5-demo:
 	$(UV) run --frozen python scripts/r5_demo.py
 
+.PHONY: demo demo-repo
+demo:
+	$(UV) run --frozen python scripts/run_eval.py --suite dev --mode fixture --task v35-adversarial-help-name-retry --out .local/demo-v35/report-$$(date -u +%Y%m%dT%H%M%SZ)
+demo-repo:
+	$(UV) run --frozen python scripts/demo_v35.py --out .local/demo-v35
+
+
 .PHONY: watchdog-setup watchdog-once
 watchdog-setup:
 	$(UV) run --frozen python scripts/setup_watchdog.py

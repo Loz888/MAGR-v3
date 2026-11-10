@@ -1004,5 +1004,23 @@
       "tests/test_v34_security_recovery.py"
     ],
     "timeout_seconds": 2400
+  },
+  "V35-D01": {
+    "components": {
+      "docs": "product_description_90s_demo_and_evaluation_index_with_live_fixture_separation",
+      "demo_repo": "pinned_click_snapshot_copied_offline_with_sha256_digest_check_and_overwrite_guard",
+      "demo_run": "single_adversarial_fixture_task_via_make_demo_real_docker_report_not_overwritten",
+      "aggregate": "engineering_pass_live_model_fail_live_github_write_not_run_live_agent_fail_security_pass",
+      "model": "not_used",
+      "github": "not_used",
+      "postgres": "real",
+      "redis": "real",
+      "docker": "real_pinned_r03_image_observed_by_demo_run",
+      "live": "inherited_from_e01_e02_e03_not_rerun"
+    },
+    "tests": [
+      "tests/test_v35_d01.py"
+    ],
+    "timeout_seconds": 300
   }
 }

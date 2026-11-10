@@ -1,12 +1,40 @@
-# MGAR V3.1 · 持续研发 Agent
+# MGAR V3.5 · 持续研发 Agent
 
 面向 GitHub 工单的事件驱动研发 Agent 原型，支持持续调查、跨知识库／SQL／代码取证、受限函数修复，以及经过人工审批的可恢复交付。
 
+V3.5 把“自然语言任务 → 固定 Commit 只读调查 → Finding/Evidence → 有授权修复 → 测试回执 → Review Bundle → 受控 Draft PR”收敛成一条可复核链路：PostgreSQL 是唯一事实源，外写必须经过 Action/Approval/Outbox，`fixture` 与 `live` 门禁严格分开。
+
 项目重点是让模型调用、任务状态、工具证据和外部写入形成可追溯的工程闭环。底层使用 DeepSeek；任务协调、授权、预算、判定与恢复由应用实现。
 
-**[完整技术报告](v3/docs/TECHNICAL_REPORT.md) · [P0最终验收与交付](v3/docs/repairs/P0-20261107/README.md) · [本地运行](v3/README.md) · [文档导航](v3/docs/README.md)**
+**[V3.5 产品说明](v3/docs/v35/PRODUCT.md) · [90 秒演示](v3/docs/v35/DEMO.md) · [评测索引](v3/docs/v35/EVALUATION_INDEX.md) · [完整技术报告](v3/docs/TECHNICAL_REPORT.md) · [本地运行](v3/README.md) · [文档导航](v3/docs/README.md)**
 
-## 当前状态
+## V3.5 当前能力
+
+| 能力 | 实现与边界 | 入口 |
+|---|---|---|
+| 只读调查 | 固定 Commit，GitHub 只读 MCP，证据绑定 URI/行号/内容哈希 | Web `/repo`、`mgar repo-analyze` |
+| 真实修复 | `RepairHandoff → 结构化 PatchPlan → R02 Worktree → R03 Docker（network none、非 root）` | Workbench、E01 Harness |
+| 审查与审批 | 完整 Diff 审查后才可审批；审批绑定 `payload_hash/tree_hash/diff_sha` | Web `/workbench`、`mgar workbench` |
+| 受控发布 | Draft PR 三步回执（分支/提交/PR）；未知结果只读对账，禁止重试 | `scripts/r5_demo.py`（fixture MCP） |
+| 跨阶段经验 | M01 记忆闭环 + M02 Compaction 不变量，权限与证据不得被压缩丢失 | 自动 |
+| 评测与安全 | E01 Harness、E02 四臂消融、E03 35 条安全/灾备场景 | [评测索引](v3/docs/v35/EVALUATION_INDEX.md) |
+
+| 版本 | 新增能力 |
+|---|---|
+| V3.2 | GitHub 仓库只读分析（Reason → Tool Call → Observation） |
+| V3.3 | 本地工作区扫描、Finding 生命周期、缺陷验证器与记忆 schema |
+| V3.4 | 受限 Go 修复、固定 Docker 沙箱、R05 Draft PR 骨架、Workbench 统一 API |
+| V3.5 | 统一契约与状态机、真实 Handoff/补丁/多轮编排、Outbox 发布、Web/CLI 同一视图、E01-E03 评测与安全门 |
+
+**门禁状态（必须分开理解）**：V3.5 工程门与安全门 `PASS`；E02 真实 live 四臂全部 `PATCH_TRUNCATED`，因此 `live_model_gate`、`live_agent_gate` 为 `FAIL`，结论 `INCONCLUSIVE`；真实 GitHub 写入未执行，`live_github_write_gate=NOT_RUN`。工程门通过不等于真实 Agent 能力通过。
+
+```bash
+cd v3
+make demo          # 单任务 adversarial fixture 评测（真实 Docker，零付费）
+make demo-repo     # 生成固定 Commit 示例仓库与缺陷说明
+```
+
+## V3.1 / P0 历史状态
 
 截至北京时间2026-11-07：电商“研巡”的两项P0已完成固定合成场景内的实施与验收，包含Case工单、跨源调查到独立修复的交接，以及业务判定和执行/审批/交付四维状态。真实调查与修复提案通过，三份获批Draft PR已完成远端核对：[#3](https://github.com/Loz888/MAGR-v3/pull/3)、[#4](https://github.com/Loz888/MAGR-v3/pull/4)、[#5](https://github.com/Loz888/MAGR-v3/pull/5)，均未合并；其他P1/P2改进按用户范围不开展。
 
@@ -83,9 +111,11 @@ make dev
 ```text
 v3/src/mgar_v3/   Engine、图、工具、路由、修复、恢复及评测实现
 v3/web/           现有本地任务工作台
-v3/migrations/    17个显式产品迁移
+v3/migrations/    26 个显式产品迁移（V3.5 至 0026）
 v3/tests/         工程测试；真实PG/Redis，受控模型与外部远端
 v3/eval/          冻结题集、独立判定与公开实验结果
+v3/experiments/   V3.5 评测数据集（固定 Commit 快照、公开/隐藏/标准补丁）
+v3/docs/v35/      V3.5 架构契约、任务卡、验收记录、演示与评测索引
 v3/docs/          技术报告、ADR、实验、修复档案与P0设计
 v3/deploy/        依赖容器、systemd与隔离VM验收资产
 v31-upgrade/     增量任务卡与带时间范围的历史状态

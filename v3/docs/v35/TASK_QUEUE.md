@@ -21,7 +21,7 @@
 | V35-E01 | 重建端到端真实仓库评测 Harness | R05、M01 | DONE | PASS | NOT_RUN |
 | V35-E02 | Memory / Compaction / Expert 消融实验 | E01、M02、X01 | DONE | PASS | FAIL |
 | V35-E03 | 端到端安全、并发与灾难恢复 | R04、M02、E01 | DONE | PASS | NOT_RUN |
-| V35-D01 | 产品说明、演示脚本、部署与最终验收 | 前述必须卡 | TODO | NOT_RUN | NOT_RUN |
+| V35-D01 | 产品说明、演示脚本、部署与最终验收 | 前述必须卡 | DONE | PASS | FAIL（模型/Agent）/ NOT_RUN（写） |
 
 ## 依赖与放行
 
@@ -33,7 +33,7 @@ B00 ── U01 ── U02 ── R01 ── R02 ── R03 ── R04 ── R05
                                   └─ E01 ── E02 ── E03 ── D01
 ```
 
-- 当前无 `READY` 卡：V35-X01、V35-E01、V35-E02 与 V35-E03 已完成。E02 fixture 工程门 `PASS`，live 四臂因输出长度上限全部 `PATCH_TRUNCATED`，`live_agent_gate=FAIL` 且结论 `INCONCLUSIVE`（无赢家，配置不改）。E03 工程/安全门 `PASS`，35 条场景 34 条通过、1 条真实 PostgreSQL 重启 `NOT_RUN`；无付费模型调用与真实 GitHub 写入，因此 live 门均为 `NOT_RUN`。真实 Agent 门仍未通过，下一张 D01 须另行确认后开始。
+- 当前无 `READY` 卡：V35 全部必须卡已完成。E02 fixture 工程门 `PASS`，live 四臂因输出长度上限全部 `PATCH_TRUNCATED`，`live_agent_gate=FAIL` 且结论 `INCONCLUSIVE`（无赢家，配置不改）。E03 工程/安全门 `PASS`，35 条场景 34 条通过、1 条真实 PostgreSQL 重启 `NOT_RUN`。D01 文档、90 秒演示与聚合验收已完成：工程/安全门 `PASS`，Live 模型与 Agent 门聚合为 `FAIL`（继承 E02），Live GitHub 写门 `NOT_RUN`。真实 Agent 门仍未通过，不得对外宣称已验收。
 - 任何卡的依赖未通过验收时，该卡标记 `BLOCKED`，不得假装 PASS。
 
 ## 每卡交付物
