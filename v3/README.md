@@ -1,8 +1,8 @@
 # V3.5 本地运行与验证
 
-当前推荐入口是首页的**单页仓库分析 Agent**：连接一次，填写仓库 URL 和问题，
+当前推荐入口是首页的**单页仓库分析 Agent**：账户密码登录后，填写仓库 URL 和问题，
 在同一页面查看执行过程、报告和追问。`/repo`、`/workbench` 也是同一入口。
-首次真实调用需要服务端凭据与授权，设置面板会逐项说明缺失配置。
+首次打开创建管理员账户；模型密钥、GitHub 凭据与使用许可都可直接在网页弹窗填写并保存。
 完整步骤见 [单页 Agent 使用说明](docs/agent-ui.md)。旧业务与修复审批页面位于
 `/legacy`、`/legacy/workbench`。
 
@@ -12,9 +12,9 @@
 
 仓库地址为`https://github.com/Loz888/MAGR-v3.git`。所有make命令在你本机克隆后的`MAGR-v3/v3/`执行；`/workspace/MAGR-v3/v3`是开发云路径，在你的WSL上不会自动存在。
 
-依次执行`make setup`、`make deps-up`、`make migrate`、`make doctor`和`make dev`。工作台为`http://127.0.0.1:18080`（任务页 `/workbench`，仓库分析 `/repo`，API 文档 `/docs`）。令牌从本机`.env`读取，页面仅在内存使用；不要公开密钥或令牌。setup仅生成缺失的0600配置，不覆盖既有值。
+依次执行`make setup`、`make deps-up`、`make migrate`、`make doctor`和`make dev`。工作台为`http://127.0.0.1:18080`（任务页 `/workbench`，仓库分析 `/repo`，API 文档 `/docs`）。首次打开创建管理员账户，之后用账户密码登录。模型配置直接在设置弹窗中填写。setup仅生成缺失的0600配置，不覆盖既有值。
 
-默认fixture模式不调用付费模型或向GitHub发布业务内容。PG端口55433、Redis端口56379仅绑定回环；停止依赖用`make deps-stop`，保留数据卷。真实执行必须具有匹配的有效profile、预算和许可。
+网页默认提交真实只读分析，缺少配置会弹窗引导；CLI默认fixture模式不调用付费模型或向GitHub发布业务内容。PG端口55433、Redis端口56379仅绑定回环；停止依赖用`make deps-stop`，保留数据卷。真实执行必须具有匹配的有效profile、预算和许可。
 
 ## V3.5 演示与验收
 
@@ -111,7 +111,7 @@ make dev
 
 已在其他目录克隆的用户可进入自己的仓库根目录更新后执行同样的 `v3/` 启动步骤；无需重新克隆或覆盖已有 `.env`。如果 `docker info` 或 `docker compose version` 失败，先恢复 Docker Desktop/WSL 集成，再继续。
 
-服务启动后保持该终端运行，在 Windows 浏览器打开 `http://127.0.0.1:18080`。工作台访问令牌位于本机 `v3/.env` 的 `MGAR_V3_LOCAL_TOKEN`，不要把令牌发到聊天中。默认演示模式不调用付费模型或向 GitHub 发布。
+服务启动后保持该终端运行，在 Windows 浏览器打开 `http://127.0.0.1:18080`。首次在页面创建管理员账户，然后登录并填写模型设置。CLI 演示模式不调用付费模型或向 GitHub 发布。
 
 ## fixture 示例
 

@@ -1,18 +1,17 @@
-# 单页仓库分析 Agent
+# 账户登录与单页 Agent
 
-`/`、`/repo` 和 `/workbench` 使用同一个对话页面。普通分析只需提交 GitHub 仓库
-URL 和问题；分支或 Commit 可选，默认使用仓库默认分支。页面默认调用 live 分析，
-没有真实配置时展示具体缺项，不会自动切换到合成回答。
+首页、`/repo` 和 `/workbench` 使用同一个对话页面。用户通过账户密码登录，
+模型密钥、仓库读取凭据和分析使用许可都在网页内填写，不需要查找 local token、
+修改模型环境变量或手工创建授权文件。
 
-## 在自己的电脑启动
+## 在自己的电脑启动或升级
 
-需要 Python 3.12、uv、Make、Docker Engine 和 Compose V2。Windows 使用
-WSL2 Ubuntu，并启用 Docker Desktop 的 WSL Integration。
+需要 Python 3.12、uv、Make、Docker Engine 和 Compose V2。Windows 使用 WSL2
+Ubuntu，并启用 Docker Desktop 的 WSL Integration。
 
-在项目的 `v3` 目录依次运行：
+在项目的 `v3` 目录依次执行：
 
 ```bash
-uv python install 3.12
 make setup
 make deps-up
 make migrate
@@ -20,60 +19,57 @@ make doctor
 make dev
 ```
 
-浏览器访问 `http://127.0.0.1:18080`。点击左下角“连接服务”，输入本机
-`v3/.env` 中 `MGAR_V3_LOCAL_TOKEN` 的值。令牌只保存在浏览器会话中。
-模型 Key 和 GitHub 凭据始终配置在服务器端，不需要填入网页。
+这次升级包含 `0027_web_accounts.sql`，已有安装也必须先执行 `make migrate`。
+命令不会覆盖已有 `.env` 或数据库数据。
 
-## 首次配置真实分析
+## 首次使用
 
-在本机 `.env` 配置以下变量，已有值应保留：
+1. 浏览器访问 `http://127.0.0.1:18080`。
+2. 首次打开时创建本机实例的管理员账户：填写用户名、至少 10 位密码并确认密码。
+3. 创建后自动登录。以后直接用用户名和密码登录，刷新页面仍会保留有效会话。
+4. 在弹出的“模型与使用设置”中填写 DeepSeek API Key、模型名称和 GitHub 只读 Token。
+5. 选择允许分析的仓库范围、每次分析的费用上限和使用许可有效期。
+6. 勾选“我允许使用上述模型和凭据进行只读分析”，保存设置即可使用，无需重启。
 
-```dotenv
-MGAR_V3_ALLOW_PAID=1
-MGAR_V3_DEEPSEEK_API_KEY=你的密钥
-MGAR_V3_GITHUB_READ_TOKEN=你的GitHub只读凭据
-MGAR_V3_REPO_ANALYSIS_AUTHORIZATION_PATH=.local/repo-analysis-authorization.json
-```
+本功能是单个本机实例的管理员账户，不提供开放注册或多租户账号隔离。
+首个账户只能从运行服务的电脑创建。已有 CLI 和旧操作员接口继续兼容原 token。
 
-由操作员参考 `config/repo-analysis-authorization.example.json` 创建本地授权文件：
+## 提交问题与追问
 
-- `approved_by` 应属于 `MGAR_V3_ALLOWED_ACTORS`；默认账号为 `loz888`。
-- `allowed_repositories` 填写实际允许分析的 `owner/repository`。
-- 确认 `expires_at` 尚未过期，且明确允许模型调用。
-- 设置每次分析的模型轮数、工具次数、费用、上下文与时间上限。
-- 模型名称应是供应商实际提供的模型；计费上界应与模型匹配。
+在首页填写 GitHub 仓库 URL 和问题，例如：
 
-修改 `.env` 后重启 `make dev`，再点击连接设置中的“连接并检查配置”。
-配置页显示的是凭据与授权的配置状态；实际远端权限或网络错误在提交和执行时报告。
-凭据和授权文件不要提交到 Git，也不要发送到聊天中。
+> https://github.com/pallets/flask
+>
+> 说明请求如何进入应用，指出入口文件和关键调用关系。
 
-更完整的授权 Schema 与 CLI 说明见 [仓库分析运行手册](repo-analysis.md)。
+点击“开始分析”或按 Ctrl/Cmd + Enter。Agent 在预算内循环搜索和阅读源码，页面
+自动显示工具调用、报告和引用。完成后在同一输入框追问，沿用固定仓库、Commit、
+上一轮报告与证据映射。左侧可切换历史对话，刷新后可恢复所选对话。
 
-## 使用
+缺少模型配置或使用许可过期时，页面直接打开设置弹窗，并保留已填写的问题和 URL。
+补齐后点击“保存并开始分析”，即可继续原来的提交。左下角也可随时打开模型设置，
+或退出登录。已保存的密钥不会回显，留空代表保留原值。
 
-1. 输入公开仓库 URL，例如 `https://github.com/pallets/flask`。
-2. 输入具体问题，例如“说明请求如何进入应用，指出入口文件和关键调用关系”。
-3. 点击“开始分析”，或按 Ctrl/Cmd + Enter。
-4. 页面自动显示运行状态、模型与工具次数、源码阅读记录、报告和引用。
-5. 完成后在同一输入框追问。追问固定在原仓库和 Commit，继承上一轮报告及证据映射。
-6. 左侧切换历史对话；刷新页面可恢复所选对话。分析可暂停、恢复或取消。
+## 配置与许可
 
-当前 Agent 会在授权预算内循环调用模型和只读 GitHub 工具，不能等同于具有任意
-终端、编辑和部署能力的完整 IDE Agent。此入口用于仓库分析，不自动修改远端代码。
-预算或期限耗尽时会明确展示未完成结果，不把部分报告标为成功。
+- 设置保存在 PostgreSQL，服务读取最新配置，重启后仍有效。
+- 密码使用 scrypt 哈希保存；登录使用 HttpOnly / SameSite Cookie，写请求校验 CSRF。
+- 模型和 GitHub 凭据使用本机密钥加密保存。备份时应同时备份 PostgreSQL 和
+  `.local/web/credentials.key`；单独恢复数据库不能解密凭据。
+- 网页中的明确勾选与保存操作会记录本次只读分析许可、范围、预算、有效期和管理员。
+  它不会启用 GitHub 写入、自动批准补丁或发布 PR。
+- 费用上限按应用的预算核算规则执行，统计值不代表供应商的精确账单。
+- 有真实分析排队或执行时不能修改配置；可先暂停。更换许可后，旧许可下的运行不能
+  借用新许可恢复或追问，需要新建分析。
+- 已有 `.env` 与授权文件仍作为兼容配置读取；在网页保存后，网页配置优先。
 
-需要离线验证页面时，在连接设置的“开发与离线验证”中显式选择合成样例。
-演示始终标注，不会读取所填仓库，不调用模型。旧业务、修复与审批页面保留在
-`/legacy` 和 `/legacy/workbench`，可从同一设置面板进入。
+## 开发和验证
 
-## 本轮验证
+在模型设置的“开发与离线验证”中可显式选择合成样例。演示不会读取所填仓库，
+不会调用模型，页面始终标注演示。旧业务、修复与审批页面保留在 `/legacy` 和
+`/legacy/workbench`。
 
-注册工程验收命令：`make verify TASK=AGENT-UI`。
-
-- `tests/test_agent_page.py` 验证统一入口、配置缺项、过期授权、缺 Key 提前失败，
-  以及 live API → 后台 LangGraph → 源码工具 → 报告 → 带前文追问的完整代码路径。
-  使用真实 PostgreSQL、checkpoint、模型客户端与预算账本；GitHub 和模型响应受控，
-  不产生真实付费调用。
-- Chromium 浏览器验证连接、配置提示、演示运行、自动刷新、追问、页面重载、
-  不可信 Markdown 隔离，以及桌面和手机布局。
-- 真实 DeepSeek/GitHub 的端到端请求仍需要运行机器配置有效凭据与授权。
+工程验收命令：`make verify TASK=AGENT-UI`。测试使用真实 PostgreSQL、Redis、
+LangGraph checkpoint、模型客户端和预算账本。GitHub/模型响应由测试控制，不产生
+真实付费调用。浏览器验证包含创建账户、登录、缺配置弹窗、保存后自动提交 live
+分析、持续追问、重载、退出和手机布局。真实外部调用需要用户提供有效凭据。

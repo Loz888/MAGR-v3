@@ -42,6 +42,7 @@ from mgar_v3.repository_analysis.model import DeepSeekAnalysisModel
 from mgar_v3.repository_analysis.store import RepositoryAnalysisStore
 from mgar_v3.repository_analysis.tools import TOOL_CATALOG, RepositoryAnalysisTools
 from mgar_v3.settings import Settings
+from mgar_v3.web_access import WebAnalysisSettings
 
 FIXTURE_AUTHORIZATION = "fixture-no-paid-authorization"
 
@@ -133,12 +134,21 @@ class _StoredProfile:
 class RepositoryAnalysisService:
     def __init__(self, engine: Engine, settings: Settings):
         self.engine = engine
-        self.settings = settings
+        self.web_settings = WebAnalysisSettings(engine, settings)
         self.store = RepositoryAnalysisStore(engine)
         self.memory = AnalysisMemory(settings, engine=engine)
 
+    @property
+    def settings(self) -> Settings:
+        _, payload = self.web_settings.snapshot()
+        return self.web_settings.effective(payload)
+
     # -- authorization ---------------------------------------------------
     def authorization(self) -> _StoredProfile:
+        _, payload = self.web_settings.snapshot()
+        if payload is not None:
+            authorization = AnalysisAuthorization.model_validate(payload["authorization"])
+            return _StoredProfile(authorization, authorization.authorization_hash)
         path = self.settings.repo_analysis_authorization_path
         if path is None:
             raise DomainError(
@@ -174,15 +184,15 @@ class RepositoryAnalysisService:
         for check, code, message, action in (
             (
                 "paid_enabled", "PAID_DISABLED", "尚未启用真实模型调用",
-                "在服务器 .env 中设置 MGAR_V3_ALLOW_PAID=1，并重启服务。",
+                "在模型设置中勾选使用许可，确认仓库范围和费用上限后保存。",
             ),
             (
                 "model_configured", "MODEL_CREDENTIAL_REQUIRED", "尚未配置 DeepSeek 密钥",
-                "在服务器 .env 中配置 MGAR_V3_DEEPSEEK_API_KEY，并重启服务。",
+                "在模型设置中填写 DeepSeek API Key，然后保存。",
             ),
             (
                 "github_configured", "GITHUB_READ_CREDENTIAL_REQUIRED", "尚未配置 GitHub 只读凭据",
-                "配置 MGAR_V3_GITHUB_READ_TOKEN 或已锁定的 GitHub MCP，再重启服务。",
+                "在模型设置中填写 GitHub 只读 Token，然后保存。",
             ),
         ):
             if not checks[check]:
@@ -194,8 +204,7 @@ class RepositoryAnalysisService:
                 "code": exc.code,
                 "message": "真实分析授权尚未配置或无效",
                 "action": (
-                    "按 docs/repo-analysis.md 配置包含仓库、预算和有效期的授权文件，"
-                    "并设置 MGAR_V3_REPO_ANALYSIS_AUTHORIZATION_PATH。"
+                    "打开模型设置，选择允许分析的仓库、预算和有效期，确认使用许可后保存。"
                 ),
             })
             return {
@@ -210,7 +219,7 @@ class RepositoryAnalysisService:
             issues.append({
                 "code": "REPO_ANALYSIS_AUTHORIZATION_EXPIRED",
                 "message": "分析授权已过期或未允许模型调用",
-                "action": "请在服务器上由操作员更新授权文件的有效期与调用许可。",
+                "action": "在模型设置中重新确认使用许可与有效期，然后保存。",
             })
         with self.engine.transaction() as conn:
             budget = conn.execute(
@@ -300,6 +309,7 @@ class RepositoryAnalysisService:
                 prior_report=prior,
                 memory=self.memory,
             )
+        self._check_live_authorization(spec)
         return AnalysisRuntime(
             store=self.store,
             model=DeepSeekAnalysisModel(self.settings, spec.model),
@@ -353,6 +363,7 @@ class RepositoryAnalysisService:
         return self.store.artifact_bytes(spec.report_hash, run_id)
 
     def follow_up(self, run_id: UUID, request: FollowUpInput) -> AnalysisSpec:
+        self._check_live_authorization(self.store.spec(run_id))
         return self.store.spec(self.store.follow_up(run_id, request))
 
     def pause(self, run_id: UUID) -> None:
@@ -362,8 +373,25 @@ class RepositoryAnalysisService:
         self.store.cancel(run_id)
 
     def resume(self, run_id: UUID) -> UUID:
+        self._check_live_authorization(self.store.spec(run_id))
         result = self.store.resume(run_id)
         return result or run_id
+
+    def _check_live_authorization(self, spec: AnalysisSpec) -> None:
+        if spec.execution_mode != "live":
+            return
+        current = self.authorization()
+        try:
+            current.authorization.validate_scope(spec.repository, spec.limits)
+        except ValueError as exc:
+            raise DomainError(
+                "REPO_ANALYSIS_SCOPE_DENIED", "当前使用许可不允许继续此分析。", 403
+            ) from exc
+        if current.authorization_hash != spec.authorization_hash:
+            raise DomainError(
+                "REPO_ANALYSIS_AUTHORIZATION_CHANGED",
+                "分析使用许可已更新，请新建分析以使用新配置。", 409,
+            )
 
     # -- helpers ---------------------------------------------------------
     @staticmethod

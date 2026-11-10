@@ -49,6 +49,7 @@ def client_for(settings, engine, *, background=False):
         create_app(settings, engine, run_background=background),
         base_url="http://127.0.0.1:18080",
         headers={"X-MGAR-Token": settings.local_token.get_secret_value()},
+        client=("127.0.0.1", 50000),
     )
 
 
@@ -118,10 +119,16 @@ def test_missing_model_key_fails_before_github_or_queued_work(
         assert client.get("/api/v3/repository-analyses").json() == []
 
 
+@pytest.mark.parametrize("source", ["file", "web"])
 def test_live_submission_background_loop_citations_and_followup(
-    settings, engine, tmp_path, monkeypatch,
+    settings, engine, tmp_path, monkeypatch, source,
 ):
     config = configuration(settings, tmp_path)
+    if source == "web":
+        config = config.model_copy(update={
+            "allow_paid": False, "repo_analysis_authorization_path": None,
+            "deepseek_api_key": None, "github_read_token": None,
+        })
     requests = []
     github_calls = []
 
@@ -190,6 +197,21 @@ def test_live_submission_background_loop_citations_and_followup(
             lambda settings, model: DeepSeekAnalysisModel(settings, model, client=remote),
         )
         with client_for(config, engine, background=True) as client:
+            if source == "web":
+                client.headers.pop("X-MGAR-Token")
+                client.headers["Origin"] = "http://127.0.0.1:18080"
+                signup = client.post("/api/v3/auth/setup", json={
+                    "username": "test-owner", "password": "test-password-123",
+                })
+                assert signup.status_code == 201
+                client.headers["X-CSRF-Token"] = signup.json()["csrf_token"]
+                saved = client.put("/api/v3/settings/analysis", json={
+                    "deepseek_api_key": "controlled-model-key",
+                    "github_read_token": "controlled-github-key",
+                    "allow_paid": True, "allowed_repositories": [REPOSITORY],
+                })
+                assert saved.status_code == 200
+                assert saved.json()["profile"]["ready"] is True
             profile = client.get("/api/v3/repository-analyses/profile").json()
             assert profile["ready"] is True
             body = {

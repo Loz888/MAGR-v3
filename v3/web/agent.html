@@ -10,167 +10,333 @@
     <script src="/static/agent.js" defer></script>
   </head>
   <body>
-    <aside class="sidebar" id="sidebar">
-      <a class="brand" href="/" aria-label="RepoSage 首页"
-        ><span class="brand-icon">R</span>RepoSage<span class="brand-tag"
-          >AGENT</span
-        ></a
-      >
-      <button class="new-chat" id="new-chat">
-        <span aria-hidden="true">＋</span> 新建分析
-      </button>
-      <div class="sidebar-label">
-        最近的对话
-        <button id="refresh-history" class="icon-button" aria-label="刷新历史">
-          ↻
-        </button>
-      </div>
-      <nav id="history" aria-label="分析历史">
-        <p class="sidebar-empty">连接后查看你的分析记录</p>
-      </nav>
-      <div class="sidebar-bottom">
-        <span class="private-note">源码阅读 · 搜索 · 证据核验</span>
-        <button id="open-settings" class="settings-button">
-          <span class="status-dot" id="connection-dot"></span
-          ><span id="connection-label">连接服务</span
-          ><span class="settings-icon" aria-hidden="true">⚙</span>
-        </button>
-      </div>
-    </aside>
-    <main class="main">
-      <header class="topbar">
-        <button
-          id="toggle-sidebar"
-          class="icon-button mobile-only"
-          aria-label="切换侧栏"
-        >
-          ☰
-        </button>
-        <div>
-          <span id="page-title">新的仓库分析</span
-          ><span class="topbar-subtitle" id="model-label"
-            >REPOSITORY AGENT</span
-          >
-        </div>
-        <span class="mode-badge" id="mode-badge">真实仓库分析</span>
-      </header>
-      <div class="notice" id="notice" role="status" hidden></div>
-      <section class="welcome" id="welcome">
-        <span class="welcome-mark" aria-hidden="true">⌘</span>
-        <p class="eyebrow">从一个问题，读懂整个项目</p>
-        <h1>把仓库交给我，<br />从你的问题开始。</h1>
-        <p class="welcome-description">
-          提供 GitHub 地址和你想了解的问题。Agent 会搜索代码、阅读源码，<br
-            class="desktop-only"
-          />把执行过程和带来源的结论留在这次对话里。
+    <section id="auth-screen" class="auth-screen">
+      <div class="auth-intro">
+        <a class="brand" href="/"><span class="brand-icon">R</span>RepoSage</a>
+        <p class="eyebrow">YOUR REPOSITORY, UNDERSTOOD.</p>
+        <h1>从问题出发，<br />让代码给出答案。</h1>
+        <p>
+          阅读仓库、追踪调用链、核对源码证据。<br />你的每次调查，都在同一处继续。
         </p>
-        <div class="suggestions" aria-label="问题示例">
-          <button
-            data-prompt="梳理项目的整体架构，说明入口文件、核心模块和主要调用链。"
-          >
-            <span aria-hidden="true">◈</span><strong>理解项目架构</strong
-            ><span>从入口到关键模块</span>
+        <div class="auth-features">
+          <span>源码检索</span><span>持续追问</span><span>可溯源结论</span>
+        </div>
+      </div>
+      <div class="auth-card">
+        <p class="eyebrow" id="auth-eyebrow">欢迎回来</p>
+        <h2 id="auth-title">登录 RepoSage</h2>
+        <p class="field-help" id="auth-description">
+          使用你的账户，继续分析项目。
+        </p>
+        <form id="login-form">
+          <label for="username">用户名</label
+          ><input
+            id="username"
+            name="username"
+            autocomplete="username"
+            minlength="3"
+            maxlength="80"
+            pattern="[A-Za-z0-9_.@-]{3,80}"
+            required
+            placeholder="输入用户名"
+          />
+          <label for="password">密码</label
+          ><input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            maxlength="128"
+            required
+            placeholder="输入密码"
+          />
+          <div id="confirm-password-row" hidden>
+            <label for="confirm-password">确认密码</label
+            ><input
+              id="confirm-password"
+              type="password"
+              autocomplete="new-password"
+              maxlength="128"
+              placeholder="再次输入密码"
+            />
+          </div>
+          <p id="login-error" class="error-text" role="alert"></p>
+          <button type="submit" id="login-submit" class="primary-button">
+            登录
           </button>
+        </form>
+        <p class="auth-footnote" id="auth-footnote">
+          登录状态仅保存在当前服务的安全会话中。
+        </p>
+      </div>
+    </section>
+    <div id="app-shell" class="app-shell" hidden>
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="/" aria-label="RepoSage 首页"
+          ><span class="brand-icon">R</span>RepoSage<span class="brand-tag"
+            >AGENT</span
+          ></a
+        >
+        <button class="new-chat" id="new-chat">
+          <span aria-hidden="true">＋</span> 新建分析
+        </button>
+        <div class="sidebar-label">
+          最近的对话
           <button
-            data-prompt="调查项目中可能导致错误的边界条件，给出具体源码证据和可行的验证方法。"
+            id="refresh-history"
+            class="icon-button"
+            aria-label="刷新历史"
           >
-            <span aria-hidden="true">⌕</span><strong>排查潜在问题</strong
-            ><span>沿着证据定位原因</span>
-          </button>
-          <button
-            data-prompt="说明项目如何启动和运行测试，列出必需依赖，并根据源码核对文档中的步骤。"
-          >
-            <span aria-hidden="true">↗</span><strong>快速上手项目</strong
-            ><span>运行、依赖与测试</span>
+            ↻
           </button>
         </div>
-      </section>
-      <section
-        id="conversation"
-        class="conversation"
-        aria-label="分析对话"
-        hidden
-      ></section>
-      <div class="composer-wrap">
-        <form class="composer" id="composer">
-          <div class="repo-row">
-            <label for="repository-url" class="repo-label">仓库</label>
-            <input
-              id="repository-url"
-              type="url"
-              placeholder="https://github.com/owner/repository"
-              aria-label="GitHub 仓库 URL"
-              required
-              autocomplete="url"
-            />
-            <details class="ref-options">
-              <summary aria-label="选择分支或提交">分支 / 提交</summary>
-              <label for="repository-ref">分支、Tag 或 40 位 Commit</label
-              ><input
-                id="repository-ref"
-                placeholder="默认分支"
-                maxlength="200"
-              />
-            </details>
-          </div>
-          <label class="visually-hidden" for="question">问题或追问</label>
-          <textarea
-            id="question"
-            placeholder="你想了解这个项目的什么？描述问题，也可以贴入错误信息…"
-            rows="3"
-            maxlength="8000"
-            required
-          ></textarea>
-          <div class="composer-footer">
-            <span id="composer-hint"
-              >真实读取 GitHub · 使用服务器已授权的模型与预算</span
+        <nav id="history" aria-label="分析历史">
+          <p class="sidebar-empty">连接后查看你的分析记录</p>
+        </nav>
+        <div class="sidebar-bottom">
+          <span class="private-note">源码阅读 · 搜索 · 证据核验</span>
+          <button id="open-settings" class="settings-button">
+            <span class="status-dot" id="connection-dot"></span
+            ><span id="connection-label">连接服务</span
+            ><span class="settings-icon" aria-hidden="true">⚙</span>
+          </button>
+        </div>
+      </aside>
+      <main class="main">
+        <header class="topbar">
+          <button
+            id="toggle-sidebar"
+            class="icon-button mobile-only"
+            aria-label="切换侧栏"
+          >
+            ☰
+          </button>
+          <div>
+            <span id="page-title">新的仓库分析</span
+            ><span class="topbar-subtitle" id="model-label"
+              >REPOSITORY AGENT</span
             >
-            <button type="submit" class="send-button" id="send">
-              <span id="send-label">开始分析</span
-              ><span aria-hidden="true">↑</span>
+          </div>
+          <span class="mode-badge" id="mode-badge">真实仓库分析</span>
+        </header>
+        <div class="notice" id="notice" role="status" hidden></div>
+        <section class="welcome" id="welcome">
+          <span class="welcome-mark" aria-hidden="true">⌘</span>
+          <p class="eyebrow">从一个问题，读懂整个项目</p>
+          <h1>把仓库交给我，<br />从你的问题开始。</h1>
+          <p class="welcome-description">
+            提供 GitHub 地址和你想了解的问题。Agent 会搜索代码、阅读源码，<br
+              class="desktop-only"
+            />把执行过程和带来源的结论留在这次对话里。
+          </p>
+          <div class="suggestions" aria-label="问题示例">
+            <button
+              data-prompt="梳理项目的整体架构，说明入口文件、核心模块和主要调用链。"
+            >
+              <span aria-hidden="true">◈</span><strong>理解项目架构</strong
+              ><span>从入口到关键模块</span>
+            </button>
+            <button
+              data-prompt="调查项目中可能导致错误的边界条件，给出具体源码证据和可行的验证方法。"
+            >
+              <span aria-hidden="true">⌕</span><strong>排查潜在问题</strong
+              ><span>沿着证据定位原因</span>
+            </button>
+            <button
+              data-prompt="说明项目如何启动和运行测试，列出必需依赖，并根据源码核对文档中的步骤。"
+            >
+              <span aria-hidden="true">↗</span><strong>快速上手项目</strong
+              ><span>运行、依赖与测试</span>
             </button>
           </div>
-        </form>
-        <p class="footer-note">
-          分析固定在同一份代码版本上。关键结论附来源，仍需结合实际业务判断。
-        </p>
-      </div>
-    </main>
-    <dialog id="settings-dialog" aria-labelledby="settings-title">
-      <form id="connect-form">
-        <div class="dialog-heading">
-          <div>
-            <p class="eyebrow">一次连接，开始对话</p>
-            <h2 id="settings-title">服务连接</h2>
-          </div>
-          <button
-            type="button"
-            class="icon-button"
-            id="close-settings"
-            aria-label="关闭设置"
-          >
-            ×
-          </button>
+        </section>
+        <section
+          id="conversation"
+          class="conversation"
+          aria-label="分析对话"
+          hidden
+        ></section>
+        <div class="composer-wrap">
+          <form class="composer" id="composer">
+            <div class="repo-row">
+              <label for="repository-url" class="repo-label">仓库</label>
+              <input
+                id="repository-url"
+                type="url"
+                placeholder="https://github.com/owner/repository"
+                aria-label="GitHub 仓库 URL"
+                required
+                autocomplete="url"
+              />
+              <details class="ref-options">
+                <summary aria-label="选择分支或提交">分支 / 提交</summary>
+                <label for="repository-ref">分支、Tag 或 40 位 Commit</label
+                ><input
+                  id="repository-ref"
+                  placeholder="默认分支"
+                  maxlength="200"
+                />
+              </details>
+            </div>
+            <label class="visually-hidden" for="question">问题或追问</label>
+            <textarea
+              id="question"
+              placeholder="你想了解这个项目的什么？描述问题，也可以贴入错误信息…"
+              rows="3"
+              maxlength="8000"
+              required
+            ></textarea>
+            <div class="composer-footer">
+              <span id="composer-hint"
+                >真实读取 GitHub · 使用服务器已授权的模型与预算</span
+              >
+              <button type="submit" class="send-button" id="send">
+                <span id="send-label">开始分析</span
+                ><span aria-hidden="true">↑</span>
+              </button>
+            </div>
+          </form>
+          <p class="footer-note">
+            分析固定在同一份代码版本上。关键结论附来源，仍需结合实际业务判断。
+          </p>
         </div>
-        <label for="access-token">本地访问令牌</label>
-        <p class="field-help">
-          使用服务器 <code>v3/.env</code> 中的
-          <code>MGAR_V3_LOCAL_TOKEN</code
-          >。仅保存在当前浏览器会话，不在页面显示。
-        </p>
-        <input
-          id="access-token"
-          type="password"
-          autocomplete="off"
-          placeholder="粘贴访问令牌"
+      </main>
+    </div>
+    <dialog id="settings-dialog" aria-labelledby="settings-title">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">准备好你的分析助手</p>
+          <h2 id="settings-title">模型与使用设置</h2>
+        </div>
+        <button
+          type="button"
+          class="icon-button"
+          id="close-settings"
+          aria-label="关闭设置"
+        >
+          ×
+        </button>
+      </div>
+      <div class="account-row">
+        <span id="account-name"></span
+        ><button id="logout" type="button">退出登录</button>
+      </div>
+      <form id="model-settings-form">
+        <label for="model-id">模型</label
+        ><input
+          id="model-id"
+          value="deepseek-chat"
+          maxlength="100"
+          required
+          placeholder="例如 deepseek-chat"
         />
-        <p id="connection-error" role="alert" class="error-text"></p>
-        <button class="primary-button" id="connect" type="submit">
-          连接并检查配置
+        <div class="settings-grid">
+          <div>
+            <label for="model-key">DeepSeek API Key</label
+            ><input
+              id="model-key"
+              type="password"
+              autocomplete="off"
+              maxlength="4096"
+              placeholder="粘贴 API Key"
+            />
+            <p id="model-key-help" class="field-help">
+              填写后加密保存在运行此服务的电脑上。
+            </p>
+          </div>
+          <div>
+            <label for="github-key">GitHub 只读 Token</label
+            ><input
+              id="github-key"
+              type="password"
+              autocomplete="off"
+              maxlength="4096"
+              placeholder="粘贴 GitHub Token"
+            />
+            <p id="github-key-help" class="field-help">
+              用于读取仓库源码，只需要读取权限。
+            </p>
+          </div>
+        </div>
+        <h3>分析范围与预算</h3>
+        <label class="checkbox-label"
+          ><input
+            id="all-repositories"
+            type="checkbox"
+            checked
+          />允许分析任意公开的 GitHub 仓库</label
+        >
+        <div id="repository-scope-row" hidden>
+          <label for="repository-scope">允许的仓库（每行一个）</label
+          ><textarea
+            id="repository-scope"
+            rows="3"
+            placeholder="owner/repository"
+          ></textarea>
+        </div>
+        <div class="settings-grid">
+          <div>
+            <label for="cost-limit">每次分析费用上限（美元）</label
+            ><input
+              id="cost-limit"
+              type="number"
+              min="0.01"
+              max="10"
+              step="0.01"
+              value="0.50"
+              required
+            />
+          </div>
+          <div>
+            <label for="authorization-days">使用许可有效期</label
+            ><select id="authorization-days">
+              <option value="7">7 天</option>
+              <option value="30" selected>30 天</option>
+              <option value="90">90 天</option>
+            </select>
+          </div>
+        </div>
+        <details class="advanced-limits">
+          <summary>更多分析选项</summary>
+          <div class="settings-grid">
+            <div>
+              <label for="call-limit">最多模型轮数</label
+              ><input
+                id="call-limit"
+                type="number"
+                min="1"
+                max="12"
+                value="6"
+                required
+              />
+            </div>
+            <div>
+              <label for="tool-limit">最多工具调用</label
+              ><input
+                id="tool-limit"
+                type="number"
+                min="1"
+                max="40"
+                value="20"
+                required
+              />
+            </div>
+          </div>
+        </details>
+        <label class="checkbox-label consent"
+          ><input id="allow-paid" type="checkbox" /><span
+            >我允许使用上述模型和凭据进行只读分析，费用遵循所设上限。</span
+          ></label
+        >
+        <p class="field-help">
+          保存即记录本次使用许可，立即生效。已有密钥不会回显；留空可保留原配置。
+        </p>
+        <p id="settings-error" class="error-text" role="alert"></p>
+        <button id="save-model-settings" type="submit" class="primary-button">
+          保存设置
         </button>
       </form>
       <section id="readiness" hidden>
-        <h3>真实分析配置</h3>
         <ul id="checklist" class="checklist"></ul>
         <div id="setup-help"></div>
         <p id="profile-summary" class="field-help"></p>
@@ -180,9 +346,7 @@
         <label class="checkbox-label"
           ><input id="demo-mode" type="checkbox" />使用合成样例演示</label
         >
-        <p class="field-help">
-          演示不会读取所填仓库，也不会调用模型。真实分析默认始终使用 live 模式。
-        </p>
+        <p class="field-help">演示不会读取所填仓库，也不会调用模型。</p>
         <div class="legacy-links">
           <a href="/legacy">旧版业务工作台</a
           ><a href="/legacy/workbench">修复与审批工作台</a>

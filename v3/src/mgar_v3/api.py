@@ -45,6 +45,14 @@ from mgar_v3.routing.live import load_router_permit
 from mgar_v3.routing.model import DeepSeekRouter
 from mgar_v3.routing.worker import FixtureRouter, RouterProvider, RouterWorker
 from mgar_v3.settings import ROOT, Settings
+from mgar_v3.web_access import (
+    SESSION_COOKIE,
+    SESSION_SECONDS,
+    AnalysisSettingsInput,
+    BrowserSession,
+    LoginInput,
+    WebAccounts,
+)
 from mgar_v3.workbench.domain import (
     ApproveWorkbenchFinding,
     CreateWorkbenchTask,
@@ -129,9 +137,8 @@ def create_app(
                     with authority.transaction() as conn:
                         authority._event(conn, run["run_id"], "sandbox_cleanup_unavailable")
         app.state.engine = authority
-        repo_service = app.state.repo_service = RepositoryAnalysisService(
-            authority, configuration
-        )
+        app.state.web_accounts = WebAccounts(authority)
+        repo_service = app.state.repo_service = RepositoryAnalysisService(authority, configuration)
         app.state.workbench = WorkbenchService(authority, configuration, repo_service)
         if (
             selected_draft is None
@@ -328,20 +335,128 @@ def create_app(
     def workbench_service(request: Request) -> WorkbenchService:
         return cast(WorkbenchService, request.app.state.workbench)
 
+    def check_origin(request: Request, *, required: bool = False) -> None:
+        origin = request.headers.get("origin")
+        if request.headers.get("sec-fetch-site") == "cross-site":
+            raise DomainError("ORIGIN_DENIED", "Origin is not allowed", 403)
+        if (required and not origin) or (
+            origin
+            and origin
+            not in {
+                "http://127.0.0.1:18080",
+                "http://localhost:18080",
+                "http://127.0.0.1:18081",
+                "http://localhost:18081",
+            }
+        ):
+            raise DomainError("ORIGIN_DENIED", "Origin is not allowed", 403)
+
+    def browser_user(request: Request) -> BrowserSession:
+        token = request.cookies.get(SESSION_COOKIE, "")
+        if not token:
+            raise DomainError("AUTH_REQUIRED", "请登录后继续。", 401)
+        accounts: WebAccounts = request.app.state.web_accounts
+        user = accounts.session(token)
+        if user is None:
+            raise DomainError("AUTH_REQUIRED", "请登录后继续。", 401)
+        if request.method not in {"GET", "HEAD", "OPTIONS"}:
+            check_origin(request, required=True)
+            if not hmac.compare_digest(request.headers.get("X-CSRF-Token", ""), user.csrf_token):
+                raise DomainError("CSRF_REQUIRED", "登录状态校验失败，请刷新页面。", 403)
+        return user
+
     def authenticated(request: Request) -> None:
         supplied = request.headers.get("X-MGAR-Token", "")
-        if not hmac.compare_digest(
+        if supplied and hmac.compare_digest(
             supplied.encode(), configuration.local_token.get_secret_value().encode()
         ):
-            raise DomainError("AUTH_REQUIRED", "Local authentication is required", 401)
-        origin = request.headers.get("origin")
-        if origin and origin not in {
-            "http://127.0.0.1:18080",
-            "http://localhost:18080",
-            "http://127.0.0.1:18081",
-            "http://localhost:18081",
-        }:
-            raise DomainError("ORIGIN_DENIED", "Origin is not allowed", 403)
+            check_origin(request)
+            return  # Existing CLI and operator integrations retain their token contract.
+        browser_user(request)
+        check_origin(request)
+
+    @app.get("/api/v3/auth/session")
+    def browser_session(request: Request) -> JSONResponse:
+        accounts: WebAccounts = request.app.state.web_accounts
+        user = accounts.session(request.cookies.get(SESSION_COOKIE, ""))
+        return JSONResponse(
+            {
+                "authenticated": user is not None,
+                "setup_required": not accounts.initialized(),
+                "username": user.username if user else None,
+                "csrf_token": user.csrf_token if user else None,
+            },
+            headers={"Cache-Control": "no-store"},
+        )
+
+    def login_response(request: Request, user_id: UUID) -> JSONResponse:
+        accounts: WebAccounts = request.app.state.web_accounts
+        token = accounts.issue_session(user_id)
+        user = accounts.session(token)
+        assert user is not None
+        response = JSONResponse(
+            {"authenticated": True, "username": user.username, "csrf_token": user.csrf_token},
+            headers={"Cache-Control": "no-store"},
+        )
+        response.set_cookie(
+            SESSION_COOKIE,
+            token,
+            max_age=SESSION_SECONDS,
+            httponly=True,
+            samesite="strict",
+            secure=request.url.scheme == "https",
+        )
+        return response
+
+    @app.post("/api/v3/auth/setup", status_code=201)
+    def setup_account(request: Request, body: LoginInput) -> JSONResponse:
+        check_origin(request, required=True)
+        if request.client is None or request.client.host not in {"127.0.0.1", "::1"}:
+            raise DomainError(
+                "LOCAL_SETUP_REQUIRED", "请在运行服务的电脑上创建首个管理员账户。", 403
+            )
+        accounts: WebAccounts = request.app.state.web_accounts
+        response = login_response(request, accounts.create_owner(body))
+        response.status_code = 201
+        return response
+
+    @app.post("/api/v3/auth/login")
+    def login(request: Request, body: LoginInput) -> JSONResponse:
+        check_origin(request, required=True)
+        accounts: WebAccounts = request.app.state.web_accounts
+        return login_response(
+            request, accounts.login(body, request.client.host if request.client else "unknown")
+        )
+
+    @app.post("/api/v3/auth/logout")
+    def logout(
+        request: Request, user: Annotated[BrowserSession, Depends(browser_user)]
+    ) -> Response:
+        accounts: WebAccounts = request.app.state.web_accounts
+        accounts.revoke(request.cookies.get(SESSION_COOKIE, ""))
+        response = Response(status_code=204)
+        response.delete_cookie(SESSION_COOKIE)
+        return response
+
+    @app.get("/api/v3/settings/analysis")
+    def analysis_settings(
+        request: Request,
+        user: Annotated[BrowserSession, Depends(browser_user)],
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+    ) -> Any:
+        revision, _ = service.web_settings.snapshot()
+        return jsonable_encoder({"revision": revision, "profile": service.profile()})
+
+    @app.put("/api/v3/settings/analysis")
+    def save_analysis_settings(
+        body: AnalysisSettingsInput,
+        request: Request,
+        user: Annotated[BrowserSession, Depends(browser_user)],
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+    ) -> Any:
+        service.web_settings.save(body, user)
+        revision, _ = service.web_settings.snapshot()
+        return jsonable_encoder({"revision": revision, "profile": service.profile()})
 
     @app.get("/api/v3/healthz")
     def healthz() -> dict[str, str]:
@@ -440,9 +555,7 @@ def create_app(
             },
         )
 
-    @app.get(
-        "/api/v3/repository-analyses/profile", dependencies=[Depends(authenticated)]
-    )
+    @app.get("/api/v3/repository-analyses/profile", dependencies=[Depends(authenticated)])
     def repository_analysis_profile(
         service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
     ) -> Any:
@@ -466,9 +579,7 @@ def create_app(
     ) -> Any:
         return jsonable_encoder(service.list(limit))
 
-    @app.get(
-        "/api/v3/repository-analyses/{run_id}", dependencies=[Depends(authenticated)]
-    )
+    @app.get("/api/v3/repository-analyses/{run_id}", dependencies=[Depends(authenticated)])
     def repository_analysis_detail(
         run_id: UUID,
         service: Annotated[RepositoryAnalysisService, Depends(repository_service)],

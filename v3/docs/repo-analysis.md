@@ -2,7 +2,8 @@
 
 > 网页入口现已统一为 [单页 Agent](agent-ui.md)。首页 `/`、`/repo` 和
 > `/workbench` 均进入对话式分析页。本文的授权与 API/CLI 契约继续有效；
-> 下文旧版网页的按钮与字段说明以单页使用说明为准。
+> 网页现支持账户密码登录，并可直接填写模型、GitHub 凭据及使用许可。
+> 下文文件配置仍供 CLI/旧操作员接口使用；网页操作以单页使用说明为准。
 
 本模块把 RepoSage 从固定电商 Case 扩展为通用、只读的 GitHub 仓库分析 Agent：
 用户给出 `https://github.com/<owner>/<repo>` 与自然语言任务，Agent 在固定 Commit

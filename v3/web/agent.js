@@ -22,7 +22,13 @@ const TOOLS = {
   read_pull_request: "阅读 PR",
 };
 const ERRORS = {
-  AUTH_REQUIRED: "访问令牌无效，请在连接设置中重新输入。",
+  AUTH_REQUIRED: "请先登录后继续。",
+  LOGIN_FAILED: "用户名或密码不正确。",
+  CSRF_REQUIRED: "登录状态已更新，请刷新页面后重试。",
+  SETTINGS_STALE: "配置已被更新，请重新打开设置再保存。",
+  ANALYSIS_BUSY: "有分析正在执行，请先暂停或等待完成后再保存设置。",
+  REPO_ANALYSIS_AUTHORIZATION_CHANGED:
+    "使用许可已更新，请新建分析以使用新配置。",
   ORIGIN_DENIED:
     "当前访问地址未获服务器允许，请使用 http://127.0.0.1:18080 访问。",
   MODEL_CREDENTIAL_REQUIRED:
@@ -70,7 +76,11 @@ function save(key, value) {
   }
 }
 const state = {
-  token: saved("mgar-token"),
+  csrf: "",
+  username: "",
+  setupRequired: false,
+  revision: 0,
+  pendingSubmit: false,
   profile: null,
   runs: [],
   selected: null,
@@ -105,8 +115,9 @@ function explain(error) {
 async function call(method, path, body) {
   const response = await fetch(path, {
     method,
+    credentials: "same-origin",
     headers: {
-      "X-MGAR-Token": state.token,
+      "X-CSRF-Token": state.csrf,
       ...(body === undefined ? {} : { "Content-Type": "application/json" }),
     },
     body: body === undefined ? undefined : JSON.stringify(body),
@@ -126,18 +137,46 @@ async function call(method, path, body) {
     );
     error.code = data && data.code;
     error.status = response.status;
-    if (response.status === 401) {
-      state.connected = false;
-      $("connection-label").textContent = "请重新连接";
-      $("connection-dot").className = "status-dot error";
+    if (response.status === 401 && !path.startsWith("/api/v3/auth/")) {
+      showLogin();
     }
     throw error;
   }
   return data;
 }
-function showSettings() {
+function showLogin() {
+  state.connected = false;
+  state.csrf = "";
+  $("app-shell").hidden = true;
+  $("auth-screen").hidden = false;
+  if ($("settings-dialog").open) $("settings-dialog").close();
+}
+function configureLogin(setup) {
+  state.setupRequired = setup;
+  $("auth-eyebrow").textContent = setup ? "第一次见面，你好" : "欢迎回来";
+  $("auth-title").textContent = setup ? "创建你的管理员账户" : "登录 RepoSage";
+  $("auth-description").textContent = setup
+    ? "为这台电脑上的 RepoSage 设置用户名与密码。"
+    : "使用你的账户，继续分析项目。";
+  $("login-submit").textContent = setup ? "创建账户并开始" : "登录";
+  $("password").autocomplete = setup ? "new-password" : "current-password";
+  $("password").minLength = setup ? 10 : 1;
+  $("password").placeholder = setup ? "设置至少 10 位密码" : "输入密码";
+  $("confirm-password-row").hidden = !setup;
+  $("confirm-password").required = setup;
+  $("auth-footnote").textContent = setup
+    ? "首次创建后，仅此管理员账户可登录和修改模型设置。"
+    : "登录后可直接提交问题，配置会保留在本机服务中。";
+}
+async function showSettings() {
+  if (!state.connected) return;
   if (!$("settings-dialog").open) $("settings-dialog").showModal();
-  $("access-token").focus();
+  $("settings-error").textContent = "";
+  try {
+    await loadSettings();
+  } catch (error) {
+    $("settings-error").textContent = explain(error);
+  }
 }
 function renderProfile() {
   const profile = state.profile;
@@ -145,47 +184,178 @@ function renderProfile() {
   $("checklist").replaceChildren();
   $("setup-help").replaceChildren();
   if (!profile) return;
-  const names = {
-    paid_enabled: "服务器已启用真实模型",
-    model_configured: "DeepSeek 密钥已配置",
-    github_configured: "GitHub 只读凭据已配置",
-    authorization_valid: "分析授权有效",
-  };
-  for (const [key, label] of Object.entries(names)) {
-    const ok = Boolean(profile.checks && profile.checks[key]);
+  const checks = profile.checks || {};
+  const rows = [
+    [checks.model_configured, "模型密钥"],
+    [checks.github_configured, "仓库读取凭据"],
+    [checks.paid_enabled && checks.authorization_valid, "分析使用许可"],
+  ];
+  for (const [ok, label] of rows) {
     const item = element("li");
     item.append(
       element("span", ok ? "pass" : "missing", ok ? "✓" : "○"),
-      element("span", "", label),
+      element("span", "", label + (ok ? "已就绪" : "待填写")),
     );
     $("checklist").append(item);
   }
-  for (const issue of profile.issues || []) {
-    const item = element("div", "setup-item");
-    item.append(
-      element("strong", "", issue.message),
-      element("span", "", issue.action),
-    );
-    $("setup-help").append(item);
-  }
   $("profile-summary").textContent = profile.model
-    ? "模型：" +
+    ? "当前模型：" +
       profile.model.model_id +
-      " · 每次分析最多 " +
-      profile.limits.max_model_calls +
-      " 轮 · 费用上限 $" +
-      (profile.limits.max_cost_micros / 1000000).toFixed(2) +
-      " · 授权仓库：" +
-      profile.allowed_repositories.join("、")
-    : "配置保存在服务器端。修改 .env 后请重启服务，再点击上方按钮重新检查。";
+      " · 每次最多 $" +
+      (profile.limits.max_cost_micros / 1000000).toFixed(2)
+    : "填写上方设置并保存，即可开始真实分析。";
   $("model-label").textContent = profile.model
     ? profile.model.model_id
     : "REPOSITORY AGENT";
-  $("connection-label").textContent = profile.ready
-    ? "已连接 · 模型就绪"
-    : "已连接 · 待配置";
+  $("connection-label").textContent = state.username + " · 模型设置";
+  $("account-name").textContent = "已登录：" + state.username;
   $("connection-dot").className =
     "status-dot " + (profile.ready ? "ready" : "error");
+}
+async function loadSettings() {
+  const data = await call("GET", "/api/v3/settings/analysis");
+  state.revision = data.revision;
+  state.profile = data.profile;
+  renderProfile();
+  const profile = state.profile,
+    checks = profile.checks || {},
+    limits = profile.limits || {};
+  $("model-id").value = profile.model?.model_id || "deepseek-chat";
+  $("model-key").value = "";
+  $("github-key").value = "";
+  $("model-key").placeholder = checks.model_configured
+    ? "已配置，留空保留"
+    : "粘贴 DeepSeek API Key";
+  $("github-key").placeholder = checks.github_configured
+    ? "已配置，留空保留"
+    : "粘贴 GitHub 只读 Token";
+  $("model-key-help").textContent = checks.model_configured
+    ? "密钥已加密保存，填写新值可替换。"
+    : "填写后加密保存在运行此服务的电脑上。";
+  $("github-key-help").textContent = checks.github_configured
+    ? "读取凭据已配置，留空可保留。"
+    : "用于读取仓库源码，只需要读取权限。";
+  const repos = profile.allowed_repositories || ["*"];
+  $("all-repositories").checked = repos.includes("*");
+  $("repository-scope").value = repos.filter((x) => x !== "*").join("\n");
+  $("repository-scope-row").hidden = $("all-repositories").checked;
+  $("cost-limit").value = (limits.max_cost_micros || 500000) / 1000000;
+  $("call-limit").value = limits.max_model_calls || 6;
+  $("tool-limit").value = limits.max_tool_calls || 20;
+  $("allow-paid").checked = Boolean(
+    checks.paid_enabled && checks.authorization_valid,
+  );
+  $("save-model-settings").textContent = state.pendingSubmit
+    ? "保存并开始分析"
+    : "保存设置";
+}
+async function enterApp(session) {
+  configureLogin(false);
+  state.username = session.username;
+  state.csrf = session.csrf_token;
+  state.connected = true;
+  $("auth-screen").hidden = true;
+  $("app-shell").hidden = false;
+  $("login-error").textContent = "";
+  $("password").value = "";
+  $("confirm-password").value = "";
+  await loadSettings();
+  await loadHistory();
+  const previous = saved("mgar-selected");
+  if (previous) {
+    try {
+      await selectRun(previous);
+    } catch {
+      save("mgar-selected", "");
+    }
+  }
+  if (!state.profile.ready && !state.demo) await showSettings();
+}
+async function login(event) {
+  event.preventDefault();
+  if (
+    state.setupRequired &&
+    $("password").value !== $("confirm-password").value
+  ) {
+    $("login-error").textContent = "两次输入的密码不一致。";
+    return;
+  }
+  $("login-submit").disabled = true;
+  $("login-error").textContent = "";
+  try {
+    const session = await call(
+      "POST",
+      "/api/v3/auth/" + (state.setupRequired ? "setup" : "login"),
+      { username: $("username").value.trim(), password: $("password").value },
+    );
+    await enterApp(session);
+  } catch (error) {
+    if (state.connected) notify(explain(error), true);
+    else $("login-error").textContent = explain(error);
+  } finally {
+    $("login-submit").disabled = false;
+  }
+}
+async function saveModelSettings(event) {
+  event.preventDefault();
+  $("settings-error").textContent = "";
+  const allowed = $("all-repositories").checked
+    ? ["*"]
+    : $("repository-scope")
+        .value.split(/[\n,]+/)
+        .map((x) => x.trim())
+        .filter(Boolean);
+  if (!allowed.length) {
+    $("settings-error").textContent = "请至少填写一个允许分析的仓库。";
+    return;
+  }
+  if (state.pendingSubmit && !$("allow-paid").checked) {
+    $("settings-error").textContent =
+      "开始真实分析前，请确认使用许可与费用上限。";
+    return;
+  }
+  const body = {
+    expected_revision: state.revision,
+    model_id: $("model-id").value.trim(),
+    allowed_repositories: allowed,
+    allow_paid: $("allow-paid").checked,
+    authorization_days: Number($("authorization-days").value),
+    limits: {
+      max_model_calls: Number($("call-limit").value),
+      max_tool_calls: Number($("tool-limit").value),
+      max_input_tokens: state.profile?.limits?.max_input_tokens || 60000,
+      max_cost_micros: Math.round(Number($("cost-limit").value) * 1000000),
+      max_seconds: state.profile?.limits?.max_seconds || 600,
+    },
+  };
+  if ($("model-key").value.trim())
+    body.deepseek_api_key = $("model-key").value.trim();
+  if ($("github-key").value.trim())
+    body.github_read_token = $("github-key").value.trim();
+  $("save-model-settings").disabled = true;
+  try {
+    const data = await call("PUT", "/api/v3/settings/analysis", body);
+    state.profile = data.profile;
+    state.revision = data.revision;
+    $("model-key").value = "";
+    $("github-key").value = "";
+    renderProfile();
+    if (state.profile.ready) {
+      $("settings-dialog").close();
+      notify("设置已保存，可以开始分析。");
+      if (state.pendingSubmit) {
+        state.pendingSubmit = false;
+        $("composer").requestSubmit();
+      }
+    } else {
+      $("settings-error").textContent =
+        "设置已保存，请补齐上方凭据并确认使用许可。";
+    }
+  } catch (error) {
+    $("settings-error").textContent = explain(error);
+  } finally {
+    $("save-model-settings").disabled = false;
+  }
 }
 function updateMode() {
   $("mode-badge").textContent = isDemo()
@@ -196,35 +366,6 @@ function updateMode() {
     ? "演示不会读取所填仓库，也不会调用模型"
     : "真实读取 GitHub · 使用服务器已授权的模型与预算";
   $("demo-mode").checked = state.demo;
-}
-async function connect(event) {
-  if (event) event.preventDefault();
-  const token = $("access-token").value.trim() || state.token;
-  if (!token) {
-    $("connection-error").textContent = "请输入本地访问令牌。";
-    return;
-  }
-  state.token = token;
-  $("connect").disabled = true;
-  $("connection-error").textContent = "";
-  try {
-    state.profile = await call("GET", API + "/profile");
-    state.connected = true;
-    save("mgar-token", state.token);
-    $("access-token").value = "";
-    renderProfile();
-    await loadHistory();
-    notify(
-      state.profile.ready || state.demo
-        ? ""
-        : "真实分析还需要完成服务端配置。点击左下角连接设置查看具体步骤。",
-    );
-    if (state.profile.ready || state.demo) $("settings-dialog").close();
-  } catch (error) {
-    $("connection-error").textContent = explain(error);
-  } finally {
-    $("connect").disabled = false;
-  }
 }
 function renderHistory() {
   const selected = state.runs.find((run) => run.run_id === state.selected);
@@ -269,6 +410,7 @@ function newChat() {
   state.selected = null;
   state.signature = "";
   state.request = null;
+  state.pendingSubmit = false;
   save("mgar-selected", "");
   $("welcome").hidden = false;
   $("conversation").hidden = true;
@@ -670,7 +812,7 @@ async function submit(event) {
   const repository = $("repository-url").value.trim();
   if (!task) return;
   if (!state.connected) {
-    showSettings();
+    showLogin();
     return;
   }
   if (!state.selected && !repositoryValid(repository)) {
@@ -689,8 +831,9 @@ async function submit(event) {
       state.profile = await call("GET", API + "/profile");
       renderProfile();
       if (!state.profile.ready) {
+        state.pendingSubmit = true;
         showSettings();
-        notify("请先完成服务端配置，问题和仓库地址已保留。");
+        notify("补齐模型设置后即可继续，问题和仓库地址已保留。");
         return;
       }
     }
@@ -765,10 +908,34 @@ async function poll() {
   }
 }
 $("open-settings").addEventListener("click", showSettings);
-$("close-settings").addEventListener("click", () =>
-  $("settings-dialog").close(),
-);
-$("connect-form").addEventListener("submit", connect);
+$("close-settings").addEventListener("click", () => {
+  state.pendingSubmit = false;
+  $("settings-dialog").close();
+});
+$("settings-dialog").addEventListener("cancel", () => {
+  state.pendingSubmit = false;
+});
+$("login-form").addEventListener("submit", login);
+$("model-settings-form").addEventListener("submit", saveModelSettings);
+$("all-repositories").addEventListener("change", () => {
+  $("repository-scope-row").hidden = $("all-repositories").checked;
+});
+$("logout").addEventListener("click", async () => {
+  try {
+    await call("POST", "/api/v3/auth/logout");
+    state.details.clear();
+    state.runs = [];
+    state.selected = null;
+    state.pendingSubmit = false;
+    save("mgar-selected", "");
+    $("conversation").replaceChildren();
+    newChat();
+    showLogin();
+    configureLogin(false);
+  } catch (error) {
+    notify(explain(error), true);
+  }
+});
 $("new-chat").addEventListener("click", newChat);
 $("refresh-history").addEventListener("click", () =>
   loadHistory().catch((error) => notify(explain(error), true)),
@@ -805,15 +972,13 @@ document.addEventListener("visibilitychange", () => {
   if (!document.hidden) poll();
 });
 updateMode();
+save("mgar-token", ""); // Migrate away from browser-stored operator tokens.
 (async () => {
-  if (!state.token) return;
-  await connect();
-  const previous = saved("mgar-selected");
-  if (state.connected && previous) {
-    try {
-      await selectRun(previous);
-    } catch {
-      save("mgar-selected", "");
-    }
+  try {
+    const session = await call("GET", "/api/v3/auth/session");
+    configureLogin(session.setup_required);
+    if (session.authenticated) await enterApp(session);
+  } catch (error) {
+    $("login-error").textContent = explain(error);
   }
 })();
