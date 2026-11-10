@@ -1,0 +1,202 @@
+{
+  "card": "V35-U01",
+  "title": "统一 Task / Run Ledger 与状态迁移",
+  "status": "PASS",
+  "commit": "6e40f14687a50d77fb7a96448bfaffa056a4a3cc",
+  "result_commit": "6e40f14687a50d77fb7a96448bfaffa056a4a3cc",
+  "commit_note": "单次本地提交：migration 0023、workbench domain/store/service、新增 tests/test_v35_u01.py、conftest 静态种子排除、verification 注册与 U01/B00 文档更新；未推送。accept.json 为紧随其后的独立文档提交。",
+  "parent_commit": "2fb06de8a2a2dd669dd3ef333fafb654e7900326",
+  "base_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+  "accepted_at": "2026-11-10T02:05:00Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (mgar-v3-postgres-1, 127.0.0.1:55433)",
+    "redis": "real (mgar-v3-redis-1, 127.0.0.1:56379)",
+    "model": "not_used",
+    "network": "not_used for paid model or GitHub",
+    "github": "not_used"
+  },
+  "worktree_at_acceptance": "实现提交 6e40f14 后仅有 evidence/（gitignore）与 .push-staging/ 本地脚本；无业务源码未提交改动。",
+  "commands": [
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/workbench", "tests/test_v35_u01.py"],
+      "exit_code": 0,
+      "result": "All checks passed",
+      "purpose": "本卡改动文件的静态检查",
+      "log": "evidence/v35/U01/20261110T020358Z-u01scoped/01-ruff.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/workbench"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 4 source files",
+      "purpose": "本卡改动模块的类型检查",
+      "log": "evidence/v35/U01/20261110T020358Z-u01scoped/02-mypy.log",
+      "status": "PASS"
+    },
+    {
+      "name": "u01-tests",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v35_u01.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 21.6,
+      "counts": {"tests": 16, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "阶段全序列、双层跳级拒绝、CAS、Epoch Fence、幂等事件、append-only、身份不可变、控制与 run ledger",
+      "log": "evidence/v35/U01/20261110T015912Z-u01check/03-pytest-u01.log",
+      "status": "PASS"
+    },
+    {
+      "name": "workbench-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v34_repository_api.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 20.59,
+      "counts": {"tests": 15, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "V3.4 Workbench 创建/运行/修复/审批/发布 API 语义未变",
+      "log": "evidence/v35/U01/20261110T015641Z-u01regress/01-pytest-v34.log",
+      "status": "PASS"
+    },
+    {
+      "name": "analysis-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v32_repository_analysis.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 1.6,
+      "counts": {"tests": 13, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "repo-analysis 只读语义与权限契约未变",
+      "log": "evidence/v35/U01/20261110T015641Z-u01regress/02-pytest-v32.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["make", "migrate"],
+      "exit_code": 0,
+      "result": {"applied": ["0023_workbench_ledger.sql"], "migration_head": "0023_workbench_ledger.sql", "files": 23},
+      "purpose": "迁移 head 从 0022 前向推进到 0023，仅新增，不改已发布迁移",
+      "log": "evidence/v35/U01/20261110T015641Z-u01regress/03-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["make", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用）",
+      "log": "evidence/v35/U01/20261110T015641Z-u01regress/04-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["make", "verify", "TASK=V35-U01"],
+      "exit_code": 0,
+      "duration_seconds": 39.1,
+      "counts": {"tests": 44, "failures": 0, "errors": 0, "skipped": 0},
+      "source_sha256": "2f00eaa163f0fb67556cd3a8300e177d8eb3e96f2faee252aa90d2a765ca46ae",
+      "finished_source_sha256": "2f00eaa163f0fb67556cd3a8300e177d8eb3e96f2faee252aa90d2a765ca46ae",
+      "git_commit": "2fb06de8a2a2dd669dd3ef333fafb654e7900326",
+      "attempt": "evidence/V35-U01/20261110T020158Z-d36e5038",
+      "log": "evidence/v35/U01/20261110T020157Z-u01final/01-verify.log",
+      "note": "verify 记录的是提交前 HEAD；同一 source_sha256 即实现提交 6e40f14 的源码指纹。44 = U01 16 + V3.4 API 15 + V3.2 analysis 13。",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/U01/20261110T020157Z-u01final/04-diffcheck.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_RUN",
+  "live_github_write_gate": "NOT_RUN",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡禁止且未发生任何付费模型调用或 GitHub 写入；verify.py 对非 V31-R0 卡静态写 live_gate=NOT_RUN，真实执行状态为未调用。security_gate 仅覆盖本卡不变量（append-only、身份不可变、非法跳级与旧 epoch 零成功写入），端到端安全门由 V35-E03 汇总。",
+  "must_pass": [
+    {
+      "item": "显式阶段机：queued→investigating→suspected→reproduced→repairing→patch_verified→waiting_approval→publishing→pr_created，加 completed/waiting_input/paused/failed/cancelled，且不得跳级",
+      "result": "PASS",
+      "evidence": "domain.TaskPhase/ALLOWED_TASK_PHASES 与 migration 0023 的 app.workbench_phase_transitions 逐项一致（test_the_python_phase_machine_matches_the_database_seed）；跳级在 Python 抛 TASK_PHASE_INVALID、直连 SQL 抛 WORKBENCH_PHASE_TRANSITION_DENIED（两个负向测试）。"
+    },
+    {
+      "item": "统一幂等键、乐观版本/CAS、Epoch Fence；旧 Worker 不得提交新状态",
+      "result": "PASS",
+      "evidence": "store.transition 以 expected_revision/expected_epoch 先行校验并 FOR UPDATE；trigger 再校验 revision+1 与 epoch 不回退；test_two_workers_with_the_same_revision_produce_one_transition（1 条 transition/1 条事件）与 test_a_stale_epoch_cannot_write_after_the_fence（FENCED，0 写入）。run/pause/resume/cancel 均 bump epoch。"
+    },
+    {
+      "item": "同一 Task ID 关联 audit_run_id / repair_run_id / verifier_run_id",
+      "result": "PASS",
+      "evidence": "app.workbench_run_links + store.link_run/run_links；view 暴露 run_links 与三个 legacy run 列；test_one_task_links_audit_and_verifier_runs、audit_and_repair 全序列测试验证同一 task_id 的 audit link。"
+    },
+    {
+      "item": "Append-only 事件与服务端状态校验",
+      "result": "PASS",
+      "evidence": "workbench_events 与 workbench_transitions 的 UPDATE/DELETE 均抛 WORKBENCH_APPEND_ONLY；事件按 (task_id, idempotency_key) 部分唯一索引幂等（test_events_are_idempotent_by_key、test_events_and_transitions_are_append_only）。"
+    },
+    {
+      "item": "Workbench 全局写入收敛到 Engine 授权事务边界，Agent 不直接改 Task 状态",
+      "result": "PASS",
+      "evidence": "service 所有状态写入经 _transition→store.transition；store.update 仅用于 observed_coverage，revision 同样 +1；直接 UPDATE 受 workbench_task_guard 约束（身份不可变、revision+1、epoch、phase 图）。"
+    },
+    {
+      "item": "保持旧 repo-analysis 与 R5 API 兼容；迁移只允许前向追加（从 0023 起）",
+      "result": "PASS",
+      "evidence": "legacy status 字段与 V3.4 出参保留；V3.4 repository API 15 passed、V3.2 analysis 13 passed；migration 0023 仅 ADD COLUMN/ADD TABLE/ADD INDEX/TRIGGER，head 0022→0023。"
+    },
+    {
+      "item": "负向测试：重复创建、相同请求 ID 不同 Payload、两个 Worker 同时推进、旧 Epoch 回写、取消后继续发布、未批准跳至 pr_created",
+      "result": "PASS",
+      "evidence": "test_a_task_starts_queued_with_one_idempotent_created_event、test_request_id_reuse_with_a_different_payload_is_rejected、test_two_workers_with_the_same_revision_produce_one_transition、test_a_stale_epoch_cannot_write_after_the_fence、test_publication_cannot_continue_after_cancel、test_pr_created_cannot_be_reached_without_approval。"
+    },
+    {
+      "item": "工程门禁命令原样通过",
+      "result": "PASS",
+      "evidence": "make verify TASK=V35-U01：44 passed / 0 failed / 0 skipped；scoped ruff 与 mypy exit 0；make migrate 应用 0023；make doctor PG/Redis PASS；git diff --check exit 0。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "全仓 make lint / make typecheck 存在与 V35-U01 无关的既有历史债务",
+      "handling": "scoped ruff（workbench + tests/test_v35_u01.py）与 scoped mypy（workbench）均 exit 0；全仓失败位于 repository_analysis 等未改动文件，已在 evidence/v35/U01/20261110T015737Z-u01verify/02-lint.log 与 03-typecheck.log 留证，本卡未扩大修改范围。"
+    },
+    {
+      "issue": "tests/conftest.py 的 TRUNCATE 会清空迁移静态种子表 workbench_phase_transitions",
+      "handling": "将静态种子表加入 TRUNCATE 排除列表（与 schema_migrations 同等待遇），不改变任何测试语义；否则每个测试都会因状态图被清空而错误拒绝合法迁移。"
+    },
+    {
+      "issue": "旧 paused 行的 resume_phase 无法还原暂停前 phase",
+      "handling": "0023 回填将 paused→queued；非 paused 行在同一迁移中二次 UPDATE 为自身 phase。历史 paused 任务恢复后回到 queued，后续 transition 自会写回正确 phase，不影响新任务。"
+    },
+    {
+      "issue": "V3.4 status 与 V3.5 phase 并存",
+      "handling": "status 保留以兼容既有 API/前端与 repo-analysis 契约；phase 是 V3.5 权威阶段，二者在同一 transition 内同步更新，禁止只改其一的写入路径。"
+    },
+    {
+      "issue": "verify.py 对非 V31-R0 卡静态写入 live_gate=NOT_RUN",
+      "handling": "以 accept.json 的 live_model_gate / live_github_write_gate 为准；本卡未发生付费模型调用或 GitHub 写入。"
+    }
+  ],
+  "artifacts": {
+    "migration": "migrations/0023_workbench_ledger.sql",
+    "domain": "src/mgar_v3/workbench/domain.py",
+    "store": "src/mgar_v3/workbench/store.py",
+    "service": "src/mgar_v3/workbench/service.py",
+    "tests": "tests/test_v35_u01.py",
+    "verification": "config/verification.json",
+    "card": "docs/v35/cards/V35-U01.md",
+    "queue": "docs/v35/TASK_QUEUE.md",
+    "check_evidence": "evidence/v35/U01/20261110T015912Z-u01check/",
+    "regression_evidence": "evidence/v35/U01/20261110T015641Z-u01regress/",
+    "final_evidence": "evidence/v35/U01/20261110T020157Z-u01final/",
+    "verify_attempt": "evidence/V35-U01/20261110T020158Z-d36e5038/"
+  },
+  "next_card": "V35-U02",
+  "next_card_prerequisites": [
+    "复核 accept 提交后的 HEAD 与 config/verification.json 的 V35-U01 条目",
+    "U02 必须复用本次 phase/transition/run_links 契约，不得新造平行状态机",
+    "迁移只允许从 0023 之后继续前向追加，且不得删除既有回归"
+  ]
+}
