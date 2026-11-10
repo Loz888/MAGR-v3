@@ -1,0 +1,192 @@
+{
+  "card": "V35-M02",
+  "title": "Context Budget、Compaction 与恢复一致性",
+  "status": "PASS",
+  "commit": "e280787a74e945c114f0b9a16e7dca2b1476819e",
+  "result_commit": "e280787a74e945c114f0b9a16e7dca2b1476819e",
+  "commit_note": "两次本地提交：第一次包含 context/builder.py、context/compactor.py、repository_analysis/agent.py、repair/providers/structured.py、tests/test_v35_m02.py 与卡片/队列/verification 更新；第二次仅记录本 accept.json。本次用户未要求推送，两次提交均保留在本地 main。",
+  "parent_commit": "cb1ef17c160c97559a565bf7f46cb42c2b7d3670",
+  "dependency_commit": "c5bca8ce63ee2473e2049a9ef039198beef81753",
+  "base_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+  "accepted_at": "2026-11-10T06:10:00Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (make doctor PASS; migration check applied nothing because V35-M02 adds no schema)",
+    "redis": "real (make doctor PASS; tests do not use it)",
+    "docker": "not_used",
+    "model": "not_used",
+    "network": "not_used",
+    "github": "not_used"
+  },
+  "worktree_at_acceptance": "实现完成、卡片与队列已更新；accept.json 待提交；evidence/（gitignore）与本地脚本不在版本控制内。",
+  "commands": [
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/context/builder.py", "src/mgar_v3/context/compactor.py", "src/mgar_v3/repository_analysis/agent.py", "src/mgar_v3/repair/providers/structured.py", "tests/test_v35_m02.py"],
+      "exit_code": 0,
+      "result": "All checks passed",
+      "purpose": "本卡改动文件的静态检查",
+      "log": "evidence/v35/M02/20261110T060641Z-m02/05-ruff-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/context/builder.py", "src/mgar_v3/context/compactor.py", "src/mgar_v3/repository_analysis/agent.py", "src/mgar_v3/repair/providers/structured.py", "tests/test_v35_m02.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 5 source files",
+      "purpose": "本卡改动模块的类型检查",
+      "log": "evidence/v35/M02/20261110T060641Z-m02/06-mypy-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "card-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v35_m02.py", "tests/test_v33_context_compaction.py", "tests/test_v32_repository_analysis.py", "-q", "-p", "no:warnings"],
+      "exit_code": 0,
+      "duration_seconds": 18.93,
+      "counts": {"tests": 35, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "M02 预算/压缩/恢复 + V3.3 上下文压缩 + V3.2 仓库分析回归",
+      "log": "evidence/v35/M02/20261110T060641Z-m02/07-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "combined-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v35_r01.py", "tests/test_v34_repair_agent.py", "tests/test_v35_r04.py", "-q", "-p", "no:warnings"],
+      "exit_code": 0,
+      "duration_seconds": 101.1,
+      "counts": {"tests": 42, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "Repair 结构化提供方、RepairAgent 与 R04 编排回归，确认共享 Context Builder 未改变既有补丁/验证行为",
+      "log": "evidence/v35/M02/20261110T060641Z-m02/08-combined-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["uv", "run", "--frozen", "python", "-m", "mgar_v3.store.migrate"],
+      "exit_code": 0,
+      "result": {"applied": []},
+      "purpose": "本卡不新增表；迁移保持幂等",
+      "log": "evidence/v35/M02/20261110T060641Z-m02/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["uv", "run", "--frozen", "mgar", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用与真实 GitHub 写入）",
+      "log": "evidence/v35/M02/20261110T060641Z-m02/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/M02/20261110T060641Z-m02/03-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "V35-M02"],
+      "exit_code": 0,
+      "counts": {"tests": 35, "failures": 0, "errors": 0, "skipped": 0},
+      "source_sha256": "97727d725fb3a992414544702fdcfd5f85763ff957f44b42a1c96cd636823a4a",
+      "finished_source_sha256": "97727d725fb3a992414544702fdcfd5f85763ff957f44b42a1c96cd636823a4a",
+      "git_commit": "cb1ef17c160c97559a565bf7f46cb42c2b7d3670",
+      "attempt": "evidence/V35-M02/20261110T060647Z-f2443f53",
+      "note": "verify 记录的是提交前 HEAD；source_sha256 对应实现提交的源码/测试指纹。",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_RUN",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "NOT_RUN",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡没有付费模型调用、真实 GitHub 写入或网络依赖安装。上下文预算与压缩不变量由确定性压缩器、真实 ArtifactStore 与 fixture 长历史证明；live 门保持 NOT_RUN，engineering_gate=PASS 不蕴含任何 live 门 PASS。security_gate 仅覆盖本卡不变量：压缩前后权限/工具/预算/Evidence/Artifact Hash 不变、未完成动作与待审批不丢失、旧 revision 不得覆盖新事件、observation 中的伪授权只作不可信数据、最小预算 fail-closed。端到端长任务重放与并发灾备汇总由 V35-E01/E03 完成。",
+  "must_pass": [
+    {
+      "item": "分别计量 System、Task、权限约束、计划、Recent Observations、Evidence IDs、相关 Memory、失败历史",
+      "result": "PASS",
+      "evidence": "ContextMetrics/ContextSectionUsage 计量 16 个固定区（system、task、constraints、scope、plan、recent_observations、history_summary、evidence、memories、failed_attempts、pending_approvals、pending_actions、open_questions、permissions、available_tools、remaining_budget），并记录 tokens/items/omitted/pinned；::test_every_context_section_is_metered_separately 覆盖。"
+    },
+    {
+      "item": "硬约束（仓库/Commit、允许工具、审批、预算、Evidence/Artifact Hash、未完成动作）不得因压缩改变或丢失",
+      "result": "PASS",
+      "evidence": "pinned 区先计入预算并原样写入 bundle；ContextInvariants 新增 pending_actions，diff_invariants 对缺失动作报 missing_pending_action；40 条长 observation 压缩后逐项相等，::test_hard_constraints_survive_long_compaction、::test_compaction_cannot_drop_an_unfinished_action 覆盖。"
+    },
+    {
+      "item": "结构化 Context Bundle 同时用于 Investigation 与 Repair，避免各写一套截断规则",
+      "result": "PASS",
+      "evidence": "RepoAnalysisAgent._payload 使用 ContextBuilder.build；StructuredPatchProvider._payload 改为 ContextBuilder.build_repair，共享预算、截断与不变量实现；Repair 仍只输出 allowed_paths 且固定 pre-image sha256，::test_repair_provider_payload_uses_the_shared_policy 覆盖。"
+    },
+    {
+      "item": "评测现有确定性 Compactor；确有必要才加版本化后台 Compaction（未做时显式 NOT_IMPLEMENTED）",
+      "result": "PASS",
+      "evidence": "保留确定性 compact_observations（去重、片段引用、结构摘要、失败签名），未实现后台压缩，BACKGROUND_COMPACTION=\"NOT_IMPLEMENTED\" 显式出现在常量、ContextMetrics、模型 context、Repair payload 与 verification.json components。"
+    },
+    {
+      "item": "压缩结果不得覆盖权威业务状态、原始 Evidence、原始 Tool Receipt；摘要失败降级到安全短窗口",
+      "result": "PASS",
+      "evidence": "ContextBundle 只读复制 request 的权威字段；Evidence/Artifact 在压缩后经 ArtifactStore 校验；摘要失败时 _short_window 仅保留最新 observation 预览或元数据，全量 evidence ids/artifact hashes/审批/动作进入摘要，loss_check_failures=1；::test_summary_failure_degrades_to_a_safe_short_window、::test_artifact_hash_change_is_detected 覆盖。"
+    },
+    {
+      "item": "统计 input_tokens、context_size、信息丢失校验失败、延迟与成本",
+      "result": "PASS",
+      "evidence": "ContextMetrics 输出 input_tokens、context_chars、loss_check_failures、compaction_ms、cost_micros（确定性压缩为 0）、sections；Investigation payload 暴露 context_metrics，::test_investigation_payload_exposes_metrics_and_revision 覆盖。"
+    },
+    {
+      "item": "负向测试：压缩期间新 Tool Result、摘要伪授权、旧 Revision 覆盖新事件、摘要遗漏待审批/失败证据、Token 预算极小、Artifact Hash 变化",
+      "result": "PASS",
+      "evidence": "六类负向场景均在 tests/test_v35_m02.py：assert_current 拒绝 stale revision、伪授权只进入 untrusted_authority_claims、missing_pending_action 拒绝遗漏、极小预算 CONTEXT_BUDGET_EXCEEDED、篡改工件 ARTIFACT_CORRUPTED。"
+    },
+    {
+      "item": "可重放长任务中不违反任何 Authority/Evidence 不变量",
+      "result": "PASS",
+      "evidence": "40 条 observation 的确定性长历史压缩测试逐项断言权限、工具、预算、Evidence ID、Artifact Hash、失败历史、待审批与未完成动作不变，且 estimated_tokens 不超预算；真实端到端长任务回放属于 V35-E01/E03 的验收范围，本卡不宣称 live 能力。"
+    },
+    {
+      "item": "工程门禁命令原样通过（tests/test_v35_m02.py + tests/test_v33_context_compaction.py + tests/test_v32_repository_analysis.py）",
+      "result": "PASS",
+      "evidence": "verify TASK=V35-M02：35 passed / 0 failed / 0 skipped；组合回归 42 passed；scoped ruff 与 mypy exit 0；migrate applied []；doctor PG/Redis PASS；git diff --check exit 0。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "未实现版本化后台 Compaction（冻结 context_revision、摘要、CAS 激活、Delta Replay）",
+      "handling": "卡片允许“确有必要才加”。现有确定性同步压缩已满足预算与不变量要求，且无真实长任务证明后台压缩必要，因此显式标记 NOT_IMPLEMENTED，避免引入未经验证的双写/激活协议。"
+    },
+    {
+      "issue": "workbench/orchestrator.py 未直接修改",
+      "handling": "修复编排通过 StructuredPatchProvider 构建模型输入，提供方已切换到共享 ContextBuilder；在编排层重复截断会形成第二套规则，因此只在提供方接线并记录于卡片。"
+    },
+    {
+      "issue": "修复输入预算按 max_prompt_bytes // 3 近似换算 token",
+      "handling": "共享预算使用近似 token 换算，但 build_repair 仍以最终 JSON 编码字节数 + 1024 字节余量硬校验 max_prompt_bytes；StructuredPatchProvider 也保留原有编码字节上限检查，二者共同 fail-closed。"
+    },
+    {
+      "issue": "ContextMetrics.input_tokens 与模型 payload 的 context 块存在一次自计量",
+      "handling": "最终 build 在生成 context 块后重算 input_tokens，使统计覆盖最终序列化 payload；预算拟合预留 512 token 余量，不依赖自计量精确到单 token。"
+    },
+    {
+      "issue": "repository_analysis/agent.py 存在本卡之外的既有 mypy 问题",
+      "handling": "为通过 scoped mypy，仅添加 TypeAdapter 泛型、asyncio.run 参数与 build 返回类型的最小注解/ignore，未改变运行时行为。"
+    },
+    {
+      "issue": "实现与 accept 文档分两次本地提交，未推送",
+      "handling": "第一次提交实现、测试与卡片/队列/verification；第二次仅提交本 accept.json；本次用户未要求推送，故不执行 git push。"
+    }
+  ],
+  "artifacts": {
+    "context_builder": "src/mgar_v3/context/builder.py",
+    "context_compactor": "src/mgar_v3/context/compactor.py",
+    "analysis_agent": "src/mgar_v3/repository_analysis/agent.py",
+    "structured_provider": "src/mgar_v3/repair/providers/structured.py",
+    "tests": "tests/test_v35_m02.py",
+    "card": "docs/v35/cards/V35-M02.md",
+    "verification": "config/verification.json",
+    "evidence": "evidence/v35/M02/20261110T060641Z-m02/"
+  }
+}
