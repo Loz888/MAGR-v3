@@ -704,5 +704,21 @@
       "tests/test_verification.py"
     ],
     "timeout_seconds": 300
+  },
+  "V35-B00": {
+    "components": {
+      "audit": "baseline_sha_frozen_and_real_call_graphs_with_component_reachability",
+      "fixture_isolation": "fixed_dispatcher_in_memory_remote_and_host_pytest_entries_enumerated",
+      "github": "not_used",
+      "model": "not_used",
+      "postgres": "real",
+      "redis": "not_used",
+      "state": "single_owner_per_state_documented_with_gap_matrix"
+    },
+    "tests": [
+      "tests/test_v34_repository_api.py",
+      "tests/test_v32_repository_analysis.py"
+    ],
+    "timeout_seconds": 600
   }
 }
