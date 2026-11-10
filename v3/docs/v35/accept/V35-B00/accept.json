@@ -1,0 +1,192 @@
+{
+  "card": "V35-B00",
+  "title": "冻结 V3.4 并建立唯一实施真相",
+  "status": "PASS",
+  "commit": "266be8d4f3438bf892e2fc9aa2ca6756206a59c2",
+  "commit_note": "单次本地提交：新增 v3/docs/v35/（BASELINE、ARCHITECTURE_CONTRACT、TASK_QUEUE、15 张卡定义）并注册 V35-B00；未改业务代码、未推送。",
+  "base_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+  "accepted_at": "2026-11-10T01:43:00Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (mgar-v3-postgres-1, 127.0.0.1:55433)",
+    "redis": "real (mgar-v3-redis-1, 127.0.0.1:56379)",
+    "model": "not_used",
+    "network": "not_used for paid model or GitHub",
+    "github": "not_used"
+  },
+  "worktree_at_acceptance": "B00 提交后仅 .push-staging/ 本地脚本与 evidence/（已 gitignore）；无业务源码改动。",
+  "commands": [
+    {
+      "name": "git-baseline",
+      "argv": ["git", "status", "--short", "&&", "git", "rev-parse", "HEAD", "&&", "git", "log", "-5", "--oneline"],
+      "exit_code": 0,
+      "result": {
+        "head": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+        "branch": "main [origin/main]",
+        "status_before_card": "clean",
+        "status_after_card_edits": ["M config/verification.json", "?? docs/v35/"]
+      },
+      "purpose": "冻结基线并记录 HEAD、分支与工作区状态",
+      "log": "evidence/v35/B00/20261110T013913Z-b00audit/01-git-baseline.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["make", "migrate"],
+      "exit_code": 0,
+      "result": {"applied": [], "migration_head": "0022_workbench.sql", "files": 22},
+      "purpose": "确认基线迁移 head 为 0022，无待应用迁移；V3.5 只允许从 0023 起前向追加",
+      "log": "evidence/v35/B00/20261110T013913Z-b00audit/02-migrations.log",
+      "status": "PASS"
+    },
+    {
+      "name": "fixture-reachability",
+      "argv": ["grep", "-rn", "FIXED_DISPATCHER|_InMemoryRemote|_fixture_files|_safe_env|sys.executable|pytest", "src/mgar_v3"],
+      "exit_code": 0,
+      "result": {
+        "fixed_dispatcher": "workbench/service.py:79 (definition), 1078, 1270-1276",
+        "in_memory_remote": "workbench/service.py:148 (definition), 639 (only instantiation)",
+        "host_pytest": "workbench/service.py:1226-1256; callers 424, 497",
+        "repair_agent_production_importers": "none"
+      },
+      "purpose": "枚举固定 fixture 组件与宿主执行的唯一可达入口，作为 R02/R03 去 fixture 化依据",
+      "log": "evidence/v35/B00/20261110T013913Z-b00audit/03-fixture-reachability.log",
+      "status": "PASS"
+    },
+    {
+      "name": "workbench-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v34_repository_api.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 20.34,
+      "counts": {"tests": 15, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "基线 Workbench 创建/运行/修复/审批/发布 API 语义未变",
+      "log": "evidence/v35/B00/20261110T014135Z-b00final/01-pytest-workbench.log",
+      "status": "PASS"
+    },
+    {
+      "name": "analysis-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v32_repository_analysis.py", "-q"],
+      "exit_code": 0,
+      "duration_seconds": 1.72,
+      "counts": {"tests": 13, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "基线只读仓库分析权限、工具与报告语义未变",
+      "log": "evidence/v35/B00/20261110T014135Z-b00final/02-pytest-analysis.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["make", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用）",
+      "log": "evidence/v35/B00/20261110T014135Z-b00final/03-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["make", "verify", "TASK=V35-B00"],
+      "exit_code": 0,
+      "duration_seconds": 26.197,
+      "counts": {"tests": 28, "failures": 0, "errors": 0, "skipped": 0},
+      "source_sha256": "81f99ce74bb6a6526c033b60eabcee946bf13726c9875d4a9f3ce5e3c2e2c603",
+      "finished_source_sha256": "81f99ce74bb6a6526c033b60eabcee946bf13726c9875d4a9f3ce5e3c2e2c603",
+      "git_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+      "attempt": "evidence/V35-B00/20261110T014202Z-00ab62eb",
+      "log": "evidence/v35/B00/20261110T014135Z-b00final/04-verify.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误；改动仅为 config/verification.json 与 docs/v35/",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/B00/20261110T014135Z-b00final/05-git-final.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_APPLICABLE",
+  "live_github_write_gate": "NOT_APPLICABLE",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡禁止且未发生任何付费模型调用或 GitHub 写入；verify.py 对非 V31-R0 卡静态写 live_gate=NOT_RUN，真实状态以本字段为准（NOT_APPLICABLE）。",
+  "must_pass": [
+    {
+      "item": "基线 Commit 固定且工作区快照可追溯",
+      "result": "PASS",
+      "evidence": "HEAD=6cf67f40…；B00 开始时 git status 为空；冻结后仅本卡 docs 与 verification 注册。"
+    },
+    {
+      "item": "能画出 Live Audit 的真实调用图",
+      "result": "PASS",
+      "evidence": "ARCHITECTURE_CONTRACT §2.1：CLI→API→WorkbenchService.create→AnalysisAuthorization→RepositoryAnalysisService→WorkbenchStore→view/_sync_live_audit→Finding/Memory。"
+    },
+    {
+      "item": "能画出 Fixture Repair 全链路并标出固定组件",
+      "result": "PASS",
+      "evidence": "§2.2 与 §3：FIXED_DISPATCHER 仅由 _fixture_files 触达；_InMemoryRemote 仅在 approve() 实例化；宿主 pytest 仅由 _reproduce/_prepare_repair 触达。"
+    },
+    {
+      "item": "状态所有权清晰，每类状态有唯一所有者",
+      "result": "PASS",
+      "evidence": "§1 表：Workbench 业务状态在 PG app.workbench_*；Run/Action/Outbox 在 Engine；图状态在 Checkpointer；Redis 仅缓存。"
+    },
+    {
+      "item": "统一契约的必备字段与不可变字段明确",
+      "result": "PASS",
+      "evidence": "§5 定义 Task、Finding、RepairHandoff、PatchProposal、TestReceipt、Approval、Publication 七类唯一契约及不可修改字段。"
+    },
+    {
+      "item": "缺口与风险矩阵包含源码位置与测试覆盖",
+      "result": "PASS",
+      "evidence": "§6 的 G1–G12 均给出来源文件/行号、现有测试、影响与关闭卡。"
+    },
+    {
+      "item": "TASK_QUEUE 唯一 READY 为 V35-U01，其余 TODO",
+      "result": "PASS",
+      "evidence": "TASK_QUEUE.md：B00 DONE；U01 READY；U02/R01–R05/M01/M02/X01/E01–E03/D01 均为 TODO。"
+    },
+    {
+      "item": "不修改业务代码、不引依赖、不调用付费模型、不写 GitHub",
+      "result": "PASS",
+      "evidence": "git show --stat 266be8d 仅 19 个文档/配置文件；0 次付费调用；0 次 GitHub 写；无依赖变更。"
+    },
+    {
+      "item": "工程门禁命令原样通过",
+      "result": "PASS",
+      "evidence": "Workbench 15 passed；分析 13 passed；make doctor PG/Redis PASS；make verify V35-B00 28 passed/0 skipped；git diff --check exit 0。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "verify.py 对非 V31-R0 卡静态写入 live_gate=NOT_RUN",
+      "handling": "本卡真实状态为 NOT_APPLICABLE（无付费调用、无外部写入），以 accept.json 的 live_model_gate / live_github_write_gate 为准，未修改 verify.py 通用默认值。"
+    },
+    {
+      "issue": "evidence 01-git-baseline.log 在注册本卡之后采集",
+      "handling": "日志会显示本卡自身的 config/verification.json 与 docs/v35/ 改动；HEAD 仍为冻结基线，已在 BASELINE.md §5 注明。"
+    },
+    {
+      "issue": "首次 git diff --check 因新增行 CRLF 报 trailing whitespace",
+      "handling": "该文件为混合换行；仅将新增块改写为 LF，保留既有行字节不变，最终 git diff --check exit 0。"
+    }
+  ],
+  "artifacts": {
+    "baseline": "docs/v35/BASELINE.md",
+    "contract": "docs/v35/ARCHITECTURE_CONTRACT.md",
+    "queue": "docs/v35/TASK_QUEUE.md",
+    "cards": "docs/v35/cards/",
+    "verification": "config/verification.json",
+    "evidence": "evidence/v35/B00/20261110T013913Z-b00audit/",
+    "final_evidence": "evidence/v35/B00/20261110T014135Z-b00final/",
+    "verify_attempt": "evidence/V35-B00/20261110T014202Z-00ab62eb/"
+  },
+  "next_card": "V35-U01",
+  "next_card_prerequisites": [
+    "复核 accept 提交后的 HEAD 与 config/verification.json 的 V35-B00 条目",
+    "U01 只允许修改 workbench/coordination/migrations 与 tests，不得开始 U02",
+    "迁移只允许从 0023 起前向追加，且不得删除既有回归"
+  ]
+}
