@@ -984,5 +984,25 @@
       "tests/test_v35_x01.py"
     ],
     "timeout_seconds": 1800
+  },
+  "V35-E03": {
+    "components": {
+      "scenario_registry": "35_registered_scenarios_across_six_required_categories_each_with_node_id_failure_point_observed_state_and_recovery_result",
+      "v34_regression": "all_18_v3_4_security_recovery_tests_kept_as_regression_subset",
+      "cross_stage": "memory_gate_rejects_injected_readme_before_context_and_observation_authority_claims_cannot_widen_permissions",
+      "multi_round": "adversarial_two_round_run_compaction_preserves_pending_and_failed_state_experts_read_only",
+      "restart": "interrupted_resume_and_forked_checkpoint_resume_zero_provider_calls_no_duplicate_effect",
+      "concurrency": "duplicate_publication_approval_and_outbox_replay_write_once",
+      "disaster": "sigkill_redis_loss_database_outage_docker_unavailable_model_429_500_truncation_transport_loss_all_fail_closed",
+      "external_write": "read_only_reconcile_base_drift_expired_token_archived_repository_rate_limit_no_fabricated_success",
+      "postgres_restart": "NOT_RUN_shared_database_restart_deferred_connection_loss_probe_covers_outage_path",
+      "live_github_write": "NOT_RUN_no_authorized_test_repository_external_failures_injected_at_transport_boundary",
+      "security": "no_paid_calls_no_live_write_no_secret_logged_scenario_report_immutable"
+    },
+    "tests": [
+      "tests/test_v35_e03.py",
+      "tests/test_v34_security_recovery.py"
+    ],
+    "timeout_seconds": 2400
   }
 }
