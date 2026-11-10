@@ -19,6 +19,7 @@ from mgar_v3.repair.repair_agent import (
     MemoryEpisodeLog,
     RepairAgent,
     RepairBudget,
+    RepairObserver,
     RepairProvider,
     RepairReport,
     RepairRequest,
@@ -76,6 +77,7 @@ class SnapshotRepairRuntime:
         budget: RepairBudget | None = None,
         patch_limits: PatchLimits | None = None,
         frozen_paths: Sequence[str] = (),
+        observer: RepairObserver | None = None,
     ) -> RepairReport:
         """Repair the snapshot, or report why the container could not.
 
@@ -105,4 +107,4 @@ class SnapshotRepairRuntime:
             memory=self.memory,
             clock=self.clock,
         )
-        return agent.run(request, provider)
+        return agent.run(request, provider, observer=observer)

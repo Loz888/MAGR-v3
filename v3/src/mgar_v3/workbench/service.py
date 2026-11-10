@@ -23,6 +23,7 @@ import subprocess
 import sys
 import tempfile
 import time
+from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Literal
@@ -44,9 +45,13 @@ from mgar_v3.repair.pr_delivery import (
     MemoryPublicationLog,
     PublicationApproval,
     PublicationFile,
+    ReviewBundle,
     seal_bundle,
 )
+from mgar_v3.repair.repair_agent import RepairBudget, RepairProvider
+from mgar_v3.repair.runtime import SnapshotRepairRuntime
 from mgar_v3.repair.workspace import blob
+from mgar_v3.repair.worktree import PatchLimits
 from mgar_v3.repository_analysis.domain import (
     AnalysisLimits,
     CreateAnalysisInput,
@@ -55,6 +60,7 @@ from mgar_v3.repository_analysis.domain import (
 )
 from mgar_v3.repository_analysis.fixture import FIXTURE_FILES, fixture_commit
 from mgar_v3.repository_analysis.service import RepositoryAnalysisService
+from mgar_v3.repository_analysis.workspace import RepositorySnapshot
 from mgar_v3.scanners.domain import ScanLocation
 from mgar_v3.settings import Settings
 from mgar_v3.verification.verifier import STATIC_EVIDENCE_KINDS
@@ -65,6 +71,7 @@ from mgar_v3.workbench.domain import (
     CoverageRequest,
     CreateWorkbenchTask,
     FindingSource,
+    FixRecord,
     ReproductionPlan,
     ReproductionRecord,
     StaticConfirmation,
@@ -76,6 +83,13 @@ from mgar_v3.workbench.domain import (
     new_finding_id,
     rank_findings,
     score_finding,
+)
+from mgar_v3.workbench.orchestrator import (
+    AuthorizedRepairJob,
+    AuthorizedRepairOrchestrator,
+    RepairCancelToken,
+    RepairOutcome,
+    WorkbenchRepairLedger,
 )
 from mgar_v3.workbench.store import WorkbenchStore
 
@@ -906,6 +920,472 @@ class WorkbenchService:
             idempotency_key=f"approval-requested:{task_id}:{bundle.payload_hash}",
         )
         return updated
+
+    # -- authorized audit-and-repair (V3.5 R03) --------------------------
+    def authorized_repair(
+        self,
+        task_id: UUID,
+        finding_id: str,
+        *,
+        handoff: RepairHandoff,
+        snapshot: RepositorySnapshot,
+        provider: RepairProvider,
+        verification_files: Mapping[str, str],
+        verification_tests: Sequence[str],
+        budget: RepairBudget | None = None,
+        patch_limits: PatchLimits | None = None,
+        cancel: RepairCancelToken | None = None,
+        current_commit: Callable[[], str] | None = None,
+        runtime: SnapshotRepairRuntime | None = None,
+    ) -> dict[str, Any]:
+        """Run the authorized ``audit_and_repair`` chain up to waiting approval.
+
+        Repair authorization is independent from read-only audit authorization:
+        a handoff whose ``RepairAuthorization`` has ``allow_repair`` disabled,
+        has expired, or names another repository/actor stops here before any
+        model call or sandbox run.  A completed repair only mints a
+        ``waiting_approval`` Review Bundle; it never publishes a Draft PR.
+        """
+        task = self.store.task(task_id)
+        finding = self.store.finding(task_id, finding_id)
+        self._authorized_repair_gate(task, finding, handoff, snapshot)
+        current = self._start_authorized_repair(task, finding)
+        job = AuthorizedRepairJob(
+            task_id=task_id,
+            finding_id=finding.finding_id,
+            finding_title=finding.title,
+            finding_commit=handoff.base_commit,
+            handoff=handoff,
+            snapshot=snapshot,
+            verification_files=dict(verification_files),
+            verification_tests=list(verification_tests),
+            budget=budget or RepairBudget(),
+            patch_limits=patch_limits or PatchLimits(),
+        )
+        orchestrator = AuthorizedRepairOrchestrator(
+            ledger=WorkbenchRepairLedger(self.store),
+            allowed_actors=self.settings.allowed_actors,
+            runtime=runtime,
+        )
+        outcome = orchestrator.run(
+            job,
+            provider,
+            cancel=cancel,
+            current_commit=current_commit,
+        )
+        self._record_repair_outcome(current, finding, outcome)
+        return {
+            "outcome": outcome.model_dump(mode="json"),
+            "task": self.view(task_id),
+        }
+
+    def _authorized_repair_gate(
+        self,
+        task: dict[str, Any],
+        finding: WorkbenchFinding,
+        handoff: RepairHandoff,
+        snapshot: RepositorySnapshot,
+    ) -> None:
+        if task["execution_mode"] != "live":
+            raise DomainError(
+                "WORKBENCH_REPAIR_LIVE_PATH_REQUIRED",
+                "An authorized repair can only run on the live handoff path",
+                403,
+            )
+        if task["status"] in {"completed", "cancelled"}:
+            raise DomainError(
+                "TASK_NOT_REPAIRABLE",
+                "The task is already terminal",
+                409,
+            )
+        if handoff.computed_id() != handoff.handoff_id:
+            raise DomainError(
+                "REPAIR_HANDOFF_CORRUPTED",
+                "Handoff id does not match its content",
+                409,
+            )
+        if handoff.execution_mode != "live":
+            raise DomainError(
+                "REPAIR_HANDOFF_NOT_LIVE",
+                "An authorized repair requires a live handoff",
+                409,
+            )
+        if handoff.repository.lower() != task["repository"].lower():
+            raise DomainError(
+                "REPAIR_REPOSITORY_MISMATCH",
+                "The handoff repository does not match the task",
+                409,
+            )
+        if handoff.base_commit != task["commit"]:
+            raise DomainError(
+                "REPAIR_BASE_COMMIT_MISMATCH",
+                "The handoff base commit is not the task commit",
+                409,
+            )
+        if handoff.finding_id != finding.finding_id:
+            raise DomainError(
+                "REPAIR_FINDING_MISMATCH",
+                "The handoff does not belong to this finding",
+                409,
+            )
+        if finding.source.commit != handoff.base_commit:
+            raise DomainError(
+                "REPAIR_FINDING_COMMIT_MISMATCH",
+                "The finding evidence is not bound to the handoff commit",
+                409,
+            )
+        if finding.stage not in {"suspected", "reproduced"}:
+            raise DomainError(
+                "FINDING_NOT_REPAIRABLE",
+                "Only a suspected or reproduced finding may be repaired",
+                409,
+            )
+        if (
+            snapshot.repository.lower() != handoff.repository.lower()
+            or snapshot.commit != handoff.base_commit
+            or snapshot.computed_hash() != snapshot.snapshot_hash
+        ):
+            raise DomainError(
+                "REPAIR_SNAPSHOT_MISMATCH",
+                "The snapshot is not the handed-off commit",
+                409,
+            )
+        handoff.authorization.validate_scope(
+            repository=handoff.repository,
+            budget=handoff.execution_budget,
+            allowed_actors=self.settings.allowed_actors,
+        )
+
+    def _start_authorized_repair(
+        self,
+        task: dict[str, Any],
+        finding: WorkbenchFinding,
+    ) -> dict[str, Any]:
+        task_id = task["task_id"]
+        current = task
+        if current["phase"] == "queued":
+            current = self._transition(
+                current,
+                "investigating",
+                status="auditing",
+                reason="authorized repair queued a local investigation",
+                event={
+                    "stage": "audit",
+                    "status": "started",
+                    "summary": "Local authorized investigation started",
+                    "payload": {"finding_id": finding.finding_id},
+                    "kind": "run.audit",
+                },
+                idempotency_key=f"authorized-audit:{task_id}:{finding.finding_id}",
+            )
+        if current["phase"] == "investigating":
+            current = self._transition(
+                current,
+                "suspected",
+                status="ready",
+                reason="the local investigation produced a finding",
+                event={
+                    "stage": "audit",
+                    "status": "succeeded",
+                    "summary": f"Finding {finding.finding_id[:12]} is ready to reproduce",
+                    "payload": {"finding_id": finding.finding_id},
+                    "kind": "run.audit",
+                },
+                idempotency_key=f"authorized-suspected:{task_id}:{finding.finding_id}",
+            )
+        if current["phase"] == "suspected":
+            current = self._transition(
+                current,
+                "reproduced",
+                status="ready",
+                reason="the authorized baseline will prove the defect",
+                event={
+                    "stage": "reproduce",
+                    "status": "started",
+                    "summary": "Baseline verification is part of the authorized repair",
+                    "payload": {"finding_id": finding.finding_id},
+                    "kind": "test.reproduction",
+                },
+                idempotency_key=f"authorized-reproduced:{task_id}:{finding.finding_id}",
+            )
+        if current["phase"] == "reproduced":
+            current = self._transition(
+                current,
+                "repairing",
+                status="repairing",
+                reason=f"authorized repair started for {finding.finding_id[:12]}",
+                event={
+                    "stage": "repair",
+                    "status": "started",
+                    "summary": (
+                        f"Authorized repair started for {finding.finding_id[:12]} "
+                        "inside the restricted sandbox"
+                    ),
+                    "payload": {"finding_id": finding.finding_id},
+                    "kind": "patch.repair",
+                },
+                idempotency_key=f"authorized-repair-started:{task_id}:{finding.finding_id}",
+            )
+        elif current["phase"] != "repairing":
+            raise DomainError(
+                "TASK_NOT_REPAIRABLE",
+                f"Task phase {current['phase']} cannot start an authorized repair",
+                409,
+            )
+        return current
+
+    def _record_repair_outcome(
+        self,
+        task: dict[str, Any],
+        finding: WorkbenchFinding,
+        outcome: RepairOutcome,
+    ) -> None:
+        task_id = task["task_id"]
+        current = self.store.task(task_id)
+        self._event(
+            task_id,
+            stage="repair",
+            status=outcome.status,
+            summary=f"Authorized repair ended with {outcome.status}",
+            payload={
+                "finding_id": finding.finding_id,
+                "checkpoint_seq": outcome.checkpoint_seq,
+                "test_runs": outcome.test_runs,
+                "budget": outcome.budget,
+                "attempts": [item.model_dump(mode="json") for item in outcome.attempts],
+                "receipts": [
+                    {
+                        "stage": item.stage,
+                        "attempt": item.attempt,
+                        "receipt_id": item.receipt_id,
+                        "status": item.status,
+                        "log_sha256": item.log_sha256,
+                        "artifact_hash": item.artifact_hash,
+                    }
+                    for item in outcome.receipts
+                ],
+                "failure_stage": outcome.failure_stage,
+                "failure_code": outcome.failure_code,
+                "artifacts": outcome.artifacts,
+                "bundle_artifact": outcome.bundle_artifact,
+                "proposal": outcome.proposal,
+                "discarded_receipts": outcome.discarded_receipts,
+            },
+            kind="repair.outcome",
+        )
+        if outcome.status == "waiting_approval":
+            bundle = ReviewBundle.model_validate(outcome.review_bundle)
+            updated = self._finding_with_verified_fix(finding, outcome, bundle)
+            self._persist_finding(task_id, updated)
+            current = self._transition(
+                current,
+                "patch_verified",
+                status="repairing",
+                reason=f"patch {bundle.proposal_id[:12]} passed public and hidden tests",
+                event={
+                    "stage": "repair",
+                    "status": "patch_verified",
+                    "summary": f"Patch verified for {finding.finding_id[:12]}",
+                    "payload": {
+                        "finding_id": finding.finding_id,
+                        "proposal_id": bundle.proposal_id,
+                        "payload_hash": bundle.payload_hash,
+                        "bundle_artifact": outcome.bundle_artifact,
+                        "test_runs": outcome.test_runs,
+                        "budget": outcome.budget,
+                    },
+                    "kind": "patch.verified",
+                },
+                idempotency_key=f"authorized-patch-verified:{task_id}:{bundle.payload_hash}",
+            )
+            self._transition(
+                current,
+                "waiting_approval",
+                status="waiting_approval",
+                stage="waiting_approval",
+                reason="human approval is required before publication",
+                event={
+                    "stage": "repair",
+                    "status": "waiting_approval",
+                    "summary": (
+                        f"Patch verified for {finding.finding_id[:12]}; human approval required"
+                    ),
+                    "payload": {
+                        "finding_id": finding.finding_id,
+                        "payload_hash": bundle.payload_hash,
+                        "bundle_artifact": outcome.bundle_artifact,
+                    },
+                    "kind": "approval.requested",
+                },
+                idempotency_key=f"authorized-approval:{task_id}:{bundle.payload_hash}",
+            )
+            return
+        if current["status"] == "cancelled":
+            self._event(
+                task_id,
+                stage="repair",
+                status="late_receipt_discarded",
+                summary="A repair receipt arrived after the task was cancelled and was discarded",
+                payload={
+                    "finding_id": finding.finding_id,
+                    "discarded_receipts": outcome.discarded_receipts,
+                },
+                kind="repair.late_receipt",
+            )
+            return
+        if outcome.status == "cancelled":
+            self._transition(
+                current,
+                "cancelled",
+                status="cancelled",
+                reason=outcome.reason,
+                bump_epoch=True,
+                event={
+                    "stage": "repair",
+                    "status": "cancelled",
+                    "summary": "Authorized repair was cancelled",
+                    "payload": {
+                        "finding_id": finding.finding_id,
+                        "discarded_receipts": outcome.discarded_receipts,
+                    },
+                    "kind": "repair.cancelled",
+                },
+            )
+            return
+        baseline = outcome.baseline
+        reproduced = baseline is not None and not baseline.get("passed", True)
+        if reproduced and baseline is not None and finding.stage == "suspected":
+            receipt = self._workbench_receipt(baseline)
+            record = ReproductionRecord(
+                status="reproduced",
+                record=(
+                    "The authorized baseline failed on the handed-off tree. "
+                    "Output excerpt: " + receipt.output_excerpt[-800:]
+                ),
+                command=receipt.command,
+                receipt=receipt,
+            )
+            self._persist_finding(task_id, advance_finding(finding, reproduction=record))
+        if reproduced:
+            self._transition(
+                current,
+                "reproduced",
+                status="ready",
+                reason=outcome.reason,
+                event={
+                    "stage": "repair",
+                    "status": "failed",
+                    "summary": f"Authorized repair did not verify: {outcome.status}",
+                    "payload": {
+                        "finding_id": finding.finding_id,
+                        "failure_stage": outcome.failure_stage,
+                        "failure_code": outcome.failure_code,
+                        "checkpoint_seq": outcome.checkpoint_seq,
+                    },
+                    "kind": "repair.failed",
+                },
+            )
+            return
+        self._transition(
+            current,
+            "failed",
+            status="failed",
+            reason=outcome.reason,
+            event={
+                "stage": "repair",
+                "status": "failed",
+                "summary": "Authorized repair failed before the defect was reproduced",
+                "payload": {
+                    "finding_id": finding.finding_id,
+                    "failure_stage": outcome.failure_stage,
+                    "failure_code": outcome.failure_code,
+                },
+                "kind": "repair.failed",
+            },
+        )
+
+    def _finding_with_verified_fix(
+        self,
+        finding: WorkbenchFinding,
+        outcome: RepairOutcome,
+        bundle: ReviewBundle,
+    ) -> WorkbenchFinding:
+        baseline = outcome.baseline
+        if baseline is None or outcome.diff is None or outcome.proposal is None:
+            raise DomainError(
+                "REPAIR_EVIDENCE_MISSING",
+                "A waiting-approval repair needs a baseline, a diff and a proposal",
+                409,
+            )
+        attempt = int(outcome.proposal.get("attempts_used", 0))
+        public = next(
+            (
+                item.receipt
+                for item in outcome.receipts
+                if item.stage == "public_tests" and item.attempt == attempt
+            ),
+            None,
+        )
+        if public is None:
+            raise DomainError(
+                "REPAIR_EVIDENCE_MISSING",
+                "The accepted attempt has no public test receipt",
+                409,
+            )
+        before = self._workbench_receipt(baseline.get("receipt") or baseline)
+        after = self._workbench_receipt(public)
+        if finding.stage == "suspected":
+            finding = advance_finding(
+                finding,
+                reproduction=ReproductionRecord(
+                    status="reproduced",
+                    record="The authorized baseline failed on the handed-off tree.",
+                    command=before.command,
+                    receipt=before,
+                ),
+            )
+        fix = FixRecord(
+            suggested_fix=str(outcome.proposal.get("plan_summary") or "Verified repair"),
+            diff=outcome.diff,
+            diff_sha256=hashlib.sha256(outcome.diff.encode()).hexdigest(),
+            files=[item.path for item in bundle.files],
+            tree_hash_before=str(outcome.proposal["base_tree_sha256"]),
+            tree_hash_after=str(outcome.proposal["tested_tree_sha256"]),
+            before_receipt=before,
+            after_receipt=after,
+            bundle=bundle,
+        )
+        verified = advance_finding(finding, fix=fix)
+        return advance_finding(
+            verified,
+            approval=ApprovalRecord(
+                status="pending",
+                payload_hash=bundle.payload_hash,
+                requested_at=_now(),
+            ),
+        )
+
+    @staticmethod
+    def _workbench_receipt(receipt: Mapping[str, Any]) -> TestReceipt:
+        passed = receipt.get("status") == "passed"
+        exit_code = receipt.get("exit_code")
+        if exit_code is None:
+            exit_code = 0 if passed else 1
+        command = " ".join(receipt.get("command") or []) or "trusted sandbox adapter"
+        log_sha256 = str(receipt.get("log_sha256") or "")
+        if len(log_sha256) != 64:
+            log_sha256 = hashlib.sha256(str(receipt).encode()).hexdigest()
+        return TestReceipt(
+            receipt_id=str(receipt["receipt_id"])[:100],
+            command=command[:500],
+            exit_code=int(exit_code),
+            passed=passed,
+            tests=[str(item) for item in (receipt.get("tests") or [])][:50],
+            skipped=int(receipt.get("skipped_tests") or 0),
+            duration_ms=max(0, int(float(receipt.get("duration_seconds") or 0) * 1000)),
+            log_sha256=log_sha256,
+            output_excerpt=str(receipt.get("error") or "")[:4000],
+        )
 
     # -- approval and publication ---------------------------------------
     def approve(
@@ -2078,10 +2558,19 @@ class WorkbenchService:
         status: str,
         summary: str,
         payload: dict[str, Any] | None = None,
+        kind: str | None = None,
     ) -> None:
         self.store.append_events(
             task_id,
-            [{"stage": stage, "status": status, "summary": summary, "payload": payload or {}}],
+            [
+                {
+                    "stage": stage,
+                    "status": status,
+                    "summary": summary,
+                    "payload": payload or {},
+                    "kind": kind,
+                }
+            ],
         )
 
     @staticmethod

@@ -321,6 +321,24 @@ class RepairProvider(Protocol):
     def propose(self, prompt: RepairPrompt) -> PatchPlan: ...
 
 
+class RepairObserver(Protocol):
+    """Receives each repair node boundary so a caller can checkpoint the run."""
+
+    def baseline_started(self) -> None: ...
+
+    def baseline(self, receipt: TestReceipt) -> None: ...
+
+    def provider_started(self, attempt: int) -> None: ...
+
+    def planned(self, attempt: int, plan: PatchPlan) -> None: ...
+
+    def patched(self, attempt: int, patch: PatchResult) -> None: ...
+
+    def receipt(self, stage: str, attempt: int, receipt: TestReceipt) -> None: ...
+
+    def attempt(self, record: RepairAttempt) -> None: ...
+
+
 class _BudgetExhausted(Exception):
     pass
 
@@ -392,12 +410,23 @@ class RepairAgent:
         self.memory: EpisodeSink = memory or MemoryEpisodeLog()
         self.clock = clock
 
-    def run(self, request: RepairRequest, provider: RepairProvider) -> RepairReport:
+    def run(
+        self,
+        request: RepairRequest,
+        provider: RepairProvider,
+        *,
+        observer: RepairObserver | None = None,
+    ) -> RepairReport:
         adapter = _adapter(request.language)
         started = self.clock()
         test_runs = 0
         attempts: list[RepairAttempt] = []
         feedback: list[RepairFeedback] = []
+
+        def record(item: RepairAttempt) -> None:
+            attempts.append(item)
+            if observer is not None:
+                observer.attempt(item)
 
         def execute(files: Mapping[str, str]) -> TestReceipt:
             nonlocal test_runs
@@ -443,6 +472,8 @@ class RepairAgent:
             expected_tree=request.source_tree,
         ) as worktree:
             base_tree = worktree.baseline_hash()
+            if observer is not None:
+                observer.baseline_started()
             try:
                 baseline = execute(worktree.snapshot())
             except _BudgetExhausted:
@@ -451,6 +482,8 @@ class RepairAgent:
                 )
             except _DeadlineExceeded:
                 return stop("deadline_exceeded", "baseline", "Repair deadline exhausted", None)
+            if observer is not None:
+                observer.baseline(baseline)
 
             if baseline.status == "waiting_for_dependencies":
                 return stop(
@@ -490,6 +523,8 @@ class RepairAgent:
                         baseline,
                     )
                 tree_before = worktree.tree_hash()
+                if observer is not None:
+                    observer.provider_started(attempt)
                 try:
                     plan = provider.propose(
                         RepairPrompt(
@@ -513,7 +548,7 @@ class RepairAgent:
                         message=str(exc)[:1000],
                     )
                     feedback.append(item)
-                    attempts.append(
+                    record(
                         _attempt_record(
                             attempt=attempt,
                             plan_summary=f"Provider rejected: {exc.code}",
@@ -531,6 +566,8 @@ class RepairAgent:
                     if not exc.retryable:
                         return stop("provider_error", "patch", reason, baseline)
                     continue
+                if observer is not None:
+                    observer.planned(attempt, plan)
                 try:
                     frozen = sorted(
                         edit.path for edit in plan.edits if edit.path in set(request.frozen_paths)
@@ -551,7 +588,7 @@ class RepairAgent:
                         message=str(exc)[:1000],
                     )
                     feedback.append(item)
-                    attempts.append(
+                    record(
                         _attempt_record(
                             attempt=attempt,
                             plan_summary=plan.summary,
@@ -567,6 +604,8 @@ class RepairAgent:
                         request, "patch_rejected", attempt, tree_before, reason, []
                     )
                     continue
+                if observer is not None:
+                    observer.patched(attempt, patch)
 
                 try:
                     public = execute(worktree.snapshot())
@@ -583,6 +622,8 @@ class RepairAgent:
                     return stop(
                         "deadline_exceeded", "public_tests", "Repair deadline exhausted", baseline
                     )
+                if observer is not None:
+                    observer.receipt("public_tests", attempt, public)
 
                 if public.status == "waiting_for_dependencies":
                     worktree.revert_patch()
@@ -611,7 +652,7 @@ class RepairAgent:
                         failed_tests=list(public.failed_tests),
                     )
                     feedback.append(item)
-                    attempts.append(
+                    record(
                         _attempt_record(
                             attempt=attempt,
                             plan_summary=plan.summary,
@@ -650,6 +691,8 @@ class RepairAgent:
                     return stop(
                         "deadline_exceeded", "verification", "Repair deadline exhausted", baseline
                     )
+                if observer is not None:
+                    observer.receipt("verification", attempt, verification)
 
                 if verification.status == "waiting_for_dependencies":
                     worktree.revert_patch()
@@ -676,7 +719,7 @@ class RepairAgent:
                         message="Independent verification did not pass.",
                     )
                     feedback.append(item)
-                    attempts.append(
+                    record(
                         _attempt_record(
                             attempt=attempt,
                             plan_summary=plan.summary,
@@ -702,7 +745,7 @@ class RepairAgent:
                 proposal = self._proposal(
                     request, plan, worktree, base_tree, public, verification, attempt
                 )
-                attempts.append(
+                record(
                     _attempt_record(
                         attempt=attempt,
                         plan_summary=plan.summary,

@@ -794,5 +794,26 @@
       "tests/test_v34_patch_workspace.py"
     ],
     "timeout_seconds": 900
+  },
+  "V35-R03": {
+    "components": {
+      "authorization": "independent_allow_repair_denied_by_default_scope_revalidated",
+      "budget": "attempts_test_runs_and_deadline_inside_task_and_run_ledger",
+      "cancel": "cooperative_token_at_node_boundaries_late_receipts_discarded",
+      "docker": "pinned_real_sandbox_image",
+      "hidden_tests": "verification_files_never_enter_provider_prompt",
+      "model": "fixture_provider_no_paid_network",
+      "postgres": "real_disposable_database_repair_checkpoints_in_workbench_events",
+      "recovery": "sigkill_resumes_from_recorded_plan_patch_hash_and_receipt_without_repeat",
+      "rollback": "failed_public_or_hidden_stage_returns_worktree_and_structured_feedback",
+      "sources": "golang_example_public_snapshot",
+      "terminal": "waiting_approval_review_bundle_without_pr_or_github_write"
+    },
+    "tests": [
+      "tests/test_v35_r03.py",
+      "tests/test_v34_repair_agent.py",
+      "tests/test_v34_repository_api.py"
+    ],
+    "timeout_seconds": 1200
   }
 }
