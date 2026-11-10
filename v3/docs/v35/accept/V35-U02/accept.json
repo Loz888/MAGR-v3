@@ -1,0 +1,180 @@
+{
+  "card": "V35-U02",
+  "title": "统一 Finding → RepairHandoff 真实交接",
+  "status": "PASS",
+  "commit": "5e5b412df7bbcfcd6dfb58a014befcd05523f157",
+  "result_commit": "5e5b412df7bbcfcd6dfb58a014befcd05523f157",
+  "commit_note": "单次本地提交：migration 0024、workbench domain/store/service、repair/handoff、新增 tests/test_v35_u02.py、verification 注册与 U02/TASK_QUEUE 文档更新；未推送。accept.json 为紧随其后的独立文档提交。",
+  "parent_commit": "b57cdec5ed6c4daf45476df634e76ea35836e5a6",
+  "dependency_commit": "6e40f14687a50d77fb7a96448bfaffa056a4a3cc",
+  "base_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+  "accepted_at": "2026-11-10T02:35:00Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (mgar-v3-postgres-1, 127.0.0.1:55433)",
+    "redis": "real (mgar-v3-redis-1, 127.0.0.1:56379)",
+    "model": "not_used",
+    "network": "not_used for paid model or GitHub",
+    "github": "not_used"
+  },
+  "worktree_at_acceptance": "实现提交 5e5b412 后仅 accept.json 待提交；evidence/（gitignore）与 .push-staging/ 本地脚本不在版本控制内。",
+  "commands": [
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/workbench", "src/mgar_v3/repair", "tests/test_v35_u02.py"],
+      "exit_code": 0,
+      "result": "All checks passed",
+      "purpose": "本卡改动文件的静态检查",
+      "log": "evidence/v35/U02/20261110T023046Z-u02checks/01-ruff.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/workbench", "src/mgar_v3/repair/handoff.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 5 source files",
+      "purpose": "本卡改动模块的类型检查",
+      "log": "evidence/v35/U02/20261110T023046Z-u02checks/02-mypy.log",
+      "status": "PASS"
+    },
+    {
+      "name": "u02-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "-q", "tests/test_v35_u02.py", "tests/test_v35_u01.py", "tests/test_v34_repair_handoff.py", "tests/test_v33_defect_verifier.py", "tests/test_v34_repository_api.py"],
+      "exit_code": 0,
+      "duration_seconds": 72.82,
+      "counts": {"tests": 62, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "U02 新增测试 + U01 ledger + V3.4 handoff/API + V3.3 verifier 回归",
+      "log": "evidence/v35/U02/20261110T023046Z-u02checks/03-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["make", "migrate"],
+      "exit_code": 0,
+      "result": {"applied": ["0024_workbench_handoffs.sql"], "migration_head": "0024_workbench_handoffs.sql", "applied_files": 24, "migration_files": 24},
+      "purpose": "迁移 head 从 0023 前向推进到 0024，仅新增，不改已发布迁移",
+      "log": "evidence/v35/U02/20261110T022857Z-u02final/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["make", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用）",
+      "log": "evidence/v35/U02/20261110T022857Z-u02final/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/U02/20261110T022857Z-u02final/03-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["make", "verify", "TASK=V35-U02"],
+      "exit_code": 0,
+      "duration_seconds": 42.756,
+      "counts": {"tests": 31, "failures": 0, "errors": 0, "skipped": 0},
+      "breakdown": {"tests/test_v35_u02.py": 11, "tests/test_v34_repair_handoff.py": 8, "tests/test_v33_defect_verifier.py": 12},
+      "source_sha256": "fc672cc4673611c28751ee9208ed0e3ec9e5fef9a0a603f7e16944ee43dcf0a0",
+      "finished_source_sha256": "fc672cc4673611c28751ee9208ed0e3ec9e5fef9a0a603f7e16944ee43dcf0a0",
+      "git_commit": "b57cdec5ed6c4daf45476df634e76ea35836e5a6",
+      "attempt": "evidence/V35-U02/20261110T022903Z-14e52025",
+      "log": "evidence/v35/U02/20261110T022857Z-u02final/04-verify.log",
+      "note": "verify 记录的是提交前 HEAD；同一 source_sha256 即实现提交 5e5b412 的源码指纹。",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_RUN",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "NOT_RUN",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡禁止且未发生任何付费模型调用或 GitHub 写入；verify.py 对非 V31-R0 卡静态写 live_gate=NOT_RUN。engineering_gate=PASS 不蕴含 live_agent_gate=PASS：真实模型 Agent 评测尚未执行，按 E01 强制协议标记 NOT_RUN。security_gate 仅覆盖本卡不变量（证据绑定、Handoff 门禁、内容寻址、append-only、Live 不使用固定 Dispatcher），端到端安全门由 V35-E03 汇总。",
+  "must_pass": [
+    {
+      "item": "真实只读 Audit Finding 绑定 evidence_id / source_uri / line_range / commit",
+      "result": "PASS",
+      "evidence": "test_audit_findings_bind_evidence_uri_lines_and_commit：每条 Finding 的 evidence_id/source_uri 非空，URI 形如 github://octo/example@<commit>/<path>，source.commit 等于 Task commit，content_hash 64 位，1 <= start_line <= end_line，初始 verification=suspected。"
+    },
+    {
+      "item": "只有可复现失败回执或既定静态确认机制才能转 Handoff",
+      "result": "PASS",
+      "evidence": "test_suspected_finding_cannot_mint_a_handoff 返回 HANDOFF_TARGET_UNVERIFIED；test_a_guessed_finding_cannot_be_confirmed_without_static_evidence 返回 STATIC_EVIDENCE_REQUIRED；test_static_confirmation_mints_one_content_addressed_handoff 仅在 confirm_static 后成功。"
+    },
+    {
+      "item": "Handoff 固定仓库、Commit、目标、允许路径、预算、工具范围、审批状态、父 Run 与 Evidence Hash，不得从自然语言/Memory 扩权",
+      "result": "PASS",
+      "evidence": "service.handoff 由 Finding source 与父 audit run 推导 repository/base_commit/parent_run_id/parent_report_hash/allowed_paths/evidence_ids；test_a_broader_authorization_cannot_replace_a_bound_handoff 证明 [\"*\"] 授权不能替换已绑定 Handoff；test_stale_commit_source_cross_repository_and_missing_evidence_fail 分别返回 HANDOFF_VERSION_MISMATCH / HANDOFF_REPOSITORY_MISMATCH / HANDOFF_EVIDENCE_MISSING。"
+    },
+    {
+      "item": "Handoff 序列化为内容寻址 Artifact 并绑定 Ledger；恢复时复用同一 Handoff",
+      "result": "PASS",
+      "evidence": "handoff_id == content_hash == sha256(Engine artifact 内容)，app.workbench_handoffs 仅一行且 content_hash 外键指向 app.artifacts（test_static_confirmation_mints_one_content_addressed_handoff）；二次请求 reused=true、同 handoff_id、Ledger 不新增行；test_finding_evidence_changed_after_the_handoff_is_rejected 证明恢复前重新校验证据。"
+    },
+    {
+      "item": "Live auto_repair 不再使用固定 Dispatcher Finding；无 Handoff 停在 waiting_input/suspected",
+      "result": "PASS",
+      "evidence": "test_live_auto_repair_waits_instead_of_using_the_dispatcher：Live 任务 run 后 phase=waiting_input、handoffs=[]、findings 不含 DISPATCHER_PATH、事件 handoff.waiting，重复 run 幂等；test_live_task_with_a_static_finding_still_needs_an_explicit_handoff：confirmed_static 后仍须显式 handoff 才进入后续 repair 等待。"
+    },
+    {
+      "item": "负向测试：猜测无证据、父 Run 未结束、不同 Commit、跨仓库来源、授权撤销、过期模型结果、越权 allowed_paths",
+      "result": "PASS",
+      "evidence": "猜测无证据 -> STATIC_EVIDENCE_REQUIRED；父 Run 未结束 -> HANDOFF_PARENT_NOT_SETTLED（test_an_unsettled_parent_audit_blocks_the_handoff）；不同 Commit / 跨仓库 / 缺证据 -> 对应 HANDOFF_* 错误；授权拒绝 -> HANDOFF_AUTHORIZATION_DENIED，过期授权与越权 allowed_paths 由共享 RepairHandoffBuilder 的 validate_scope 拒绝（tests/test_v34_repair_handoff.py 的过期授权与 allowed_paths 越界用例）；service.handoff 无 allowed_paths 入参，路径只能来自已验证 Finding，结构性不可扩权；本卡 model=not_used，过期模型结果不适用，证据过期由 Handoff 后证据变化用例覆盖。"
+    },
+    {
+      "item": "工程门禁命令原样通过",
+      "result": "PASS",
+      "evidence": "make verify TASK=V35-U02：31 passed / 0 failed / 0 skipped；组合回归 62 passed / 0 skipped；scoped ruff 与 mypy exit 0；make migrate 应用 0024（head 0024，files 24）；make doctor PG/Redis PASS；git diff --check exit 0。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "全仓 make lint / make typecheck 存在与 V35-U02 无关的既有历史债务",
+      "handling": "scoped ruff（workbench、repair、U02 测试）与 scoped mypy（workbench + repair/handoff.py，5 个源文件）均 exit 0；未扩大修改范围。"
+    },
+    {
+      "issue": "verify.py 对非 V31-R0 卡静态写入 live_gate=NOT_RUN",
+      "handling": "以 accept.json 的 live_model_gate / live_github_write_gate / live_agent_gate 为准；本卡未发生付费模型调用或 GitHub 写入。"
+    },
+    {
+      "issue": "U02 期间未执行真实模型 Agent 评测",
+      "handling": "按 V35-E01 强制验收协议，live_agent_gate 标记 NOT_RUN；不得以 fixture/ScriptedProvider 结果宣称真实 Agent 能力已验收。"
+    },
+    {
+      "issue": "Live 修复执行仍受显式开关限制",
+      "handling": "Live issue_repair 返回 WORKBENCH_LIVE_REPAIR_PROFILE_REQUIRED，Live repair 执行返回 LIVE_REPAIR_EXECUTION_NOT_ENABLED；本卡只交付交接与门禁，真实 Live repair 执行留给后续卡授权。"
+    },
+    {
+      "issue": "V3.4 status 与 V3.5 phase 并存",
+      "handling": "沿用 U01 契约，status 兼容既有 API，phase 为权威阶段；本卡未新增平行状态机。"
+    }
+  ],
+  "artifacts": {
+    "migration": "migrations/0024_workbench_handoffs.sql",
+    "domain": "src/mgar_v3/workbench/domain.py",
+    "store": "src/mgar_v3/workbench/store.py",
+    "service": "src/mgar_v3/workbench/service.py",
+    "handoff": "src/mgar_v3/repair/handoff.py",
+    "tests": "tests/test_v35_u02.py",
+    "verification": "config/verification.json",
+    "card": "docs/v35/cards/V35-U02.md",
+    "queue": "docs/v35/TASK_QUEUE.md",
+    "checks_evidence": "evidence/v35/U02/20261110T023046Z-u02checks/",
+    "final_evidence": "evidence/v35/U02/20261110T022857Z-u02final/",
+    "verify_attempt": "evidence/V35-U02/20261110T022903Z-14e52025/"
+  },
+  "next_card": "V35-R01",
+  "next_card_prerequisites": [
+    "复核 accept 提交后的 HEAD 与 config/verification.json 的 V35-U02 条目",
+    "R01 必须从 U02 的 verified Finding 与内容寻址 Handoff 出发，不得绕过 HANDOFF_TARGET_UNVERIFIED / HANDOFF_PARENT_NOT_SETTLED 门禁",
+    "迁移只允许从 0024 之后继续前向追加，且不得删除既有回归"
+  ]
+}
