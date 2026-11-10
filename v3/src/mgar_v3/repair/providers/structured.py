@@ -20,6 +20,10 @@ from typing import Annotated, Any, Literal, NoReturn, Protocol
 
 from pydantic import Field
 
+from mgar_v3.context.builder import (
+    ContextBuilder,
+    RepairContextRequest,
+)
 from mgar_v3.domain import DomainError, Model
 from mgar_v3.repair.repair_agent import (
     PatchPlan,
@@ -183,7 +187,14 @@ class StructuredPatchProvider:
                 "Repair prompt has no authorized paths",
                 retryable=False,
             )
-        payload = self._payload(prompt)
+        try:
+            payload = self._payload(prompt)
+        except DomainError as exc:
+            raise PatchProposalRejected(
+                "PATCH_INPUT_LIMIT",
+                str(exc)[:1000] or "Repair prompt exceeds the model input bound",
+                retryable=False,
+            ) from None
         encoded = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
         if len(encoded.encode()) > self.max_prompt_bytes:
             raise PatchProposalRejected(
@@ -244,35 +255,43 @@ class StructuredPatchProvider:
     # -- prompt construction -------------------------------------------
 
     def _payload(self, prompt: RepairPrompt) -> dict[str, Any]:
-        files: dict[str, Any] = {}
-        missing: list[str] = []
-        for path in prompt.allowed_paths:
-            if path in prompt.files:
-                content = prompt.files[path]
-                files[path] = {"sha256": sha256_text(content), "content": content}
-            else:
-                missing.append(path)
-        return {
-            "objective": prompt.objective,
-            "language": prompt.language,
-            "attempt": prompt.attempt,
-            "max_attempts": prompt.max_attempts,
-            "allowed_paths": list(prompt.allowed_paths),
-            "missing_paths": missing,
-            "files": files,
-            "feedback": [item.model_dump(mode="json") for item in prompt.feedback],
-            "response_schema": {
-                "summary": "string",
-                "edits": [
-                    {
-                        "path": "one allowed path",
-                        "operation": "update|create|delete",
-                        "expected_sha256": "latest sha256 for update/delete",
-                        "content": "complete replacement text",
-                    }
+        """Build the bounded payload through the shared ContextBuilder policy.
+
+        Investigation and Repair therefore share one budget, truncation and
+        invariant implementation.  The hard repair constraints (allowed paths,
+        attempt, response schema and every pre-image sha256) stay pinned while
+        only file previews and feedback may shrink.
+        """
+
+        bundle = ContextBuilder(
+            max_tokens=max(512, self.max_prompt_bytes // 3)
+        ).build_repair(
+            RepairContextRequest(
+                repository=prompt.repository,
+                objective=prompt.objective,
+                language=prompt.language,
+                attempt=prompt.attempt,
+                max_attempts=prompt.max_attempts,
+                allowed_paths=list(prompt.allowed_paths),
+                files=dict(prompt.files),
+                feedback=[
+                    item.model_dump(mode="json") for item in prompt.feedback
                 ],
-            },
-        }
+                response_schema={
+                    "summary": "string",
+                    "edits": [
+                        {
+                            "path": "one allowed path",
+                            "operation": "update|create|delete",
+                            "expected_sha256": "latest sha256 for update/delete",
+                            "content": "complete replacement text",
+                        }
+                    ],
+                },
+                max_bytes=self.max_prompt_bytes,
+            )
+        )
+        return bundle.payload
 
     # -- reply parsing --------------------------------------------------
 

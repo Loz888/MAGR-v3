@@ -38,7 +38,7 @@ from mgar_v3.repository_analysis.report import (
 )
 from mgar_v3.repository_analysis.tools import TOOL_NAMES, ToolOutcome
 
-TOOL_ADAPTER = TypeAdapter(ToolCall)
+TOOL_ADAPTER: TypeAdapter[Any] = TypeAdapter(ToolCall)  # type: ignore[arg-type]
 MAX_OBSERVATION_CHARS = 6000
 MAX_PRIOR_REPORT_CHARS = 8000
 PARTIAL_CODES = {
@@ -84,6 +84,26 @@ def _tool_args_hash(call: Any) -> str:
     ).hexdigest()
 
 
+def state_revision(state: AnalysisState) -> str:
+    """Bind a model input to the exact history it was compacted from."""
+
+    encoded = json.dumps(
+        {
+            "epoch": state.get("epoch"),
+            "round": state.get("round"),
+            "decision_round": state.get("decision_round"),
+            "history": state.get("history", []),
+            "evidence": state.get("evidence", []),
+            "pending_calls": state.get("pending_calls", []),
+        },
+        sort_keys=True,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        default=str,
+    ).encode()
+    return hashlib.sha256(encoded).hexdigest()
+
+
 def _call_locator(call: Any) -> dict[str, int] | None:
     start = getattr(call, "start_line", None)
     end = getattr(call, "end_line", None)
@@ -100,10 +120,10 @@ def run_sync(value: Any) -> Any:
     try:
         asyncio.get_running_loop()
     except RuntimeError:
-        return asyncio.run(value)
+        return asyncio.run(value)  # type: ignore[arg-type]
     # LangGraph nodes run inside the API event loop; the MCP session needs its own.
     with ThreadPoolExecutor(max_workers=1) as pool:
-        return pool.submit(asyncio.run, value).result()
+        return pool.submit(asyncio.run, value).result()  # type: ignore[arg-type]
 
 
 
@@ -292,6 +312,11 @@ class RepoAnalysisAgent:
         if prior and len(prior) > MAX_PRIOR_REPORT_CHARS:
             prior = prior[:MAX_PRIOR_REPORT_CHARS] + "\n…(prior report truncated)"
         remaining_tokens = max(0, spec.limits.max_input_tokens - spec.input_tokens_used)
+        revision = state_revision(state)
+        pending_actions = [
+            f"tool:{item.get('tool')}:{item.get('reference') or ''}"
+            for item in state.get("pending_calls") or []
+        ]
         request = ContextRequest(
             system_instructions=self.runtime.system_prompt(spec),
             task=spec.task,
@@ -309,7 +334,9 @@ class RepoAnalysisAgent:
             observations=observations,
             evidence=evidence,
             memories=memories,
+            pending_actions=pending_actions,
             available_tools=list(TOOL_NAMES),
+            context_revision=revision,
         )
         bundle = ContextBuilder(
             max_tokens=max(
@@ -318,11 +345,13 @@ class RepoAnalysisAgent:
             ),
             recent_window=6,
         ).build(request)
+        bundle.assert_current(revision)
         history = [
             item.model_dump(mode="json") for item in bundle.recent_observations
         ]
         payload = bundle.to_payload()
         payload.pop("recent_observations")
+        metrics = bundle.metrics
         payload.update(
             {
                 "round": round_no,
@@ -339,6 +368,20 @@ class RepoAnalysisAgent:
                 "prior_experience": list(recall.get("plan_hints") or []),
                 "confirmed_facts": list(recall.get("confirmed_facts") or []),
                 "known_failures": list(state.get("known_failures") or []),
+                "context_metrics": (
+                    {
+                        "input_tokens": metrics.input_tokens,
+                        "context_chars": metrics.context_chars,
+                        "loss_check_failures": metrics.loss_check_failures,
+                        "degraded": metrics.degraded,
+                        "compaction_ms": metrics.compaction_ms,
+                        "cost_micros": metrics.cost_micros,
+                        "background_compaction": metrics.background_compaction,
+                        "context_revision": metrics.context_revision,
+                    }
+                    if metrics is not None
+                    else None
+                ),
                 "memory_recall": {
                     "retrieval_mode": recall.get("retrieval_mode"),
                     "advisory_count": len(advisories),
@@ -632,7 +675,7 @@ class RepoAnalysisAgent:
             pass
         return {**state, "finished": True}
 
-    def build(self, checkpointer: Any = None):
+    def build(self, checkpointer: Any = None) -> Any:
         graph = StateGraph(AnalysisState)
         graph.add_node("reason", self.reason)
         graph.add_node("tools", self.tools)

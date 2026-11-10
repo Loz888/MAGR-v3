@@ -16,7 +16,7 @@
 | V35-R04 | 真实 Draft PR 发布接入 Outbox/Dispatcher | R03 | DONE | PASS | NOT_RUN（写权限独立审批） |
 | V35-R05 | 统一 Web / CLI / API 产品交互 | R04 | DONE | PASS | NOT_RUN |
 | V35-M01 | 跨阶段持久经验闭环 | R03 | DONE | PASS | NOT_RUN |
-| V35-M02 | Context Budget、Compaction 与恢复一致性 | M01 | TODO | NOT_RUN | NOT_RUN |
+| V35-M02 | Context Budget、Compaction 与恢复一致性 | M01 | DONE | PASS | NOT_RUN |
 | V35-X01 | 按需启用 R4 Experts | R05、M02 | TODO | NOT_RUN | NOT_RUN |
 | V35-E01 | 重建端到端真实仓库评测 Harness | R05、M01 | TODO | NOT_RUN | NOT_RUN |
 | V35-E02 | Memory / Compaction / Expert 消融实验 | E01、M02、X01 | TODO | NOT_RUN | NOT_RUN |
@@ -33,7 +33,7 @@ B00 ── U01 ── U02 ── R01 ── R02 ── R03 ── R04 ── R05
                                   └─ E01 ── E02 ── E03 ── D01
 ```
 
-- 当前无 `READY` 卡：V35-M01 已完成并通过工程门；下一张 V35-M02 尚未放行，须另行确认后开始。
+- 当前无 `READY` 卡：V35-M02 已完成并通过工程门；V35-X01 与 V35-E01 的依赖已满足，下一张须另行确认后开始。
 - 任何卡的依赖未通过验收时，该卡标记 `BLOCKED`，不得假装 PASS。
 
 ## 每卡交付物

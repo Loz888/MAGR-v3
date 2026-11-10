@@ -29,6 +29,21 @@ TokenCounter = Callable[[Any], int]
 _SEGMENT_CHARS = 400
 _PREVIEW_LADDER = (900, 500, 240, 120)
 _ERROR_CODE = re.compile(r"^([A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+):")
+_AUTHORITY_CLAIM = re.compile(
+    r"(?i)[^\n]*(?:\bapproved\b|\bauthorized\b|\bpermission granted\b|"
+    r"\bgranted (?:permission|access|authority)\b|\bcleared to\b)[^\n]*"
+)
+
+
+def authority_claims(text: str) -> list[str]:
+    """Extract authority-claiming sentences from untrusted observation text.
+
+    Observations are external data.  A claim such as "APPROVED: publish" inside
+    a tool result must never be promoted to permission; it is surfaced only as
+    an untrusted annotation so the model can see the attempt without obeying it.
+    """
+
+    return [match.group(0).strip()[:200] for match in _AUTHORITY_CLAIM.finditer(text)]
 
 
 def estimate_tokens(value: Any) -> int:
@@ -156,6 +171,7 @@ class ContextInvariants(Model):
     available_tools: list[str] = Field(default_factory=list)
     failed_attempts: list[str] = Field(default_factory=list)
     pending_approvals: list[str] = Field(default_factory=list)
+    pending_actions: list[str] = Field(default_factory=list)
     open_questions: list[str] = Field(default_factory=list)
     evidence_ids: list[str] = Field(default_factory=list)
     artifact_hashes: dict[str, str] = Field(default_factory=dict)
@@ -171,10 +187,13 @@ class CompactionSummary(Model):
     observations_omitted: int
     failed_attempts: list[str] = Field(default_factory=list)
     pending_approvals: list[str] = Field(default_factory=list)
+    pending_actions: list[str] = Field(default_factory=list)
     open_questions: list[str] = Field(default_factory=list)
     evidence_ids: list[str] = Field(default_factory=list)
     artifact_hashes: dict[str, str] = Field(default_factory=dict)
+    authority_claims: list[str] = Field(default_factory=list)
     permission_digest: str = ""
+    context_revision: str = ""
 
 
 class CompactionResult(Model):
@@ -287,8 +306,10 @@ def compact_observations(
     counter: TokenCounter = estimate_tokens,
     failed_attempts: Sequence[str] = (),
     pending_approvals: Sequence[str] = (),
+    pending_actions: Sequence[str] = (),
     open_questions: Sequence[str] = (),
     permissions: PermissionSnapshot | None = None,
+    context_revision: str = "",
 ) -> CompactionResult:
     """Compact history into a bounded window plus a lossless safety summary."""
 
@@ -329,6 +350,7 @@ def compact_observations(
         observations_omitted=omitted,
         failed_attempts=merge_failed_attempts(failed_attempts, observations),
         pending_approvals=list(dict.fromkeys(pending_approvals)),
+        pending_actions=list(dict.fromkeys(pending_actions)),
         open_questions=list(dict.fromkeys(open_questions)),
         evidence_ids=sorted(
             {item.evidence_id for item in observations if item.evidence_id}
@@ -338,7 +360,15 @@ def compact_observations(
             for item in observations
             if item.artifact_hash
         },
+        authority_claims=list(
+            dict.fromkeys(
+                claim
+                for item in observations
+                for claim in authority_claims(item.content)
+            )
+        ),
         permission_digest=permissions.digest if permissions is not None else "",
+        context_revision=context_revision,
     )
     return CompactionResult(
         observations=result, summary=summary, tokens=_size(result, counter)
@@ -365,6 +395,8 @@ def diff_invariants(before: ContextInvariants, after: ContextInvariants) -> list
         problems.append(f"missing_failed_attempt:{value}")
     for value in _missing(before.pending_approvals, after.pending_approvals):
         problems.append(f"missing_pending_approval:{value}")
+    for value in _missing(before.pending_actions, after.pending_actions):
+        problems.append(f"missing_pending_action:{value}")
     for value in _missing(before.open_questions, after.open_questions):
         problems.append(f"missing_open_question:{value}")
     for value in _missing(before.evidence_ids, after.evidence_ids):

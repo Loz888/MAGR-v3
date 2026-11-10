@@ -884,5 +884,31 @@
       "tests/test_v33_memory_agent.py"
     ],
     "timeout_seconds": 900
+  },
+  "V35-M02": {
+    "components": {
+      "background_compaction": "NOT_IMPLEMENTED_deterministic_compactor_retained",
+      "budget": "deterministic_section_budgets_with_pinned_hard_constraints_and_recent_window",
+      "context_bundle": "shared_by_investigation_and_repair_planner_with_one_truncation_policy",
+      "degradation": "summary_failure_degrades_to_a_safe_short_window_without_losing_authority_or_evidence",
+      "evidence": "evidence_ids_and_artifact_hashes_pinned_and_reverified_after_compaction",
+      "live_agent": "NOT_RUN_no_paid_model",
+      "live_github_write": "NOT_RUN_no_authorized_test_repository",
+      "live_model": "NOT_RUN_no_paid_model",
+      "metrics": "input_tokens_context_chars_loss_checks_latency_and_zero_cost_reported",
+      "model": "fixture_no_network",
+      "network": "not_used",
+      "postgres": "not_used",
+      "recovery": "context_revision_guard_rejects_a_stale_bundle_after_new_tool_results",
+      "redis": "not_used",
+      "sections": "system_task_constraints_scope_plan_observations_summary_evidence_memories_failures_approvals_actions_questions_permissions_tools_budget",
+      "untrusted_claims": "authority_claims_inside_observations_surface_as_data_never_permission"
+    },
+    "tests": [
+      "tests/test_v35_m02.py",
+      "tests/test_v33_context_compaction.py",
+      "tests/test_v32_repository_analysis.py"
+    ],
+    "timeout_seconds": 900
   }
 }
