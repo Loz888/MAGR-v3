@@ -962,5 +962,27 @@
       "tests/test_v34_sandbox_executor.py"
     ],
     "timeout_seconds": 1800
+  },
+  "V35-E02": {
+    "components": {
+      "ablation": "four_paired_arms_A_no_memory_B_memory_C_memory_compaction_D_memory_compaction_experts_same_task_commit_budget_and_grader",
+      "memory": "commit_scoped_verified_active_facts_only_stale_unverified_and_superseded_excluded",
+      "compaction": "shared_M02_policy_dedupe_compress_omit_with_context_loss_and_duplicate_work_rates",
+      "experts": "on_demand_X01_read_only_repo_expert_only_for_multifile_or_two_failed_attempts",
+      "statistics": "paired_bootstrap_95ci_seed_20261110_four_dev_tasks_exploratory_only",
+      "decision": "all_failed_live_arms_inconclusive_no_winner_history_preserved",
+      "live_model": "DEEPSEEK_CHAT_paid_calls_bounded_by_authorization_call_and_cost_caps",
+      "live_agent": "FAIL_live_probe_four_arms_PATCH_TRUNCATED_output_length_limit",
+      "engineering_gate": "PASS_fixture_grid_16_of_16",
+      "reports": "immutable_per_arm_and_per_task_never_overwritten",
+      "live_github_write": "NOT_RUN_no_authorized_test_repository",
+      "security": "api_key_never_logged_or_reported_transport_failures_fail_closed"
+    },
+    "tests": [
+      "tests/test_v35_e02.py",
+      "tests/test_v35_m02.py",
+      "tests/test_v35_x01.py"
+    ],
+    "timeout_seconds": 1800
   }
 }

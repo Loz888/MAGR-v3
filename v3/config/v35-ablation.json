@@ -1,0 +1,105 @@
+{
+  "schema": "mgar-v35-ablation-decision-v1",
+  "status": "INCONCLUSIVE",
+  "mode": "live",
+  "winner": null,
+  "basis": "live_all_arms_failed",
+  "conclusion": "All four live arms on the probe task failed with PATCH_TRUNCATED because deepseek-chat cannot return the whole 142 KB core.py within its 8192-token output limit. No arm demonstrates a capability benefit, so the V3.5 configuration keeps its current defaults. Fixture arms all passed but use a scripted provider and prove only that the context policy runs, not that it improves success.",
+  "history_preserved": true,
+  "engineering_gate": "PASS",
+  "live_agent_gate": "FAIL",
+  "fixture": {
+    "cells": 16,
+    "executed": 16,
+    "passed": 16,
+    "gate": "PASS",
+    "evidence": "evidence/v35/E02/20261110T072620Z-dev-fixture",
+    "note": "Scripted provider; engineering evidence only, never a live success claim."
+  },
+  "live": {
+    "cells": 4,
+    "executed": 4,
+    "passed": 0,
+    "task": "v35-known-bug-help-name-collision",
+    "model": "deepseek-chat",
+    "paid_calls": 12,
+    "cost_micros": 637310,
+    "evidence": "evidence/v35/E02/20261110T072906Z-knownbug-live",
+    "arms": [
+      {
+        "arm": "A",
+        "success_rate": 0.0,
+        "avg_context_tokens": 109782.0,
+        "total_cost_micros": 158934,
+        "failure_types": {
+          "fail:PATCH_TRUNCATED": 1
+        }
+      },
+      {
+        "arm": "B",
+        "success_rate": 0.0,
+        "avg_context_tokens": 110289.0,
+        "total_cost_micros": 159441,
+        "failure_types": {
+          "fail:PATCH_TRUNCATED": 1
+        }
+      },
+      {
+        "arm": "C",
+        "success_rate": 0.0,
+        "avg_context_tokens": 110311.0,
+        "total_cost_micros": 159463,
+        "failure_types": {
+          "fail:PATCH_TRUNCATED": 1
+        }
+      },
+      {
+        "arm": "D",
+        "success_rate": 0.0,
+        "avg_context_tokens": 110320.0,
+        "total_cost_micros": 159472,
+        "failure_types": {
+          "fail:PATCH_TRUNCATED": 1
+        }
+      }
+    ]
+  },
+  "fixture_arms": [
+    {
+      "arm": "A",
+      "avg_context_tokens": 614.25,
+      "avg_model_calls": 1.25,
+      "avg_context_loss_rate": 0.0,
+      "expert_calls": 0
+    },
+    {
+      "arm": "B",
+      "avg_context_tokens": 840.5,
+      "avg_model_calls": 1.25,
+      "avg_context_loss_rate": 0.0,
+      "expert_calls": 0
+    },
+    {
+      "arm": "C",
+      "avg_context_tokens": 677.75,
+      "avg_model_calls": 1.25,
+      "avg_context_loss_rate": 0.583333,
+      "expert_calls": 0
+    },
+    {
+      "arm": "D",
+      "avg_context_tokens": 829.75,
+      "avg_model_calls": 1.25,
+      "avg_context_loss_rate": 0.583333,
+      "expert_calls": 2
+    }
+  ],
+  "statistics": {
+    "method": "paired_bootstrap",
+    "seed": 20261110,
+    "iterations": 2000,
+    "n": 4,
+    "note": "Development set has four tasks; every interval is exploratory and not a significance claim."
+  },
+  "generated_at": "2026-11-10T07:36:04.237289+00:00"
+}

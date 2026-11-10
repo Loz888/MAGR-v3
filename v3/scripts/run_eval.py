@@ -1,4 +1,7 @@
-"""Run the V3.5 end-to-end evaluation harness (V35-E01).
+"""Run the V3.5 end-to-end evaluation harness (V35-E01/E02).
+
+``--ablation`` dispatches to the E02 four-arm Memory/Compaction/Expert
+ablation, which reuses the same tasks, orchestration, sandbox and grader.
 
 The harness exercises the real product chain (snapshot create, authorized
 orchestration, sandboxed patch/test, sealed review bundle) instead of a
@@ -106,6 +109,11 @@ def _resume_probe(task: tasks.Task, task_dir: Path) -> dict[str, Any]:
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    arguments = list(argv) if argv is not None else sys.argv[1:]
+    if "--ablation" in arguments:
+        from mgar_v3.quality_eval.v35 import ablations
+
+        return ablations.main([item for item in arguments if item != "--ablation"])
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--suite", choices=("dev", "holdout"), default="dev")
     parser.add_argument("--mode", choices=("fixture", "live"), default="fixture")
@@ -206,9 +214,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         extra={"task_runs": [str(out / "tasks" / item.task_id) for item in selected]},
     )
     print(
-        json.dumps(
-            {key: summary[key] for key in ("gate", "live_agent_gate", "executed", "passed")}
-        )
+        json.dumps({key: summary[key] for key in ("gate", "live_agent_gate", "executed", "passed")})
     )
     return 0 if summary["passed"] == summary["executed"] else 1
 
