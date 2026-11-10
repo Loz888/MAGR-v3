@@ -1,0 +1,227 @@
+{
+  "status": "PLANNED",
+  "audited_at": "2026-11-10T12:13:08.511325+00:00",
+  "repository_baseline": "973994c0e6c087c2968b3d91a3a6b9220e2c0892",
+  "application_baseline": "1d07285aa27ece9bae4ccbedc3a77ce2fbcbaf3a",
+  "user_requirements": {
+    "name": "已粘贴的文本.txt",
+    "sha256": "5d91deb9c5dd17ef01648048cda65512ce3186d911020aad271e9948b3919bc8",
+    "treatment": "User-provided scope; claims verified against code and pinned upstream documentation; original contents not published."
+  },
+  "method": "Read-only local code and official-source audit. No upstream installation, platform registration, message sending, paid model experiment or deployment.",
+  "comparison_limits": [
+    "dsh-superagent-prototype README explicitly says research prototype, not an official DeepSeek product, and not production-ready.",
+    "Prototype documentation and published article may describe different implementation stages.",
+    "Harness V4 is a plan, not an already implemented prerequisite.",
+    "Platform replay, history access, permissions and remote idempotence require real installation-specific validation."
+  ],
+  "official_sources": [
+    {
+      "id": "prototype-readme",
+      "repository": "deepseek-ai/dsh-superagent-prototype",
+      "commit": "8c32a9dc5d72c033816c6a8110b37f40cf94fba4",
+      "path": "README.md",
+      "url": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/README.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/README.md",
+      "http_status": 200,
+      "sha256": "737997cf5b7d4129f12ed5485ebbdd5e9d2ce3859a82ded6ac535d222327b713",
+      "used_for": "Research prototype, not an official DeepSeek product; scope and maturity."
+    },
+    {
+      "id": "prototype-philosophy",
+      "repository": "deepseek-ai/dsh-superagent-prototype",
+      "commit": "8c32a9dc5d72c033816c6a8110b37f40cf94fba4",
+      "path": "docs/000-philosophy.md",
+      "url": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/000-philosophy.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/000-philosophy.md",
+      "http_status": 200,
+      "sha256": "0a12126843556fde2bcc2ca52dae2c297b9b5ca9170c3e33d624b2a4d85ca76b",
+      "used_for": "Low-interruption behavior and operator responsibility."
+    },
+    {
+      "id": "prototype-domain",
+      "repository": "deepseek-ai/dsh-superagent-prototype",
+      "commit": "8c32a9dc5d72c033816c6a8110b37f40cf94fba4",
+      "path": "docs/001-domain.md",
+      "url": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/001-domain.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/001-domain.md",
+      "http_status": 200,
+      "sha256": "cd010379e65cc428ffb335aee46529f2a524b8f573fc72359223060fb5a5111b",
+      "used_for": "Trigger, Thread, Ticket, Mandate and relationships."
+    },
+    {
+      "id": "prototype-authorization",
+      "repository": "deepseek-ai/dsh-superagent-prototype",
+      "commit": "8c32a9dc5d72c033816c6a8110b37f40cf94fba4",
+      "path": "docs/002-authorization.md",
+      "url": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/002-authorization.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/002-authorization.md",
+      "http_status": 200,
+      "sha256": "85f559708ac7faef89f88fcad30a405ca62a582a15764a7293686071e609dea0",
+      "used_for": "Eval, subscription, observe/auto, handback and revalidation reference."
+    },
+    {
+      "id": "prototype-execution",
+      "repository": "deepseek-ai/dsh-superagent-prototype",
+      "commit": "8c32a9dc5d72c033816c6a8110b37f40cf94fba4",
+      "path": "docs/003-execution.md",
+      "url": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/003-execution.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/003-execution.md",
+      "http_status": 200,
+      "sha256": "049aa22a717f75b9dec4cd6969356db6f736c127de4501c3ce1f6d846217f6eb",
+      "used_for": "Executor sessions, background jobs, resources and recovery reference."
+    },
+    {
+      "id": "prototype-panel",
+      "repository": "deepseek-ai/dsh-superagent-prototype",
+      "commit": "8c32a9dc5d72c033816c6a8110b37f40cf94fba4",
+      "path": "docs/005-panel.md",
+      "url": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/005-panel.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/005-panel.md",
+      "http_status": 200,
+      "sha256": "f1f40a19be353933affef35f85428a5be4a3225045ab60bbbc307d35adf652bd",
+      "used_for": "Operator views, configuration and record navigation."
+    },
+    {
+      "id": "prototype-deployment",
+      "repository": "deepseek-ai/dsh-superagent-prototype",
+      "commit": "8c32a9dc5d72c033816c6a8110b37f40cf94fba4",
+      "path": "docs/006-deployment.md",
+      "url": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/006-deployment.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/006-deployment.md",
+      "http_status": 200,
+      "sha256": "92c5a1c6aecab6782a64b3847a2d6f36a48dc9865fa7b04b892fcdaf04f7de9d",
+      "used_for": "Always-on profile, optional Feishu bot and operational boundaries."
+    },
+    {
+      "id": "prototype-architecture",
+      "repository": "deepseek-ai/dsh-superagent-prototype",
+      "commit": "8c32a9dc5d72c033816c6a8110b37f40cf94fba4",
+      "path": "docs/007-architecture.md",
+      "url": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/007-architecture.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/007-architecture.md",
+      "http_status": 200,
+      "sha256": "e3747665587fdf88b28d4e9c1a1f8ac40cbc2c65a9999be1fce14b69ec44d748",
+      "used_for": "Source registry, Engine, Effects and capability seams."
+    },
+    {
+      "id": "prototype-source-cookbook",
+      "repository": "deepseek-ai/dsh-superagent-prototype",
+      "commit": "8c32a9dc5d72c033816c6a8110b37f40cf94fba4",
+      "path": "docs/008-cookbook.md",
+      "url": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/008-cookbook.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/dsh-superagent-prototype/8c32a9dc5d72c033816c6a8110b37f40cf94fba4/docs/008-cookbook.md",
+      "http_status": 200,
+      "sha256": "adbdaa519f56bc7987ca6394950802cffcb855acff4ee715d10a26a9b0ccefec",
+      "used_for": "Source configuration, identity, policy, channels and tests."
+    },
+    {
+      "id": "feishu-sdk-readme",
+      "repository": "larksuite/oapi-sdk-python",
+      "commit": "0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c",
+      "path": "README.md",
+      "url": "https://github.com/larksuite/oapi-sdk-python/blob/0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c/README.md",
+      "raw_url": "https://raw.githubusercontent.com/larksuite/oapi-sdk-python/0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c/README.md",
+      "http_status": 200,
+      "sha256": "873c749483f4988eabcfa7c46e52b84879af429edaae661e77815f263a8c33e3",
+      "used_for": "Official Python SDK, event handling and webhook credential behavior."
+    },
+    {
+      "id": "feishu-sdk-websocket",
+      "repository": "larksuite/oapi-sdk-python",
+      "commit": "0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c",
+      "path": "lark_oapi/ws/client.py",
+      "url": "https://github.com/larksuite/oapi-sdk-python/blob/0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c/lark_oapi/ws/client.py",
+      "raw_url": "https://raw.githubusercontent.com/larksuite/oapi-sdk-python/0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c/lark_oapi/ws/client.py",
+      "http_status": 200,
+      "sha256": "ce05f37d012929721b6484e419340c2ae9ab707510e2cb414123984816df1614",
+      "used_for": "Long-connection implementation reference; reliability still requires testing."
+    },
+    {
+      "id": "feishu-message-event",
+      "repository": "larksuite/oapi-sdk-python",
+      "commit": "0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c",
+      "path": "lark_oapi/api/im/v1/model/p2_im_message_receive_v1.py",
+      "url": "https://github.com/larksuite/oapi-sdk-python/blob/0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c/lark_oapi/api/im/v1/model/p2_im_message_receive_v1.py",
+      "raw_url": "https://raw.githubusercontent.com/larksuite/oapi-sdk-python/0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c/lark_oapi/api/im/v1/model/p2_im_message_receive_v1.py",
+      "http_status": 200,
+      "sha256": "e14baadf19b5ba78a56bfc6fa102a0687fb0dd0a4c4bb7ede7300c5da1e34204",
+      "used_for": "im.message.receive_v1 sender/message envelope."
+    },
+    {
+      "id": "feishu-message-fields",
+      "repository": "larksuite/oapi-sdk-python",
+      "commit": "0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c",
+      "path": "lark_oapi/api/im/v1/model/event_message.py",
+      "url": "https://github.com/larksuite/oapi-sdk-python/blob/0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c/lark_oapi/api/im/v1/model/event_message.py",
+      "raw_url": "https://raw.githubusercontent.com/larksuite/oapi-sdk-python/0d9749a4728446a0ffa2e8374b37b5e1ce1cfd9c/lark_oapi/api/im/v1/model/event_message.py",
+      "http_status": 200,
+      "sha256": "67ed3e7666af2f8498687e8f08a9e57ab59e848e3fb0c6b4b186a2a1d2268244",
+      "used_for": "Platform message/topic fields; opaque identifiers are not display names."
+    },
+    {
+      "id": "github-webhook-auth",
+      "repository": "github/docs",
+      "commit": "404a5f4de6cd5311e3ce2d5c076571291e0107d6",
+      "path": "content/webhooks/using-webhooks/validating-webhook-deliveries.md",
+      "url": "https://github.com/github/docs/blob/404a5f4de6cd5311e3ce2d5c076571291e0107d6/content/webhooks/using-webhooks/validating-webhook-deliveries.md",
+      "raw_url": "https://raw.githubusercontent.com/github/docs/404a5f4de6cd5311e3ce2d5c076571291e0107d6/content/webhooks/using-webhooks/validating-webhook-deliveries.md",
+      "http_status": 200,
+      "sha256": "0f52949016802f0f36e6da2150a53990504557856753e3bebda9bd7e08c5c265",
+      "used_for": "Official webhook verification guidance."
+    },
+    {
+      "id": "github-webhook-delivery",
+      "repository": "github/docs",
+      "commit": "404a5f4de6cd5311e3ce2d5c076571291e0107d6",
+      "path": "content/webhooks/using-webhooks/handling-webhook-deliveries.md",
+      "url": "https://github.com/github/docs/blob/404a5f4de6cd5311e3ce2d5c076571291e0107d6/content/webhooks/using-webhooks/handling-webhook-deliveries.md",
+      "raw_url": "https://raw.githubusercontent.com/github/docs/404a5f4de6cd5311e3ce2d5c076571291e0107d6/content/webhooks/using-webhooks/handling-webhook-deliveries.md",
+      "http_status": 200,
+      "sha256": "dc3d8690b55a82e113cbd784432732225c120a71c0914136d9b96a086ae12b53",
+      "used_for": "Official delivery and handling guidance; no blanket exactly-once assumption."
+    }
+  ],
+  "local_evidence": [
+    {
+      "path": "../../src/mgar_v3/domain.py",
+      "finding": "Legacy TriggerInput supports github/cli/web and requires repository/issue_number; normalizes actors."
+    },
+    {
+      "path": "../../src/mgar_v3/coordination/engine.py",
+      "finding": "Engine ingest, Thread, mailbox/subscriptions, routing, budgets and unique writer foundations."
+    },
+    {
+      "path": "../../src/mgar_v3/routing/domain.py",
+      "finding": "Strict bounded RouterDecision exists; not a general coding worker."
+    },
+    {
+      "path": "../../src/mgar_v3/routing/store.py",
+      "finding": "Existing routing transactions and addressed command interpretation; extend with explicit scope."
+    },
+    {
+      "path": "../../src/mgar_v3/proactivity/domain.py",
+      "finding": "Current policies cover ci_failure/dependency_update/pr_comment and narrow investigation graphs."
+    },
+    {
+      "path": "../../src/mgar_v3/recovery/watchdog.py",
+      "finding": "Independent limited observer and recovery request submission."
+    },
+    {
+      "path": "../../src/mgar_v3/effects/dispatcher.py",
+      "finding": "Action claims, known/unknown results and read-only reconciliation."
+    },
+    {
+      "path": "../../src/mgar_v3/api.py",
+      "finding": "Signed GitHub ingress, limited event branches, account/session settings and local host restrictions."
+    },
+    {
+      "path": "../adr/0003-r3-router.md",
+      "finding": "Explicit-request boundary, scoped recall, subscription roles and handback restrictions."
+    },
+    {
+      "path": "../harness-v4/plan.json",
+      "finding": "19 planned Harness cards; external prerequisites for autonomous coding."
+    }
+  ]
+}

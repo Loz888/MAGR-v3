@@ -11,6 +11,9 @@
 [Harness 升级任务书与规划](docs/harness-v4/README.md)包含差距分析、19 张任务卡和
 分阶段验收；规划不代表通用编码功能已经开放。
 
+[Super-Agent 落地规划](docs/super-agent-v1/README.md)进一步覆盖指定群/用户与 GitHub
+事件、持续 Worker、低打扰通知和服务器常驻；包含 25 张任务卡及 Harness 前置，尚未实施。
+
 [项目首页](../README.md) · [V3.5 产品说明](docs/v35/PRODUCT.md) · [90 秒演示](docs/v35/DEMO.md) · [评测索引](docs/v35/EVALUATION_INDEX.md) · [完整技术报告](docs/TECHNICAL_REPORT.md) · [文档导航](docs/README.md)
 
 本页提供实际运行命令。V3.5 已把只读调查、Finding/Evidence、有授权修复、测试回执、Review Bundle 与受控 Draft PR 串成一条可复核链路；Web 与 CLI 调同一 API。工程门与安全门 `PASS`；E02 真实 live 四臂失败，`live_agent_gate=FAIL`；真实 GitHub 写入 `NOT_RUN`。电商Case工单、独立业务判定、API/CLI与工作台的历史交付见[P0运行手册](docs/p0-commerce-runbook.md)与[最终复验/交付](docs/repairs/P0-20261107/README.md)。历史阶段结果按记录时间理解。

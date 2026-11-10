@@ -1,0 +1,807 @@
+{
+  "plan_version": "1",
+  "status": "PLANNED",
+  "repository_baseline": "973994c0e6c087c2968b3d91a3a6b9220e2c0892",
+  "application_baseline": "1d07285aa27ece9bae4ccbedc3a77ce2fbcbaf3a",
+  "external_plan": "../harness-v4/plan.json",
+  "scope": "Design only. No source installations, subscriptions, messages, paid calls, deployments or functional implementation authorized by this manifest.",
+  "initial_scope": {
+    "organizations": 1,
+    "console_administrators": 1,
+    "github_repositories": 1,
+    "feishu_bots": 1,
+    "authorized_chats": 1,
+    "initial_max_workers": 2,
+    "default_mode": "shadow",
+    "default_outbound": false
+  },
+  "tasks": [
+    {
+      "id": "SAV1-00",
+      "short_id": "SA00",
+      "title": "冻结范围、复用审计与架构 ADR",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S0",
+      "depends_on": [],
+      "external_dependencies": [
+        "HV4-H00",
+        "HV4-H01"
+      ],
+      "estimated_engineer_days": {
+        "min": 1,
+        "max": 2
+      },
+      "optional": false,
+      "card": "TASKS.md#sa00",
+      "verification_target_on_implementation": "SAV1-00"
+    },
+    {
+      "id": "SAV1-01",
+      "short_id": "SA01",
+      "title": "Source/事件/身份与领域契约",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S1",
+      "depends_on": [
+        "SAV1-00"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 1,
+        "max": 2
+      },
+      "optional": false,
+      "card": "TASKS.md#sa01",
+      "verification_target_on_implementation": "SAV1-01"
+    },
+    {
+      "id": "SAV1-02",
+      "short_id": "SA02",
+      "title": "平台身份绑定与控制角色",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S1",
+      "depends_on": [
+        "SAV1-01"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 1,
+        "max": 2
+      },
+      "optional": false,
+      "card": "TASKS.md#sa02",
+      "verification_target_on_implementation": "SAV1-02"
+    },
+    {
+      "id": "SAV1-03",
+      "short_id": "SA03",
+      "title": "四层策略、版本与撤权",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S1",
+      "depends_on": [
+        "SAV1-02"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa03",
+      "verification_target_on_implementation": "SAV1-03"
+    },
+    {
+      "id": "SAV1-04",
+      "short_id": "SA04",
+      "title": "持久入站、幂等、编辑与缺口",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S1",
+      "depends_on": [
+        "SAV1-01",
+        "SAV1-03"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa04",
+      "verification_target_on_implementation": "SAV1-04"
+    },
+    {
+      "id": "SAV1-05",
+      "short_id": "SA05",
+      "title": "GitHub App 与事件源适配",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S1",
+      "depends_on": [
+        "SAV1-04"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 1,
+        "max": 2
+      },
+      "optional": false,
+      "card": "TASKS.md#sa05",
+      "verification_target_on_implementation": "SAV1-05"
+    },
+    {
+      "id": "SAV1-06",
+      "short_id": "SA06",
+      "title": "飞书机器人来源适配",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S1",
+      "depends_on": [
+        "SAV1-02",
+        "SAV1-04"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 4
+      },
+      "optional": false,
+      "card": "TASKS.md#sa06",
+      "verification_target_on_implementation": "SAV1-06"
+    },
+    {
+      "id": "SAV1-07",
+      "short_id": "SA07",
+      "title": "项目总预算、配额与费用归集",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S1",
+      "depends_on": [
+        "SAV1-03"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa07",
+      "verification_target_on_implementation": "SAV1-07"
+    },
+    {
+      "id": "SAV1-08",
+      "short_id": "SA08",
+      "title": "Fast Path 与无副作用影子观察",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S1",
+      "depends_on": [
+        "SAV1-05",
+        "SAV1-06",
+        "SAV1-07"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 1,
+        "max": 2
+      },
+      "optional": false,
+      "card": "TASKS.md#sa08",
+      "verification_target_on_implementation": "SAV1-08"
+    },
+    {
+      "id": "SAV1-09",
+      "short_id": "SA09",
+      "title": "Router/Eval 严格候选与校验",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S1",
+      "depends_on": [
+        "SAV1-08"
+      ],
+      "external_dependencies": [
+        "HV4-H02"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa09",
+      "verification_target_on_implementation": "SAV1-09"
+    },
+    {
+      "id": "SAV1-10",
+      "short_id": "SA10",
+      "title": "跨来源话题/任务关联与查重",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S1",
+      "depends_on": [
+        "SAV1-09"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa10",
+      "verification_target_on_implementation": "SAV1-10"
+    },
+    {
+      "id": "SAV1-11",
+      "short_id": "SA11",
+      "title": "动态订阅、Mailbox 与交回",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S2",
+      "depends_on": [
+        "SAV1-10"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa11",
+      "verification_target_on_implementation": "SAV1-11"
+    },
+    {
+      "id": "SAV1-12",
+      "short_id": "SA12",
+      "title": "Scheduler、Assignment 与租约",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S2",
+      "depends_on": [
+        "SAV1-07",
+        "SAV1-11"
+      ],
+      "external_dependencies": [
+        "HV4-H03",
+        "HV4-H04"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 4
+      },
+      "optional": false,
+      "card": "TASKS.md#sa12",
+      "verification_target_on_implementation": "SAV1-12"
+    },
+    {
+      "id": "SAV1-13",
+      "short_id": "SA13",
+      "title": "Coding Worker 与 Mandate 接线",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S2",
+      "depends_on": [
+        "SAV1-12"
+      ],
+      "external_dependencies": [
+        "HV4-H11",
+        "HV4-H12"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa13",
+      "verification_target_on_implementation": "SAV1-13"
+    },
+    {
+      "id": "SAV1-14",
+      "short_id": "SA14",
+      "title": "异步 Job、持续输入与安全点",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S2",
+      "depends_on": [
+        "SAV1-13"
+      ],
+      "external_dependencies": [
+        "HV4-H09"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa14",
+      "verification_target_on_implementation": "SAV1-14"
+    },
+    {
+      "id": "SAV1-15",
+      "short_id": "SA15",
+      "title": "可鉴权 Chain of Recall",
+      "status": "PLANNED",
+      "priority": "P1",
+      "phase": "S2",
+      "depends_on": [
+        "SAV1-10",
+        "SAV1-11"
+      ],
+      "external_dependencies": [
+        "HV4-H10"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa15",
+      "verification_target_on_implementation": "SAV1-15"
+    },
+    {
+      "id": "SAV1-16",
+      "short_id": "SA16",
+      "title": "静默自主任务生命周期",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S3",
+      "depends_on": [
+        "SAV1-09",
+        "SAV1-13"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa16",
+      "verification_target_on_implementation": "SAV1-16"
+    },
+    {
+      "id": "SAV1-17",
+      "short_id": "SA17",
+      "title": "多渠道 Outbox 与节制通知",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S3",
+      "depends_on": [
+        "SAV1-04",
+        "SAV1-07"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 4
+      },
+      "optional": false,
+      "card": "TASKS.md#sa17",
+      "verification_target_on_implementation": "SAV1-17"
+    },
+    {
+      "id": "SAV1-18",
+      "short_id": "SA18",
+      "title": "Review、精确审批与 Draft PR",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S3",
+      "depends_on": [
+        "SAV1-13",
+        "SAV1-16",
+        "SAV1-17"
+      ],
+      "external_dependencies": [
+        "HV4-H08"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa18",
+      "verification_target_on_implementation": "SAV1-18"
+    },
+    {
+      "id": "SAV1-19",
+      "short_id": "SA19",
+      "title": "来源、策略、Shadow 与任务控制台",
+      "status": "PLANNED",
+      "priority": "P1",
+      "phase": "S3",
+      "depends_on": [
+        "SAV1-08",
+        "SAV1-09"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa19",
+      "verification_target_on_implementation": "SAV1-19"
+    },
+    {
+      "id": "SAV1-20",
+      "short_id": "SA20",
+      "title": "常驻部署、Watchdog 与运维",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S4",
+      "depends_on": [
+        "SAV1-12",
+        "SAV1-14",
+        "SAV1-17"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 3,
+        "max": 5
+      },
+      "optional": false,
+      "card": "TASKS.md#sa20",
+      "verification_target_on_implementation": "SAV1-20"
+    },
+    {
+      "id": "SAV1-21",
+      "short_id": "SA21",
+      "title": "隐私、安全与灾难恢复验收",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S4",
+      "depends_on": [
+        "SAV1-04",
+        "SAV1-15",
+        "SAV1-17",
+        "SAV1-20"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 4
+      },
+      "optional": false,
+      "card": "TASKS.md#sa21",
+      "verification_target_on_implementation": "SAV1-21"
+    },
+    {
+      "id": "SAV1-22",
+      "short_id": "SA22",
+      "title": "多渠道真实闭环与长期试用评测",
+      "status": "PLANNED",
+      "priority": "P0",
+      "phase": "S4",
+      "depends_on": [
+        "SAV1-14",
+        "SAV1-16",
+        "SAV1-18",
+        "SAV1-19",
+        "SAV1-21"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 4,
+        "max": 6
+      },
+      "optional": false,
+      "card": "TASKS.md#sa22",
+      "verification_target_on_implementation": "SAV1-22"
+    },
+    {
+      "id": "SAV1-23",
+      "short_id": "SA23",
+      "title": "可复现安装、发布与上线交接",
+      "status": "PLANNED",
+      "priority": "P1",
+      "phase": "S4",
+      "depends_on": [
+        "SAV1-22"
+      ],
+      "external_dependencies": [],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#sa23",
+      "verification_target_on_implementation": "SAV1-23"
+    },
+    {
+      "id": "SAV1-24",
+      "short_id": "SA24",
+      "title": "多项目、多来源与远程执行扩展",
+      "status": "PLANNED",
+      "priority": "P2，可选",
+      "phase": "S5",
+      "depends_on": [
+        "SAV1-23"
+      ],
+      "external_dependencies": [
+        "HV4-H15",
+        "HV4-H16"
+      ],
+      "estimated_engineer_days": {
+        "min": 3,
+        "max": 5
+      },
+      "optional": true,
+      "card": "TASKS.md#sa24",
+      "verification_target_on_implementation": "SAV1-24"
+    }
+  ],
+  "first_release_tasks": [
+    "SAV1-00",
+    "SAV1-01",
+    "SAV1-02",
+    "SAV1-03",
+    "SAV1-04",
+    "SAV1-05",
+    "SAV1-06",
+    "SAV1-07",
+    "SAV1-08",
+    "SAV1-09",
+    "SAV1-10",
+    "SAV1-11",
+    "SAV1-12",
+    "SAV1-13",
+    "SAV1-14",
+    "SAV1-15",
+    "SAV1-16",
+    "SAV1-17",
+    "SAV1-18",
+    "SAV1-19",
+    "SAV1-20",
+    "SAV1-21",
+    "SAV1-22",
+    "SAV1-23"
+  ],
+  "requirements": [
+    {
+      "id": "R01",
+      "requirement": "指定群/用户、机器人身份与接收范围",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-01",
+        "SAV1-02",
+        "SAV1-03",
+        "SAV1-06",
+        "SAV1-19"
+      ]
+    },
+    {
+      "id": "R02",
+      "requirement": "GitHub Issue/PR/CI 与私有安装读取",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-05",
+        "SAV1-10",
+        "SAV1-13"
+      ]
+    },
+    {
+      "id": "R03",
+      "requirement": "Fast/Slow Path 和严格路由",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-07",
+        "SAV1-08",
+        "SAV1-09"
+      ]
+    },
+    {
+      "id": "R04",
+      "requirement": "同问题关联、订阅、交回和关闭后跟进",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-10",
+        "SAV1-11"
+      ]
+    },
+    {
+      "id": "R05",
+      "requirement": "独立可验证 Coding Worker",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-12",
+        "SAV1-13",
+        "HV4-H03",
+        "HV4-H04",
+        "HV4-H05",
+        "HV4-H06",
+        "HV4-H07",
+        "HV4-H11",
+        "HV4-H12"
+      ]
+    },
+    {
+      "id": "R06",
+      "requirement": "异步 Job 与持续指示",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-14",
+        "HV4-H09"
+      ]
+    },
+    {
+      "id": "R07",
+      "requirement": "Chain of Recall 与隔日状态",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-10",
+        "SAV1-15",
+        "HV4-H10"
+      ]
+    },
+    {
+      "id": "R08",
+      "requirement": "静默工作与有用结果反馈",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-16",
+        "SAV1-17",
+        "SAV1-19"
+      ]
+    },
+    {
+      "id": "R09",
+      "requirement": "接收/触发/执行/通知分权",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-02",
+        "SAV1-03"
+      ]
+    },
+    {
+      "id": "R10",
+      "requirement": "共享总预算、不空转、防循环",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-07",
+        "SAV1-08",
+        "SAV1-09",
+        "SAV1-16",
+        "SAV1-20",
+        "HV4-H07"
+      ]
+    },
+    {
+      "id": "R11",
+      "requirement": "Channel/Outbox 回执与去重",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-17"
+      ]
+    },
+    {
+      "id": "R12",
+      "requirement": "精确审查与受控 Draft PR",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-18"
+      ]
+    },
+    {
+      "id": "R13",
+      "requirement": "用户电脑关机后的持续服务",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-12",
+        "SAV1-20"
+      ]
+    },
+    {
+      "id": "R14",
+      "requirement": "失联、撤权与故障恢复",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-11",
+        "SAV1-12",
+        "SAV1-14",
+        "SAV1-20",
+        "SAV1-21"
+      ]
+    },
+    {
+      "id": "R15",
+      "requirement": "消息/模型审计/Recall/产物隐私",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-01",
+        "SAV1-04",
+        "SAV1-15",
+        "SAV1-17",
+        "SAV1-21"
+      ]
+    },
+    {
+      "id": "R16",
+      "requirement": "来源断线、重放与显式 gap",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-04",
+        "SAV1-05",
+        "SAV1-06"
+      ]
+    },
+    {
+      "id": "R17",
+      "requirement": "真实端到端与长期运营指标",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-09",
+        "SAV1-20",
+        "SAV1-22"
+      ]
+    },
+    {
+      "id": "R18",
+      "requirement": "安装、升级、回退和交接",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-20",
+        "SAV1-23"
+      ]
+    },
+    {
+      "id": "R19",
+      "requirement": "Shadow 到自动模式逐级放行",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-03",
+        "SAV1-08",
+        "SAV1-16",
+        "SAV1-19"
+      ]
+    },
+    {
+      "id": "R20",
+      "requirement": "更多项目、来源和远程执行",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-24",
+        "HV4-H15",
+        "HV4-H16"
+      ]
+    },
+    {
+      "id": "R21",
+      "requirement": "明确授权的定时信号、时区游标与有界补跑",
+      "status": "PLANNED",
+      "covered_by": [
+        "SAV1-08",
+        "SAV1-16",
+        "SAV1-20"
+      ]
+    }
+  ],
+  "proposed_gates": {
+    "status": "PROPOSED_freeze_in_SA00_before_execution",
+    "routing_dataset": {
+      "development_events": 100,
+      "holdout_events": 100,
+      "actionable_per_split": 40,
+      "not_new_task_per_split": 60,
+      "minimum_create_precision": 0.95,
+      "minimum_actionable_recall": 0.8,
+      "minimum_followup_attribution": 0.95
+    },
+    "live_positive_tasks": {
+      "total": 10,
+      "minimum_completed": 8
+    },
+    "continuous_operation": {
+      "controlled_hours": 72,
+      "live_source_hours": 72,
+      "team_pilot_working_days": 5
+    },
+    "zero_tolerance": [
+      "unauthorized_operations",
+      "unauthorized_model_input",
+      "false_completion",
+      "blind_unknown_retries",
+      "duplicate_local_task_creation"
+    ],
+    "publication_gate": "independent_optional_for_patch_only_release"
+  }
+}

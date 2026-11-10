@@ -14,6 +14,10 @@
 - [机器可读任务队列（全部 PLANNED）](plan.json)
 - [资料版本与来源](sources.json)
 
+在本计划基础上，[Super-Agent V1 任务书](../super-agent-v1/README.md)增加常驻来源、
+团队策略、Router–Worker、订阅/Recall、静默反馈和上线验收。两份计划通过明确依赖
+连接，复用 Harness 实现；本页 19 张卡的状态和估算不因新规划而视为已经完成。
+
 ## Harness 在本项目中的含义
 
 Harness 是模型外部的执行系统：模型接口、项目工作区、工具、权限、会话与上下文、

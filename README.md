@@ -8,6 +8,9 @@
 [Harness 升级任务书与路线](v3/docs/harness-v4/README.md)：基于当前代码和官方 Codex、
 Claude Code、DeepSeek Harness 资料，列出 19 张升级卡、依赖和验收标准；状态为规划，尚未实施。
 
+[Super-Agent 落地任务书](v3/docs/super-agent-v1/README.md)：承接 Harness 规划，提供
+飞书/GitHub 持续接入、Router–Worker、静默修复、原会话反馈、常驻部署和验收的 25 张任务卡；状态为规划。
+
 面向 GitHub 工单的事件驱动研发 Agent 原型，支持持续调查、跨知识库／SQL／代码取证、受限函数修复，以及经过人工审批的可恢复交付。
 
 V3.5 把“自然语言任务 → 固定 Commit 只读调查 → Finding/Evidence → 有授权修复 → 测试回执 → Review Bundle → 受控 Draft PR”收敛成一条可复核链路：PostgreSQL 是唯一事实源，外写必须经过 Action/Approval/Outbox，`fixture` 与 `live` 门禁严格分开。
