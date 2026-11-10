@@ -1,0 +1,194 @@
+{
+  "card": "V35-R03",
+  "title": "统一 Audit & Repair 多轮编排",
+  "status": "PASS",
+  "commit": "e8201e29d3dde10661740229e02d2ebee48a399e",
+  "result_commit": "e8201e29d3dde10661740229e02d2ebee48a399e",
+  "commit_note": "两次本地提交：第一次包含授权编排、检查点账本、Service 接入、测试与卡片/verification 更新；第二次仅记录本 accept.json。均未推送。",
+  "parent_commit": "3f478879d0610ceaea18dabe88215e5c14ce5c8c",
+  "dependency_commit": "3f478879d0610ceaea18dabe88215e5c14ce5c8c",
+  "base_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+  "accepted_at": "2026-11-10T04:15:13Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (make doctor PASS; R03 tests use a disposable database)",
+    "redis": "real (make doctor PASS; tests do not use it)",
+    "docker": "real pinned image sha256:75ff415b813cad5a2d61d418dfaaf33d1f6e7e56b0a4bb386624f0cf1a92b3c1 (golang:1.27.1-bookworm)",
+    "model": "deterministic_local_provider_no_network",
+    "network": "not_used for paid model, GitHub or package installation; container network=none",
+    "github": "not_used"
+  },
+  "worktree_at_acceptance": "实现完成、卡片与队列已更新；accept.json 待提交；evidence/（gitignore）与 .push-staging/ 本地脚本不在版本控制内。",
+  "commands": [
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/workbench/orchestrator.py", "src/mgar_v3/workbench/service.py", "src/mgar_v3/repair/repair_agent.py", "src/mgar_v3/repair/runtime.py", "tests/test_v35_r03.py"],
+      "exit_code": 0,
+      "result": "All checks passed",
+      "purpose": "本卡改动文件的静态检查",
+      "log": "evidence/v35/R03/20261110T040310Z-r03final/05-ruff-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/workbench/orchestrator.py", "src/mgar_v3/workbench/service.py", "src/mgar_v3/repair/repair_agent.py", "src/mgar_v3/repair/runtime.py", "tests/test_v35_r03.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 5 source files",
+      "purpose": "本卡改动模块的类型检查",
+      "log": "evidence/v35/R03/20261110T040310Z-r03final/06-mypy-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "combined-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v35_r03.py", "tests/test_v34_repair_agent.py", "tests/test_v34_repository_api.py"],
+      "exit_code": 0,
+      "duration_seconds": 324.07,
+      "counts": {"tests": 32, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "R03 编排测试 + v34 repair agent + v34 repository API 回归",
+      "log": "evidence/v35/R03/20261110T040310Z-r03final/07-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["make", "migrate"],
+      "exit_code": 0,
+      "result": {"applied": []},
+      "purpose": "本卡复用既有 workbench_events/artifacts，无 schema 变更；确认重复执行为幂等",
+      "log": "evidence/v35/R03/20261110T040310Z-r03final/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["make", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL 与 Redis 可用；live 未执行（本卡无付费调用）",
+      "log": "evidence/v35/R03/20261110T040310Z-r03final/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/R03/20261110T040310Z-r03final/03-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["make", "verify", "TASK=V35-R03"],
+      "exit_code": 0,
+      "duration_seconds": 332.903,
+      "counts": {"tests": 32, "failures": 0, "errors": 0, "skipped": 0},
+      "breakdown": {"tests/test_v35_r03.py": 8, "tests/test_v34_repair_agent.py": 9, "tests/test_v34_repository_api.py": 15},
+      "source_sha256": "d9058f41cf7f5dd2fd34536478570b59aca0544e99ff8ad84faf6367c1508c91",
+      "finished_source_sha256": "d9058f41cf7f5dd2fd34536478570b59aca0544e99ff8ad84faf6367c1508c91",
+      "git_commit": "3f478879d0610ceaea18dabe88215e5c14ce5c8c",
+      "attempt": "evidence/V35-R03/20261110T040316Z-f08da018",
+      "note": "verify 记录的是提交前 HEAD；source_sha256 对应实现提交的源码/测试指纹。",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "NOT_RUN",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "NOT_RUN",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡没有付费模型调用、GitHub 写入或网络依赖安装。修复场景使用本地确定性 _Provider，只证明授权门、检查点恢复、预算/回执/失败分类与真实受限 Docker 验证链路；真实模型 Provider 与真实 Agent 评测尚未执行，按 V35-E01 强制协议标记 live_model_gate / live_agent_gate = NOT_RUN。engineering_gate=PASS 不蕴含 live_agent_gate=PASS。security_gate 仅覆盖本卡不变量：默认拒绝写、Handoff/快照/Commit 绑定、隐藏测试不进模型上下文、容器禁网/只读/非 root、失败回滚、迟到回执丢弃与未知 provider 副作用不重试；端到端安全汇总由 V35-E03 完成。",
+  "must_pass": [
+    {
+      "item": "具备独立修复授权才允许 audit_and_repair / issue_repair，默认拒绝写",
+      "result": "PASS",
+      "evidence": "WorkbenchService.authorized_repair() 经 _authorized_repair_gate() 校验 Handoff 内容寻址 ID、finding/source_commit 绑定、快照逐文件 SHA-256 与 RepairAuthorization.validate_scope()；AuthorizedRepairOrchestrator._authorize() 运行时再次复核。tests/test_v35_r03.py::test_repair_authorization_is_independent_and_denied_by_default 断言 allow_repair=False 返回 403 且 provider 调用 0 次、无 checkpoint。"
+    },
+    {
+      "item": "真实链路 audit_run → finding → handoff → baseline → provider → patch → public → hidden → proposal",
+      "result": "PASS",
+      "evidence": "::test_authorized_repair_reaches_waiting_approval_with_real_sandbox 从 Workbench 任务与 finding 出发，经 authorized_repair() 在真实 PostgreSQL 与固定镜像 Docker 中完成 baseline test_failed → 确定性 provider 补丁 → 公开测试 passed → 隐藏验证 passed，返回 waiting_approval 且 finding 获得 fix 与 pending approval。"
+    },
+    {
+      "item": "RepairBudget 次数/截止时间计入 Task/Run Ledger，每轮记录 Patch ID、回执、失败分类、Artifact Hash",
+      "result": "PASS",
+      "evidence": "RepairCheckpoint 记录 budget、attempt、test_runs、plans/patches/receipts/attempts 与各自 artifact_hash，并通过 WorkbenchRepairLedger 写入 workbench_events（kind=repair.checkpoint）。::test_test_run_budget_exhaustion_stops_with_structured_feedback 断言 max_test_runs=2 时返回 budget_exhausted 且 checkpoint 预算字段完整。"
+    },
+    {
+      "item": "失败回滚 Worktree 并返回公开结构化反馈；隐藏测试不进入模型上下文",
+      "result": "PASS",
+      "evidence": "::test_public_pass_with_hidden_failure_rolls_back_to_reproduced 中公共测试通过、隐藏测试失败后状态 exhausted、failure_stage=verification，finding 回 reproduced 且无 FixRecord；::test_model_parse_failure_is_reported_without_false_success 断言 MODEL_PARSE_ERROR 不产生假成功；主正向用例断言 provider 收到的 RepairPrompt 不含验证文件与隐藏测试名。"
+    },
+    {
+      "item": "中断/重启加载 Attempt、补丁 Hash 与回执，禁止重复未知副作用；Checkpoint 在节点/事务边界完成",
+      "result": "PASS",
+      "evidence": "RepairAgent observer 在 baseline_started/baseline/provider_started/planned/patched/receipt/attempt 节点持久化 checkpoint；_ReplayProvider 重放已记录 PatchPlan 或拒绝，遇到进程停在 provider 调用中返回不可重试 REPAIR_UNKNOWN_PROVIDER_OUTCOME，补丁身份漂移返回 REPAIR_PATCH_DRIFT。::test_sigkill_mid_public_test_resumes_without_duplicate_provider_call 在公开测试中 SIGKILL 子进程，父进程恢复后 provider 0 次且 patch_id 与中断前一致。"
+    },
+    {
+      "item": "修复完成只生成 waiting_approval Review Bundle，不直接发 PR",
+      "result": "PASS",
+      "evidence": "AuthorizedRepairOrchestrator._succeed() 用最终补丁重放文件并 seal_bundle()，bundle 写入 artifact 账本；Service 将 finding 推进 patch_verified → waiting_approval 并登记 pending ApprovalRecord。全链路无分支创建、push 或 GitHub 调用，live_github_write_gate=NOT_RUN。"
+    },
+    {
+      "item": "复杂任务可调用专家辅助，但不强制三专家参与简单 Bug",
+      "result": "PASS",
+      "evidence": "AuthorizedRepairOrchestrator 仅依赖 RepairProvider 协议，单提供方即可完成 R03 链路；专家辅助保留为上层可选编排，本卡测试未强制专家参与。"
+    },
+    {
+      "item": "负向测试：公共通过而独立失败、预算耗尽、模型解析失败、测试中途 SIGKILL、取消后迟到回执、Repo Commit 前移",
+      "result": "PASS",
+      "evidence": "六项分别由 test_public_pass_with_hidden_failure_rolls_back_to_reproduced、test_test_run_budget_exhaustion_stops_with_structured_feedback、test_model_parse_failure_is_reported_without_false_success、test_sigkill_mid_public_test_resumes_without_duplicate_provider_call、test_late_receipt_after_cancel_is_discarded_and_replay_is_inert、test_repo_commit_advanced_is_refused_before_any_provider_or_sandbox 覆盖。"
+    },
+    {
+      "item": "固定公开仓库快照上真实工具与沙箱的 Investigate → Repair → Verify → Waiting Approval",
+      "result": "PASS",
+      "evidence": "使用 golang/example 7a4eec5 的 weave.go 缺陷（修复对应 ca27133），baseline 在固定镜像容器内 test_failed，公开与隐藏测试均在容器内 passed；测试未使用固定答案冒充 Live 成功，provider 为本地确定性实现而非真实模型。"
+    },
+    {
+      "item": "工程门禁命令原样通过",
+      "result": "PASS",
+      "evidence": "make verify TASK=V35-R03：32 passed / 0 failed / 0 skipped；组合回归 32 passed；scoped ruff 与 mypy exit 0；make migrate exit 0；make doctor PG/Redis PASS；git diff --check exit 0。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "实现与 accept 文档分两次本地提交",
+      "handling": "第一次提交实现、测试与卡片/队列；第二次仅提交本 accept.json；均未推送，result_commit 取实现提交。"
+    },
+    {
+      "issue": "verify.py 对非 V31-R0 卡静态写入 live_gate=NOT_RUN",
+      "handling": "以 accept.json 的 live_model_gate / live_github_write_gate / live_agent_gate 为准；本卡未发生付费模型调用或 GitHub 写入。"
+    },
+    {
+      "issue": "本卡未执行真实模型 Agent 评测",
+      "handling": "使用本地确定性 _Provider；按 V35-E01 强制验收协议，live_agent_gate 标记 NOT_RUN，不以 fixture/脚本提供方结果宣称真实 Agent 能力已验收。"
+    },
+    {
+      "issue": "仓库级 make lint / make typecheck 仍存在本卡之外的既有问题",
+      "handling": "失败集中在 quality_eval、repository_analysis 等未改动模块；按 V35-R02 口径使用 scoped ruff/mypy 核验本卡文件，未顺带修改无关模块。"
+    },
+    {
+      "issue": "公开仓库快照只覆盖 Go 场景的新编排链路",
+      "handling": "卡片只要求至少一条真实工具与沙箱流程；Python 快照链路已由 V35-R02 覆盖，本卡未重复搭建。"
+    }
+  ],
+  "artifacts": {
+    "orchestrator": "src/mgar_v3/workbench/orchestrator.py",
+    "workbench": "src/mgar_v3/workbench/service.py",
+    "agent": "src/mgar_v3/repair/repair_agent.py",
+    "runtime": "src/mgar_v3/repair/runtime.py",
+    "tests": "tests/test_v35_r03.py",
+    "verification": "config/verification.json",
+    "card": "docs/v35/cards/V35-R03.md",
+    "queue": "docs/v35/TASK_QUEUE.md",
+    "final_evidence": "evidence/v35/R03/20261110T040310Z-r03final/",
+    "verify_attempt": "evidence/V35-R03/20261110T040316Z-f08da018/"
+  },
+  "next_card": "V35-R04",
+  "next_card_prerequisites": [
+    "复核 accept 提交后的 HEAD 与 config/verification.json 的 V35-R03 条目",
+    "R04 只能消费 waiting_approval Review Bundle，不得绕过 ApprovalRecord 直接写 GitHub",
+    "Draft PR 发布必须接入 Outbox/Dispatcher，并保持 live_github_write_gate 独立审批",
+    "继续禁止在 R03 编排中放宽 hidden verification 进入模型上下文或重复未知 provider 副作用"
+  ]
+}
