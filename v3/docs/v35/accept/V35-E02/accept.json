@@ -1,0 +1,242 @@
+{
+  "card": "V35-E02",
+  "title": "Memory / Compaction / Expert 消融实验",
+  "status": "PASS",
+  "commit": "5f0f638",
+  "result_commit": "5f0f638",
+  "commit_note": "两次本地提交：第一次包含 ablations.py、live_provider.py、run_eval.py --ablation、tests/test_v35_e02.py、config/v35-ablation.json、verification.json、卡片与队列；第二次仅记录本 accept.json。用户要求运行 E02 并授权按需调用大模型 API，未要求推送，因此不执行 git push。",
+  "parent_commit": "53b7f6c28d02334ff850fdb0037d463b4aea6375",
+  "dependency_commit": "53b7f6c28d02334ff850fdb0037d463b4aea6375",
+  "base_commit": "53b7f6c28d02334ff850fdb0037d463b4aea6375",
+  "accepted_at": "2026-11-10T07:45:00Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (make doctor PASS; E02 adds no schema)",
+    "redis": "real (make doctor PASS; ablation does not use it)",
+    "docker": "real R03 sandbox image sha256:75ff415b813cad5a2d61d418dfaaf33d1f6e7e56b0a4bb386624f0cf1a92b3c1, network none, non-root, image Python 3.11.2",
+    "model": "fixture scripted provider for the 16-cell grid; live probe deepseek-chat via https://api.deepseek.com with explicit local authorization",
+    "network": "sandbox network none; only the live probe used external network",
+    "github": "no read or write during evaluation; live GitHub write gate NOT_RUN"
+  },
+  "worktree_at_acceptance": "实现、测试、配置、卡片与队列已提交于 5f0f638；accept.json 待提交；evidence/ 与 .local/ 均在 gitignore 内，不入库。",
+  "commands": [
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "src/mgar_v3/quality_eval/v35/ablations.py", "src/mgar_v3/quality_eval/v35/live_provider.py", "src/mgar_v3/quality_eval/v35/runner.py", "scripts/run_eval.py", "tests/test_v35_e02.py"],
+      "exit_code": 0,
+      "result": "All checks passed!",
+      "purpose": "本卡改动文件的静态检查",
+      "log": "evidence/v35/E02/20261110T073809Z-e02/05-ruff-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/quality_eval/v35/ablations.py", "src/mgar_v3/quality_eval/v35/live_provider.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 2 source files",
+      "purpose": "本卡新增模块的严格类型检查",
+      "log": "evidence/v35/E02/20261110T073809Z-e02/06-mypy-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "migrations",
+      "argv": ["uv", "run", "--frozen", "python", "-m", "mgar_v3.store.migrate"],
+      "exit_code": 0,
+      "result": {"applied": []},
+      "purpose": "本卡不新增表；迁移保持幂等",
+      "log": "evidence/v35/E02/20261110T073809Z-e02/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["uv", "run", "--frozen", "mgar", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "PostgreSQL/Redis 真实可用；doctor 的 live 探测不发起付费调用",
+      "log": "evidence/v35/E02/20261110T073809Z-e02/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/E02/20261110T073809Z-e02/03-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "V35-E02"],
+      "exit_code": 0,
+      "counts": {"tests": 49, "failures": 0, "errors": 0, "skipped": 0},
+      "duration_seconds": 43.164,
+      "source_sha256": "09aa70b43705956ccc7362f7abb3b02037f868c0cda3dd46ab207d57bee0b71f",
+      "finished_source_sha256": "09aa70b43705956ccc7362f7abb3b02037f868c0cda3dd46ab207d57bee0b71f",
+      "git_commit": "53b7f6c28d02334ff850fdb0037d463b4aea6375",
+      "attempt": "evidence/V35-E02/20261110T073815Z-15e1238a",
+      "note": "verify 注册的 live_gate 为 NOT_RUN，表示未把付费调用纳入固定回归；本卡单独执行的 live 四臂探针结果记录在本文件 live_agent_gate=FAIL 与 09/11 证据中。source_sha256 前后一致，覆盖最终冻结源码。",
+      "status": "PASS"
+    },
+    {
+      "name": "card-regression",
+      "argv": ["uv", "run", "--frozen", "pytest", "tests/test_v35_e02.py", "tests/test_v35_m02.py", "tests/test_v35_x01.py", "-q", "-p", "no:warnings"],
+      "exit_code": 0,
+      "counts": {"tests": 49, "failures": 0, "errors": 0, "skipped": 0},
+      "purpose": "E02 消融、M02 压缩不变量与 X01 专家路由回归",
+      "log": "evidence/v35/E02/20261110T073809Z-e02/07-regression.log",
+      "status": "PASS"
+    },
+    {
+      "name": "dev-fixture-ablation",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/run_eval.py", "--ablation", "--mode", "fixture", "--suite", "dev", "--out", "evidence/v35/E02/20261110T073951Z-e02-dev-fixture"],
+      "exit_code": 0,
+      "result": {
+        "engineering_gate": "PASS",
+        "live_agent_gate": "NOT_RUN",
+        "cells": 16,
+        "executed": 16,
+        "passed": 16,
+        "arms": {
+          "A": {"avg_context_tokens": 614.25, "avg_model_calls": 1.25, "avg_context_loss_rate": 0.0, "expert_calls": 0},
+          "B": {"avg_context_tokens": 840.5, "avg_model_calls": 1.25, "avg_context_loss_rate": 0.0, "expert_calls": 0},
+          "C": {"avg_context_tokens": 677.75, "avg_model_calls": 1.25, "avg_context_loss_rate": 0.583333, "expert_calls": 0},
+          "D": {"avg_context_tokens": 829.75, "avg_model_calls": 1.25, "avg_context_loss_rate": 0.583333, "expert_calls": 2}
+        }
+      },
+      "purpose": "开发集 4 任务 × 4 臂真实 Docker 网格；fixture 只计工程门",
+      "log": "evidence/v35/E02/20261110T073809Z-e02/08-ablation-fixture.log",
+      "report": "evidence/v35/E02/20261110T073951Z-e02-dev-fixture/",
+      "status": "PASS"
+    },
+    {
+      "name": "live-four-arm-probe",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/run_eval.py", "--ablation", "--mode", "live", "--task", "v35-known-bug-help-name-collision", "--authorization", ".local/v35-e02-live-authorization.json", "--out", "evidence/v35/E02/20261110T072906Z-knownbug-live"],
+      "exit_code": 0,
+      "result": {
+        "live_agent_gate": "FAIL",
+        "cells": 4,
+        "executed": 4,
+        "passed": 0,
+        "paid_calls": 12,
+        "cost_micros": 637310,
+        "failure_types": {"fail:PATCH_TRUNCATED": 4},
+        "decision": {"status": "INCONCLUSIVE", "winner": null, "basis": "live_all_arms_failed"}
+      },
+      "purpose": "用户授权的真实 DeepSeek 付费消融；四臂同任务、同模型、同预算，记录真实调用/费用/失败类型",
+      "log": "evidence/v35/E02/20261110T072906Z-live.log",
+      "report": "evidence/v35/E02/20261110T072906Z-knownbug-live/",
+      "status": "FAIL",
+      "note": "失败是真实测量：deepseek-chat 的 8192 输出 token 上限无法返回完整 142KB core.py。未执行其余三个任务的 live 臂，避免重复付费失败；fixture 网格仍覆盖全部任务。"
+    },
+    {
+      "name": "live-evidence-audit",
+      "argv": ["uv", "run", "--frozen", "python", "heredoc: read live summary/results/decision"],
+      "exit_code": 0,
+      "result": {
+        "live_agent_gate": "FAIL",
+        "cells": 4,
+        "executed": 4,
+        "paid_calls": 12,
+        "cost_micros": 637310,
+        "decision": "INCONCLUSIVE None live_all_arms_failed",
+        "failure_types": ["fail:PATCH_TRUNCATED"]
+      },
+      "purpose": "工程门内复核 live 证据，不重新发起付费调用",
+      "log": "evidence/v35/E02/20261110T073809Z-e02/09-live-evidence-audit.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "FAIL",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "FAIL",
+  "security_gate": "PASS",
+  "live_gate_note": "真实付费调用已按用户授权执行：四臂各 3 次尝试，共 12 次调用、637310 micros。四臂全部 PATCH_TRUNCATED，原因是模型输出上限小于完整文件体积；这是真实能力失败，不升级为 PASS，也不用 fixture 结果替代。失败后没有盲目重试未计费结果：传输失败/缺 usage 一律 USAGE_UNKNOWN 并停止重发；密钥从未写入日志或报告。",
+  "must_pass": [
+    {
+      "item": "至少四臂：无 Memory、仅 Memory、Memory+Compaction、Memory+Compaction+按需 Experts",
+      "result": "PASS",
+      "evidence": "ablations.ARMS 定义 A/B/C/D 四个互不相同标志组合；测试断言 [False,True,True,True] × [False,False,True,True] × [False,False,False,True] 且四种组合唯一。"
+    },
+    {
+      "item": "每臂同 Commit、同任务、同模型参数、同预算；失败任务保留错误类型与次数",
+      "result": "PASS",
+      "evidence": "run_arm 对同一 Task 与同一 PATCH_LIMITS/SANDBOX_LIMITS 调用 runner.run_task；A/B/C/D 共享 budget（3 attempts / 4 calls / 600s）；live 四臂共用同一 DeepSeek 模型、temperature=0、8k 输出上限；results.json 保留每臂 failure_type 与 attempts。"
+    },
+    {
+      "item": "记录成功率、测试通过率、回归、上下文 Token、调用数、墙钟、上下文丢失率、重复工作率",
+      "result": "PASS",
+      "evidence": "每格 result 含 success/public_passed/hidden_passed/regressions/context_tokens/context_tokens_source/model_calls/wall_clock_ms/context.context_loss_rate/context.duplicate_work_rate；summary 按臂聚合 avg 与 total，并给出 paired_vs_A。"
+    },
+    {
+      "item": "统计配对差异与置信区间；赢家结论回写配置且不复写历史数据",
+      "result": "PASS",
+      "evidence": "paired_bootstrap 对 B-A/C-A/D-A 的 success、context_tokens、model_calls、loss、duplicate 计算 95% CI（seed 20261110，2000 次，n=4，exploratory=true）；config/v35-ablation.json 记录 winner=null/INCONCLUSIVE，history_preserved=true，未修改任何 E01 或 E02 历史结果。"
+    },
+    {
+      "item": "某臂无法执行时记录 NOT_RUN 与原因，不得用计划值替代实测值",
+      "result": "PASS",
+      "evidence": "not_run_records 在授权缺失时生成 NOT_RUN 网格；summarize 将 NOT_RUN 排除出 executed 且 live_agent_gate=NOT_RUN；测试 test_not_run_cells_never_count_as_executed 覆盖；本次 live 四臂均已实际执行，无伪造值。"
+    },
+    {
+      "item": "真实模型调用的调用次数、费用、延迟、失败原因统计",
+      "result": "FAIL",
+      "evidence": "12 次真实调用、637310 micros、四臂全部 fail:PATCH_TRUNCATED。能力门未通过：模型无法在输出上限内返回完整文件，因此不存在可用的 live 成功样本。"
+    },
+    {
+      "item": "工程门禁命令原样通过（tests/test_v35_e02.py + M02/X01 回归）",
+      "result": "PASS",
+      "evidence": "verify TASK=V35-E02：49 passed / 0 failed / 0 skipped；scoped ruff 与 mypy exit 0；migrate applied []；doctor PG/Redis PASS；git diff --check exit 0；fixture 16/16 PASS。"
+    },
+    {
+      "item": "报告不可覆盖，失败样本保留",
+      "result": "PASS",
+      "evidence": "write_report 在 results.json/summary.json/decision.json 任一存在时抛 FileExistsError；测试 test_report_is_immutable_and_fixture_never_claims_live_gate 覆盖；live 的 results.json 与 summary.json 保留原始失败记录。"
+    },
+    {
+      "item": "安全：密钥不外泄，未知付费结果不盲重试",
+      "result": "PASS",
+      "evidence": "live_provider 不记录请求头与密钥；load_api_key 只读环境/.env；transport 失败与缺 usage 抛 USAGE_UNKNOWN，StructuredPatchProvider 据此禁止重发；测试断言调用上限、费用上限、endpoint host 白名单与 unknown 单次记账。"
+    },
+    {
+      "item": "可复现实验表与统计脚本，结论与原始结果一致",
+      "result": "PASS",
+      "evidence": "scripts/run_eval.py --ablation 可重复生成 16 格结果与 summary/decision；fixture 报告与 live 报告目录均保留 results.json、summary.json、decision.json；卡片结论与 evidence 数值逐项一致。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "live 消融只在一个任务上跑满四臂，没有对四个任务都发起付费调用",
+      "handling": "四臂在同一任务上均以 PATCH_TRUNCATED 失败，证明该文件体积与输出上限的组合不可行；继续跑其余任务只会重复相同的付费失败。fixture 网格仍覆盖 4 任务 × 4 臂，全部执行。"
+    },
+    {
+      "issue": "live 跑完后修正了赢家规则：全臂失败时不得按微小成本差选出赢家",
+      "handling": "仅重算 decision.json 为 INCONCLUSIVE/winner=null；results.json 与 summary.json 未改动，成本与调用数据保持原始测量。卡片与 accept 明确记录此偏离。"
+    },
+    {
+      "issue": "授权文件中的费用与调用上限是进程级，不是跨进程累计",
+      "handling": "live 实验只启动一个进程，四臂共享同一 LiveBudget，因此 12 次调用与 637310 micros 均受单一上限约束；未拆成多个进程重复消耗授权额度。"
+    },
+    {
+      "issue": "fixture 的重复工作率为 0，未真正触发去重路径",
+      "handling": "当前开发集每次尝试的观测没有完全重复项，因此去重计数为 0；这是真实测量而非缺失字段。去重不变量由 test_v35_m02 与 E02 压缩测试覆盖。"
+    },
+    {
+      "issue": "verify.py 的 live_gate 显示 NOT_RUN",
+      "handling": "该字段表示固定回归不包含付费调用；真实 live 探针在工程门之外单独执行，并在本文件 live_model_gate/live_agent_gate=FAIL 与 live 证据目录中记录。"
+    }
+  ],
+  "artifacts": {
+    "ablation": "v3/src/mgar_v3/quality_eval/v35/ablations.py",
+    "live_provider": "v3/src/mgar_v3/quality_eval/v35/live_provider.py",
+    "cli": "v3/scripts/run_eval.py --ablation",
+    "tests": "v3/tests/test_v35_e02.py",
+    "verification": "v3/config/verification.json#V35-E02",
+    "decision": "v3/config/v35-ablation.json",
+    "evidence": "v3/evidence/v35/E02/20261110T073809Z-e02/、20261110T073951Z-e02-dev-fixture/、20261110T072620Z-dev-fixture/、20261110T072906Z-knownbug-live/（gitignore，不入库）",
+    "verify_attempt": "v3/evidence/V35-E02/20261110T073815Z-15e1238a/"
+  }
+}
