@@ -112,11 +112,12 @@ def main(argv: list[str] | None = None) -> int:
     repo.add_argument("--ref", default=None)
     repo.add_argument("--commit", default=None)
     repo.add_argument("--execution-mode", choices=["fixture", "live"], default="fixture")
-    repo.add_argument("--model-calls", type=int, default=6)
-    repo.add_argument("--tool-calls", type=int, default=20)
-    repo.add_argument("--input-tokens", type=int, default=60000)
-    repo.add_argument("--cost-micros", type=int, default=500000)
-    repo.add_argument("--seconds", type=int, default=600)
+    repo.add_argument("--model-calls", type=int, default=None)
+    repo.add_argument("--tool-calls", type=int, default=None)
+    repo.add_argument("--input-tokens", type=int, default=None)
+    repo.add_argument("--total-tokens", type=int, default=None)
+    repo.add_argument("--cost-micros", type=int, default=None)
+    repo.add_argument("--seconds", type=int, default=None)
     repo.add_argument("--client-request-id", default=None)
     commands.add_parser("repo-list")
     for name in [
@@ -269,6 +270,18 @@ def main(argv: list[str] | None = None) -> int:
             elif args.command == "repo-list":
                 response = client.get("/api/v3/repository-analyses")
             elif args.command == "repo-analyze":
+                overrides = {
+                    name: value
+                    for name, value in {
+                        "max_model_calls": args.model_calls,
+                        "max_tool_calls": args.tool_calls,
+                        "max_input_tokens": args.input_tokens,
+                        "max_total_tokens": args.total_tokens,
+                        "max_cost_micros": args.cost_micros,
+                        "max_seconds": args.seconds,
+                    }.items()
+                    if value is not None
+                }
                 response = client.post(
                     "/api/v3/repository-analyses",
                     json={
@@ -278,13 +291,7 @@ def main(argv: list[str] | None = None) -> int:
                         "commit": args.commit,
                         "execution_mode": args.execution_mode,
                         "client_request_id": args.client_request_id or str(uuid4()),
-                        "limits": {
-                            "max_model_calls": args.model_calls,
-                            "max_tool_calls": args.tool_calls,
-                            "max_input_tokens": args.input_tokens,
-                            "max_cost_micros": args.cost_micros,
-                            "max_seconds": args.seconds,
-                        },
+                        **({"limits": overrides} if overrides else {}),
                     },
                 )
             elif args.command in {

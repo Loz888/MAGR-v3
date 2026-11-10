@@ -15,7 +15,13 @@ from typing import Annotated, Any, Literal, Self
 from urllib.parse import urlsplit
 from uuid import UUID
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import (
+    Field,
+    SerializerFunctionWrapHandler,
+    field_validator,
+    model_serializer,
+    model_validator,
+)
 
 from mgar_v3.domain import Model, digest
 
@@ -134,16 +140,45 @@ def _validate_search_query(value: str, *, full_name: str) -> str:
 
 
 class AnalysisLimits(Model):
-    max_model_calls: Annotated[int, Field(strict=True, ge=1, le=12)] = 6
-    max_tool_calls: Annotated[int, Field(strict=True, ge=1, le=40)] = 20
-    max_input_tokens: Annotated[int, Field(strict=True, ge=4096, le=262144)] = 60000
+    max_model_calls: Annotated[int | None, Field(strict=True, ge=1, le=12)] = 6
+    max_tool_calls: Annotated[int | None, Field(strict=True, ge=1, le=40)] = 20
+    max_input_tokens: Annotated[int, Field(strict=True, ge=4096, le=10000000)] = 60000
+    max_total_tokens: Annotated[int | None, Field(strict=True, ge=4096, le=10000000)] = None
     max_cost_micros: Annotated[int, Field(strict=True, ge=1, le=10000000)] = 500000
     max_seconds: Annotated[int, Field(strict=True, ge=30, le=3600)] = 600
 
+    @property
+    def automatic(self) -> bool:
+        return self.max_model_calls is None and self.max_tool_calls is None
+
+    @model_serializer(mode="wrap")
+    def compatible_serialization(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        data: dict[str, Any] = handler(self)
+        # Preserve hashes for existing file authorizations and historical runs.
+        if self.max_total_tokens is None:
+            data.pop("max_total_tokens", None)
+        return data
+
     def bounded_by(self, other: AnalysisLimits) -> bool:
         return (
-            self.max_model_calls <= other.max_model_calls
-            and self.max_tool_calls <= other.max_tool_calls
+            (
+                other.max_model_calls is None
+                or (
+                    self.max_model_calls is not None
+                    and self.max_model_calls <= other.max_model_calls
+                )
+            )
+            and (
+                other.max_tool_calls is None
+                or (self.max_tool_calls is not None and self.max_tool_calls <= other.max_tool_calls)
+            )
+            and (
+                other.max_total_tokens is None
+                or (
+                    self.max_total_tokens is not None
+                    and self.max_total_tokens <= other.max_total_tokens
+                )
+            )
             and self.max_input_tokens <= other.max_input_tokens
             and self.max_cost_micros <= other.max_cost_micros
             and self.max_seconds <= other.max_seconds
@@ -152,9 +187,7 @@ class AnalysisLimits(Model):
 
 class AnalysisModelConfig(Model):
     model_id: Annotated[str, Field(min_length=1, max_length=100)] = "deepseek-chat"
-    price_version: Annotated[str, Field(min_length=1, max_length=100)] = (
-        "repository-analysis-v1"
-    )
+    price_version: Annotated[str, Field(min_length=1, max_length=100)] = "repository-analysis-v1"
     input_micros_per_million: Annotated[int, Field(strict=True, gt=0)] = 300000
     output_micros_per_million: Annotated[int, Field(strict=True, gt=0)] = 1200000
     context_tokens: Annotated[int, Field(strict=True, ge=4096, le=1048576)] = 131072
@@ -325,7 +358,11 @@ class RepositoryMetadataCall(Model):
 
 
 ToolCall = Annotated[
-    ReadFileCall | ListDirectoryCall | SearchCodeCall | ReadIssueCall | ReadPullRequestCall
+    ReadFileCall
+    | ListDirectoryCall
+    | SearchCodeCall
+    | ReadIssueCall
+    | ReadPullRequestCall
     | RepositoryMetadataCall,
     Field(discriminator="tool"),
 ]
@@ -372,6 +409,20 @@ class AgentDecision(Model):
         return self
 
 
+class AcceptanceDecision(Model):
+    accepted: bool = Field(strict=True)
+    missing_requirements: Annotated[list[str], Field(max_length=10)] = Field(default_factory=list)
+    summary: Annotated[str, Field(min_length=1, max_length=2000)]
+
+    @model_validator(mode="after")
+    def consistent(self) -> Self:
+        if self.accepted and self.missing_requirements:
+            raise ValueError("Accepted answers cannot have missing requirements")
+        if not self.accepted and not self.missing_requirements:
+            raise ValueError("Rejected answers must identify what is still missing")
+        return self
+
+
 class AnalysisScope(Model):
     repository: str
     commit: str
@@ -409,6 +460,8 @@ class AnalysisSpec(Model):
     model_calls_used: int = 0
     tool_calls_used: int = 0
     input_tokens_used: int = 0
+    output_tokens_used: int = 0
+    reserved_tokens: int = 0
     stop_reason: str | None = None
     report_hash: str | None = None
     authorization_hash: str

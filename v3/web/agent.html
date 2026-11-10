@@ -296,36 +296,34 @@
             </select>
           </div>
         </div>
+        <div class="automatic-policy">
+          <span>自动持续分析</span>
+          <p>
+            Agent
+            会自行安排调查、补证据和核验，达到要求后完成。无需设置轮数或重试次数。
+          </p>
+        </div>
         <details class="advanced-limits">
-          <summary>更多分析选项</summary>
-          <div class="settings-grid">
-            <div>
-              <label for="call-limit">最多模型轮数</label
-              ><input
-                id="call-limit"
-                type="number"
-                min="1"
-                max="12"
-                value="6"
-                required
-              />
-            </div>
-            <div>
-              <label for="tool-limit">最多工具调用</label
-              ><input
-                id="tool-limit"
-                type="number"
-                min="1"
-                max="40"
-                value="20"
-                required
-              />
-            </div>
-          </div>
+          <summary>Token 预算</summary>
+          <label for="token-limit">每次分析的 Token 总预算（输入与输出）</label
+          ><input
+            id="token-limit"
+            type="number"
+            min="4096"
+            max="10000000"
+            step="1"
+            value="500000"
+            required
+          />
+          <p class="field-help">
+            在
+            Token、费用和执行时间预算内持续工作。重复无进展时由系统停止并说明需要补充的信息。
+          </p>
         </details>
         <label class="checkbox-label consent"
           ><input id="allow-paid" type="checkbox" /><span
-            >我允许使用上述模型和凭据进行只读分析，费用遵循所设上限。</span
+            >我允许使用上述模型和凭据进行只读分析，在所设 Token
+            和费用预算内自动执行至完成。</span
           ></label
         >
         <p class="field-help">

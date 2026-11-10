@@ -587,6 +587,64 @@ def create_app(
         return jsonable_encoder(service.detail(run_id))
 
     @app.get(
+        "/api/v3/repository-analyses/{run_id}/events",
+        dependencies=[Depends(authenticated)],
+    )
+    async def analysis_events(
+        run_id: UUID,
+        request: Request,
+        service: Annotated[RepositoryAnalysisService, Depends(repository_service)],
+        follow: bool = True,
+    ) -> StreamingResponse:
+        service.detail(run_id)
+        try:
+            cursor = int(
+                request.headers.get("Last-Event-ID") or request.query_params.get("after", "0")
+            )
+            if cursor < 0:
+                raise ValueError("Negative cursor")
+        except ValueError as exc:
+            raise DomainError("INVALID_CURSOR", "事件游标无效。", 400) from exc
+
+        async def updates() -> AsyncIterator[str]:
+            nonlocal cursor
+            last_check = asyncio.get_running_loop().time()
+            while True:
+                if await request.is_disconnected():
+                    return
+                status, batch = await asyncio.to_thread(service.store.stream_batch, run_id, cursor)
+                for event in batch:
+                    cursor = event["event_id"]
+                    yield (
+                        f"id: {cursor}\nevent: update\n"
+                        f"data: {json.dumps(event, ensure_ascii=False)}\n\n"
+                    )
+                if batch:
+                    continue
+                if not follow or status not in {"queued", "running"}:
+                    done = json.dumps({"status": status, "cursor": cursor})
+                    yield f"event: done\ndata: {done}\n\n"
+                    return
+                if asyncio.get_running_loop().time() - last_check >= 5:
+                    try:
+                        await asyncio.to_thread(authenticated, request)
+                    except DomainError:
+                        yield "event: auth_required\ndata: {}\n\n"
+                        return
+                    yield ": keepalive\n\n"
+                    last_check = asyncio.get_running_loop().time()
+                await asyncio.sleep(0.15)
+
+        return StreamingResponse(
+            updates(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-store",
+                "X-Accel-Buffering": "no",
+            },
+        )
+
+    @app.get(
         "/api/v3/repository-analyses/{run_id}/report",
         dependencies=[Depends(authenticated)],
     )

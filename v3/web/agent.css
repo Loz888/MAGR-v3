@@ -952,6 +952,38 @@ dialog input[type="password"] {
 .app-shell {
   display: contents;
 }
+.automatic-policy {
+  background: #f2f6ec;
+  border-radius: 8px;
+  padding: 13px 15px;
+  margin: 19px 0;
+  font-size: 12px;
+}
+.automatic-policy span {
+  color: #496644;
+  font-weight: 550;
+}
+.automatic-policy p {
+  font-size: 11px;
+  color: #8a977e;
+  line-height: 1.8;
+  margin-bottom: 0;
+}
+.stream-draft {
+  border-left: 2px solid #bccfaa;
+  padding-left: 15px;
+  margin-top: 20px;
+}
+.stream-draft p {
+  white-space: pre-wrap;
+}
+.draft-note {
+  font-size: 10px;
+  color: #8a977e;
+}
+.stream-draft:not([hidden]) + .empty-report {
+  display: none;
+}
 .auth-screen {
   width: 100%;
   min-height: 100dvh;

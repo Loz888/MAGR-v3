@@ -7,7 +7,6 @@ and adds only the analysis-specific ledger tables from migration 0020.
 from __future__ import annotations
 
 import hashlib
-import uuid
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from typing import Any
@@ -66,6 +65,8 @@ def _profile_hash(
 
 
 class RepositoryAnalysisStore:
+    accounts_usage = True
+
     def __init__(self, engine: Engine):
         self.engine = engine
 
@@ -241,12 +242,12 @@ class RepositoryAnalysisStore:
                 parent_run_id=parent_run_id,
             )
             revision = int(parent["revision"]) + 1
-            attempt = int(
-                conn.execute(
-                    "SELECT max(attempt_no) AS attempt FROM app.runs WHERE ticket_id=%s",
-                    (ticket_id,),
-                ).fetchone()["attempt"]
-            ) + 1
+            attempt_row = conn.execute(
+                "SELECT max(attempt_no) AS attempt FROM app.runs WHERE ticket_id=%s",
+                (ticket_id,),
+            ).fetchone()
+            assert attempt_row is not None
+            attempt = int(attempt_row["attempt"]) + 1
             conn.execute(
                 "UPDATE app.threads SET revision=%s WHERE thread_id=%s", (revision, thread_id)
             )
@@ -397,6 +398,8 @@ class RepositoryAnalysisStore:
             model_calls_used=row["model_calls_used"],
             tool_calls_used=row["tool_calls_used"],
             input_tokens_used=row["input_tokens_used"],
+            output_tokens_used=row["output_tokens_used"],
+            reserved_tokens=row["reserved_tokens"],
             stop_reason=row["stop_reason"],
             report_hash=row["run_report_hash"] or row["report_hash"],
             authorization_hash=row["authorization_hash"],
@@ -422,7 +425,7 @@ class RepositoryAnalysisStore:
         spec = self.spec(run_id)
         with self.engine.transaction() as conn:
             events = conn.execute(
-                "SELECT kind,safe_payload,created_at FROM app.run_events WHERE run_id=%s "
+                "SELECT event_id,kind,safe_payload,created_at FROM app.run_events WHERE run_id=%s "
                 "ORDER BY created_at,event_id",
                 (run_id,),
             ).fetchall()
@@ -443,10 +446,27 @@ class RepositoryAnalysisStore:
                 report = self.artifact_bytes(spec.report_hash, run_id).decode("utf-8", "replace")
             except DomainError:
                 report = None
+        draft: dict[str, str] = {}
+        for event in events:
+            payload = event["safe_payload"]
+            if event["kind"] == "model_stream_started" and payload.get("phase") == "analysis":
+                draft = {}
+            elif event["kind"] == "answer_delta" and payload.get("field") in {
+                "conclusion",
+                "structure",
+            }:
+                field = payload["field"]
+                previous = draft.get(field, "")
+                draft[field] = (
+                    previous[: payload.get("offset", len(previous))] + payload.get("text", "")
+                )[:12000]
+            elif event["kind"] == "draft_rejected":
+                draft = {}
         return {
             "run": spec.model_dump(mode="json"),
             "events": [
                 {
+                    "event_id": row["event_id"],
                     "kind": row["kind"],
                     "payload": row["safe_payload"],
                     "created_at": row["created_at"].isoformat(),
@@ -464,9 +484,7 @@ class RepositoryAnalysisStore:
                     "evidence_id": str(row["evidence_id"]) if row["evidence_id"] else None,
                     "error_code": row["error_code"],
                     "created_at": row["created_at"].isoformat(),
-                    "finished_at": (
-                        row["finished_at"].isoformat() if row["finished_at"] else None
-                    ),
+                    "finished_at": (row["finished_at"].isoformat() if row["finished_at"] else None),
                 }
                 for row in tools
             ],
@@ -482,7 +500,38 @@ class RepositoryAnalysisStore:
                 for row in claims
             ],
             "report": report,
+            "draft": draft if not spec.report_hash else {},
+            "last_event_id": events[-1]["event_id"] if events else 0,
         }
+
+    def stream_event(self, run_id: UUID, epoch: int, kind: str, **payload: Any) -> bool:
+        with self.engine.transaction() as conn:
+            try:
+                run = self.engine._run(conn, run_id, epoch)
+            except DomainError as exc:
+                if exc.code == "FENCED":
+                    return False
+                raise
+            if run["status"] != "running":
+                return False
+            self._event(conn, run_id, kind, **payload)
+        return True
+
+    def stream_batch(self, run_id: UUID, after: int) -> tuple[str, list[dict[str, Any]]]:
+        with self.engine.transaction() as conn:
+            # Read status before events: a terminal status must not race away the final deltas.
+            run = self.engine._run(conn, run_id)
+            if run["graph_version"] != REPOSITORY_ANALYSIS_GRAPH:
+                raise DomainError("NOT_FOUND", "Repository analysis was not found", 404)
+            rows = conn.execute(
+                "SELECT event_id,kind,safe_payload FROM app.run_events "
+                "WHERE run_id=%s AND event_id>%s ORDER BY event_id LIMIT 200",
+                (run_id, after),
+            ).fetchall()
+        return run["status"], [
+            {"event_id": row["event_id"], "kind": row["kind"], "payload": row["safe_payload"]}
+            for row in rows
+        ]
 
     def artifact_bytes(self, content_hash: str, run_id: UUID | None = None) -> bytes:
         """Read CAS content under the repository-analysis project scope.
@@ -552,7 +601,8 @@ class RepositoryAnalysisStore:
         step_key: str,
         profile_hash: str,
         reservation_micros: int,
-        call_limit: int,
+        call_limit: int | None,
+        token_reservation: int = 0,
     ) -> UUID:
         with self.engine.transaction() as conn:
             run, spec = self._spec_row(conn, run_id, epoch)
@@ -564,7 +614,10 @@ class RepositoryAnalysisStore:
             if scope is None or scope["scope"].get("profile_hash") != profile_hash:
                 raise DomainError("MODEL_SCOPE_DENIED", "Model call differs from its mandate", 403)
             limits = AnalysisLimits.model_validate(spec["limits"])
-            if int(spec["model_calls_used"]) >= limits.max_model_calls:
+            if (
+                limits.max_model_calls is not None
+                and int(spec["model_calls_used"]) >= limits.max_model_calls
+            ):
                 raise DomainError(
                     "BUDGET_EXHAUSTED", "Repository analysis model-call budget is exhausted", 403
                 )
@@ -576,11 +629,25 @@ class RepositoryAnalysisStore:
                 "SELECT 1 FROM app.usage_calls WHERE run_id=%s AND step_key=%s", (run_id, step_key)
             ).fetchone():
                 raise DomainError("MODEL_CALL_ALREADY_RECORDED", "Model step cannot be resent")
+            tokens = max(2, token_reservation) if limits.max_total_tokens is not None else 0
+            if (
+                limits.max_total_tokens is not None
+                and conn.execute(
+                    "UPDATE app.repo_analysis_runs SET reserved_tokens=reserved_tokens+%s "
+                    "WHERE run_id=%s "
+                    "AND input_tokens_used+output_tokens_used+reserved_tokens+%s<=%s "
+                    "RETURNING run_id",
+                    (tokens, run_id, tokens, limits.max_total_tokens),
+                ).fetchone()
+                is None
+            ):
+                raise DomainError("TOKEN_BUDGET_EXHAUSTED", "Token reservation exceeds budget", 403)
             reserved = conn.execute(
                 "UPDATE app.authorization_budgets SET reserved_micros=reserved_micros+%s,"
-                "used_calls=used_calls+1 WHERE profile_hash=%s AND used_calls<%s "
+                "used_calls=used_calls+1 WHERE profile_hash=%s "
+                "AND (call_limit IS NULL OR used_calls<call_limit) "
                 "AND reserved_micros+settled_micros+%s<=limit_micros RETURNING profile_hash",
-                (reservation_micros, profile_hash, call_limit, reservation_micros),
+                (reservation_micros, profile_hash, reservation_micros),
             ).fetchone()
             local = conn.execute(
                 "UPDATE app.budgets SET reserved_micros=reserved_micros+%s WHERE mandate_id=%s "
@@ -594,8 +661,8 @@ class RepositoryAnalysisStore:
             call_id = uuid4()
             conn.execute(
                 "INSERT INTO app.usage_calls(call_id,run_id,step_key,status,reserved_micros,"
-                "profile_hash) VALUES (%s,%s,%s,'reserved',%s,%s)",
-                (call_id, run_id, step_key, reservation_micros, profile_hash),
+                "profile_hash,token_reservation) VALUES (%s,%s,%s,'reserved',%s,%s,%s)",
+                (call_id, run_id, step_key, reservation_micros, profile_hash, tokens),
             )
             conn.execute(
                 "UPDATE app.repo_analysis_runs SET model_calls_used=model_calls_used+1 "
@@ -603,7 +670,10 @@ class RepositoryAnalysisStore:
                 (run_id,),
             )
             self._event(
-                conn, run_id, "model_reserved", call_id=str(call_id),
+                conn,
+                run_id,
+                "model_reserved",
+                call_id=str(call_id),
                 reserved_micros=reservation_micros,
             )
             return call_id
@@ -615,7 +685,35 @@ class RepositoryAnalysisStore:
         usage: dict[str, Any] | None = None,
         result: Any | None = None,
     ) -> None:
-        self.engine.settle_call(call_id, cost_micros, usage, result)
+        with self.engine.transaction() as conn:
+            previous = conn.execute(
+                "SELECT run_id,status,token_reservation FROM app.usage_calls "
+                "WHERE call_id=%s FOR UPDATE",
+                (call_id,),
+            ).fetchone()
+            self.engine.settle_call(call_id, cost_micros, usage, result)
+            settled = conn.execute(
+                "SELECT status FROM app.usage_calls WHERE call_id=%s",
+                (call_id,),
+            ).fetchone()
+            if (
+                previous
+                and previous["status"] != "known"
+                and settled
+                and settled["status"] == "known"
+            ):
+                receipt = usage or {}
+                conn.execute(
+                    "UPDATE app.repo_analysis_runs SET input_tokens_used=input_tokens_used+%s,"
+                    "output_tokens_used=output_tokens_used+%s,reserved_tokens=reserved_tokens-%s "
+                    "WHERE run_id=%s",
+                    (
+                        receipt.get("prompt_tokens", 0),
+                        receipt.get("completion_tokens", 0),
+                        previous["token_reservation"],
+                        previous["run_id"],
+                    ),
+                )
 
     def record_model_input(
         self, run_id: UUID, epoch: int, step_key: str, body: dict[str, Any]
@@ -709,13 +807,14 @@ class RepositoryAnalysisStore:
                     "UPDATE app.repo_tool_calls SET status='unknown' WHERE call_id=%s",
                     (existing["call_id"],),
                 )
-                self._event(
-                    conn, run_id, "tool_result_unknown", call_id=str(existing["call_id"])
-                )
+                self._event(conn, run_id, "tool_result_unknown", call_id=str(existing["call_id"]))
                 raise DomainError(
                     "TOOL_RESULT_UNKNOWN", "Prior tool outcome is unknown and was not retried", 502
                 )
-            if int(spec["tool_calls_used"]) >= limits.max_tool_calls:
+            if (
+                limits.max_tool_calls is not None
+                and int(spec["tool_calls_used"]) >= limits.max_tool_calls
+            ):
                 raise DomainError(
                     "BUDGET_EXHAUSTED", "Repository analysis tool-call budget is exhausted", 403
                 )
@@ -759,7 +858,10 @@ class RepositoryAnalysisStore:
                     (error_code or "TOOL_FAILED", call_id),
                 )
                 self._event(
-                    conn, row["run_id"], "tool_failed", call_id=str(call_id),
+                    conn,
+                    row["run_id"],
+                    "tool_failed",
+                    call_id=str(call_id),
                     error_code=error_code or "TOOL_FAILED",
                 )
                 return None
@@ -839,13 +941,9 @@ class RepositoryAnalysisStore:
             for row in rows
         ]
 
-    def persist_claims(
-        self, run_id: UUID, verification: ReportVerification
-    ) -> None:
+    def persist_claims(self, run_id: UUID, verification: ReportVerification) -> None:
         with self.engine.transaction() as conn:
-            conn.execute(
-                "DELETE FROM app.repo_analysis_claims WHERE run_id=%s", (run_id,)
-            )
+            conn.execute("DELETE FROM app.repo_analysis_claims WHERE run_id=%s", (run_id,))
             for binding in verification.bindings:
                 conn.execute(
                     "INSERT INTO app.repo_analysis_claims(claim_id,run_id,section,statement,"
@@ -880,8 +978,7 @@ class RepositoryAnalysisStore:
         spec = self.spec(run_id)
         with self.engine.transaction() as conn:
             conn.execute(
-                "UPDATE app.repo_analysis_runs SET stop_reason=%s,report_hash=%s "
-                "WHERE run_id=%s",
+                "UPDATE app.repo_analysis_runs SET stop_reason=%s,report_hash=%s WHERE run_id=%s",
                 (
                     "complete" if verification.passed else "EVIDENCE_REJECTED",
                     spec.report_hash,
@@ -929,12 +1026,14 @@ class RepositoryAnalysisStore:
                 (reason_code, content_hash, run_id),
             )
             conn.execute(
-                "UPDATE app.repo_analysis_runs SET stop_reason=%s,report_hash=%s "
-                "WHERE run_id=%s",
+                "UPDATE app.repo_analysis_runs SET stop_reason=%s,report_hash=%s WHERE run_id=%s",
                 (reason_code, content_hash, run_id),
             )
             self._event(
-                conn, run_id, "repository_analysis_partial", reason_code=reason_code,
+                conn,
+                run_id,
+                "repository_analysis_partial",
+                reason_code=reason_code,
                 report_hash=content_hash,
             )
         return content_hash

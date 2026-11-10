@@ -15,6 +15,7 @@ from uuid import UUID
 
 from mgar_v3.domain import DomainError
 from mgar_v3.repository_analysis.domain import (
+    AcceptanceDecision,
     AgentDecision,
     AnalysisSpec,
     ReadFileCall,
@@ -142,9 +143,7 @@ class FixtureAnalysisTools:
                         "path": path,
                         "sha": _blob_sha(content.encode()),
                         "snippets": [
-                            line
-                            for line in content.splitlines()
-                            if needle in line.lower()
+                            line for line in content.splitlines() if needle in line.lower()
                         ][:3],
                         "url": None,
                     }
@@ -211,14 +210,18 @@ class FixtureAnalysisModel:
         payload: dict[str, Any],
         schema: type[Any],
         *,
-        call_limit: int,
+        call_limit: int | None,
         deadline_check: Any,
-    ) -> AgentDecision:
+    ) -> AgentDecision | AcceptanceDecision:
         existing = ledger.repository_model_result(run_id, epoch, step_key, profile_hash, schema)
         if existing is not None:
             return existing
         deadline_check()
-        decision = self._decide(payload)
+        decision = (
+            AcceptanceDecision(accepted=True, summary="Fixture acceptance contract verified.")
+            if schema is AcceptanceDecision
+            else self._decide(payload)
+        )
         call_id = ledger.reserve_repository_call(
             run_id, epoch, step_key, profile_hash, 1, call_limit
         )
@@ -228,7 +231,8 @@ class FixtureAnalysisModel:
             {"prompt_tokens": 1, "completion_tokens": 1, "mode": "fixture"},
             decision,
         )
-        ledger.note_input_tokens(run_id, 1)
+        if not getattr(ledger, "accounts_usage", False):
+            ledger.note_input_tokens(run_id, 1)
         return decision
 
     def _decide(self, payload: dict[str, Any]) -> AgentDecision:

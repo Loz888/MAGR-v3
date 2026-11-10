@@ -53,7 +53,15 @@ class AnalysisSettingsInput(Model):
     allowed_repositories: Annotated[list[str], Field(min_length=1, max_length=100)] = Field(
         default_factory=lambda: ["*"]
     )
-    limits: AnalysisLimits = Field(default_factory=AnalysisLimits)
+    limits: AnalysisLimits = Field(
+        default_factory=lambda: AnalysisLimits(
+            max_model_calls=None,
+            max_tool_calls=None,
+            max_input_tokens=500000,
+            max_total_tokens=500000,
+            max_seconds=3600,
+        )
+    )
     authorization_days: Annotated[int, Field(strict=True, ge=1, le=365)] = 30
     allow_paid: bool = Field(default=False, strict=True)
     expected_revision: Annotated[int, Field(strict=True, ge=0)] = 0
@@ -263,7 +271,7 @@ class WebAnalysisSettings:
             allow_paid=request.allow_paid,
             allowed_repositories=request.allowed_repositories,
             limits=request.limits,
-            model=AnalysisModelConfig(model_id=request.model_id),
+            model=AnalysisModelConfig(model_id=request.model_id, max_output_tokens=8192),
         )
         payload = {
             **previous,

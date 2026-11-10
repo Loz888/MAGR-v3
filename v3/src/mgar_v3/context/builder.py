@@ -51,8 +51,8 @@ BACKGROUND_COMPACTION = "NOT_IMPLEMENTED"
 
 
 class RemainingBudget(Model):
-    model_calls: int = Field(ge=0)
-    tool_calls: int = Field(ge=0)
+    model_calls: int | None = Field(default=None, ge=0)
+    tool_calls: int | None = Field(default=None, ge=0)
     input_tokens: int = Field(ge=0)
 
 

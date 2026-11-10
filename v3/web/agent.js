@@ -45,7 +45,14 @@ const ERRORS = {
   GITHUB_FORBIDDEN: "GitHub 拒绝了读取请求，请检查服务器上的只读凭据权限。",
   GITHUB_RATE_LIMITED: "GitHub 请求额度暂时用尽，请稍后再试。",
   REF_NOT_FOUND: "没有找到指定分支、Tag 或 Commit，请核对仓库版本。",
-  BUDGET_EXHAUSTED: "本次模型或费用预算已用尽，以下保留已获得的结果。",
+  TOKEN_BUDGET_EXHAUSTED: "本次 Token 预算已用尽，已保留当前证据和未完成项。",
+  AGENT_STALLED:
+    "现有线索暂时无法继续推进，已保留调查结果。可以补充文件位置、错误信息或预期行为后追问。",
+  EVIDENCE_REJECTED: "当前回答尚未通过核验，以下保留已确认的证据和待解决问题。",
+  INSUFFICIENT_EVIDENCE:
+    "现有源码证据不足以回答问题，可以补充更具体的目标后继续。",
+  MODEL_RATE_LIMITED: "模型服务暂时限流，本次进展已保留。",
+  BUDGET_EXHAUSTED: "本次费用预算已用尽，以下保留已获得的结果。",
   INPUT_TOKEN_BUDGET: "本次上下文预算已用尽，可以缩小问题范围后继续追问。",
   DEADLINE_EXCEEDED: "本次分析已达到授权的时间上限，以下保留已获得的结果。",
   USAGE_UNKNOWN: "存在尚未核实的模型用量，需要操作员核账后才能恢复。",
@@ -93,6 +100,11 @@ const state = {
   request: null,
   timer: null,
   connected: false,
+  stream: null,
+  streamVersion: 0,
+  cursor: 0,
+  drafts: new Map(),
+  progressTimer: null,
 };
 function isDemo() {
   const run = state.details.get(state.selected)?.run;
@@ -145,6 +157,7 @@ async function call(method, path, body) {
   return data;
 }
 function showLogin() {
+  closeStream();
   state.connected = false;
   state.csrf = "";
   $("app-shell").hidden = true;
@@ -240,8 +253,8 @@ async function loadSettings() {
   $("repository-scope").value = repos.filter((x) => x !== "*").join("\n");
   $("repository-scope-row").hidden = $("all-repositories").checked;
   $("cost-limit").value = (limits.max_cost_micros || 500000) / 1000000;
-  $("call-limit").value = limits.max_model_calls || 6;
-  $("tool-limit").value = limits.max_tool_calls || 20;
+  $("token-limit").value =
+    limits.max_total_tokens || limits.max_input_tokens || 500000;
   $("allow-paid").checked = Boolean(
     checks.paid_enabled && checks.authorization_valid,
   );
@@ -269,7 +282,16 @@ async function enterApp(session) {
       save("mgar-selected", "");
     }
   }
-  if (!state.profile.ready && !state.demo) await showSettings();
+  if (
+    (!state.profile.ready || !state.profile.automatic_execution) &&
+    !state.demo
+  ) {
+    await showSettings();
+    if (state.profile.ready)
+      notify(
+        "运行策略已升级为自动持续分析，保存一次设置即可启用。原有密钥可留空保留。",
+      );
+  }
 }
 async function login(event) {
   event.preventDefault();
@@ -321,11 +343,12 @@ async function saveModelSettings(event) {
     allow_paid: $("allow-paid").checked,
     authorization_days: Number($("authorization-days").value),
     limits: {
-      max_model_calls: Number($("call-limit").value),
-      max_tool_calls: Number($("tool-limit").value),
-      max_input_tokens: state.profile?.limits?.max_input_tokens || 60000,
+      max_model_calls: null,
+      max_tool_calls: null,
+      max_input_tokens: Number($("token-limit").value),
+      max_total_tokens: Number($("token-limit").value),
       max_cost_micros: Math.round(Number($("cost-limit").value) * 1000000),
-      max_seconds: state.profile?.limits?.max_seconds || 600,
+      max_seconds: 3600,
     },
   };
   if ($("model-key").value.trim())
@@ -406,6 +429,7 @@ async function loadHistory() {
   renderHistory();
 }
 function newChat() {
+  closeStream();
   state.selection++;
   state.selected = null;
   state.signature = "";
@@ -461,6 +485,8 @@ async function selectRun(id) {
   if (version !== state.selection) return;
   state.selected = id;
   state.details.set(id, detail);
+  state.drafts.set(id, detail.draft || {});
+  state.cursor = detail.last_event_id || 0;
   const ancestors = [];
   let current = detail.run;
   const seen = new Set([id]);
@@ -490,6 +516,7 @@ async function selectRun(id) {
   updateMode();
   renderHistory();
   renderConversation();
+  subscribeRun(id);
 }
 // Build every node as text. Model/repository HTML and unsafe Markdown URLs are never executed.
 function inline(parent, text) {
@@ -626,15 +653,11 @@ function renderTurn(detail) {
       (run.execution_mode === "fixture"
         ? "合成样例演示"
         : "固定版本 " + run.commit.slice(0, 12)) +
-        " · 模型 " +
-        run.model_calls_used +
-        "/" +
-        run.limits.max_model_calls +
-        " 轮 · 工具 " +
-        run.tool_calls_used +
-        "/" +
-        run.limits.max_tool_calls +
-        " 次",
+        " · 已使用 " +
+        (
+          run.input_tokens_used + (run.output_tokens_used || 0)
+        ).toLocaleString() +
+        " Token",
     ),
   );
   const activity = element("details", "activity");
@@ -659,18 +682,25 @@ function renderTurn(detail) {
   article.append(activity);
   const result = element("div", "run-result");
   const reason = run.stop_reason || run.run_reason_code;
-  if (reason && !["queued", "running", "paused"].includes(run.run_status)) {
+  if (
+    reason &&
+    reason !== "complete" &&
+    !["queued", "running", "paused"].includes(run.run_status)
+  ) {
     result.append(
       element(
         "div",
         "run-error",
         (ERRORS[reason] || "本次分析已停止，请保留运行记录并查看服务器日志。") +
-          "（" +
-          reason +
-          "）",
+          "",
       ),
     );
   }
+  const draft = element("div", "stream-draft");
+  const currentDraft = state.drafts.get(run.run_id) || detail.draft || {};
+  renderDraftContent(draft, currentDraft, ACTIVE.has(run.run_status));
+  draft.hidden = Boolean(detail.report) || !Object.keys(currentDraft).length;
+  result.append(draft);
   if (detail.report) result.append(markdown(detail.report));
   else
     result.append(
@@ -830,7 +860,7 @@ async function submit(event) {
     if (!isDemo()) {
       state.profile = await call("GET", API + "/profile");
       renderProfile();
-      if (!state.profile.ready) {
+      if (!state.profile.ready || !state.profile.automatic_execution) {
         state.pendingSubmit = true;
         showSettings();
         notify("补齐模型设置后即可继续，问题和仓库地址已保留。");
@@ -886,16 +916,145 @@ async function submit(event) {
     updateComposer();
   }
 }
+function closeStream() {
+  state.streamVersion++;
+  if (state.stream) state.stream.close();
+  state.stream = null;
+  clearTimeout(state.progressTimer);
+}
+function renderDraftContent(host, draft, active = true) {
+  host.replaceChildren(
+    element(
+      "p",
+      "draft-note",
+      active
+        ? "正在生成 · 完成后核对源码与回答完整性"
+        : "未完成草稿 · 尚未通过核验",
+    ),
+  );
+  for (const [field, title] of [
+    ["conclusion", "当前结论"],
+    ["structure", "项目结构"],
+  ]) {
+    if (draft[field])
+      host.append(element("h3", "", title), element("p", "", draft[field]));
+  }
+}
+function subscribeRun(id) {
+  closeStream();
+  const detail = state.details.get(id);
+  if (!state.connected || !detail || !ACTIVE.has(detail.run.run_status)) return;
+  const version = state.streamVersion;
+  const source = new EventSource(
+    API + "/" + id + "/events?after=" + state.cursor,
+  );
+  state.stream = source;
+  source.addEventListener("update", (event) => {
+    if (version !== state.streamVersion || id !== state.selected) return;
+    const message = JSON.parse(event.data);
+    if (message.event_id <= state.cursor) return;
+    state.cursor = message.event_id;
+    const payload = message.payload || {};
+    const draft = state.drafts.get(id) || {};
+    if (
+      (message.kind === "model_stream_started" &&
+        payload.phase === "analysis") ||
+      message.kind === "draft_rejected"
+    ) {
+      state.drafts.set(id, {});
+      const host = document.querySelector(
+        '.turn[data-run-id="' + id + '"] .stream-draft',
+      );
+      if (host) host.hidden = true;
+    }
+    if (message.kind === "answer_delta") {
+      draft[payload.field] =
+        Array.from(draft[payload.field] || "")
+          .slice(0, payload.offset)
+          .join("") + payload.text;
+      state.drafts.set(id, draft);
+      const host = document.querySelector(
+        '.turn[data-run-id="' + id + '"] .stream-draft',
+      );
+      if (host) {
+        host.hidden = false;
+        renderDraftContent(host, draft);
+      }
+    }
+    const labels = {
+      model_stream_started:
+        payload.phase === "validation" ? "正在核对回答完整性" : "正在分析",
+      tool_reserved: TOOLS[payload.tool] || "正在读取代码",
+      tool_observed: "正在整理源码证据",
+      acceptance_started: "正在核对回答完整性",
+      analysis_waiting: "正在等待模型服务",
+      acceptance_passed: "核验通过",
+      draft_rejected: "正在补充调查",
+    };
+    const label = document.querySelector(
+      '.turn[data-run-id="' + id + '"] .run-status',
+    );
+    if (label && labels[message.kind]) label.textContent = labels[message.kind];
+    if (
+      ["tool_observed", "tool_failed", "model_settled"].includes(message.kind)
+    ) {
+      clearTimeout(state.progressTimer);
+      state.progressTimer = setTimeout(async () => {
+        try {
+          const data = await call("GET", API + "/" + id);
+          if (version !== state.streamVersion || id !== state.selected) return;
+          if ((data.last_event_id || 0) >= state.cursor) {
+            state.details.set(id, data);
+            state.drafts.set(id, data.draft || {});
+            state.cursor = data.last_event_id || state.cursor;
+            renderConversation();
+          }
+        } catch (error) {
+          notify(explain(error), true);
+        }
+      }, 200);
+    }
+  });
+  source.addEventListener("done", async () => {
+    if (version !== state.streamVersion || id !== state.selected) return;
+    closeStream();
+    try {
+      await selectRun(id);
+      await loadHistory();
+    } catch (error) {
+      notify(explain(error), true);
+    }
+  });
+  source.addEventListener("auth_required", () => {
+    closeStream();
+    showLogin();
+  });
+  source.onopen = () => {
+    if ($("notice").textContent === "连接恢复中，分析仍在后台继续。")
+      notify("");
+  };
+  source.onerror = () => {
+    if (version === state.streamVersion && id === state.selected)
+      notify("连接恢复中，分析仍在后台继续。");
+  };
+}
 async function poll() {
   if (!state.connected || state.polling || document.hidden) return;
   state.polling = true;
   const selected = state.selected,
     version = state.selection;
   try {
-    if (selected) {
+    if (
+      selected &&
+      (!state.stream || state.stream.readyState !== EventSource.OPEN)
+    ) {
       const detail = await call("GET", API + "/" + selected);
       if (selected === state.selected && version === state.selection) {
-        state.details.set(selected, detail);
+        if ((detail.last_event_id || 0) >= state.cursor) {
+          state.details.set(selected, detail);
+          state.drafts.set(selected, detail.draft || {});
+          state.cursor = detail.last_event_id || 0;
+        }
         renderConversation();
         updateComposer();
       }
@@ -963,10 +1122,15 @@ for (const button of document.querySelectorAll("[data-prompt]"))
     $("question").value = button.dataset.prompt;
     $("question").focus();
   });
-window.addEventListener("pagehide", () => clearInterval(state.timer));
+window.addEventListener("pagehide", () => {
+  clearInterval(state.timer);
+  closeStream();
+});
 window.addEventListener("pageshow", () => {
   clearInterval(state.timer);
-  state.timer = setInterval(poll, 1800);
+  state.timer = setInterval(poll, 10000);
+  if (state.selected && state.connected && !state.stream)
+    subscribeRun(state.selected);
 });
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) poll();

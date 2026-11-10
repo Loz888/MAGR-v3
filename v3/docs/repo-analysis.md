@@ -22,7 +22,10 @@ Markdown 报告。
   Read Scope、Run Epoch 与预算。
 - 不可信数据：README、代码、Issue、PR、评论中的任何指令都只作为数据，不能改变
   系统提示、权限、仓库或预算。
-- 预算失败不冒充成功：模型轮数、工具次数、输入 Token、费用或总期限耗尽时，
+- 默认自动执行：网页许可不限制模型轮数或工具次数，在输入/输出 Token 总预算、
+  费用与期限内调查，源码逐字核验及独立问题覆盖检查不通过时反馈继续调查。
+  重复读取、连续无新信息的搜索与未改进的答案由后台防循环策略限制。
+- 预算失败不冒充成功：Token、费用或总期限耗尽（旧许可还包含调用次数上限）时，
   返回 `waiting_input` + `partial_report`，以 `passed=false` 记录已得证据与未完成项。
 
 ## 2. 本机配置
@@ -31,7 +34,7 @@ Markdown 报告。
 cd v3
 make setup            # 仅生成缺失的 .env / 数据卷
 make deps-up
-make migrate          # 含 migrations/0020_repository_analysis.sql
+make migrate          # 包含账户、流式分析和 Token 预占迁移，当前至 0029
 make doctor
 ```
 
@@ -65,16 +68,19 @@ uv run --frozen uvicorn mgar_v3.api:create_app --factory --host 127.0.0.1 --port
 WSL2 内若 `make` 目标因 Docker Desktop 集成不可用，可按顺序手工执行
 `docker compose up -d`、`uv run --frozen alembic upgrade head`，再启动上面的 uvicorn 命令。
 
-Web 页面：`http://127.0.0.1:18080/repo`（原有工作台仍在 `/`）。
+Web 页面：`http://127.0.0.1:18080/repo`（首页 `/` 为同一入口，原工作台在 `/legacy`）。
 API 文档：`http://127.0.0.1:18080/docs`。
 
 ## 3. Web 使用
 
-1. 打开 `/repo`，输入 `.env` 中的 `MGAR_V3_LOCAL_TOKEN`。
-2. 点击“读取分析授权”，确认 `available=true` 且仓库白名单、预算、模型正确。
-3. 填写 Repository URL 与自然语言任务，选择 `live`，按需设置 Branch/Commit 与预算。
-4. 提交后任务进入队列；详情区显示状态、计数、工具调用、证据与报告。
+1. 打开 `/repo`，首次创建本机管理员账户，以后用账户密码登录。
+2. 在模型设置弹窗填写凭据、仓库范围、费用与 Token 预算，并确认使用许可。
+3. 填写 Repository URL 与自然语言任务；缺配置时可直接“保存并开始分析”。
+4. 提交后实时显示调查阶段、工具活动及尚未核验的报告草稿，完成后显示引用与正式报告。
 5. 可在同一 Thread 追问；父 Run 的已验证证据会复制到新 Run 并保留 ID 映射。
+
+网页通过 HttpOnly Cookie 登录。CLI 和 `/legacy/repo` 保留 `X-MGAR-Token` 兼容方式。
+浏览器 SSE 断开后按事件 ID 重连；刷新时从持久化事件恢复草稿。
 
 ## 4. CLI
 
@@ -83,8 +89,7 @@ uv run --frozen mgar repo-profile
 uv run --frozen mgar repo-analyze \
   --repo-url https://github.com/pallets/flask \
   --task '说明请求进入 Flask 应用后的处理链路，指出入口文件与关键调用关系' \
-  --execution-mode live --model-calls 6 --tool-calls 20 \
-  --input-tokens 60000 --cost-micros 500000 --seconds 600
+  --execution-mode live
 uv run --frozen mgar repo-list
 uv run --frozen mgar repo-status <run_id>
 uv run --frozen mgar repo-report <run_id>
@@ -94,12 +99,17 @@ uv run --frozen mgar repo-resume <run_id>
 uv run --frozen mgar repo-cancel <run_id>
 ```
 
+未指定预算参数时继承当前许可。推荐在网页保存自动许可；高级文件许可可把
+`max_model_calls` 和 `max_tool_calls` 设为 `null`，并设置 `max_total_tokens`。
+CLI 可用 `--total-tokens` 缩小总预算；旧的 `--model-calls`、`--tool-calls` 等参数
+继续支持，但请求不能扩大许可范围。历史固定次数许可不会被静默改为自动模式。
+
 `fixture` 模式值 `--execution-mode fixture` 只用于工程测试：它使用合成仓库，
 绝不访问 GitHub 或 DeepSeek，报告会明确标注 fixture。
 
 ## 5. API 与 Schema
 
-所有端点要求 `X-MGAR-Token`。
+所有端点要求有效账户会话或 `X-MGAR-Token`；账户会话的写请求还要求 CSRF。
 
 | 方法 | 路径 | 说明 |
 | --- | --- | --- |
@@ -107,6 +117,7 @@ uv run --frozen mgar repo-cancel <run_id>
 | POST | `/api/v3/repository-analyses` | 创建任务，202 + `AnalysisSpec` |
 | GET | `/api/v3/repository-analyses` | 最近任务列表 |
 | GET | `/api/v3/repository-analyses/{run_id}` | 状态、事件、工具调用、Claim、报告 |
+| GET | `/api/v3/repository-analyses/{run_id}/events` | SSE 事件流，支持 `Last-Event-ID` / `after` 游标 |
 | GET | `/api/v3/repository-analyses/{run_id}/report` | `text/markdown` 报告 |
 | POST | `/api/v3/repository-analyses/{run_id}/messages` | 同 Thread 追问，202 + 新 `AnalysisSpec` |
 | POST | `/api/v3/repository-analyses/{run_id}/pause` | 暂停（Epoch 递增） |
@@ -124,14 +135,20 @@ uv run --frozen mgar repo-cancel <run_id>
   "execution_mode": "live",
   "client_request_id": "idempotency-key",
   "limits": {
-    "max_model_calls": 6,
-    "max_tool_calls": 20,
-    "max_input_tokens": 60000,
+    "max_model_calls": null,
+    "max_tool_calls": null,
+    "max_input_tokens": 500000,
+    "max_total_tokens": 500000,
     "max_cost_micros": 500000,
-    "max_seconds": 600
+    "max_seconds": 3600
   }
 }
 ```
+
+`limits` 可以整体省略，或只填写要缩小的字段，其余继承许可。总 Token 包含每次
+调用的输入及输出，请求发送前以事务预占，收到完整用量回执后结算。
+`events` 发送 `update`（阶段、工具活动、`answer_delta` 等）和 `done` 事件；
+只流式展示报告的公开正文，不传输模型的内部推理。
 
 工具 Schema（服务端注入 Repository/Commit，模型不能传）：
 
@@ -166,7 +183,8 @@ uv run --frozen mgar repo-cancel <run_id>
 
 `key_files` / `findings` / `call_chains` 的每条 Claim 都必须引用本次 Run 内存在的
 `evidence_id` 且 `quote` 与 CAS 原文逐字一致、行号落在证据范围；否则报告判定
-`passed=false`，Run 失败而不会展示伪造引用。
+`passed=false`。自动模式把缺失项反馈继续调查；无进展或预算不足时留下未完成报告，
+不会把未通过的引用当成已核验答案。旧固定次数模式维持原失败行为。
 
 ## 6. 报告与证据
 
@@ -183,7 +201,8 @@ uv run --frozen mgar repo-cancel <run_id>
 
 - `queued → running → succeeded`（`outcome=internal_report`）
 - 预算/上下文/期限耗尽：`waiting_input`（`outcome=partial_report`，`passed=false`）
-- 模型/工具协议错误：`failed`（不重发、不伪称成功）
+- 已确认的连接失败、429 或结构化格式错误：后台有界重试；持续失败时保留进展
+- 流中断或缺少用量回执：`failed`，保留未知用量与预算预占，不自动重试
 - `pause` 递增 Epoch 并写 checkpoint；`resume` 从 LangGraph checkpoint 继续
 - 进程重启：`app.runs` 中 `running` 的任务被标记 `paused`，需显式 `resume`；
   若有 `reserved/unknown` 模型用量，安全策略拒绝恢复并等待人工核账
@@ -192,7 +211,8 @@ uv run --frozen mgar repo-cancel <run_id>
 
 - GitHub 代码搜索仅索引默认分支；固定 Commit 的证据读取仍按 Commit 精确校验。
 - Issue/PR 读取固定为单个对象；不做全仓库 Issue 遍历。
-- 报告语义正确性由人工评审；机械层只保证“引用真实存在且逐字一致”。
+- 自动模式增加独立模型的问题覆盖检查，但语义正确性仍需人工评审；机械层只保证
+  “引用真实存在且逐字一致”。
 - `search_code` 结果只是定位指针，不作为证据；必须随后 `read_file` 才能引用。
 - 本模块不授予任何 GitHub 写权限，也不自动发布代码。
 

@@ -157,7 +157,12 @@ def test_live_submission_background_loop_citations_and_followup(
         body = json.loads(request.content)
         payload = json.loads(body["messages"][1]["content"])
         requests.append(payload)
-        if payload["round"] == 1:
+        if "answer acceptance verifier" in body["messages"][0]["content"]:
+            decision = {
+                "accepted": True, "missing_requirements": [],
+                "summary": "The question is answered by the verified source.",
+            }
+        elif payload["round"] == 1:
             decision = {
                 "action": "tool", "thought": "Read the startup implementation.",
                 "tool_calls": [{"tool": "read_file", "path": "src/bootstrap.py"}],
@@ -239,7 +244,10 @@ def test_live_submission_background_loop_citations_and_followup(
             detail = completed(first["run_id"])
             assert detail["run"]["execution_mode"] == "live"
             assert detail["run"]["commit"] == COMMIT
-            assert detail["run"]["model_calls_used"] == 2
+            assert detail["run"]["model_calls_used"] == (3 if source == "web" else 2)
+            assert detail["run"]["input_tokens_used"] == (900 if source == "web" else 600)
+            assert detail["run"]["output_tokens_used"] == (300 if source == "web" else 200)
+            assert detail["run"]["reserved_tokens"] == 0
             assert detail["tool_calls"][0]["tool"] == "read_file"
             assert detail["claims"][0]["quote"] == "    return 'ready'"
             assert "src/bootstrap.py#L2-L2" in detail["report"]
@@ -251,7 +259,9 @@ def test_live_submission_background_loop_citations_and_followup(
             second = followup.json()
             assert second["thread_id"] == first["thread_id"]
             assert second["parent_run_id"] == first["run_id"]
-            assert completed(second["run_id"])["run"]["model_calls_used"] == 2
-    assert len(requests) == 4
+            assert completed(second["run_id"])["run"]["model_calls_used"] == (
+                3 if source == "web" else 2
+            )
+    assert len(requests) == (6 if source == "web" else 4)
     assert requests[-1]["prior_report"]
     assert len([name for name, _ in github_calls if name == "get_file_contents"]) == 2
