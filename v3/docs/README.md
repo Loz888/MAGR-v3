@@ -7,6 +7,7 @@
 | 快速了解项目 | [仓库首页](../../README.md) |
 | 理解技术、设计及失败修复 | [完整技术报告](TECHNICAL_REPORT.md) · [PDF](reports/20261106/MGAR-V3.1-Technical-Report.pdf) · [独立HTML](reports/20261106/MGAR-V3.1-Technical-Report.html) |
 | 本机启动和演示 | [应用README](../README.md) · [已验证版本](versions.md) |
+| 规划通用编码 Harness 升级 | [差距与任务书](harness-v4/README.md) · [任务卡](harness-v4/TASKS.md) · [路线与排期](harness-v4/ROADMAP.md) · [验收](harness-v4/ACCEPTANCE.md)（PLANNED，未实施） |
 | 核对报告数字和证据 | [报告事实索引](reports/20261106/report-data.json) · [文档检查](reports/20261106/review.json) |
 | 了解两项P0设计 | [设计入口](design/p0-commerce-v1/README.md) · [闭环](design/p0-commerce-v1/01-commerce-workflow.md) · [统一结果](design/p0-commerce-v1/02-business-result.md) |
 | 使用电商工单、核对最新实测 | [运行手册](p0-commerce-runbook.md) · [最终复验/交付](repairs/P0-20261107/README.md) · [原实施档案](repairs/P0-20261106/README.md) · [获批原提案](repairs/P0-20261106/draft-pr-review.md) |

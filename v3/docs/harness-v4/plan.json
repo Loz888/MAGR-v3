@@ -1,0 +1,359 @@
+{
+  "plan_version": "1",
+  "status": "PLANNED",
+  "application_baseline": "1d07285aa27ece9bae4ccbedc3a77ce2fbcbaf3a",
+  "scope": "Design only; tasks are not implemented and verification targets are not registered.",
+  "tasks": [
+    {
+      "id": "HV4-H00",
+      "title": "冻结基线、任务类型与验收协议",
+      "status": "PLANNED",
+      "priority": "P0",
+      "milestone": "M0",
+      "depends_on": [],
+      "estimated_engineer_days": {
+        "min": 1,
+        "max": 2
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h00",
+      "verification_target_on_implementation": "HV4-H00"
+    },
+    {
+      "id": "HV4-H01",
+      "title": "Harness 契约与 DeepSeek Harness 复用验证",
+      "status": "PLANNED",
+      "priority": "P0",
+      "milestone": "M0",
+      "depends_on": [
+        "HV4-H00"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h01",
+      "verification_target_on_implementation": "HV4-H01"
+    },
+    {
+      "id": "HV4-H02",
+      "title": "模型能力接口与通用工具调用",
+      "status": "PLANNED",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "HV4-H01"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h02",
+      "verification_target_on_implementation": "HV4-H02"
+    },
+    {
+      "id": "HV4-H03",
+      "title": "本机/GitHub 工作区与变更保护",
+      "status": "PLANNED",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "HV4-H01"
+      ],
+      "estimated_engineer_days": {
+        "min": 3,
+        "max": 4
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h03",
+      "verification_target_on_implementation": "HV4-H03"
+    },
+    {
+      "id": "HV4-H04",
+      "title": "统一能力许可、执行 Broker 与隔离",
+      "status": "PLANNED",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "HV4-H03"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h04",
+      "verification_target_on_implementation": "HV4-H04"
+    },
+    {
+      "id": "HV4-H05",
+      "title": "带版本校验的增量编辑",
+      "status": "PLANNED",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "HV4-H04"
+      ],
+      "estimated_engineer_days": {
+        "min": 3,
+        "max": 4
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h05",
+      "verification_target_on_implementation": "HV4-H05"
+    },
+    {
+      "id": "HV4-H06",
+      "title": "命令、依赖、测试及应用进程",
+      "status": "PLANNED",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "HV4-H04"
+      ],
+      "estimated_engineer_days": {
+        "min": 3,
+        "max": 5
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h06",
+      "verification_target_on_implementation": "HV4-H06"
+    },
+    {
+      "id": "HV4-H07",
+      "title": "统一编码循环与多种任务验收",
+      "status": "PLANNED",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "HV4-H02",
+        "HV4-H05",
+        "HV4-H06"
+      ],
+      "estimated_engineer_days": {
+        "min": 4,
+        "max": 6
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h07",
+      "verification_target_on_implementation": "HV4-H07"
+    },
+    {
+      "id": "HV4-H08",
+      "title": "首页接通真实编码与变更交付",
+      "status": "PLANNED",
+      "priority": "P0",
+      "milestone": "M1",
+      "depends_on": [
+        "HV4-H07"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h08",
+      "verification_target_on_implementation": "HV4-H08"
+    },
+    {
+      "id": "HV4-H09",
+      "title": "完整事件流、运行中消息与交互",
+      "status": "PLANNED",
+      "priority": "P1",
+      "milestone": "M2",
+      "depends_on": [
+        "HV4-H08"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 3
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h09",
+      "verification_target_on_implementation": "HV4-H09"
+    },
+    {
+      "id": "HV4-H10",
+      "title": "长任务计划、上下文与分页工具",
+      "status": "PLANNED",
+      "priority": "P1",
+      "milestone": "M2",
+      "depends_on": [
+        "HV4-H07"
+      ],
+      "estimated_engineer_days": {
+        "min": 3,
+        "max": 4
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h10",
+      "verification_target_on_implementation": "HV4-H10"
+    },
+    {
+      "id": "HV4-H11",
+      "title": "工作区/进程/账本一致恢复",
+      "status": "PLANNED",
+      "priority": "P1",
+      "milestone": "M2",
+      "depends_on": [
+        "HV4-H09",
+        "HV4-H10"
+      ],
+      "estimated_engineer_days": {
+        "min": 3,
+        "max": 4
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h11",
+      "verification_target_on_implementation": "HV4-H11"
+    },
+    {
+      "id": "HV4-H12",
+      "title": "冻结任务集、真实 Agent 与持出集验收",
+      "status": "PLANNED",
+      "priority": "P0/P1",
+      "milestone": "M2",
+      "depends_on": [
+        "HV4-H08",
+        "HV4-H09",
+        "HV4-H10",
+        "HV4-H11"
+      ],
+      "estimated_engineer_days": {
+        "min": 3,
+        "max": 5
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h12",
+      "verification_target_on_implementation": "HV4-H12"
+    },
+    {
+      "id": "HV4-H13",
+      "title": "Headless、CLI 与 SDK 契约",
+      "status": "PLANNED",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "HV4-H12"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 4
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h13",
+      "verification_target_on_implementation": "HV4-H13"
+    },
+    {
+      "id": "HV4-H14",
+      "title": "项目指令、Skills、MCP 与插件接口",
+      "status": "PLANNED",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "HV4-H01",
+        "HV4-H04",
+        "HV4-H11"
+      ],
+      "estimated_engineer_days": {
+        "min": 3,
+        "max": 5
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h14",
+      "verification_target_on_implementation": "HV4-H14"
+    },
+    {
+      "id": "HV4-H15",
+      "title": "远程 Runner 配对与本机执行",
+      "status": "PLANNED",
+      "priority": "P2",
+      "milestone": "M4",
+      "depends_on": [
+        "HV4-H11",
+        "HV4-H13"
+      ],
+      "estimated_engineer_days": {
+        "min": 4,
+        "max": 6
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h15",
+      "verification_target_on_implementation": "HV4-H15"
+    },
+    {
+      "id": "HV4-H16",
+      "title": "多用户项目隔离与服务端调度",
+      "status": "PLANNED",
+      "priority": "P2",
+      "milestone": "M4",
+      "depends_on": [
+        "HV4-H15"
+      ],
+      "estimated_engineer_days": {
+        "min": 4,
+        "max": 6
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h16",
+      "verification_target_on_implementation": "HV4-H16"
+    },
+    {
+      "id": "HV4-H17",
+      "title": "按需子 Agent 与效果验证",
+      "status": "PLANNED",
+      "priority": "P2，可选",
+      "milestone": "M4",
+      "depends_on": [
+        "HV4-H12",
+        "HV4-H14"
+      ],
+      "estimated_engineer_days": {
+        "min": 3,
+        "max": 5
+      },
+      "optional": true,
+      "card": "TASKS.md#hv4-h17",
+      "verification_target_on_implementation": "HV4-H17"
+    },
+    {
+      "id": "HV4-H18",
+      "title": "可安装发布、诊断与运维指标",
+      "status": "PLANNED",
+      "priority": "P1",
+      "milestone": "M3",
+      "depends_on": [
+        "HV4-H12",
+        "HV4-H13"
+      ],
+      "estimated_engineer_days": {
+        "min": 2,
+        "max": 4
+      },
+      "optional": false,
+      "card": "TASKS.md#hv4-h18",
+      "verification_target_on_implementation": "HV4-H18"
+    }
+  ],
+  "mvp": [
+    "M0",
+    "M1",
+    "M2"
+  ],
+  "proposed_release_thresholds": {
+    "status": "PROPOSED_freeze_in_H00_before_execution",
+    "development": {
+      "total": 12,
+      "minimum_passed": 10
+    },
+    "holdout": {
+      "total": 12,
+      "minimum_passed": 9
+    },
+    "false_completion": 0,
+    "unauthorized_operations": 0,
+    "blind_unknown_retries": 0
+  }
+}

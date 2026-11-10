@@ -1,0 +1,184 @@
+{
+  "status": "PLANNED",
+  "audited_at": "2026-11-10T11:45:26.305260+00:00",
+  "application_baseline": "1d07285aa27ece9bae4ccbedc3a77ce2fbcbaf3a",
+  "method": "Read-only source and official-document audit; no upstream app installation, benchmark or paid model calls.",
+  "comparison_limits": [
+    "Feature-level design comparison, not measured product ranking.",
+    "Claude Code public repository and changelog do not expose its complete proprietary runtime.",
+    "DeepSeek Harness declares developer preview; pin the version before reuse.",
+    "Historical fixture/live results retain their original scope and status."
+  ],
+  "official_sources": [
+    {
+      "id": "codex-readme",
+      "repository": "openai/codex",
+      "commit": "77fde36ae112437a8ce23e752209099ee04a0d50",
+      "path": "README.md",
+      "url": "https://github.com/openai/codex/blob/77fde36ae112437a8ce23e752209099ee04a0d50/README.md",
+      "raw_url": "https://raw.githubusercontent.com/openai/codex/77fde36ae112437a8ce23e752209099ee04a0d50/README.md",
+      "http_status": 200,
+      "sha256": "ba4e1f69ff48386e72a9c5e1edaf76aad64a475c2d51af79ccba6d1128261ba7",
+      "used_for": "本机 CLI、IDE、Web 入口"
+    },
+    {
+      "id": "codex-tools",
+      "repository": "openai/codex",
+      "commit": "77fde36ae112437a8ce23e752209099ee04a0d50",
+      "path": "codex-rs/core/src/tools/handlers/mod.rs",
+      "url": "https://github.com/openai/codex/blob/77fde36ae112437a8ce23e752209099ee04a0d50/codex-rs/core/src/tools/handlers/mod.rs",
+      "raw_url": "https://raw.githubusercontent.com/openai/codex/77fde36ae112437a8ce23e752209099ee04a0d50/codex-rs/core/src/tools/handlers/mod.rs",
+      "http_status": 200,
+      "sha256": "2a831f17ba0c74a3aa0750bd7607d1352a3de6cfc19a54b3e4205972fba31976",
+      "used_for": "公开工具注册：补丁、执行、计划、交互等"
+    },
+    {
+      "id": "codex-skills",
+      "repository": "openai/codex",
+      "commit": "77fde36ae112437a8ce23e752209099ee04a0d50",
+      "path": "docs/skills.md",
+      "url": "https://github.com/openai/codex/blob/77fde36ae112437a8ce23e752209099ee04a0d50/docs/skills.md",
+      "raw_url": "https://raw.githubusercontent.com/openai/codex/77fde36ae112437a8ce23e752209099ee04a0d50/docs/skills.md",
+      "http_status": 200,
+      "sha256": "e59789d09692310bbf94e2ef8db0aaf00d97f2226982c8c5330d2d260583a97d",
+      "used_for": "官方 Skills 文档入口"
+    },
+    {
+      "id": "codex-agents",
+      "repository": "openai/codex",
+      "commit": "77fde36ae112437a8ce23e752209099ee04a0d50",
+      "path": "docs/agents_md.md",
+      "url": "https://github.com/openai/codex/blob/77fde36ae112437a8ce23e752209099ee04a0d50/docs/agents_md.md",
+      "raw_url": "https://raw.githubusercontent.com/openai/codex/77fde36ae112437a8ce23e752209099ee04a0d50/docs/agents_md.md",
+      "http_status": 200,
+      "sha256": "56f5b6026b15fad40fe8b1f6f8910b9fccdf66da3b39dd943c91877e2299619e",
+      "used_for": "官方 AGENTS.md 文档入口"
+    },
+    {
+      "id": "codex-security",
+      "repository": "openai/codex",
+      "commit": "77fde36ae112437a8ce23e752209099ee04a0d50",
+      "path": "docs/sandbox.md",
+      "url": "https://github.com/openai/codex/blob/77fde36ae112437a8ce23e752209099ee04a0d50/docs/sandbox.md",
+      "raw_url": "https://raw.githubusercontent.com/openai/codex/77fde36ae112437a8ce23e752209099ee04a0d50/docs/sandbox.md",
+      "http_status": 200,
+      "sha256": "61d4dd0ccda2a0cbbde78832e752cdf56b1eb8cf7a54f1d46b52a2824c911249",
+      "used_for": "官方沙箱与审批文档入口"
+    },
+    {
+      "id": "claude-readme",
+      "repository": "anthropics/claude-code",
+      "commit": "ce6cb8ee39759afb5d8bf2e3fd26582f575e9095",
+      "path": "README.md",
+      "url": "https://github.com/anthropics/claude-code/blob/ce6cb8ee39759afb5d8bf2e3fd26582f575e9095/README.md",
+      "raw_url": "https://raw.githubusercontent.com/anthropics/claude-code/ce6cb8ee39759afb5d8bf2e3fd26582f575e9095/README.md",
+      "http_status": 200,
+      "sha256": "07445fe9698dd4e038fa5b30ea3bde5f8f1480068b2f275fdd20725cecda0a6c",
+      "used_for": "终端编码、IDE/GitHub 与插件入口"
+    },
+    {
+      "id": "claude-changelog",
+      "repository": "anthropics/claude-code",
+      "commit": "ce6cb8ee39759afb5d8bf2e3fd26582f575e9095",
+      "path": "CHANGELOG.md",
+      "url": "https://github.com/anthropics/claude-code/blob/ce6cb8ee39759afb5d8bf2e3fd26582f575e9095/CHANGELOG.md",
+      "raw_url": "https://raw.githubusercontent.com/anthropics/claude-code/ce6cb8ee39759afb5d8bf2e3fd26582f575e9095/CHANGELOG.md",
+      "http_status": 200,
+      "sha256": "a074556107911c423a449df2f0b1dbbabb51aaa66383b81c3ba4fea1c52679cf",
+      "used_for": "公开更新中的工具、权限、会话及上下文能力；不推断闭源内部实现"
+    },
+    {
+      "id": "dsh-readme",
+      "repository": "deepseek-ai/deepseek-harness",
+      "commit": "fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159",
+      "path": "README.zh.md",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/README.zh.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/README.zh.md",
+      "http_status": 200,
+      "sha256": "8f19db1b217e8ef30cf413b07056cc791048bc2ba2ec51ba104e383dcfb43c61",
+      "used_for": "官方产品、Cordis、运行方式和 developer preview 状态"
+    },
+    {
+      "id": "dsh-architecture",
+      "repository": "deepseek-ai/deepseek-harness",
+      "commit": "fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159",
+      "path": "docs/architecture.md",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/docs/architecture.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/docs/architecture.md",
+      "http_status": 200,
+      "sha256": "6a04050d8e8af817ee198592b7d1c280a4198252e0948af3bdae4876aebbb591",
+      "used_for": "插件、运行循环、会话、能力端口、Web/Desktop/SDK/headless/ACP"
+    },
+    {
+      "id": "dsh-tools",
+      "repository": "deepseek-ai/deepseek-harness",
+      "commit": "fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159",
+      "path": "docs/tool-execution-pipeline.md",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/docs/tool-execution-pipeline.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/docs/tool-execution-pipeline.md",
+      "http_status": 200,
+      "sha256": "2046ba9f08206def424bbd27ccfe6f8967254373292e2aa3046bf2095dd41a26",
+      "used_for": "工具执行和策略入口"
+    },
+    {
+      "id": "dsh-user-guide",
+      "repository": "deepseek-ai/deepseek-harness",
+      "commit": "fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159",
+      "path": "docs/user/guide/index.md",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/docs/user/guide/index.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/docs/user/guide/index.md",
+      "http_status": 200,
+      "sha256": "a22e25ad4bb6a1b249b9e2f1df0dd408f22cebd8a110067fddad82870c2b96e9",
+      "used_for": "模型配置、工作区和任务交互"
+    },
+    {
+      "id": "dsh-safety",
+      "repository": "deepseek-ai/deepseek-harness",
+      "commit": "fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159",
+      "path": "SAFETY.md",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/SAFETY.md",
+      "raw_url": "https://raw.githubusercontent.com/deepseek-ai/deepseek-harness/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/SAFETY.md",
+      "http_status": 200,
+      "sha256": "62075bb51e0f7790441e7722ff12063107b4866019332e71ef01b63b6f880fee",
+      "used_for": "预览状态、执行与隔离限制"
+    }
+  ],
+  "local_evidence": [
+    {
+      "path": "../v35/cards/V35-E02.md",
+      "finding": "142KB full-file replacement failed at the historical 8192 output token cap; live_agent_gate FAIL."
+    },
+    {
+      "path": "../v35/EVALUATION_INDEX.md",
+      "finding": "V3.5 engineering/security, model/agent and publication gates are distinct."
+    },
+    {
+      "path": "../../src/mgar_v3/workbench/service.py",
+      "finding": "Non-fixture _prepare_repair still raises LIVE_REPAIR_EXECUTION_NOT_ENABLED."
+    },
+    {
+      "path": "../../src/mgar_v3/repair/repair_agent.py",
+      "finding": "Legacy repair assumes failed baseline and uses fixed max_attempts/max_test_runs."
+    },
+    {
+      "path": "../../src/mgar_v3/context/builder.py",
+      "finding": "Existing context builder declares background compaction NOT_IMPLEMENTED."
+    }
+  ],
+  "previous_session_checks": {
+    "rerun_for_this_plan": false,
+    "agent_ui": {
+      "tests": 61,
+      "failures": 0,
+      "skipped": 0,
+      "provider": "controlled"
+    },
+    "v35_r05": {
+      "tests": 27,
+      "failures": 0,
+      "skipped": 0
+    },
+    "full_lint_reported_errors": 23,
+    "full_mypy_reported_errors": 16
+  }
+}
