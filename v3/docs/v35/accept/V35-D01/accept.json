@@ -1,0 +1,198 @@
+{
+  "card": "V35-D01",
+  "title": "产品说明、演示脚本、部署与最终验收",
+  "status": "PASS",
+  "commit": "c293e74",
+  "commit_note": "第一次本地提交包含文档、示例仓库脚本、Makefile demo/demo-repo、D01 测试与 verification.json；第二次提交仅记录本 accept.json。用户明确要求推送，因此完成后执行 git push origin main。",
+  "parent_commit": "0962f2f6d338d496749b72a6a1a6d4ca9ec4e905",
+  "base_commit": "6cf67f404d8575d5e02f0dd0edfcbfb67a512ddc",
+  "accepted_at": "2026-11-10T08:35:00Z",
+  "environment": {
+    "os": "Windows 11 host + WSL2 Ubuntu-24.04",
+    "shell": "bash under WSL2",
+    "python": "3.12 (uv --frozen; /tmp/mgar-v3-venv)",
+    "postgres": "real (migrate applied []; doctor PASS)",
+    "redis": "real (doctor PASS)",
+    "docker": "real R03 sandbox image sha256:75ff415b813cad5a2d61d418dfaaf33d1f6e7e56b0a4bb386624f0cf1a92b3c1, network none, non-root; make demo ran one adversarial task",
+    "model": "not_used (ScriptedProvider only)",
+    "network": "demo repository copy is offline; no external network dependency",
+    "github": "no live GitHub read or write"
+  },
+  "deliverables": {
+    "product": "v3/docs/v35/PRODUCT.md",
+    "demo": "v3/docs/v35/DEMO.md",
+    "evaluation_index": "v3/docs/v35/EVALUATION_INDEX.md",
+    "example_repository": "v3/scripts/demo_v35.py",
+    "make_targets": ["v3/Makefile#demo", "v3/Makefile#demo-repo"],
+    "tests": "v3/tests/test_v35_d01.py"
+  },
+  "commands": [
+    {
+      "name": "migrations",
+      "argv": ["uv", "run", "--frozen", "python", "-m", "mgar_v3.store.migrate"],
+      "exit_code": 0,
+      "result": {"applied": []},
+      "purpose": "本卡不新增表；迁移保持幂等",
+      "log": "evidence/v35/D01/20261110T082816Z-d01/01-migrate.log",
+      "status": "PASS"
+    },
+    {
+      "name": "doctor",
+      "argv": ["uv", "run", "--frozen", "mgar", "doctor"],
+      "exit_code": 0,
+      "result": {"postgres": "PASS", "redis": "PASS", "live": "NOT_RUN"},
+      "purpose": "真实 PostgreSQL/Redis 可用；doctor 的 live 探测不发起付费调用",
+      "log": "evidence/v35/D01/20261110T082816Z-d01/02-doctor.log",
+      "status": "PASS"
+    },
+    {
+      "name": "git-diff-check",
+      "argv": ["git", "diff", "--check"],
+      "exit_code": 0,
+      "result": "无空白错误",
+      "purpose": "确认提交前工作区无格式问题",
+      "log": "evidence/v35/D01/20261110T082816Z-d01/03-diffcheck.log",
+      "status": "PASS"
+    },
+    {
+      "name": "engineering-verify",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/verify.py", "--task", "V35-D01"],
+      "exit_code": 0,
+      "counts": {"tests": 10, "failures": 0, "errors": 0, "skipped": 0},
+      "duration_seconds": 10.591,
+      "source_sha256": "07f47b7fbe213f8a3d5b6911c3f6bb57db2a4d690aebb4b227c913d00f866a64",
+      "finished_source_sha256": "07f47b7fbe213f8a3d5b6911c3f6bb57db2a4d690aebb4b227c913d00f866a64",
+      "git_commit": "0962f2f6d338d496749b72a6a1a6d4ca9ec4e905",
+      "attempt": "evidence/V35-D01/20261110T082823Z-c16e6096",
+      "note": "10 项覆盖产品文档结构、90 秒分镜、评测索引与 E01/E02/E03 门禁一致性、README 链接、Makefile demo/demo-repo、示例仓库固定快照与拒绝覆盖、verification 注册、队列/验收目录一致、禁止 live 冒充。",
+      "status": "PASS"
+    },
+    {
+      "name": "ruff-scoped",
+      "argv": ["uv", "run", "--frozen", "ruff", "check", "scripts/demo_v35.py", "tests/test_v35_d01.py"],
+      "exit_code": 0,
+      "result": "All checks passed!",
+      "purpose": "本卡新增脚本与测试的静态检查",
+      "log": "evidence/v35/D01/20261110T082816Z-d01/05-ruff-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "mypy-scoped",
+      "argv": ["uv", "run", "--frozen", "mypy", "src/mgar_v3/quality_eval/v35/tasks.py", "scripts/demo_v35.py"],
+      "exit_code": 0,
+      "result": "Success: no issues found in 3 source files",
+      "purpose": "示例仓库脚本与所依赖任务模型的严格类型检查",
+      "log": "evidence/v35/D01/20261110T082816Z-d01/06-mypy-scoped.log",
+      "status": "PASS"
+    },
+    {
+      "name": "demo-repo",
+      "argv": ["uv", "run", "--frozen", "python", "scripts/demo_v35.py", "--out", "/tmp/mgar-d01-demo-repo"],
+      "exit_code": 0,
+      "result": {
+        "task_id": "v35-adversarial-help-name-retry",
+        "base_commit": "8c1a0a7abbc1c36f70d1f65f3604acc46c5ce6ab",
+        "snapshot_digest": "1bad4810b4223ac865d10aa378bccb0d9c2764ac375f6322ff9c18a5e581f734",
+        "digest_matches": true,
+        "model_calls": 0,
+        "network": "not_used",
+        "files": 19
+      },
+      "purpose": "从固定 Commit 复制示例仓库、校验摘要、写缺陷说明；不联网、不调用模型",
+      "log": "evidence/v35/D01/20261110T082816Z-d01/08-demo-repo-audit.log",
+      "raw": "evidence/v35/D01/20261110T082816Z-d01/07-demo-repo-DEFECT.md",
+      "status": "PASS"
+    },
+    {
+      "name": "demo-run",
+      "argv": ["make", "demo"],
+      "exit_code": 0,
+      "result": {
+        "report": ".local/demo-v35/report-20261110T082839Z",
+        "gate": "engineering_gate",
+        "live_agent_gate": "NOT_RUN",
+        "executed": 1,
+        "passed": 1,
+        "success_rate": 1.0,
+        "failure_reasons": {},
+        "score_signature": "5ed513d3d6eb525d70510b2d45ec37c5416906cee1c9fb9336c2cbc500189938",
+        "task_status": "pass",
+        "attempts": 2,
+        "model_calls": 2,
+        "first_rejection_code": "PUBLIC_TEST_FAILED",
+        "changed_files": ["src/click/core.py"],
+        "publication_executed": false,
+        "publication_correct": true,
+        "resume_provider_calls": 0,
+        "resume_failure_code": "REPAIR_UNKNOWN_PROVIDER_OUTCOME"
+      },
+      "purpose": "单任务 adversarial fixture 评测：固定 Commit、基线复现、首轮失败保留、二轮修复、公开/隐藏回执、Review Bundle、停在上产审批；真实 R03 Docker 参与",
+      "log": "evidence/v35/D01/20261110T082816Z-d01/10-demo-audit.log",
+      "report_log": "evidence/v35/D01/20261110T082816Z-d01/09-demo.log",
+      "status": "PASS"
+    }
+  ],
+  "engineering_gate": "PASS",
+  "live_model_gate": "FAIL",
+  "live_github_write_gate": "NOT_RUN",
+  "live_agent_gate": "FAIL",
+  "security_gate": "PASS",
+  "live_gate_note": "本卡自身没有付费模型调用与真实 GitHub 写入，聚合口径继承既有真实执行结果：E02 的 live 四臂全部 PATCH_TRUNCATED，所以 live_model_gate 与 live_agent_gate 为 FAIL；E01/E03 的 live 门为 NOT_RUN；真实 GitHub 写入从未执行，live_github_write_gate 为 NOT_RUN。工程/安全门 PASS 不代表真实 Agent 能力通过。",
+  "aggregate": {
+    "v35_e01": {"engineering_gate": "PASS", "live_model_gate": "NOT_RUN", "live_github_write_gate": "NOT_RUN", "live_agent_gate": "NOT_RUN", "security_gate": "PASS"},
+    "v35_e02": {"engineering_gate": "PASS", "live_model_gate": "FAIL", "live_github_write_gate": "NOT_RUN", "live_agent_gate": "FAIL", "security_gate": "PASS"},
+    "v35_e03": {"engineering_gate": "PASS", "live_model_gate": "NOT_RUN", "live_github_write_gate": "NOT_RUN", "live_agent_gate": "NOT_RUN", "security_gate": "PASS"},
+    "v35_d01": {"engineering_gate": "PASS", "live_model_gate": "FAIL", "live_github_write_gate": "NOT_RUN", "live_agent_gate": "FAIL", "security_gate": "PASS"}
+  },
+  "must_pass": [
+    {
+      "item": "新用户按 README 可本地跑通示例",
+      "result": "PASS",
+      "evidence": "根 README 与 v3/README 提供 make setup/deps-up/migrate/doctor/dev、make demo-repo、make demo 的完整顺序与端口/令牌说明；本机按同一顺序执行 migrate、doctor、demo-repo、demo 全部 exit 0。"
+    },
+    {
+      "item": "90 秒演示覆盖自然语言任务 → 固定 Commit 只读调查 → Finding/Evidence → 有授权修复 → 测试回执 → Review Bundle → Draft PR（受控）",
+      "result": "PASS",
+      "evidence": "DEMO.md 七步分镜与 make demo 输出逐项对应：固定 Commit 8c1a0a7、RepairHandoff e25af45、首轮 PUBLIC_TEST_FAILED、二轮公开+隐藏通过、Review Bundle 决策字段、waiting_approval、publication.executed=false；受控 Draft PR 使用本地 fixture MCP 分支并明确 live_github_write_gate=NOT_RUN。"
+    },
+    {
+      "item": "Web/CLI 双入口与一键本地启动说明",
+      "result": "PASS",
+      "evidence": "PRODUCT.md 与 v3/README 给出 /workbench、/repo、/docs 与 mgar workbench create/status/diff/approve/publish/reconcile 的对应关系，以及 Docker Compose、迁移、doctor、dev 的顺序。"
+    },
+    {
+      "item": "能力差异表、Live/Fixture 区分、成本与安全模型、可复现命令",
+      "result": "PASS",
+      "evidence": "PRODUCT.md 第 6-11 节；EVALUATION_INDEX.md 全卡门禁总表；成本记录 E02 12 次调用/637310 micros；安全模型 8 条不变量逐条列出。"
+    },
+    {
+      "item": "accept 聚合工程门、Live 模型门、Live GitHub 写门、安全门，明确 PASS/NOT_RUN/FAIL",
+      "result": "PASS",
+      "evidence": "本文件 aggregate 与 live_gate_note：工程 PASS、Live 模型 FAIL、GitHub 写 NOT_RUN、Agent FAIL、安全 PASS；EVALUATION_INDEX.md 总表与之一致，且测试校验索引与 E01/E02/E03 accept 的门禁值。"
+    },
+    {
+      "item": "所有 Live 声明有证据与授权记录；未执行项标 NOT_RUN",
+      "result": "PASS",
+      "evidence": "E02 live 失败保留在 accept 与评测索引中；E01/E03 的 live 门为 NOT_RUN；D01 自身不发起 live 调用；没有把 fixture 发布回执渲染成 GitHub 链接。"
+    },
+    {
+      "item": "make doctor、全套必须卡测试与 E01/E02/E03 结果索引可查",
+      "result": "PASS",
+      "evidence": "doctor exit 0（PG/Redis PASS，live NOT_RUN）；V35-D01 verify 10/10；EVALUATION_INDEX.md 列出全部必须卡的 accept 链接、门禁与复现命令。"
+    }
+  ],
+  "deviations": [
+    {
+      "issue": "真实 GitHub Draft PR 写入未执行",
+      "handling": "D01 只演示本地 fixture MCP 远端；真实写入需要独立 PublicationApproval 与写凭据，live_github_write_gate 记录 NOT_RUN，不用 fixture PR 冒充。"
+    },
+    {
+      "issue": "D01 未重新发起 live 模型评测",
+      "handling": "聚合继承 E02 的真实失败结果（live_model_gate=FAIL、live_agent_gate=FAIL），不重跑、不降级、不抹除历史。"
+    },
+    {
+      "issue": "仓库级 ruff/mypy 仍有历史遗留错误",
+      "handling": "按卡片口径做 scoped 检查（本卡新增脚本、测试与所依赖模型），结果 exit 0；不为通过验收而大范围改动历史代码。"
+    }
+  ]
+}
