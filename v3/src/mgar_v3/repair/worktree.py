@@ -164,7 +164,36 @@ class _Receipt:
 class HandoffScope(Protocol):
     """The R01 handoff surface a worktree is allowed to inherit."""
 
-    allowed_paths: list[str]
+    @property
+    def repository(self) -> str: ...
+
+    @property
+    def base_commit(self) -> str: ...
+
+    @property
+    def allowed_paths(self) -> list[str]: ...
+
+
+class SnapshotScope(Protocol):
+    """The byte-exact fixed-commit snapshot a worktree may be rebuilt from."""
+
+    @property
+    def repository(self) -> str: ...
+
+    @property
+    def commit(self) -> str: ...
+
+    @property
+    def tree(self) -> str: ...
+
+    @property
+    def files(self) -> dict[str, str]: ...
+
+    @property
+    def file_sha256(self) -> dict[str, str]: ...
+
+    @property
+    def binary_paths(self) -> list[str]: ...
 
 
 class PatchWorktree:
@@ -177,6 +206,7 @@ class PatchWorktree:
         allowed_paths: Sequence[str],
         limits: PatchLimits | None = None,
         worktree_root: str | Path | None = None,
+        expected_tree: str | None = None,
     ):
         self.limits = limits or PatchLimits()
         self.allowed_paths = {validate_patch_path(path) for path in allowed_paths}
@@ -189,13 +219,20 @@ class PatchWorktree:
                 raise DomainError("PATCH_FORMAT", "Worktree files must be text", 415)
             validate_patch_content(normalized, content, self.limits)
             initial[normalized] = content
+        base_tree = self._tree(initial)
+        if expected_tree is not None and base_tree != expected_tree:
+            raise DomainError(
+                "PATCH_TREE_MISMATCH",
+                "Base files do not rebuild the handed-off commit tree",
+                409,
+            )
         parent = Path(worktree_root) if worktree_root is not None else None
         self.root = Path(
             tempfile.mkdtemp(prefix="mgar-patch-", dir=str(parent) if parent else None)
         )
         self._files: dict[str, str] = dict(initial)
         self._baseline: dict[str, str] = dict(initial)
-        self._base_tree = self._tree(initial)
+        self._base_tree = base_tree
         self._receipts: list[_Receipt] = []
         try:
             self._materialize(initial)
@@ -221,6 +258,61 @@ class PatchWorktree:
             allowed_paths=handoff.allowed_paths,
             limits=limits,
             worktree_root=worktree_root,
+        )
+
+    @classmethod
+    def from_snapshot(
+        cls,
+        handoff: HandoffScope,
+        snapshot: SnapshotScope,
+        *,
+        limits: PatchLimits | None = None,
+        worktree_root: str | Path | None = None,
+    ) -> PatchWorktree:
+        """Rebuild the handed-off commit from its verified repository snapshot.
+
+        The worktree's initial tree must equal the Git tree of the fixed
+        commit, which makes the base of every later patch receipt recomputable
+        from the snapshot alone.
+        """
+
+        if handoff.repository.lower() != snapshot.repository.lower():
+            raise DomainError(
+                "PATCH_REPOSITORY_MISMATCH",
+                "Snapshot belongs to a different repository than the handoff",
+                409,
+            )
+        if handoff.base_commit != snapshot.commit:
+            raise DomainError(
+                "PATCH_COMMIT_MISMATCH",
+                "Snapshot was taken from a different commit than the handoff",
+                409,
+            )
+        if snapshot.binary_paths:
+            raise DomainError(
+                "PATCH_SNAPSHOT_BINARY",
+                "A repair worktree requires a text-only repository snapshot",
+                415,
+            )
+        if sorted(snapshot.files) != sorted(snapshot.file_sha256):
+            raise DomainError(
+                "PATCH_SNAPSHOT_INCOMPLETE",
+                "Snapshot content and content hashes cover different files",
+                502,
+            )
+        for path, content in snapshot.files.items():
+            if sha256_text(content) != snapshot.file_sha256[path]:
+                raise DomainError(
+                    "PATCH_SNAPSHOT_MISMATCH",
+                    f"{path!r} content does not match its snapshot hash",
+                    502,
+                )
+        return cls(
+            snapshot.files,
+            allowed_paths=handoff.allowed_paths,
+            limits=limits,
+            worktree_root=worktree_root,
+            expected_tree=snapshot.tree,
         )
 
     def cleanup(self) -> None:

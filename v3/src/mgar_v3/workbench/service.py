@@ -672,7 +672,7 @@ class WorkbenchService:
             },
             idempotency_key=f"reproduce-started:{task_id}:{finding.finding_id}",
         )
-        receipt, _ = self._run_tests(task, patched=False)
+        receipt, _ = self._fixture_tests(task, patched=False)
         if receipt.passed:
             record = ReproductionRecord(
                 status="failed",
@@ -779,7 +779,7 @@ class WorkbenchService:
             },
             idempotency_key=f"repair-started:{task_id}:{finding.finding_id}",
         )
-        after, _ = self._run_tests(task, patched=True)
+        after, _ = self._fixture_tests(task, patched=True)
         if not after.passed:
             current = self.store.task(task_id)
             self._transition(
@@ -1964,7 +1964,27 @@ class WorkbenchService:
             ),
         )
 
-    def _run_tests(self, task: dict[str, Any], *, patched: bool) -> tuple[TestReceipt, str]:
+    def _fixture_tests(
+        self, task: dict[str, Any], *, patched: bool
+    ) -> tuple[TestReceipt, str]:
+        """Run the fixture reproduction on the host, never for a live task.
+
+        V3.5 R02 removed the live repair fallback: any task that is not a
+        fixture task must execute through ``SnapshotRepairRuntime`` inside the
+        restricted R03 container, so untrusted repository tests can never be
+        started on the host.
+        """
+
+        if task.get("execution_mode") != "fixture":
+            raise DomainError(
+                "WORKBENCH_LIVE_REPAIR_SANDBOX_REQUIRED",
+                (
+                    "Live repair tests are executed only by "
+                    "repair.runtime.SnapshotRepairRuntime inside the restricted "
+                    "R03 sandbox"
+                ),
+                409,
+            )
         files = self._fixture_files(patched=patched)
         with tempfile.TemporaryDirectory(prefix="mgar-u01-") as directory:
             root = Path(directory)

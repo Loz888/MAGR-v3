@@ -775,5 +775,24 @@
       "tests/test_v34_repair_agent.py"
     ],
     "timeout_seconds": 600
+  },
+  "V35-R02": {
+    "components": {
+      "cleanup": "container_finally_and_owner_label_reclaim",
+      "docker": "pinned_real_sandbox_image",
+      "fixture_isolation": "live_repair_cannot_reach_host_pytest_or_fixture_files",
+      "network": "not_used_inside_and_outside_the_sandbox",
+      "postgres": "not_used",
+      "redis": "not_used",
+      "snapshot": "fixed_commit_git_blob_and_sha256_verified",
+      "sources": "pallets_click_and_golang_example_public_snapshots",
+      "statuses": "baseline_not_reproduced_waiting_build_test_timeout_sandbox_error"
+    },
+    "tests": [
+      "tests/test_v35_r02.py",
+      "tests/test_v34_sandbox_executor.py",
+      "tests/test_v34_patch_workspace.py"
+    ],
+    "timeout_seconds": 900
   }
 }

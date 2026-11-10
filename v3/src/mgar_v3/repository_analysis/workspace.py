@@ -19,6 +19,7 @@ import re
 import shutil
 import subprocess
 import tempfile
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated, Any, Literal
@@ -30,6 +31,7 @@ from mgar_v3.repository_analysis.domain import parse_repository_url, validate_co
 
 MANIFEST_VERSION = "v33-repository-manifest-v1"
 WORKSPACE_VERSION = "v33-workspace-v1"
+SNAPSHOT_VERSION = "v35-repository-snapshot-v1"
 WORKSPACE_REF = "refs/heads/mgar-workspace"
 
 _REPOSITORY = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]{0,98}/[A-Za-z0-9][A-Za-z0-9_.-]{0,98}$")
@@ -230,6 +232,43 @@ class RepositoryManifest(Model):
             "inventory": self.inventory.model_dump(mode="json"),
             "exclusions": [item.model_dump(mode="json") for item in self.exclusions],
             "coverage": self.coverage.model_dump(mode="json"),
+        }
+
+    def computed_hash(self) -> str:
+        return digest(self.content())
+
+
+class RepositorySnapshot(Model):
+    """Byte-exact text of a fixed commit, bound to Git blobs and SHA-256.
+
+    The snapshot is the only source a repair worktree may materialize from.
+    ``files`` keeps insertion order sorted by path, and every entry's content
+    hash must be reproducible from ``file_sha256``; ``tree`` remains the Git
+    tree id so a worktree can prove that its base tree was rebuilt unchanged.
+    """
+
+    snapshot_version: str = SNAPSHOT_VERSION
+    repository: str
+    commit: str
+    tree: str
+    manifest_hash: str
+    files: dict[str, str]
+    file_sha256: dict[str, str]
+    binary_paths: list[str]
+    total_bytes: Annotated[int, Field(ge=0)]
+    snapshot_hash: str
+
+    def content(self) -> dict[str, Any]:
+        return {
+            "snapshot_version": self.snapshot_version,
+            "repository": self.repository,
+            "commit": self.commit,
+            "tree": self.tree,
+            "manifest_hash": self.manifest_hash,
+            "files": self.files,
+            "file_sha256": self.file_sha256,
+            "binary_paths": self.binary_paths,
+            "total_bytes": self.total_bytes,
         }
 
     def computed_hash(self) -> str:
@@ -505,6 +544,125 @@ class RepositoryWorkspace:
         )
         self._write_marker(manifest)
         return manifest
+
+    def snapshot(self, paths: Sequence[str] | None = None) -> RepositorySnapshot:
+        """Read the materialized fixed commit as a byte-exact repair snapshot.
+
+        Every included file is re-read from the isolated worktree and its Git
+        blob id is recomputed, so a tampered materialization cannot enter a
+        repair worktree.  Binary blobs are listed but never decoded; symlinks,
+        submodules and unsupported modes are already excluded by the manifest.
+        """
+
+        if not self.marker.is_file():
+            raise DomainError(
+                "WORKSPACE_NOT_PREPARED",
+                "Workspace must be prepared before a repository snapshot",
+                409,
+            )
+        self._check_marker()
+        entries = [
+            entry
+            for entry in self._tree_entries()
+            if entry.kind == "blob" and entry.mode in {"100644", "100755"}
+        ]
+        by_path = {entry.path: entry for entry in entries}
+        selected = (
+            sorted(by_path)
+            if paths is None
+            else [validate_manifest_path(path) for path in paths]
+        )
+        files: dict[str, str] = {}
+        hashes: dict[str, str] = {}
+        binary_paths: list[str] = []
+        total_bytes = 0
+        for path in selected:
+            entry = by_path.get(path)
+            if entry is None:
+                raise DomainError(
+                    "WORKSPACE_SNAPSHOT_PATH_MISSING",
+                    f"{path!r} is not a regular file in the fixed commit",
+                    404,
+                )
+            data = self._read_snapshot_blob(entry)
+            total_bytes += len(data)
+            if total_bytes > self.limits.max_total_bytes:
+                raise DomainError(
+                    "WORKSPACE_SNAPSHOT_TOO_LARGE",
+                    "Snapshot exceeds the workspace byte budget",
+                    413,
+                )
+            try:
+                text = data.decode("utf-8")
+            except UnicodeDecodeError:
+                binary_paths.append(path)
+                continue
+            if "\0" in text:
+                binary_paths.append(path)
+                continue
+            files[path] = text
+            hashes[path] = hashlib.sha256(data).hexdigest()
+        tree = self._run_git(["rev-parse", f"{self.commit}^{{tree}}"])
+        head = self._run_git(["rev-parse", "HEAD"])
+        if head != self.commit:
+            raise DomainError("WORKSPACE_GIT_MISMATCH", "Workspace HEAD does not match commit", 502)
+        try:
+            marker = json.loads(self.marker.read_text())
+        except (OSError, ValueError) as exc:
+            raise DomainError(
+                "WORKSPACE_CONFLICT", "Workspace marker is missing or unreadable", 409
+            ) from exc
+        payload = {
+            "snapshot_version": SNAPSHOT_VERSION,
+            "repository": self.repository,
+            "commit": self.commit,
+            "tree": tree,
+            "manifest_hash": str(marker.get("manifest_hash", "")),
+            "files": files,
+            "file_sha256": hashes,
+            "binary_paths": binary_paths,
+            "total_bytes": total_bytes,
+        }
+        return RepositorySnapshot(
+            repository=self.repository,
+            commit=self.commit,
+            tree=tree,
+            manifest_hash=payload["manifest_hash"],
+            files=files,
+            file_sha256=hashes,
+            binary_paths=binary_paths,
+            total_bytes=total_bytes,
+            snapshot_hash=digest(payload),
+        )
+
+    def _read_snapshot_blob(self, entry: _TreeEntry) -> bytes:
+        destination = self.worktree.joinpath(*entry.path.split("/"))
+        root = self.worktree.resolve()
+        current = self.worktree
+        for part in entry.path.split("/"):
+            current = current / part
+            if current.is_symlink():
+                raise DomainError(
+                    "WORKSPACE_SYMLINK_DENIED", "Workspace path is a symlink", 403
+                )
+        if not destination.resolve().is_relative_to(root):
+            raise DomainError("WORKSPACE_PATH_DENIED", "Workspace path escapes its root", 403)
+        try:
+            data = destination.read_bytes()
+        except FileNotFoundError as exc:
+            raise DomainError(
+                "WORKSPACE_SNAPSHOT_PATH_MISSING",
+                "Workspace file is missing from the materialized commit",
+                404,
+            ) from exc
+        actual = hashlib.sha1(b"blob " + str(len(data)).encode() + b"\0" + data).hexdigest()
+        if actual != entry.sha:
+            raise DomainError(
+                "WORKSPACE_FILE_MISMATCH",
+                "Workspace file bytes do not match the fixed commit",
+                502,
+            )
+        return data
 
     def _check_marker(self) -> None:
         if not self.worktree.is_dir() or not (self.worktree / ".git").exists():

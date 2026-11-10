@@ -573,6 +573,44 @@ class SandboxExecutor:
             self._docker(["rm", "-f", identifier])
         return len(identifiers)
 
+    def __enter__(self) -> SandboxExecutor:
+        return self
+
+    def __exit__(self, *_exc: object) -> None:
+        try:
+            self.cleanup()
+        except (DomainError, OSError):
+            pass
+
+    def reclaim_stale(self, *, keep_owner: str | None = None) -> int:
+        """Remove containers left behind by interrupted or crashed owners.
+
+        Every container carries the ``mgar.v3.r03.sandbox`` owner label; a new
+        executor only preserves its own owner and reaps the rest.
+        """
+
+        keep = self.owner if keep_owner is None else keep_owner
+        listed = self._docker(["ps", "-aq", "--filter", "label=mgar.v3.r03.sandbox"])
+        if listed.returncode:
+            raise DomainError("SANDBOX_UNAVAILABLE", "Docker daemon is unavailable", 503)
+        removed = 0
+        for identifier in listed.stdout.decode().split():
+            probe = self._docker(
+                [
+                    "inspect",
+                    "--format",
+                    '{{ index .Config.Labels "mgar.v3.r03.sandbox" }}',
+                    identifier,
+                ]
+            )
+            if probe.returncode:
+                continue
+            owner = probe.stdout.decode().strip()
+            if owner and owner != keep:
+                self._docker(["rm", "-f", identifier])
+                removed += 1
+        return removed
+
     # -- execution -----------------------------------------------------
 
     def run(

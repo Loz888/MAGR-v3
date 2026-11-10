@@ -36,7 +36,9 @@ from mgar_v3.repair.worktree import (
     PatchLimits,
     PatchResult,
     PatchWorktree,
+    sha256_text,
 )
+from mgar_v3.repository_analysis.workspace import RepositorySnapshot
 
 RepairStage = Literal["baseline", "patch", "public_tests", "verification"]
 RepairStatus = Literal[
@@ -142,6 +144,81 @@ class RepairRequest(Model):
     verification_tests: Annotated[list[str], Field(min_length=1, max_length=64)]
     budget: RepairBudget = Field(default_factory=RepairBudget)
     patch_limits: PatchLimits = Field(default_factory=PatchLimits)
+    handoff_id: Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")] | None = None
+    base_commit: Annotated[str, Field(pattern=r"^[a-f0-9]{40}$")] | None = None
+    source_tree: Annotated[str, Field(pattern=r"^[a-f0-9]{40}$")] | None = None
+
+    @classmethod
+    def from_handoff(
+        cls,
+        handoff: object,
+        snapshot: RepositorySnapshot,
+        *,
+        verification_files: dict[str, str],
+        verification_tests: Sequence[str],
+        budget: RepairBudget | None = None,
+        patch_limits: PatchLimits | None = None,
+        frozen_paths: Sequence[str] = (),
+        language: Language | None = None,
+    ) -> Self:
+        """Bind a repair to the exact handoff, commit and snapshot bytes.
+
+        The runtime uses this entry point so a repair can never start from a
+        different commit than the handoff, nor from a snapshot whose per-file
+        SHA-256 values do not reproduce the handed-off content.
+        """
+
+        from mgar_v3.repair.handoff import RepairHandoff
+
+        if not isinstance(handoff, RepairHandoff):
+            raise DomainError("REPAIR_HANDOFF_REQUIRED", "A RepairHandoff is required", 400)
+        if handoff.computed_id() != handoff.handoff_id:
+            raise DomainError(
+                "REPAIR_HANDOFF_CORRUPTED",
+                "Handoff id does not match its content",
+                409,
+            )
+        if handoff.repository != snapshot.repository:
+            raise DomainError(
+                "REPAIR_REPOSITORY_MISMATCH",
+                "Snapshot repository does not match the handoff",
+                409,
+            )
+        if handoff.base_commit != snapshot.commit:
+            raise DomainError(
+                "REPAIR_COMMIT_MISMATCH",
+                "Snapshot commit does not match the handoff base commit",
+                409,
+            )
+        if handoff.reproduction.commit != snapshot.commit:
+            raise DomainError(
+                "REPAIR_REPRODUCTION_MISMATCH",
+                "Reproduction receipt was produced at a different commit",
+                409,
+            )
+        for path, expected in snapshot.file_sha256.items():
+            content = snapshot.files.get(path)
+            if content is None or sha256_text(content) != expected:
+                raise DomainError(
+                    "REPAIR_SNAPSHOT_MISMATCH",
+                    f"{path!r} no longer matches the snapshot hash",
+                    502,
+                )
+        return cls(
+            repository=handoff.repository,
+            objective=handoff.objective,
+            language=language or _infer_language(snapshot.files),
+            files=dict(snapshot.files),
+            allowed_paths=list(handoff.allowed_paths),
+            frozen_paths=list(frozen_paths),
+            verification_files=dict(verification_files),
+            verification_tests=list(verification_tests),
+            budget=budget or RepairBudget(),
+            patch_limits=patch_limits or PatchLimits(),
+            handoff_id=handoff.handoff_id,
+            base_commit=handoff.base_commit,
+            source_tree=snapshot.tree,
+        )
 
     @model_validator(mode="after")
     def independent_verification(self) -> Self:
@@ -154,6 +231,11 @@ class RepairRequest(Model):
             raise ValueError(f"verification files overlap the public tree: {overlap}")
         if any(not name.strip() for name in self.verification_tests):
             raise ValueError("verification test names must not be blank")
+        binding = (self.handoff_id, self.base_commit, self.source_tree)
+        if any(item is not None for item in binding) and not all(
+            item is not None for item in binding
+        ):
+            raise ValueError("handoff binding needs handoff_id, base_commit and source_tree")
         return self
 
 
@@ -253,6 +335,18 @@ def _adapter(language: Language) -> TestAdapter:
     return PythonAdapter()
 
 
+def _infer_language(files: Mapping[str, str]) -> Language:
+    """Infer the trusted adapter from the snapshot, never from model text."""
+
+    counts = {"go": 0, "python": 0}
+    for path in files:
+        if path.endswith(".go"):
+            counts["go"] += 1
+        elif path.endswith((".py", ".pyi")):
+            counts["python"] += 1
+    return "go" if counts["go"] > counts["python"] else "python"
+
+
 def _last_stage(attempts: Sequence[RepairAttempt]) -> RepairStage:
     if attempts and attempts[-1].feedback is not None:
         return attempts[-1].feedback.stage
@@ -346,6 +440,7 @@ class RepairAgent:
             request.files,
             allowed_paths=request.allowed_paths,
             limits=request.patch_limits,
+            expected_tree=request.source_tree,
         ) as worktree:
             base_tree = worktree.baseline_hash()
             try:
