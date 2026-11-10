@@ -108,8 +108,12 @@
           <button id="resume-task" class="secondary">恢复</button>
           <button id="cancel-task" class="danger">取消</button>
         </div>
-        <h3>扫描覆盖范围</h3>
+        <h3>固定 Commit、扫描范围与实际覆盖</h3>
         <pre id="coverage" class="output"></pre>
+        <h3>Run / Retry 与费用</h3>
+        <pre id="usage" class="output"></pre>
+        <h3>失败原因</h3>
+        <pre id="failure" class="output"></pre>
         <h3>Agent 执行时间线</h3>
         <ol id="timeline" class="timeline"></ol>
       </section>
@@ -137,8 +141,16 @@
         <pre id="finding-source" class="output"></pre>
         <h3>复现记录</h3>
         <pre id="finding-reproduction" class="output"></pre>
-        <h3>Diff 与测试回执</h3>
-        <pre id="finding-diff" class="output diff"></pre>
+        <h3>完整 Diff 审查（审批前必读）</h3>
+        <p class="muted">
+          先加载完整 Diff，核对 payload_hash 后再审批。审批只绑定你刚刚审查的 payload_hash；
+          Diff 变更后旧 hash 会被拒绝。
+        </p>
+        <div class="row">
+          <button id="load-diff" class="secondary">加载完整 Diff</button>
+        </div>
+        <pre id="review-meta" class="output"></pre>
+        <pre id="review-diff" class="output diff"></pre>
         <h3>Memory 命中与来源追踪</h3>
         <pre id="finding-memory" class="output"></pre>
         <h3>审批与发布状态</h3>

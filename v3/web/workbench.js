@@ -4,6 +4,7 @@
 const $ = (id) => document.getElementById(id);
 let selectedTask = null;
 let selectedFinding = null;
+let reviewedDiff = null;
 
 function token() {
   return $("token").value.trim();
@@ -109,13 +110,22 @@ function renderSummary(task) {
     statusBadge(task.mode),
     statusBadge(task.execution_mode)
   );
+  if (task.pending && task.pending.state) {
+    const pending = statusBadge(task.pending.state);
+    pending.className = "badge pending " + task.pending.state;
+    pending.title = task.pending.reason;
+    summary.append(pending);
+  }
   const detail = document.createElement("pre");
   detail.className = "output";
   show(detail, {
     repository: task.repository,
     commit: task.commit,
+    fixed_snapshot: { commit: task.commit, ref: task.ref || null },
     parent_task_id: task.parent_task_id,
     thread_id: task.thread_id,
+    pending: task.pending,
+    failure: task.failure,
     next_action: task.next_action,
     controls: task.controls,
     summary: task.summary,
@@ -184,6 +194,11 @@ function renderFindings(task) {
 }
 
 function renderFinding(task, finding) {
+  // Any re-render invalidates the previously reviewed diff: the approval
+  // button only re-enables after the reviewer loads the current diff again.
+  reviewedDiff = null;
+  $("review-meta").textContent = "";
+  $("review-diff").textContent = "";
   selectedFinding = finding;
   $("finding-card").hidden = false;
   const summary = $("finding-summary");
@@ -209,18 +224,17 @@ function renderFinding(task, finding) {
   show($("finding-source"), finding.source);
   show($("finding-reproduction"), finding.reproduction || { status: "not_attempted" });
   if (finding.fix) {
-    show($("finding-diff"), {
-      diff: finding.fix.diff,
-      diff_sha256: finding.fix.diff_sha256,
+    show($("review-meta"), {
+      available: true,
+      note: "点击“加载完整 Diff”核对完整补丁与 payload_hash 后再审批。",
       files: finding.fix.files,
-      tree_hash_before: finding.fix.tree_hash_before,
-      tree_hash_after: finding.fix.tree_hash_after,
+      diff_sha256: finding.fix.diff_sha256,
+      bundle_payload_hash: finding.fix.bundle.payload_hash,
       before_receipt: finding.fix.before_receipt,
       after_receipt: finding.fix.after_receipt,
-      bundle_payload_hash: finding.fix.bundle.payload_hash,
     });
   } else {
-    show($("finding-diff"), { available: false, reason: "No verified patch yet." });
+    show($("review-meta"), { available: false, reason: "No verified patch yet." });
   }
   show($("finding-memory"), {
     note: "Memory 仅作参考，命中不会覆盖当前仓库证据；来源与证据 ID 如下。",
@@ -229,12 +243,57 @@ function renderFinding(task, finding) {
   show($("finding-publication"), {
     approval: finding.approval || { status: "not_requested" },
     publication: finding.publication || { status: "not_started" },
+    github_link: finding.pull_request_link,
+    link_note: finding.pull_request_link
+      ? "Draft PR 可在 GitHub 打开；工作台从不合并。"
+      : "没有可点击的 GitHub 链接（fixture 回执或缺少 GitHub 写入授权）。",
     merged: false,
     note: "Approval 绑定 payload_hash；PR Created 只代表 Draft PR 已回执，工作台不会合并。",
   });
-  $("reproduce-finding").disabled = !(finding.stage === "suspected" && finding.reproduction_plan);
+  updateFindingButtons();
+}
+
+function updateFindingButtons() {
+  const finding = selectedFinding;
+  if (!finding) return;
+  $("reproduce-finding").disabled = !(
+    finding.stage === "suspected" && finding.reproduction_plan
+  );
   $("repair-finding").disabled = finding.stage !== "reproduced";
-  $("approve-finding").disabled = !(finding.stage === "waiting_approval" && finding.approval);
+  const approval = finding.approval;
+  const reviewed =
+    reviewedDiff !== null &&
+    approval !== null &&
+    approval !== undefined &&
+    reviewedDiff.payload_hash === approval.payload_hash;
+  $("approve-finding").disabled = !(finding.stage === "waiting_approval" && reviewed);
+}
+
+async function loadDiff() {
+  if (!selectedTask || !selectedFinding) return;
+  const result = await call(
+    "GET",
+    `/api/v3/workbench/tasks/${selectedTask.task_id}/findings/${selectedFinding.finding_id}/diff`
+  );
+  if (!result.ok) {
+    reviewedDiff = null;
+    updateFindingButtons();
+    show($("review-meta"), result.payload);
+    return;
+  }
+  reviewedDiff = result.payload;
+  show($("review-meta"), {
+    payload_hash: result.payload.payload_hash,
+    diff_sha256: result.payload.diff_sha256,
+    files: result.payload.files,
+    tree_hash_before: result.payload.tree_hash_before,
+    tree_hash_after: result.payload.tree_hash_after,
+    before_receipt: result.payload.before_receipt,
+    after_receipt: result.payload.after_receipt,
+    reviewed: true,
+  });
+  $("review-diff").textContent = result.payload.diff;
+  updateFindingButtons();
 }
 
 function renderControls(task) {
@@ -257,6 +316,8 @@ async function openTask(taskId) {
   $("follow-up-card").hidden = false;
   renderSummary(selectedTask);
   $("coverage").textContent = JSON.stringify(selectedTask.coverage, null, 2);
+  show($("usage"), selectedTask.usage);
+  show($("failure"), selectedTask.failure || { status: "none", reason: "" });
   renderTimeline(selectedTask);
   renderFindings(selectedTask);
   renderControls(selectedTask);
@@ -283,6 +344,17 @@ async function openFinding(taskId, findingId) {
   }
 }
 
+function submissionRequestId() {
+  const form = $("create-form");
+  if (!form.dataset.requestId) {
+    form.dataset.requestId =
+      typeof crypto !== "undefined" && crypto.randomUUID
+        ? crypto.randomUUID()
+        : `web-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+  return form.dataset.requestId;
+}
+
 async function createTask(event) {
   event.preventDefault();
   const include = splitLines($("include-paths").value);
@@ -302,13 +374,22 @@ async function createTask(event) {
       exclude_paths: excludes,
     },
     auto_start: $("auto-start").checked,
+    client_request_id: submissionRequestId(),
   };
-  const result = await call("POST", "/api/v3/workbench/tasks", body);
-  toast(result, $("create-result"));
-  if (result.ok) {
-    selectedFinding = null;
-    await refreshTasks();
-    await openTask(result.payload.task_id);
+  const submit = $("create-form").querySelector('button[type="submit"]');
+  submit.disabled = true;
+  try {
+    const result = await call("POST", "/api/v3/workbench/tasks", body);
+    toast(result, $("create-result"));
+    if (result.ok) {
+      delete $("create-form").dataset.requestId;
+      selectedFinding = null;
+      reviewedDiff = null;
+      await refreshTasks();
+      await openTask(result.payload.task_id);
+    }
+  } finally {
+    submit.disabled = false;
   }
 }
 
@@ -326,13 +407,27 @@ async function findingAction(action) {
   if (!selectedTask || !selectedFinding) return;
   let body;
   if (action === "approve") {
+    if (!reviewedDiff || !selectedFinding.approval) {
+      show($("create-result"), {
+        code: "DIFF_REVIEW_REQUIRED",
+        reason: "请先加载完整 Diff 核对 payload_hash，再审批。",
+      });
+      return;
+    }
+    if (reviewedDiff.payload_hash !== selectedFinding.approval.payload_hash) {
+      show($("create-result"), {
+        code: "REVIEW_STALE",
+        reason: "你审查的 Diff 已不是当前待审批的 Diff，请重新加载。",
+      });
+      return;
+    }
     const approved = window.confirm(
-      "确认审批该 Patch 并创建 Draft PR？\n\npayload_hash: " +
-        selectedFinding.approval.payload_hash +
+      "确认审批已审查的 Patch 并创建 Draft PR？\n\npayload_hash: " +
+        reviewedDiff.payload_hash +
         "\n\n该操作只创建 Draft PR，不会合并。"
     );
     if (!approved) return;
-    body = { payload_hash: selectedFinding.approval.payload_hash };
+    body = { payload_hash: reviewedDiff.payload_hash };
   }
   const result = await call(
     "POST",
@@ -378,6 +473,7 @@ function boot() {
   $("reproduce-finding").addEventListener("click", () => findingAction("reproduce"));
   $("repair-finding").addEventListener("click", () => findingAction("repair"));
   $("approve-finding").addEventListener("click", () => findingAction("approve"));
+  $("load-diff").addEventListener("click", loadDiff);
   $("send-follow-up").addEventListener("click", sendFollowUp);
   $("mode").addEventListener("change", () => {
     $("issue-number").disabled = $("mode").value !== "issue_repair";

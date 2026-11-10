@@ -202,6 +202,19 @@ button:disabled {
   color: var(--muted);
   border-color: var(--line);
 }
+.badge.pending {
+  border-style: dashed;
+}
+.badge.pending.waiting_for_dependencies {
+  background: #3a3220;
+  color: var(--warn);
+  border-color: #5c4d26;
+}
+.badge.pending.waiting_approval {
+  background: #352a4d;
+  color: var(--violet);
+  border-color: #4c3d70;
+}
 .timeline {
   margin: 8px 0 0;
   padding-left: 22px;

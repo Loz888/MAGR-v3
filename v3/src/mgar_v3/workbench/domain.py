@@ -530,6 +530,19 @@ class WorkbenchFinding(Model):
         data["fix_state"] = self.fix_state
         data["verified"] = self.fix is not None
         data["suggested_fix_is_not_applied"] = self.fix is None and bool(self.suggested_fix)
+        # A fixture receipt is never presented as a GitHub link.  Only a live
+        # publication whose remote is GitHub yields a clickable URL.
+        url = self.publication.pull_request_url if self.publication is not None else None
+        data["pull_request_link"] = (
+            url
+            if self.publication is not None
+            and self.publication.remote == "github"
+            and url is not None
+            and url.startswith("https://github.com/")
+            else None
+        )
+        if self.publication is not None:
+            data["publication"]["pull_request_link"] = data["pull_request_link"]
         data["disclaimer"] = (
             "A suggested fix is a proposal, not an applied change. Patch Verified requires a "
             "failing reproduction and a passing post-patch receipt. PR Created means a Draft PR "

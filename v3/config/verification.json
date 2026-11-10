@@ -839,5 +839,27 @@
       "tests/test_recovery.py"
     ],
     "timeout_seconds": 900
+  },
+  "V35-R05": {
+    "components": {
+      "cli_api_parity": "same_task_view_and_publish_reconcile_routes_reachable_from_cli_and_web",
+      "dependency_states": "missing_profile_parks_task_in_waiting_for_dependencies_and_missing_write_scope_reports_waiting_approval",
+      "diff_review": "full_diff_loaded_before_approval_and_approval_bound_to_the_reviewed_payload_hash",
+      "failure_reasons": "failed_events_exposed_as_structured_reason_code_and_text",
+      "fixture_pr_link": "fixture_publication_never_rendered_as_a_github_link",
+      "labels": "five_stage_labels_with_suggested_fix_never_presented_as_fixed",
+      "live_agent": "NOT_RUN_no_paid_model_or_authorized_repository",
+      "live_github_write": "NOT_RUN_no_authorized_test_repository",
+      "live_model": "NOT_RUN_no_paid_model",
+      "negative_paths": "unauthenticated_direct_approve_stale_hash_refresh_duplicate_and_cancel_after_approval",
+      "postgres": "real_disposable_database_same_workbench_schema",
+      "usage": "runs_retries_and_settled_cost_reported_from_the_ledger",
+      "web": "single_page_uses_the_api_contract_and_reviews_the_full_diff"
+    },
+    "tests": [
+      "tests/test_v35_r05.py",
+      "tests/test_v34_repository_api.py"
+    ],
+    "timeout_seconds": 900
   }
 }

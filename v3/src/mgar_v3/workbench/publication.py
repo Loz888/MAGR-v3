@@ -255,6 +255,15 @@ class WorkbenchPublicationLedger:
             ).fetchone()
         return dict(row) if row is not None else None
 
+    def latest_for_task(self, task_id: Any) -> dict[str, Any] | None:
+        with self.engine.transaction() as conn:
+            row = conn.execute(
+                "SELECT * FROM app.workbench_publications "
+                "WHERE task_id=%s ORDER BY created_at DESC LIMIT 1",
+                (task_id,),
+            ).fetchone()
+        return dict(row) if row is not None else None
+
     def steps(self, publication_id: Any) -> list[dict[str, Any]]:
         with self.engine.transaction() as conn:
             rows = conn.execute(

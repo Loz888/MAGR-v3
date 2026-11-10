@@ -146,6 +146,8 @@ def main(argv: list[str] | None = None) -> int:
             "repair",
             "diff",
             "approve",
+            "publish",
+            "reconcile",
             "pause",
             "resume",
             "cancel",
@@ -365,7 +367,7 @@ def main(argv: list[str] | None = None) -> int:
                             response = client.get(finding_base)
                         elif args.action == "diff":
                             response = client.get(finding_base + "/diff")
-                        elif args.action in {"reproduce", "repair"}:
+                        elif args.action in {"reproduce", "repair", "publish", "reconcile"}:
                             response = client.post(finding_base + "/" + args.action)
                         else:
                             if not args.payload_hash:

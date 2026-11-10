@@ -118,6 +118,18 @@ _EVIDENCE_URI = re.compile(
     r"^github://(?P<repository>[^/@\s]+/[^/@\s]+)@(?P<commit>[a-f0-9]{40})(?:/(?P<path>.+))?$"
 )
 _VERIFIED_STATES = frozenset({"reproduced", "confirmed_static"})
+# A missing profile, credential or scope is a dependency gap, not an execution
+# failure.  These codes park the task in ``waiting_input`` so the UI/CLI can
+# show ``waiting_for_dependencies`` instead of a red "failed" label.
+_DEPENDENCY_CODES = frozenset(
+    {
+        "REPO_ANALYSIS_PROFILE_REQUIRED",
+        "REPO_ANALYSIS_PROFILE_INVALID",
+        "REPO_ANALYSIS_SCOPE_DENIED",
+        "GITHUB_READ_CREDENTIAL_REQUIRED",
+        "WORKBENCH_LIVE_REPAIR_SANDBOX_REQUIRED",
+    }
+)
 
 
 def _now() -> str:
@@ -419,6 +431,22 @@ class WorkbenchService:
             spec = self.repo.create(analysis_input, actor=self.settings.local_actor)
         except DomainError as exc:
             current = self.store.task(task_id)
+            if exc.code in _DEPENDENCY_CODES:
+                self._transition(
+                    current,
+                    "waiting_input",
+                    status="ready",
+                    reason=str(exc),
+                    event={
+                        "stage": "dependencies",
+                        "status": "waiting",
+                        "summary": str(exc),
+                        "payload": {"code": exc.code},
+                        "kind": "dependencies.waiting",
+                    },
+                    idempotency_key=f"dependencies-waiting:{task_id}:{exc.code}",
+                )
+                raise
             self._transition(
                 current,
                 "failed",
@@ -1835,6 +1863,8 @@ class WorkbenchService:
         events = self.store.events(task_id)
         memory = self.store.memory(task_id)
         stage = self._task_stage(findings, task)
+        run_links = self.store.run_links(task_id)
+        pending = self._pending(task, events)
         return {
             "task_id": task["task_id"],
             "thread_id": task["thread_id"],
@@ -1853,7 +1883,7 @@ class WorkbenchService:
             "stage": stage,
             "stage_label": STAGE_LABELS[stage],
             "revision": task["revision"],
-            "run_links": self.store.run_links(task_id),
+            "run_links": run_links,
             "transitions": self.store.transitions(task_id),
             "handoffs": self.store.handoffs(task_id),
             "audit_run_id": task["audit_run_id"],
@@ -1879,6 +1909,9 @@ class WorkbenchService:
             },
             "timeline": events,
             "summary": self._summary(findings),
+            "usage": self._usage(task, run_links),
+            "pending": pending,
+            "failure": self._failure(events),
             "next_action": self._next_action(task, findings),
             "controls": self._controls(task),
             "labels": dict(STAGE_LABELS),
@@ -2761,6 +2794,100 @@ class WorkbenchService:
             return max(findings, key=lambda item: STAGE_RANK[item.stage]).stage
         return task["stage"]
 
+    def _usage(self, task: dict[str, Any], run_links: list[dict[str, Any]]) -> dict[str, Any]:
+        """Observable runs, retries and settled model cost for one task."""
+
+        by_kind = {"audit": 0, "repair": 0, "verifier": 0}
+        run_ids = [link["run_id"] for link in run_links]
+        for link in run_links:
+            kind = str(link["kind"])
+            by_kind[kind] = by_kind.get(kind, 0) + 1
+        run_retries = 0
+        calls = 0
+        unknown = 0
+        micros = 0
+        if run_ids:
+            with self.engine.transaction() as conn:
+                runs = conn.execute(
+                    "SELECT attempt_no FROM app.runs WHERE run_id = ANY(%s)", (run_ids,)
+                ).fetchall()
+                usage = conn.execute(
+                    "SELECT status,settled_micros FROM app.usage_calls WHERE run_id = ANY(%s)",
+                    (run_ids,),
+                ).fetchall()
+            for row in runs:
+                run_retries += max(int(row["attempt_no"]) - 1, 0)
+            for row in usage:
+                calls += 1
+                if row["settled_micros"] is not None:
+                    micros += int(row["settled_micros"])
+                if row["status"] == "unknown":
+                    unknown += 1
+        publication = self.publications.latest_for_task(task["task_id"])
+        publication_retries = (
+            max(int(publication["attempts"]) - 1, 0) if publication is not None else 0
+        )
+        return {
+            "runs": {"total": len(run_links), **by_kind},
+            "retries": {
+                "total": run_retries + publication_retries,
+                "runs": run_retries,
+                "publications": publication_retries,
+            },
+            "cost": {
+                "recorded": True,
+                "currency": "USD",
+                "amount_micros": micros,
+                "amount": f"{micros / 1_000_000:.6f}",
+                "calls": calls,
+                "unknown_calls": unknown,
+            },
+        }
+
+    def _pending(self, task: dict[str, Any], events: list[dict[str, Any]]) -> dict[str, Any]:
+        """Derived dependency/authorization state shown next to the status."""
+
+        if task["status"] in {"cancelled", "completed"}:
+            return {"state": None, "reason_code": "", "reason": ""}
+        if task["phase"] == "waiting_input":
+            for event in reversed(events):
+                if event["kind"] in {"dependencies.waiting", "handoff.waiting"}:
+                    payload = event.get("payload") or {}
+                    return {
+                        "state": "waiting_for_dependencies",
+                        "reason_code": str(payload.get("code") or "DEPENDENCY_REQUIRED"),
+                        "reason": event["summary"],
+                    }
+            return {
+                "state": "waiting_for_dependencies",
+                "reason_code": "DEPENDENCY_REQUIRED",
+                "reason": "等待外部依赖或人工确认",
+            }
+        publication = self.publications.latest_for_task(task["task_id"])
+        if publication is not None and publication["status"] == "exported":
+            return {
+                "state": "waiting_approval",
+                "reason_code": publication["reason_code"] or "WRITE_PERMISSION_REQUIRED",
+                "reason": publication["reason"]
+                or "GitHub 写入授权缺失，补丁已导出并等待授权",
+            }
+        return {"state": None, "reason_code": "", "reason": ""}
+
+    @staticmethod
+    def _failure(events: list[dict[str, Any]]) -> dict[str, Any] | None:
+        for event in reversed(events):
+            if event["status"] != "failed":
+                continue
+            payload = event.get("payload") or {}
+            return {
+                "stage": event["stage"],
+                "kind": event["kind"],
+                "reason_code": str(payload.get("code") or ""),
+                "reason": event["summary"],
+                "at": event["created_at"],
+            }
+        return None
+
     @staticmethod
     def _summary(findings: list[WorkbenchFinding]) -> dict[str, int]:
         summary: dict[str, int] = {stage: 0 for stage in STAGE_LABELS}
@@ -2778,6 +2905,8 @@ class WorkbenchService:
             return "resume"
         if task["status"] == "cancelled":
             return "none"
+        if task["phase"] == "waiting_input":
+            return "wait_for_dependencies"
         if task["status"] == "queued":
             return "run"
         if task["status"] == "auditing":
