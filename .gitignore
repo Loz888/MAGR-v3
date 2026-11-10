@@ -14,6 +14,7 @@ __pycache__/
 *.pyc
 *.egg-info/
 work/
+.push-staging/
 # Local source material and raw experiment records are not part of public publication.
 v3/evidence/
 v3-upgrade/
